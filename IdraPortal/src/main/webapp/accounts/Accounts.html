@@ -1,0 +1,131 @@
+<!--
+  Idra - Open Data Federation Platform
+   Copyright (C) 2018 Engineering Ingegneria Informatica S.p.A.
+   
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  at your option) any later version.
+   
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU Affero General Public License for more details.
+   
+  You should have received a copy of the GNU Affero General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+<div ng-controller="AccountsCtrl" class="row container-fluid" style="height: 100%;">
+
+<script type="text/ng-template" id="myModalContent.html">
+        <div class="modal-header">
+            <h3 class="modal-title">Edit user {{user.username}}</h3>
+        </div>
+        <div class="modal-body">
+	<label>Mail:</label>
+			<div class="form-group">
+				<input type="mail" name="name"
+				class="form-control" placeholder="{{user.email}}" ng-model="user.email" ng-disabled="true"/>
+			</div>
+
+			<div class="form-group" ng-class="{ 'has-error': user.newMailInvalid }">
+				<input type="mail" name="name"
+				class="form-control" placeholder="New Mail" ng-model="user.newMail" ng-required/>
+				<p class="help-block" ng-if="user.newMailInvalid">{{user.messageNewMail}}</p>
+			</div>
+
+	<label>Password:</label>
+			<div class="form-group" ng-class="{ 'has-error': user.oldPasswordInvalid }">
+				<input type="password" name="name"
+				class="form-control" placeholder="Old Password" ng-model="user.oldPassword" ng-required/>
+				<p class="help-block" ng-if="user.oldPasswordInvalid">{{user.messageOldPassword}}</p>
+			</div>
+
+	<div class="form-group" ng-class="{ 'has-error': user.newPasswordInvalid1 }">
+		<input type="password" name="name"
+				class="form-control" placeholder="New Password" ng-model="user.newPassword" ng-required/>
+				<p class="help-block" ng-if="user.newPasswordInvalid">{{user.messageNewPassword}}</p>
+			</div>
+
+	<div class="form-group" ng-class="{ 'has-error': user.newPasswordInvalid1 }">
+		<input type="password" name="name"
+				class="form-control" placeholder="Confirm Password" ng-model="user.newPassword1" ng-required/>
+				<p class="help-block" ng-if="user.newPasswordInvalid1">{{user.messageNewPassword1}}</p>
+			</div>
+
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-primary" type="button" ng-click="updateUser(user)">Update</button>
+            <button class="btn btn-warning" type="button" ng-click="cancel()">Cancel</button>
+        </div>
+    </script>
+
+<div class="col-md-1"></div>
+<div class="col-md-10 table-responsive">
+<table st-table="displayedCollection" st-safe-src="users" class="table table-striped" style="margin: 0 auto">
+	<thead>
+	<tr>
+		<th st-sort="firstname" st-sort-default="true">Firstname</th>
+		<th st-sort="lastname">Lastname</th>
+		<th st-sort="username">Username</th>
+		<th st-sort="email">Mail</th>
+		<th st-sort="registration_date" >Registration</th>
+		<th st-sort="last_access" >Last Access</th>
+		<th>Edit</th>
+	</tr>
+	<tr>
+          <th>
+            <input placeholder="search firstname" st-search="firstname"/>
+          </th>
+          <th>
+            <input placeholder="search lastname" st-search="lastname" />
+          </th>
+          <th>
+          	<input placeholder="search username" st-search="username" />
+          </th>
+          <th></th>
+          <th></th>
+          <th></th>
+          <th></th>
+        </tr>
+	</thead>
+	<tbody ng-repeat="user in displayedCollection track by $index">
+	<tr>
+		<td>
+		{{user.firstname}}
+		</td>
+		<td>
+		{{user.lastname}}
+		</td>
+		<td>
+         {{user.username}}
+        </td>
+        <td>
+          {{user.email}}
+        </td>
+        <td>{{toDate(user.registerDate)}}</td>
+		<td>{{toDate(user.lastAccess)}}</td>
+        <td style="white-space: nowrap">
+
+        <div class="buttons pull-right" >
+          <button class="btn btn-warning" ng-click="open($index)"> <i class="glyphicon glyphicon-edit"></i></button>
+          <button class="btn btn-danger" ng-click="deleteUser(user)"> <i class="glyphicon glyphicon-remove-circle"></i></button>
+        </div>  
+      </td>
+	</tr>
+	</tbody>
+	<tfoot>
+			<tr>
+			<td>
+				<div st-pagination="" st-items-by-page="itemsByPage" st-displayed-pages="7"></div>
+			</td>
+			<td colspan="9">
+			<div class="pull-right">
+				<button class="btn btn-success" ng-click="addUser()">Add Account</button>
+				</div>
+			</td>
+			</tr>
+	</tfoot>
+</table>
+</div>
+</div>

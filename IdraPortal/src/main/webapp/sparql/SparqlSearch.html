@@ -1,0 +1,55 @@
+<!--
+  Idra - Open Data Federation Platform
+   Copyright (C) 2018 Engineering Ingegneria Informatica S.p.A.
+   
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  at your option) any later version.
+   
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU Affero General Public License for more details.
+   
+  You should have received a copy of the GNU Affero General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+<div>
+
+<ul class="breadcrumb">
+  <li class="breadcrumb-item"><a href="#metadata">Home</a></li>
+  <li class="breadcrumb-item active">Sparql Query</li>
+</ul>
+	
+	<div class="panel panel-default" style=" border-right: 0px;  border-left: 0px;">
+		<section>
+			<div ui-ace="{
+					  		useWrapMode : true,
+					 		showPrintMargin: false,
+					   		showGutter: true,
+					  		theme:'chrome',
+					  		mode: 'sparql',
+					  		firstLineNumber: 1,
+					  		onLoad: aceLoaded,
+					  		onChange: aceChanged,
+					  		rendererOptions: {
+					     		 maxLinks: Infinity
+					  		}
+						}">
+			</div>
+		</section>
+	</div>
+	<div class="row form-inline">
+	     	<label class="control-label" >Output Format</label>
+		    <select name="ordMd" class="form-control" ng-options="option for option in outputType" ng-model="outputMode"></select>
+	</div>
+	<div class="row">
+		<div class="pull-right" >
+			<div class="form-inline">
+				<button type="button" class="btn btn-default btn-raised" ng-click="clearArea()">Clear</button>	
+				<button type="button" class="btn btn-primary btn-raised btn-icon" ng-disabled="disabledButton || aceDocumentValue.length==''" ng-click="executeSpaqrl()"><i class="mdi-action-search"></i></i>Search</button> 
+			</div>
+		</div>
+	</div>		
+</div>

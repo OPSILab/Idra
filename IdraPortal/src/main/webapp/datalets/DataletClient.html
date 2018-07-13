@@ -1,0 +1,61 @@
+<!--
+  Idra - Open Data Federation Platform
+   Copyright (C) 2018 Engineering Ingegneria Informatica S.p.A.
+   
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  at your option) any later version.
+   
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU Affero General Public License for more details.
+   
+  You should have received a copy of the GNU Affero General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+<!-- Mandatory for Datalets -->	
+<script type="text/javascript" src="https://cdn.jsdelivr.net/webcomponentsjs/0.7.16/webcomponents-lite.min.js"></script>
+
+<div>
+<ul class="breadcrumb">
+  <li class="breadcrumb-item"><a href="#metadata">Home</a></li>
+  <li class="breadcrumb-item"><a href="#showDatasets">Datasets</a></li>
+  <li class="breadcrumb-item"><a href="#showDatasetDetail">{{datasetTitle}}</a></li>
+  <li class="breadcrumb-item"><a href="#showDatasetDetail">Distribution</a></li>
+  <li class="breadcrumb-item"><a href="#showDatasetDetail">{{distributionTitle}}</a></li>
+  <li class="breadcrumb-item active">Datalets</li>
+</ul>
+
+<div class="col-md-3" style="max-height:500px;">
+	<div class="panel-group">
+			<div class="panel panel-primary">
+			<div class="panel-heading">
+				<h4 class="control-label" style="margin: 0px 0px 0px 0px" >Datalets</h4>
+			</div>
+				<div class="panel-body" >
+					<div style="margin-top: 0px; padding-top: 0px;">
+						<ul class="list-group list">
+							<li class='list-group-item buttons'
+								ng-repeat="datalet in datalets track by $index"
+								style="margin-bottom: -0.8em; padding:0px;">
+								<a href=""
+								ng-click="showSelectedDatalet(datalet)" a-disabled="datalet.id==selectedDatalet.id">
+								<p style="line-height:1.75em; ">{{datalet.title}}</p></a>
+<!-- 								<a href="" -->
+<!-- 								ng-show="isAdmin" -->
+<!-- 								ng-click="deleteDatalet(datalet)"> -->
+<!-- 								<p>x</p></a> -->
+							</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+	</div>
+</div>
+<div class="col-md-9">
+	<div ng-bind-html="selectedDatalet.showHtml"></div>
+</div>
+
+</div>
