@@ -1,0 +1,195 @@
+<!--
+  Idra - Open Data Federation Platform
+   Copyright (C) 2018 Engineering Ingegneria Informatica S.p.A.
+   
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  at your option) any later version.
+   
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU Affero General Public License for more details.
+   
+  You should have received a copy of the GNU Affero General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+<div class="federatedNodes">
+
+<ul class="breadcrumb">
+  <li class="breadcrumb-item"><a href="#metadata">Home</a></li>
+  <li class="breadcrumb-item active">Federated Catalogues</li>
+</ul>
+<!--  -->
+<div class="row">
+<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+	<a href="javascript:void(0)" class="btn-flat pull-right" ng-click="enableCardVisualization = !enableCardVisualization">
+	<i ng-show="enableCardVisualization" class="mdi-action-list"><md-tooltip>Table</md-tooltip></i>
+	<i ng-show="!enableCardVisualization" class="mdi-action-dashboard"><md-tooltip>Cards</md-tooltip></i>
+	</a>
+</div>
+</div>
+
+<div ng-show="!enableCardVisualization">
+	<table st-table="displayedCollection" st-safe-src="nodes"
+						class="table table-striped">
+						<thead>
+							<tr>
+								<th st-sort="name">Name</th>
+								<th st-sort="country">Country</th>
+								<th st-sort="host">Host</th>
+								<th st-sort="category">Category</th>
+								<th st-sort="datasetCount">Datasets</th>
+								<th st-sort="lastUpdate">Last Update</th>
+								<th ></th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr ng-repeat="node in displayedCollection track by node.id">
+								<td>
+									{{node.name}}
+								</td>
+								<td>
+									<span ng-show="node.country!=''">{{node.country}}</span>
+									<span ng-show="!node.country">-</span>
+								</td>
+								<td><a	href="{{node.host}}" target="_blank">
+									{{node.host}}
+									</a>
+									<md-tooltip >Homepage</md-tooltip>
+								</td>
+								<td>
+									<span ng-show="node.category!=''">{{node.category}}</span>
+									<span ng-show="!node.category">-</span>
+								</td>
+								<td>{{node.datasetCount}}</td>
+								<td>{{node.lastUpdateDate | date:'yyyy-MM-dd HH:mm:ss'}}</td>
+								<td>
+									<div class="buttons">
+										<a href="javascript:void(0)"
+											class="btn-flat mdi-material-deep-orange"
+											ng-click="showDatasets(node)"><i class="mdi-action-search"></i><md-tooltip>
+												Show Datasets</md-tooltip></a> 
+<!-- 										<a	href="{{node.host}}" target="_blank" -->
+<!-- 											class="btn-flat mdi-material-deep-orange"><i -->
+<!-- 											class="mdi-action-open-in-new"></i><md-tooltip> -->
+<!-- 												Homepage</md-tooltip></a>  -->
+									</div>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+</div>
+<div ng-show="enableCardVisualization">
+	<div class="col-md-6">
+	<md-card  class="md-whiteframe-3dp" ng-repeat="node in nodesLeft track by node.id">
+	<md-card-title style="padding-bottom:0px;">
+          <md-card-title-text layout-align="center">
+            <span class="md-headline"><span ng-show="node.country!='' && node.country!=undefined" 
+            style="border-style: solid;border-width: 1px;border-color: rgba(0,0,0,0.1)" class="flag-icon " 
+            ng-class="'flag-icon-'+node.country.toLowerCase()"></span>  
+            <a href="{{node.host}}" target="_blank">{{node.name}}</a>
+            <a href="javascript:void(0)" class="btn-flat mdi-material-deep-orange"
+			ng-click="showDatasets(node)"><i class="mdi-action-search"></i>
+			<md-tooltip>Show Datasets</md-tooltip></a>  
+<!--             <a	class="btn-flat mdi-material-deep-orange" href="{{node.host}}" target="_blank"> -->
+<!--             <i class="mdi-action-open-in-new" style="vertical-align: middle;"></i></a> -->
+            </span>
+            <span class="md-subhead"><strong>Datasets:</strong> {{node.datasetCount}}</span>
+            <span class="md-subhead"><strong>Last update:</strong> {{node.lastUpdateDate | date:'yyyy-MM-dd'}}</span>
+            <span class="md-subhead"><strong>Category:</strong> 
+            	<span ng-show="node.category!=undefined && node.category!=''">{{node.category}}</span>
+            	<span ng-show="node.category==undefined || node.category==''">N/A</span>
+            </span> 
+          </md-card-title-text>          		
+          	<md-card-avatar>
+          		<md-card-title-media>
+            <div class="md-media-md card-media">
+                	<img class="img-responsive" ng-show="node.image.imageData == '' " ng-src="images/no-image.png"  alt="icon"/>
+					<img class="img-responsive" ng-show="node.image.imageData != '' " ng-src="{{node.image.imageData}}"  alt="icon"/>
+					</div>
+					</md-card-title-media>
+          	</md-card-avatar>
+        </md-card-title>
+        <md-card-content style="padding-bottom:0px;">
+<!--         <div style="max-height:200px; overflow-y:auto"> -->
+        <p style="line-height: 1.75em;">
+        		<span ng-show="node.description!=''">
+        	<span ng-show="!node.descriptionIsCollapsible" marked="node.description"></span>
+        	<span ng-show="node.descriptionIsCollapsible">
+        		<span ng-show="!node.descCollapse" marked='node.description'></span>
+        			<span ng-show="node.descCollapse">{{node.tmpDesc}}<a href="javascript:void(0)" class="btn-flat">
+        							<span ng-show="node.descCollapse" ng-click="node.descCollapse = !node.descCollapse">...
+        							<md-tooltip>More</md-tooltip>
+        							</span>
+								</a></span>
+        	</span>
+        </span>	
+        <p ng-show="node.description==''">No description available</p>
+        </p>
+<!--         </div>		 -->
+        </md-card-content>
+<!-- 		<md-card-actions layout="row" layout-align="end center"> -->
+<!--           <md-button ng-click="showDatasets(node)">Show Datasets</md-button> -->
+<!--         </md-card-actions> -->
+		</md-card> 
+	</div>
+
+	<div class="col-md-6">
+	<md-card class="md-whiteframe-3dp" ng-repeat="node in nodesRight track by node.id">
+	<md-card-title style="padding-bottom:0px;">
+         <md-card-title-text layout-align="center">
+            <span class="md-headline"><span ng-show="node.country!='' && node.country!=undefined" 
+            style="border-style: solid;border-width: 1px;border-color: rgba(0,0,0,0.1)" class="flag-icon " 
+            ng-class="'flag-icon-'+node.country.toLowerCase()"></span>  
+            <a href="{{node.host}}" target="_blank">{{node.name}}</a>
+            <a href="javascript:void(0)" class="btn-flat mdi-material-deep-orange"
+			ng-click="showDatasets(node)"><i class="mdi-action-search"></i>
+			<md-tooltip>Show Datasets</md-tooltip></a>  
+<!--             <a	class="btn-flat mdi-material-deep-orange" href="{{node.host}}" target="_blank"> -->
+<!--             <i class="mdi-action-open-in-new" style="vertical-align: middle;"></i></a> -->
+            </span>
+            <span class="md-subhead"><strong>Datasets:</strong> {{node.datasetCount}}</span>
+            <span class="md-subhead"><strong>Last update:</strong> {{node.lastUpdateDate | date:'yyyy-MM-dd'}}</span>
+            <span class="md-subhead"><strong>Category:</strong> 
+            	<span ng-show="node.category!=undefined && node.category!=''">{{node.category}}</span>
+            	<span ng-show="node.category==undefined || node.category==''">N/A</span>
+            </span> 
+          </md-card-title-text>            		 
+          	<md-card-avatar>
+          		<md-card-title-media>
+            <div class="md-media-md card-media">
+                	<img class="img-responsive" ng-show="node.image.imageData == '' " ng-src="images/no-image.png"  alt="icon"/>
+					<img class="img-responsive" ng-show="node.image.imageData != '' " ng-src="{{node.image.imageData}}"  alt="icon"/>
+					</div>
+					</md-card-title-media>
+          	</md-card-avatar>
+        </md-card-title>
+        <md-card-content style="padding-bottom:0px;">
+<!--          <div style="max-height:200px; overflow-y:auto"> -->
+        <p style="line-height: 1.75em;">
+        
+        <span ng-show="node.description!=''">
+        	<span ng-show="!node.descriptionIsCollapsible" marked="node.description"></span>
+        	<span ng-show="node.descriptionIsCollapsible">
+        		<span ng-show="!node.descCollapse" marked='node.description'></span>
+        			<span ng-show="node.descCollapse">{{node.tmpDesc}}</span><span><a href="javascript:void(0)" class="btn-flat">
+        							<span ng-show="node.descCollapse" ng-click="node.descCollapse = !node.descCollapse">...
+        							<md-tooltip>More</md-tooltip>
+        							</span>
+								</a></span>
+        	</span>
+        </span>	
+        <p ng-show="node.description==''">No description available</p>
+        </p>		
+<!--         </div> -->
+        </md-card-content>
+<!-- 		<md-card-actions layout="row" layout-align="end center"> -->
+<!--           <md-button ng-click="showDatasets(node)">Show Datasets</md-button> -->
+<!--         </md-card-actions> -->
+		</md-card> 
+	</div>
+</div>
+
+</div>

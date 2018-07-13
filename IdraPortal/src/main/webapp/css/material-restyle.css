@@ -1,0 +1,173 @@
+/* ******* Material re-style ******* */
+
+/* Navbar */
+
+.navbar .navbar-nav > .active > a, .navbar .navbar-nav > .active > a:hover, .navbar .navbar-nav > .active > a:focus {
+  background-color: rgba(255, 255, 255, 0);
+  color: inherit;
+}
+
+
+.form-control {
+  background-color: rgba(94, 67, 84, 0);
+  background-image: linear-gradient(#e94f1d, #e94f1d), linear-gradient(#e94f1d, #e94f1d);
+  background-position: center bottom, center calc(100% - 1px);
+  background-repeat: no-repeat;
+  background-size: 0 2px, 100% 1px;
+  border: 0 none;
+  transition: background 0s ease-out 0s;
+  color: #555555;
+  margin-right: 10px;
+}
+.form-control:focus, 
+.form-control.focus {
+  background-image: linear-gradient(#e94f1d, #e94f1d), linear-gradient(#F39200 , #F39200 );
+  background-size: 100% 2px, 100% 1px;
+  box-shadow: none;
+  outline: medium none;
+  transition-duration: 0.3s;
+}
+
+
+/* Button */
+.btn{
+	font-weight: bold;
+	text-rendering: optimizelegibility;
+}
+
+.input-group .form-control:first-child, 
+.input-group-addon:first-child, 
+.input-group-btn:first-child > .btn, 
+.input-group-btn:first-child > .btn-group > .btn, 
+.input-group-btn:first-child > .dropdown-toggle, 
+.input-group-btn:last-child > .btn:not(:last-child):not(.dropdown-toggle), 
+.input-group-btn:last-child > .btn-group:not(:last-child) > .btn {
+  border-radius: 2px;;
+}
+
+.btn:not(.btn-link):not(.btn-flat), 
+.btn-default:not(.btn-link):not(.btn-flat) {
+/*  background-color: rgba(233, 79, 29, 1); */
+  border-radius: 2px;
+/*   color: rgba(255, 255, 255, 0.95); */
+  margin: 0 3px;
+}
+
+/* .btn:hover:not(.btn-link):not(.btn-flat):not(.btn-fab) { */
+/*   box-shadow: 0 1px 6px 0 rgba(233, 79, 29, 0.12), 0 1px 6px 0 rgba(233, 79, 29, 0.12); */
+/* } */
+
+.form-inline .input-group-btn .btn.btn-default {
+/*   background-color: transparent; */
+  border-radius: 50%;
+  height: 40px;
+  margin: 0;
+  padding: 0;
+  width: 40px;
+}
+.form-inline .input-group-btn .btn.btn-default:hover {
+/*   background-color: rgba(255,255,255, .1); */
+}
+
+.btn.btn-icon {
+  padding: 8px 30px;
+  vertical-align: middle;
+}
+.btn.btn-icon-small {
+  padding: 4px 4px 2px;
+   vertical-align: middle;
+}
+.btn.btn-icon-small i {
+  font-size: 19px;
+}
+
+.btn.btn-icon i[class^="mdi-"], 
+.btn.btn-icon i[class*="mdi-"] {
+  display: inline-block;
+  margin-top: -2px;
+  vertical-align: middle;
+}
+
+
+/* Dropdown-menu*/
+
+.dropdown-menu .btn:not(.btn-link):not(.btn-flat), 
+.dropdown-menu .btn-default:not(.btn-link):not(.btn-flat) {
+  background-color: rgba(233, 79, 29, 0);
+  border-radius: 0;
+  color: #fefefe;
+  margin: 0;
+  padding: 10px;
+}
+.dropdown-menu .btn.btn-sm.btn-success.pull-right.ng-binding {
+  	margin: 10px 1px;
+}
+.dropdown-menu .btn-group.pull-left {
+  	box-shadow: none;
+  	-webkit-box-shadow: none;
+  	-moz-box-shadow: none;
+}
+.dropdown-menu .btn-group.pull-left:hover .btn{
+ 	box-shadow: 0 1px 6px 0 rgba(0, 0, 0, 0.12), 0 1px 6px 0 rgba(0, 0, 0, 0.12);
+	-webkit-box-shadow: 0 1px 6px 0 rgba(0, 0, 0, 0.12), 0 1px 6px 0 rgba(0, 0, 0, 0.12);
+  	-moz-box-shadow: 0 1px 6px 0 rgba(0, 0, 0, 0.12), 0 1px 6px 0 rgba(0, 0, 0, 0.12);
+}
+
+.navbar.navbar .dropdown-menu li > a:hover, 
+.navbar-default.navbar .dropdown-menu li > a:hover, 
+.navbar.navbar .dropdown-menu li > a:focus, 
+.navbar-default.navbar .dropdown-menu li > a:focus {
+  background-color: transparent;
+  color: #e94f1d;
+}
+.navbar.navbar .dropdown-menu .active > a, 
+.navbar-default.navbar .dropdown-menu .active > a {
+  background-color: transparent;
+  color: #e94f1d !important;
+}
+
+/* Modal */
+.modal .form-control {
+  color: #fefefe;
+}
+.modal .form-inline {
+  margin: 0 0 10px;
+}
+.modal .form-inline label {
+  margin: 20px 20px 10px;
+}
+
+.modal-content {
+  background-color: #5e4354;
+}
+.modal-content .well {
+  background-color: #5e4354;
+  box-shadow: none;
+  -webkit-box-shadow: none;
+  -moz-box-shadow: none;
+}
+.modal-footer label {
+  float: left;
+  margin: 0 30px;
+}
+
+
+/* Datepicker */
+
+.datepicker .ng-binding.text-info {
+  color: #e94f1d;
+}
+
+/*MD-select*/
+md-select.md-default-theme:not([disabled]):focus .md-select-value, md-select:not([disabled]):focus .md-select-value {
+    border-bottom-color: #e94f1d;
+    color: rgba(0,0,0,0.87);
+}
+
+md-select-menu.md-default-theme md-content md-option[selected], md-select-menu md-content md-option[selected] {
+    color: #e94f1d;
+}
+
+.md-checkbox-enabled.md-default-theme[selected] .md-icon, .md-checkbox-enabled[selected] .md-icon {
+    background-color: #e94f1d;
+}

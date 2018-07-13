@@ -1,0 +1,39 @@
+/* Sticky footer styles
+-------------------------------------------------- */
+* {
+    margin: 0;
+}
+html, body {
+    height: 100%;
+}
+.wrapper {
+    min-height: 100%;
+    height: auto !important;
+    height: 100%;
+/*     margin: 0 auto -4em; */
+}
+.footer {
+	background-color:#ffffff;
+	min-height: 100px;
+}
+.push {
+    height: 4em;
+} 
+
+.copyright {
+	margin-top:10px;
+}
+
+.footerImages {
+	max-height:50px;
+}
+
+.small-margin {
+	margin-top:0px;
+}
+
+@media (max-width: 767px){
+	.small-margin {
+	    margin-top: 10px !important;
+	}
+}

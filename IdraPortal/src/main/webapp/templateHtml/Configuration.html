@@ -1,0 +1,105 @@
+<!--
+  Idra - Open Data Federation Platform
+   Copyright (C) 2018 Engineering Ingegneria Informatica S.p.A.
+   
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  at your option) any later version.
+   
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU Affero General Public License for more details.
+   
+  You should have received a copy of the GNU Affero General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+<div ng-controller="ConfigurationCtrl">
+  <ul class="breadcrumb">
+  <li class="breadcrumb-item"><a href="#metadata">Home</a></li>
+  <li class="breadcrumb-item active">Federation Configurations</li>
+</ul>
+<!--   <legend>Federation Configurations</legend> -->
+  
+  <div class="row">
+  <div class="col-md-3">
+  <label class="control-label">Default Refresh Period</label>
+  </div> 
+  <div class="col-md-2">
+  <select		name="mySelect" class="form-control"
+				ng-options="option.value as option.text for option in updatePeriods"
+				ng-model="currentDefault"></select>
+  </div>
+  <div class="col-md-2">
+  <button class="btn btn-success" ng-click="updateRefreshPeriod()">Update</button>
+  </div>
+  </div>
+ 
+  <div class="row">
+  
+  <div class="col-md-12"><label class="control-label"><h3>Sparql Prefixes</h3></label></div>
+  <div class="col-md-2"></div>
+  <div class=" col-md-8 table-responsive">
+<table st-table="displayedCollection" st-safe-src="allPrefix" class="table table-striped">
+	<thead>
+	<tr>
+		<th st-sort="prefix" st-sort-default="true">Prefix</th>
+		<th st-sort="namespace">Namespace</th>
+		<th >Edit</th>
+	</tr>
+	<tr>
+          <th>
+            <input placeholder="search prefix" st-search="prefix" />
+          </th>
+          <th>
+            <input placeholder="search namespace" st-search="namespace" />
+          </th>
+          <th></th>
+        </tr>
+	</thead>
+	<tbody ng-repeat="p in displayedCollection track by $index">
+	<tr>
+		<td>
+		<span editable-text="p.prefix" e-name="prefixNew" e-form="rowform" onbeforesave="" e-required>
+		{{p.prefix}}</span>
+		</td>
+		<td>
+		<span editable-text="p.namespace" e-name="namespaceNew" e-form="rowform" onbeforesave="" e-required>
+		{{p.namespace}}</span>
+		</td>
+		<td style="white-space: nowrap">
+        <!-- form -->
+        <form editable-form name="rowform" onbeforesave="updatePrefix($data,p)" ng-show="rowform.$visible" class="form-buttons form-inline" shown="inserted == p">
+          <button type="submit" ng-disabled="rowform.$waiting" class="btn btn-primary">
+            <i class="glyphicon glyphicon-save"></i>
+          </button>
+          <button type="button" ng-disabled="rowform.$waiting" ng-click="rowform.$cancel()" class="btn btn-default">
+            <i class="glyphicon glyphicon-remove-circle"></i>
+          </button>
+        </form>
+        <div class="buttons" ng-show="!rowform.$visible">
+          <button class="btn btn-warning" ng-click="rowform.$show()"><i class="glyphicon glyphicon-edit"></i></button>
+          <button class="btn btn-danger" ng-click="deletePrefix(p)"><i class="glyphicon glyphicon-remove-circle"></i></button>
+        </div>  
+      </td>
+	</tr>	
+	</tbody>
+	<tfoot>
+			<tr>
+			<td>
+				<div st-pagination="" st-items-by-page="itemsByPage" st-displayed-pages="7" ></div>
+			</td>
+			<td colspan="1"></td>
+			<td>
+			
+				<span style="margin:0 auto"><button class="btn btn-default" ng-click="addPrefix()">Add Prefix</button></span>
+			</td>
+			</tr>
+	</tfoot>
+</table>
+  
+  </div> 
+  
+</div>
+  
