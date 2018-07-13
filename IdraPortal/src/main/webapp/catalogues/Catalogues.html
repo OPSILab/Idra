@@ -1,0 +1,251 @@
+<!--
+  Idra - Open Data Federation Platform
+   Copyright (C) 2018 Engineering Ingegneria Informatica S.p.A.
+   
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  at your option) any later version.
+   
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU Affero General Public License for more details.
+   
+  You should have received a copy of the GNU Affero General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+<div style="height: 100%;">
+	<ul class="breadcrumb">
+		<li class="breadcrumb-item"><a href="#metadata">Home</a></li>
+		<li class="breadcrumb-item active">Federated Catalogues</li>
+	</ul>
+	<div class="col-md-3 tabbable" style="padding-left:0px">
+		<ul class="nav nav-tabs" ng-init="main.active.tab = 'local'">
+			<li ng-class="{active: main.active.tab == 'local'}"><a
+				ng-click="main.active.tab = 'local'">Local</a></li>
+			<li ng-class="{active: main.active.tab == 'remote'}"><a
+				ng-click="main.active.tab = 'remote'">Remote</a></li>
+		</ul>
+	</div>
+
+	<div class="tab-content">
+		<div ng-switch="main.active.tab">
+			<div ng-switch-when="local">
+				<div class="table-responsive">
+<!-- 				st-pipe="callServer" -->
+					<table st-table="displayedCollection" st-safe-src="nodesSafeSrc" 
+						class="table table-striped">
+						<thead>
+							<tr>
+								<th st-sort="getters.isActive" style="width: 1%">Active</th>
+								<th st-sort="getters.name" st-sort-default="true"
+									style="width: 14%">Name</th>
+								<th st-sort="getters.host" style="width: 10%">Host</th>
+								<th st-sort="getters.type" style="width: 8%">Type</th>
+								<th st-sort="getters.federationLevel" style="width: 5%">Level</th>
+								<th st-sort="getters.status" style="width: 8%">Status</th>
+								<th st-sort="getters.datasetCount" style="width: 8%">Datasets</th>
+								<th st-sort="getters.updatePeriod" style="width: 10%">Update Period</th>
+								<th st-sort="getters.lastUpdate" style="width: 18%">Last Update</th>
+								<th style="width: 15%"></th>
+							</tr>
+<!-- 							<tr> -->
+<!-- 								<th style="width: 6%"></th> -->
+<!-- 								<th style="width: 11%"><input placeholder="search name" st-search="name" /></th> -->
+<!-- 								<th style="width: 11%"><input placeholder="search host" st-search="host" /></th> -->
+<!-- 								<th style="width: 8%"></th> -->
+<!-- 								<th style="width: 5%"></th> -->
+<!-- 								<th style="width: 8%"></th> -->
+<!-- 								<th style="width: 8%"></th> -->
+<!-- 								<th style="width: 8%"></th> -->
+<!-- 								<th style="width: 20%"></th> -->
+<!-- 								<th style="width: 15%"></th> -->
+<!-- 							</tr> -->
+						</thead>
+						<tbody>
+							<tr ng-repeat="node in displayedCollection track by node.id">
+								<td>
+								<switch id="active" name="active" ng-model="node.isActive" ng-change="changed(node)" disabled="node.synchLock!='NONE'" class="small"></switch>
+								</td>
+								<td>
+									{{node.name | limitTo:28}}{{node.name.length > 28 ? '...' : ''}}
+									<md-tooltip ng-show="node.name.length > 28">{{node.name}}</md-tooltip>
+								</td>
+								<td>
+									{{node.host | limitTo:28}}{{node.host.length > 28 ? '...' : ''}}
+									<md-tooltip ng-show="node.host.length > 28">{{node.host}}</md-tooltip>
+								</td>
+								<td>{{node.nodeType}}</td>
+								<td>{{node.federationLevel.split("_")[1]}}</td>
+								<td><span
+									ng-show="node.nodeState == 'ONLINE' && node.synchLock=='NONE'">
+										<i class="glyphicon glyphicon-ok text-success"
+										aria-hidden="true"></i><md-tooltip>{{node.nodeState}}</md-tooltip>
+								</span> <span
+									ng-show="node.nodeState == 'OFFLINE' && node.synchLock=='NONE'">
+										<i class="glyphicon glyphicon-warning-sign text-danger"
+										aria-hidden="true"></i><md-tooltip>{{node.nodeState}}</md-tooltip>
+								</span> <span ng-show="node.synchLock!='NONE'"> <img
+										alt="Synchronizing" title="Synchronizing"
+										src="images/spinner_synchro.gif" style="width: 30px;"><md-tooltip>Synchronizing</md-tooltip>
+								</span></td>
+								<td><span ng-show="node.isActive || (!node.isActive && node.datasetCount!=0)">{{node.datasetCount}}</span>
+									<span ng-show="!node.isActive && node.datasetCount==0">n/a</span></td>
+								<td>{{getHours(node.refreshPeriod)}}</td>
+								<td>{{node.lastUpdateDate | date:'yyyy-MM-dd HH:mm:ss'}}</td>
+								<td>
+									<div class="buttons">
+										<a href="javascript:void(0)"
+											class="btn-flat mdi-material-deep-orange"
+											ng-click="synchroNode(node)"
+											a-disabled="node.synchLock!='NONE' || node.federationLevel=='LEVEL_0' || node.federationLevel=='LEVEL_1' || node.isActive==false "><i
+											class="mdi-action-autorenew"></i><md-tooltip>
+												Synchronize</md-tooltip></a> 
+										<a
+											href="javascript:void(0)"
+											class="btn-flat mdi-material-deep-orange"
+											ng-click="updateNode(node)"
+											a-disabled="node.synchLock!='NONE'"><i
+											class="mdi-content-create"></i><md-tooltip>
+												Update</md-tooltip></a> 
+										<a href="javascript:void(0)"
+											class="btn-flat mdi-material-deep-orange"
+											ng-click="deleteNode(node)"
+											a-disabled="node.synchLock!='NONE'"><i
+											class="mdi-content-clear"></i>
+											<md-tooltip>
+												Delete</md-tooltip></a> 
+										<a href="javascript:void(0)"
+											class="btn-flat mdi-material-deep-orange"
+											ng-click="downloadDump(node)"
+											a-disabled="node.synchLock!='NONE' || node.isActive==false"><i
+											class="mdi-file-file-download"></i>
+											<md-tooltip>
+												Download Dump</md-tooltip></a>
+										<!--           <a  ng-if="node.messageCount!=0" href="javascript:void(0)" class="btn-flat mdi-material-deep-orange" ng-click="openMessageModal(node.name,node.id)" a-disabled="node.synchLock!='NONE'"><i class="mdi-action-info"></i></a> -->
+									</div>
+								</td>
+							</tr>
+						</tbody>
+						<tfoot>
+							<tr>
+<!-- 								<td></td> -->
+								<td colspan="5" class="text-center">
+									<div st-pagination="" st-items-by-page="itemsByPage"
+										st-displayed-pages="7"></div>
+										</td>
+<!-- 								<td></td> -->
+<!-- 								<td></td> -->
+<!-- 								<td></td> -->
+								<td></td>
+								<td></td>
+								<td></td>
+								<td>
+									<button class="btn btn-primary btn-raised btn-icon"
+										ng-click="downloadDump()">
+										<i class="mdi-file-file-download"></i><md-tooltip>
+												Download Full Federation Dump</md-tooltip>
+									</button>
+								</td>
+								<td>
+									<button class="btn btn-primary btn-raised btn-icon"
+										ng-click="addNode()">Add
+										<md-tooltip>
+												Add new Catalogue</md-tooltip></button>
+								</td>
+							</tr>
+						</tfoot>
+					</table>
+				</div>
+			</div>
+			<div ng-switch-when="remote">
+				<div class="table-responsive" ng-controller="RemoteCataloguesController">
+					<table st-table="remote_displayedCollection" st-safe-src="remote_nodes"
+						class="table table-striped">
+						<thead>
+							<tr>
+								<th st-sort="name" st-sort-default="true"
+									style="width: 30%">Name</th>
+								<th st-sort="host" style="width: 30%">Host</th>
+								<th st-sort="nodeType" style="width: 15%">Type</th>
+								<th st-sort="federationLevel" style="width: 5%">Level</th>
+								<th st-sort="refreshPeriod" style="width: 15%">Update Period</th>
+								<th style="width: 5%"></th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr ng-repeat="node in remote_displayedCollection track by $index" >
+								<td>{{node.name}}</td>
+								<td>{{node.host}}</td>
+								<td>{{node.nodeType}}</td>
+								<td>{{node.federationLevel.split("_")[1]}}</td>
+								<td>{{getHours(node.refreshPeriod)}}</td>
+								<td>
+									<div class="buttons">
+										<a href="javascript:void(0)"
+											class="btn-flat mdi-material-deep-orange"
+											a-disabled="node.alreadyLocal"
+											ng-click="addRemoteNode(node)"> <i
+											class="mdi-content-add-circle-outline"> <md-tooltip ng-show="!node.alreadyLocal">
+												Add Catalogue</md-tooltip></i>
+										</a>
+									</div>
+								</td>
+							</tr>
+						</tbody>
+						<tfoot>
+							<tr>
+								<td>
+									<div st-pagination="" st-items-by-page="itemsByPage"
+										st-displayed-pages="7"></div>
+								</td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+							</tr>
+						</tfoot>
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<script type="text/ng-template" id="MessagesModal.html">
+<div class="modal-header">
+	<button type="button" class="close" aria-hidden="true" ng-click="cancel()">x</button>
+    <h3 class="modal-title">Message Catalogue {{name}}</h3>
+</div>
+<div class="modal-body row">
+	
+	<div class="col-md-10">
+		<div class="well">
+			<div style="overflow: auto; height: 300px;">
+				<ul class="list-group list" >
+					<li ng-repeat="mex in messages" class='list-group-item' ">
+							<label class='name h4'>
+							<span class="align-left">
+							{{mex.message}}</span>
+							<a href="javascript:void(0)" class="btn-flat mdi-material-deep-orange"
+								ng-click="deleteMessage(mex)" >
+								<i class="mdi-content-remove-circle-outline"></i>
+							</a>
+							</label>
+					</li>
+				</ul>				
+			</div>
+		</div>
+<label class='name checklbl'> Delete All <a href="javascript:void(0)" class="btn-flat mdi-material-deep-orange"
+								ng-click="deleteAllMessages()" >
+								<i class="mdi-content-remove-circle-outline"></i>
+							</a> </label>		
+	</div>
+</div>	
+<div class="modal-footer">
+    <button class="btn btn-default" type="button" ng-click="cancel()">Cancel</button>
+	<button class="btn btn-primary" type="button" ng-click="ok()">OK</button>
+</div>
+</script>

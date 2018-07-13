@@ -1,0 +1,305 @@
+/* ******* Bootstrap re-style ******* */
+
+
+/* Reset */
+
+html, body{
+	margin: 0;
+	padding: 0;
+	border: 0;
+	font-family: "Roboto", Helvetica, sans-serif;
+	vertical-align: baseline;
+	line-height: 1.75em;
+}
+
+body {
+  background-color: rgba(0, 0, 0, 0.02);
+  color: #333333;
+}
+
+a {
+	font-weight: bold;
+}
+
+.buttons a {
+  cursor: pointer;
+}
+
+#header {
+	left: 0;
+	position: fixed;
+	right: 0;
+	top: 0;
+	width: 100%;
+	z-index: 100;
+}
+
+/*No FESTIVAL*/
+#header nav.navbar.navbar-default .navbar-header .navbar-brand {
+  	color: #fefefe;
+	display: block;
+	font-size: 24px;
+	font-weight: 900;
+	height: 50px;
+	width: 445px;
+	text-transform: capitalize;
+}
+
+/* FESTIVAL
+#header nav.navbar.navbar-default .navbar-header .navbar-brand {
+  
+	background-image: url("../images/logo-small.png");
+	background-repeat: no-repeat;
+	background-size: auto 50px;
+	color: #fefefe;
+	display: block;
+	font-size: 24px;
+	font-weight: 900;
+	height: 50px;
+	padding-left: 30px;
+	width: 445px;
+	text-transform: capitalize;
+}*/
+
+#header nav.navbar {
+  	background-color: #4A2E40;
+  	border: 0 none;
+  	border-radius: 0;
+  
+	box-shadow: 0 0.25em 0.5em 0 rgba(0, 0, 0, 0.25);
+	-webkit-box-shadow: 0 0.25em 0.5em 0 rgba(0, 0, 0, 0.25);
+	-moz-box-shadow: 0 0.25em 0.5em 0 rgba(0, 0, 0, 0.25);
+	cursor: default;
+  	height: 3.85em;
+  	line-height: 3.85em;
+}
+
+#header nav.navbar #navbar {
+  position: fixed;
+  right: 0em;
+  top: 0;
+}
+
+#header nav.navbar.navbar-default #navbar li {
+  display: inline-block;
+  margin-left: 1em;
+  padding-left: 0.5em;
+}
+
+#header nav.navbar.navbar-default #navbar .navbar-nav li a {
+  color: #fff;
+  font-size: 11.5pt;
+  font-style: normal;
+  font-weight: 100;
+  line-height: 3.5em;
+  padding: 0;
+}
+#header nav.navbar.navbar-default #navbar .navbar-nav li a:hover {
+  color: #e94f1d;
+}
+#header nav.navbar.navbar-default #navbar .navbar-nav li.active > a {
+  color: #e94f1d;
+}
+
+#header nav.navbar.navbar-default #navbar .navbar-form {
+  border: 0 none;
+  box-shadow: none;
+  -webkit-box-shadow: none;
+  -moz-box-shadow: none;
+  display: inline-block;
+  font-size: 11.5pt;
+  margin: 0 0 0 1.2em;
+  padding: 0 0 0 0.6em;
+  width: auto;
+}
+
+#header nav.navbar.navbar-default #navbar li {
+/*   display: inline-block; */
+  float: left;
+  font-size: 11.5pt;
+  font-weight: 100;
+  margin-left: 1em;
+  padding-left: 0.5em;
+  white-space: nowrap;
+}
+
+#header nav.navbar.navbar-default #navbar .btn.btn-default {
+  background-color: #e94f1d;
+  border: 0 none;
+  border-radius: 2px;
+  box-shadow: none;
+  -webkit-box-shadow: none;
+  -moz-box-shadow: none;
+  color: #ffffff;
+  font-size: 11.5pt;
+  font-weight: 300;
+  height: 2em;
+  line-height: 2em;
+  padding: 0 1.25em;
+  text-align: center;
+  text-decoration: none;
+  vertical-align: baseline;
+}
+
+#header nav.navbar.navbar-default #navbar .dropdown-menu {
+  background-color: #4a2e40;
+  padding: 5px 20px 5px 0;
+}
+
+/* CONTENT */
+
+#content {
+  padding-top: 8em;
+}
+
+#content legend {
+/*   border-bottom: 1px solid; */
+/*   color: #e94f1d; */
+  margin: 10px 0 0;
+  font-weight: 600;
+}
+
+#content .row {
+/*   height: 50px; */
+  line-height: 50px;
+  margin: 10px 0 10px;
+  vertical-align: middle;
+}
+
+#content .input-group .form-control {
+  float: none;
+  margin-bottom: 0;
+  position: relative;
+  width: 100%;
+  z-index: 2;
+}
+
+#content label {
+  display: inline-block;
+  font-weight: bold;
+  margin: 0 20px 0 0;
+}
+
+#content .dropdown-menu {
+  background-color: rgba(74, 46, 64, 1);
+  border-radius: 2px;
+}
+
+#content .dropdown-menu td {
+  line-height: 20px;
+}
+
+/* Datepicker */
+
+.datepicker th.text-center.ng-scope {
+  color: #fff;
+}
+.datepicker td em.ng-binding {
+  color: #fff;
+  font-weight: bold;
+}
+
+
+/* Modale */
+
+.modal .modal-title {
+  border-bottom: 2px solid #fefefe;
+}
+.modal .modal-dialog {
+  color: #fefefe;
+}
+.modal label.checklbl {
+  margin: 5px 20px;
+}
+.modal .btn.btn-default {
+  color: #fefefe;
+}
+
+/* Pagination */
+
+.pagination {
+  vertical-align: middle;
+}
+.pagination > .active > a, 
+.pagination > .active > span, 
+.pagination > .active > a:hover, 
+.pagination > .active > span:hover, 
+.pagination > .active > a:focus, 
+.pagination > .active > span:focus {
+  background-color: #5e4354;
+  border-color: #5e4354;
+  color: #fff;
+}
+.pagination > li > a, .pagination > li > span {
+  color: #5e4354;
+}
+.pagination > li > a:hover, 
+.pagination > li > span:hover, 
+.pagination > li > a:focus, 
+.pagination > li > span:focus {
+  background-color: #eee;
+  border-color: #ddd;
+  color: #4A2E40;
+}
+
+/* ***** PAGES ***** */
+
+/* Federated Nodes */
+
+.federatedNodes p {
+  padding: 5px 0;
+}
+
+/* Manage Nodes */
+
+.nodeManage textarea.form-control {
+  padding: 10px 0;
+}
+
+/* Dataset Page (search result)*/
+
+.datasetPage{
+	
+}
+.datasetPage .panel.panel-default.ng-scope {
+  display: inline-block;
+  padding: 20px 0 40px;
+}
+.datasetPage .contact-label {
+  font-size: 90%;
+  font-weight: bold;
+  padding: 0.2em 0.6em 0.3em;
+}
+.datasetPage .contact-item {
+  font-size: 90%;
+  padding: 0.2em 0.6em 0.3em;
+}
+
+/* Add Node page*/
+
+.form-load-image {
+  text-align: center;
+}
+
+/* Configuration Page */
+
+.inner-section-title {
+  border-bottom: 1px solid #ccc;
+  font-size: 16px;
+  margin: 10px 0 20px;
+  padding: 10px 5px 5px;
+}
+
+/* Statistics */
+
+.table > thead > tr > th, 
+.table > tbody > tr > th, 
+.table > tfoot > tr > th, 
+.table > thead > tr > td, 
+.table > tbody > tr > td, 
+.table > tfoot > tr > td {
+  vertical-align: middle;
+}
+.nav.nav-tabs li.active a {
+  color: #e94f1d !important;
+}

@@ -1,0 +1,36 @@
+<!--
+  Idra - Open Data Federation Platform
+   Copyright (C) 2018 Engineering Ingegneria Informatica S.p.A.
+   
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  at your option) any later version.
+   
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU Affero General Public License for more details.
+   
+  You should have received a copy of the GNU Affero General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+<ul class="breadcrumb">
+  <li class="breadcrumb-item"><a href="#metadata">Home</a></li>
+  <li class="breadcrumb-item active">Login</li>
+</ul>
+<div class="col-md-4"></div>
+<div class="col-md-4">
+<!-- <legend>Sign In</legend> -->
+<form ng-if="token==undefined" class="form-signin" ng-controller="LoginCtrl" ng-submit="login()">
+							<div class="form-group">
+								<input type="text" class="form-control" name="username"
+									placeholder="Username" ng-model="username" autofocus>
+							</div>
+							<div class="form-group">
+								<input type="password" class="form-control" name="password"
+									placeholder="Password" ng-model='password' >
+							</div>
+							<button type="submit" class="btn btn-primary">Sign In</button>
+						</form>
+</div>
