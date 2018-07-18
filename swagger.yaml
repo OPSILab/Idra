@@ -1,0 +1,3026 @@
+swagger: '2.0'
+schemes:
+  - https
+securityDefinitions:
+  Bearer:
+    type: apiKey
+    name: Authorization
+    in: header
+info:
+  title: Idra - Open Data Federation Platform
+  version: '1.0'
+  description: 'Idra is a web application able to federate existing Open Data Management Systems (ODMS) based on different technologies; in this way Idra provides a unique access point to search and discover open data sets coming from the different federated ODMS. Idra uniforms representation of collected Open Data Set, thanks to the adoption of international standards (DCAT-AP) and provides a set of APIs to develop third party applications. Idra supports natively ODMS based on CKAN, DKAN and Socrata and provides a set of APIs to federate ODMSs not natively supported; these ODMSs have to implement and expose them. In addition, it is possible to federate a generic Web Portal, either by using the Web Scraping functionality or by uploading a dump of the datasets in DCAT-AP format. Moreover, Idra provides a SPARQL endpoint in order to perform queries on 5 stars RDF linked open data collected from federated ODMSs. Here the technical specification of Idra APIs is provided. These APIs are grouped into **Administration APIs**, **End User APIs** and **Federation APIs**.'
+tags:
+  - name: Administration Api
+    description: 'Technical specification of Idra Administration APIs. These APIs provide functionalities for managing the federation performing CRUD operations on catalogues, managing configurations and logs.'
+  - name: End User Api
+    description: 'Technical specification of Idra End User APIs. These APIs provide functionalities for searching among federated datasets metadata, execute sparql queries and create Datalets from distribution.'
+  - name: Federation Api
+    description: 'Technical specification of the APIs that an ODMS catalogue should implement, in order to be federated by the Idra.'
+host: opendatafederation.eng.it
+basePath: /Idra/
+paths:
+  /api/v1/administration/version:
+    x-summary: Platform version
+    x-description: Provides information about Idra platform version and release timestamp.
+    get:
+      operationId: getVersion
+      tags:
+        - Administration Api
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: Successful response.
+          schema:
+            type: object
+            properties:
+              idra_version:
+                description: >-
+                  The current deployed version of the platform
+                type: string
+                default: 1.0
+              idra_release_timestamp:
+                description: >-
+                  This field indicates when the
+                  platform was released.
+                type: string
+                format: date-time
+  /api/v1/administration/catalogues:
+    x-summary: Catalogues Resources
+    x-description: ''
+    get:
+      description: Returns all the federated ODMS catalogues.
+      operationId: getODMSCatalogues
+      tags:
+        - Administration Api
+      produces:
+        - application/json
+      parameters:
+        - name: withImage
+          in: query
+          description: If true, returns the list of Catalogues with associated images. If false, returns the list of Catalogues without images.
+          type: boolean
+          default: false
+      responses:
+        '200':
+          description: It returns the list of federated ODMS catalogues.
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/ODMSCatalogue'
+        '500':
+          description: >-
+            If an error occurs during the execution of the request, HTTP 500
+            Internal Server Error status code is returned.  
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+    post:
+      description: >-
+        Adds a new ODMS catalogue to the federation. When adding a new catalogue, the
+        nodeID field is ignored because it will be generated.
+      operationId: addODMSCatalogue
+      tags:
+        - Administration Api
+      consumes:
+        - application/json
+      security:
+        - Bearer: []
+      parameters:
+        - in: body
+          name: body
+          required: true
+          schema:
+            $ref: '#/definitions/ODMSCatalogue'
+      responses:
+        '200':
+          description: If ODMS catalogue is successfully added.
+        '400':
+          description: >-
+            If the request is not a valid input, HTTP 400 Bad Request status
+            code is returned.
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        '401':
+          description: >-
+            If logged user is not the administrator or the user is not logged,
+            HTTP 401 Unauthorized status code is returned.
+        '500':
+          description: >-
+            If an error occurs during the execution of the request, HTTP 500
+            Internal Server Error status code is returned.
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+  /api/v1/administration/catalogues/{nodeId}:
+    x-summary: Single Catalogue APIs
+    get:
+      description: Returns a specific federated ODMS catalogue by its nodeId.
+      operationId: getODMSCatalogue
+      tags:
+        - Administration Api
+      produces:
+        - application/json
+      parameters:
+        - in: path
+          name: nodeId
+          description: The unique identifier of the ODMS catalogue.
+          required: true
+          type: string
+        - name: withImage
+          in: query
+          description: If true, returns the Catalogues with the associated image. If false, returns the Catalogues without the associated image.
+          type: boolean
+          default: false
+      responses:
+        '200':
+          description: It returns the specific federated ODMS catalogue
+          schema:
+            $ref: '#/definitions/ODMSCatalogue'
+        '404':
+          description: >-
+            If the ODMS catalogue does not exist, HTTP Status Code 404 Not Found is
+            returned.
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        '500':
+          description: >-
+            If an error occurs during the execution of the request, HTTP Status
+            Code 500 Internal Server Error is returned.
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+    put:
+      description: Updates a specific federated ODMS catalogue by its nodeId.
+      operationId: updateODMSCatalogue
+      tags:
+        - Administration Api
+      consumes:
+        - application/json
+      security:
+        - Bearer: []
+      parameters:
+        - in: path
+          name: nodeId
+          description: The unique identifier of the ODMS catalogue.
+          required: true
+          type: string
+        - in: body
+          name: body
+          required: true
+          schema:
+            $ref: '#/definitions/ODMSCatalogue'
+      responses:
+        '200':
+          description: If ODMS catalogue is successfully updated
+        '400':
+          description: >-
+            If the request is not a valid input, HTTP 400 Bad Request status
+            code is returned.
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        '401':
+          description: >-
+            If the logged user is the administrator or the user is not logged,
+            HTTP Status Code 401 Unauthorized is returned.
+        '404':
+          description: >-
+            If the ODMS catalogue does not exist, HTTP Status Code 404 Not Found is
+            returned.
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        '500':
+          description: >-
+            If an error occurs during the execution of the request, HTTP Status
+            Code 500 Internal Server Error is returned.
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+    delete:
+      description: Deletes a specific federated ODMS catalogue by its nodeId.
+      operationId: deleteODMSCatalogue
+      tags:
+        - Administration Api
+      produces:
+        - application/json
+      security:
+        - Bearer: []
+      parameters:
+        - in: path
+          name: nodeId
+          description: The unique identifier of the ODMS catalogue.
+          required: true
+          type: string
+      responses:
+        '200':
+          description: If ODMS catalogue is successfully deleted.
+        '401':
+          description: >-
+            If the logged user is the administrator or the user is not logged,
+            HTTP Status Code 401 Unauthorized is returned.
+        '404':
+          description: >-
+            If the ODMS catalogue does not exist, HTTP Status Code 404 Not Found is
+            returned.
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        '500':
+          description: >-
+            If an error occurs during the execution of the request, HTTP Status
+            Code 500 Internal Server Error is returned.
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+  /api/v1/administration/catalogues/{nodeId}/activate:
+    x-summary: Activate Catalogue
+    x-description: This API is in charge of activating the Catalogue identified by the **nodeId** parameter
+    put:
+      operationId: activateODMSCatalogue
+      tags:
+        - Administration Api
+      consumes:
+        - application/json
+      security:
+        - Bearer: []
+      parameters:
+        - in: path
+          name: nodeId
+          description: The unique identifier of the ODMS catalogue.
+          required: true
+          type: string
+      responses:
+        '200':
+          description: If ODMS catalogue is successfully activated
+        '400':
+          description: >-
+            If the request is not a valid input, HTTP 400 Bad Request status
+            code is returned.
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        '401':
+          description: >-
+            If the logged user is the administrator or the user is not logged,
+            HTTP Status Code 401 Unauthorized is returned.
+        '404':
+          description: >-
+            If the ODMS catalogue does not exist, HTTP Status Code 404 Not Found is
+            returned.
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        '500':
+          description: >-
+            If an error occurs during the execution of the request, HTTP Status
+            Code 500 Internal Server Error is returned.
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+  /api/v1/administration/catalogues/{nodeId}/deactivate:
+    x-summary: Deactivate Catalogue
+    x-description: This API is in charge of deactivating the Catalogue identified by the **nodeId** parameter. The query parameter **keepDatasets** if is false all of the datasets associated with the Catalogue will be deleted, otherwise if true the datasets will not be deleted. 
+    put:
+      operationId: deactivateODMSCatalogue
+      tags:
+        - Administration Api
+      consumes:
+        - application/json
+      security:
+        - Bearer: []
+      parameters:
+        - in: path
+          name: nodeId
+          description: The unique identifier of the ODMS catalogue.
+          required: true
+          type: string
+        - name: keepDatasets
+          in: query
+          type: boolean
+          default: false
+      responses:
+        '200':
+          description: If ODMS catalogue is successfully deactivated
+        '400':
+          description: >-
+            If the request is not a valid input, HTTP 400 Bad Request status
+            code is returned.
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        '401':
+          description: >-
+            If the logged user is the administrator or the user is not logged,
+            HTTP Status Code 401 Unauthorized is returned.
+        '404':
+          description: >-
+            If the ODMS catalogue does not exist, HTTP Status Code 404 Not Found is
+            returned.
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        '500':
+          description: >-
+            If an error occurs during the execution of the request, HTTP Status
+            Code 500 Internal Server Error is returned.
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+  /api/v1/administration/catalogues/{nodeId}/synchronize:
+    x-summary: Synchronize Catalogue
+    x-description: This API is in charge of forcing the synchronization of the Catalogue identified by the **nodeId** parameter.
+    post:
+      operationId: startODMSCatalogueSynch
+      tags:
+        - Administration Api
+      consumes:
+        - application/json
+      security:
+        - Bearer: []
+      parameters:
+        - in: path
+          name: nodeId
+          description: The unique identifier of the ODMS catalogue.
+          required: true
+          type: string
+      responses:
+        '200':
+          description: If the synchronization of the Catalogue has started
+        '400':
+          description: >-
+            If the request is not a valid input, HTTP 400 Bad Request status
+            code is returned.
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        '401':
+          description: >-
+            If the logged user is the administrator or the user is not logged,
+            HTTP Status Code 401 Unauthorized is returned.
+        '404':
+          description: >-
+            If the ODMS catalogue does not exist, HTTP Status Code 404 Not Found is
+            returned.
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        '500':
+          description: >-
+            If an error occurs during the execution of the request, HTTP Status
+            Code 500 Internal Server Error is returned.
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+  /api/v1/administration/catalogues/{nodeId}/messages:
+    x-summary: Catalogue Messages
+    get:
+      description: Returns all the messages of a specific federated ODMS catalogue.
+      operationId: getODMSCatalogueMessages
+      tags:
+        - Administration Api
+      produces:
+        - application/json
+      security:
+        - Bearer: []
+      parameters:
+        - in: path
+          name: nodeId
+          description: The unique identifier of the ODMS catalogue.
+          required: true
+          type: string
+      responses:
+        '200':
+          description: It returns the specific federated ODMS catalogue messages
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/ODMSCatalogueMessage'
+        '401':
+          description: >-
+            If the logged user is the administrator or the user is not logged,
+            HTTP Status Code 401 Unauthorized is returned.
+        '404':
+          description: >-
+            If the ODMS catalogue does not exist, HTTP Status Code 404 Not Found is
+            returned.
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        '500':
+          description: >-
+            If an error occurs during the execution of the request, HTTP Status
+            Code 500 Internal Server Error is returned.
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+    delete:
+      description: Deletes all the messages of a specific federated ODMS catalogue.
+      operationId: deleteODMSCatalogueMessages
+      tags:
+        - Administration Api
+      produces:
+        - application/json
+      security:
+        - Bearer: []
+      parameters:
+        - in: path
+          name: nodeId
+          description: The unique identifier of the ODMS catalogue.
+          required: true
+          type: string
+      responses:
+        '200':
+          description: If ODMS catalogue messages are successfully deleted.
+        '401':
+          description: >-
+            If the logged user is the administrator or the user is not logged,
+            HTTP Status Code 401 Unauthorized is returned.
+        '404':
+          description: >-
+            If the ODMS catalogue does not exist, HTTP Status Code 404 Not Found is
+            returned.
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        '500':
+          description: >-
+            If an error occurs during the execution of the request, HTTP Status
+            Code 500 Internal Server Error is returned.
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+  /api/v1/administration/catalogues/{nodeId}/messages/{messageId}:
+    x-summary: Catalogue Single Message
+    get:
+      description: 'Returns a specific message of a federated ODMS catalogue, by its messageId.'
+      operationId: getODMSCatalogueMessage
+      tags:
+        - Administration Api
+      produces:
+        - application/json
+      security:
+        - Bearer: []
+      parameters:
+        - in: path
+          name: nodeId
+          description: The unique identifier of the ODMS catalogue.
+          required: true
+          type: string
+        - in: path
+          name: messageId
+          description: The unique identifier of the ODMS catalogue message.
+          required: true
+          type: string
+      responses:
+        '200':
+          description: It returns the message of the specific ODMS catalogue.
+          schema:
+            $ref: '#/definitions/ODMSCatalogueMessage'
+        '401':
+          description: >-
+            If the logged user is the administrator or the user is not logged,
+            HTTP Status Code 401 Unauthorized is returned.
+        '404':
+          description: >-
+            If the ODMS catalogue does not exist, HTTP Status Code 404 Not Found is
+            returned.
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        '500':
+          description: >-
+            If an error occurs during the execution of the request, HTTP Status
+            Code 500 Internal Server Error is returned.
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+    delete:
+      description: 'Deletes a specific message of a federated ODMS catalogue, by its messageId.'
+      operationId: deleteODMSCatalogueMessage
+      tags:
+        - Administration Api
+      produces:
+        - application/json
+      security:
+        - Bearer: []
+      parameters:
+        - in: path
+          name: nodeId
+          description: The unique identifier of the ODMS catalogue.
+          required: true
+          type: string
+        - in: path
+          name: messageId
+          description: The unique identifier of the ODMS catalogue message.
+          required: true
+          type: string
+      responses:
+        '200':
+          description: If ODMS catalogue message is successfully deleted.
+        '400':
+          description: >-
+            If the request is not a valid input, HTTP 400 Bad Request status
+            code is returned.
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        '401':
+          description: >-
+            If the logged user is the administrator or the user is not logged,
+            HTTP Status Code 401 Unauthorized is returned.
+        '404':
+          description: >-
+            If the ODMS catalogue does not exist, HTTP Status Code 404 Not Found is
+            returned.
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        '500':
+          description: >-
+            If an error occurs during the execution of the request, HTTP Status
+            Code 500 Internal Server Error is returned.
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+  /api/v1/administration/configuration:
+    x-summary: Configuration Management
+    get:
+      description: Returns the configuration set of Open Data Federation.
+      operationId: getSettings
+      tags:
+        - Administration Api
+      produces:
+        - application/json
+      security:
+        - Bearer: []
+      responses:
+        '200':
+          description: If configuration of Open Data Federation is successfully saved.
+          schema:
+            $ref: '#/definitions/Configuration'
+        '401':
+          description: >-
+            If logged user is not the administrator or the user is not logged,
+            HTTP 401 Unauthorized status code is returned.
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        '500':
+          description: >-
+            If an error occurs during the execution of the request, HTTP 500
+            Internal Server Error status code is returned.
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+    post:
+      description: It sets up the configuration of Open Data Federation.
+      operationId: setSettings
+      tags:
+        - Administration Api
+      consumes:
+        - application/json
+      security:
+        - Bearer: []
+      parameters:
+        - in: body
+          name: body
+          required: true
+          schema:
+            $ref: '#/definitions/Configuration'
+      responses:
+        '200':
+          description: If configuration of Open Data Federation is successfully saved.
+        '400':
+          description: >-
+            If the request is not a valid input, HTTP 400 Bad Request status
+            code is returned.
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        '401':
+          description: >-
+            If logged user is not the administrator or the user is not logged,
+            HTTP 401 Unauthorized status code is returned.
+        '500':
+          description: >-
+            If an error occurs during the execution of the request, HTTP 500
+            Internal Server Error status code is returned.
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+  /api/v1/administration/prefixes:
+    x-summary: RDF's Prefixes Management
+    post:
+      description: Adds a new  RDF prefix.
+      operationId: addPrefix
+      tags:
+        - Administration Api
+      consumes:
+        - application/json
+      security:
+        - Bearer: []
+      parameters:
+        - in: body
+          name: request
+          required: true
+          schema:
+            $ref: '#/definitions/RdfPrefix'
+      responses:
+        '200':
+          description: If RDF prefix is successfully created.
+        '400':
+          description: >-
+            If the request is not a valid input, HTTP 400 Bad Request status
+            code is returned.
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        '401':
+          description: >-
+            If the logged user is the administrator or the user is not logged,
+            HTTP Status Code 401 Unauthorized is returned.
+        '500':
+          description: >-
+            If an error occurs during the execution of the request, HTTP Status
+            Code 500 Internal Server Error is returned.
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+    get:
+      description: Returns all the RDF prefixes
+      operationId: getPrefixes
+      tags:
+        - Administration Api
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: It returns the list of RDF prefixes
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/RdfPrefix'
+        '500':
+          description: >-
+            If an error occurs during the execution of the request, HTTP 500
+            Internal Server Error status code is returned. 
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+  /api/v1/administration/prefixes/{prefixId}:
+    x-summary: Single Prefix Management
+    get:
+      description: Returns a specific RDF prefix.
+      operationId: getPrefix
+      tags:
+        - Administration Api
+      produces:
+        - application/json
+      security:
+        - Bearer: []
+      parameters:
+        - in: path
+          name: prefixId
+          description: The unique identifier of the RDF prefix.
+          required: true
+          type: string
+      responses:
+        '200':
+          description: The specific RDF prefix
+          schema:
+            $ref: '#/definitions/RdfPrefix'
+        '401':
+          description: >-
+            If the logged user is the administrator or the user is not logged,
+            HTTP Status Code 401 Unauthorized is returned.
+        '404':
+          description: >-
+            If the RDF prefix does not exist, HTTP Status Code 404 Not Found is
+            returned.
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        '500':
+          description: >-
+            If an error occurs during the execution of the request, HTTP 500
+            Internal Server Error status code is returned. 
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+    delete:
+      description: Deletes a specific RDF prefix.
+      operationId: deletePrefix
+      tags:
+        - Administration Api
+      produces:
+        - application/json
+      security:
+        - Bearer: []
+      parameters:
+        - in: path
+          name: prefixId
+          description: The unique identifier of the RDF prefix.
+          required: true
+          type: string
+      responses:
+        '200':
+          description: If RDF prefix is successfully deleted.
+        '401':
+          description: >-
+            If the logged user is the administrator or the user is not logged,
+            HTTP Status Code 401 Unauthorized is returned.
+        '404':
+          description: >-
+            If the RDF prefix does not exist, HTTP Status Code 404 Not Found is
+            returned.
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        '500':
+          description: >-
+            If an error occurs during the execution of the request, HTTP Status
+            Code 500 Internal Server Error is returned.
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+    put:
+      description: Updates a specific RDF prefix.
+      operationId: updatePrefix
+      tags:
+        - Administration Api
+      consumes:
+        - application/json
+      security:
+        - Bearer: []
+      parameters:
+        - in: body
+          name: request
+          required: true
+          schema:
+            $ref: '#/definitions/RdfPrefix'
+        - in: path
+          name: prefixId
+          description: The unique identifier of the RDF prefix.
+          required: true
+          type: string
+      responses:
+        '200':
+          description: If RDF prefix is successfully updated.
+        '400':
+          description: >-
+            If the request is not a valid input, HTTP 400 Bad Request status
+            code is returned.
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        '401':
+          description: >-
+            If the logged user is the administrator or the user is not logged,
+            HTTP Status Code 401 Unauthorized is returned.
+        '404':
+          description: >-
+            If the RDF prefix does not exist, HTTP Status Code 404 Not Found is
+            returned.
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        '500':
+          description: >-
+            If an error occurs during the execution of the request, HTTP Status
+            Code 500 Internal Server Error is returned.
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+  /api/v1/administration/login:
+    x-summary: Login
+    x-description: Performs the user login against the input credentials
+    post:
+      operationId: login
+      tags:
+        - Administration Api
+      consumes:
+        - application/json
+      parameters:
+        - in: body
+          name: request
+          required: true
+          description: >-
+            Only 'username' and 'password' fields should be provided, additional
+            User fields will be ignored.
+          schema:
+            $ref: '#/definitions/User'
+      responses:
+        '200':
+          description: 'If login succeded, the access token is returned.'
+          schema:
+            type: string
+        '400':
+          description: >-
+            If the request is not a valid input, HTTP 400 Bad Request status
+            code is returned.
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        '500':
+          description: >-
+            If an error occurs during the execution of the request, HTTP Status
+            Code 500 Internal Server Error is returned.
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+  /api/v1/administration/logout:
+    x-summary: Logout
+    x-description: Performs the user logout
+    post:
+      operationId: logout
+      tags:
+        - Administration Api
+      consumes:
+        - application/json
+      security:
+        - Bearer: []
+      parameters:
+        - in: body
+          name: request
+          required: true
+          description: >-
+            Only 'username'field should be provided, additional User fields will
+            be ignored.
+          schema:
+            $ref: '#/definitions/User'
+      responses:
+        '200':
+          description: If logout succeded.
+        '400':
+          description: >-
+            If the request is not a valid input, HTTP 400 Bad Request status
+            code is returned.
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        '401':
+          description: >-
+            If the logged user is the administrator or the user is not logged,
+            HTTP Status Code 401 Unauthorized is returned.
+        '500':
+          description: >-
+            If an error occurs during the execution of the request, HTTP Status
+            Code 500 Internal Server Error is returned.
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+  /api/v1/administration/updatePassword:
+    x-summary: Password Update
+    x-description: Updates password of a specific user
+    put:
+      operationId: updatePassword
+      tags:
+        - Administration Api
+      consumes:
+        - application/json
+      security:
+        - Bearer: []
+      parameters:
+        - in: body
+          name: request
+          required: true
+          description: >-
+            Only 'password' field should be provided, additional User fields
+            will be ignored.
+          schema:
+            $ref: '#/definitions/User'
+      responses:
+        '200':
+          description: If password update succeded.
+        '400':
+          description: >-
+            If the request is not a valid input, HTTP 400 Bad Request status
+            code is returned.
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        '500':
+          description: >-
+            If an error occurs during the execution of the request, HTTP Status
+            Code 500 Internal Server Error is returned.
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+  /api/v1/administration/verifyToken:
+    x-summary: Token Verification
+    x-description: Performs the access token verification. This operation is used to
+        explicitly verify if the token is valid and not expired. The implicit
+        token verification, in order to grant access to the other API operations
+        is performed internally.
+    get:
+      security:
+        - Bearer: []
+      tags:
+        - Administration Api
+      responses:
+        '200':
+          description: If the access token is valid.
+        '401':
+          description: >-
+            If the logged user is the administrator or the user is not logged,
+            HTTP Status Code 401 Unauthorized is returned.
+        '500':
+          description: >-
+            If an error occurs during the execution of the request, HTTP 500
+            Internal Server Error status code is returned. 
+  /api/v1/administration/countries:
+    x-summary: Get Countries
+    x-description: Returns all the countries from which searches are performed and the
+        timestamp of the oldest search.
+    get:
+      operationId: getAllCountries
+      tags:
+        - Administration Api
+      produces:
+        - application/json
+      security:
+        - Bearer: []
+      responses:
+        '200':
+          description: It returns the list of countries name
+          schema:
+            type: object
+            properties:
+              countries:
+                type: array
+                description: All the countries from which searches are performed
+                items:
+                  type: string
+              minDate:
+                type: string
+                description: >-
+                  The timestamp of the oldest search, in UTC ISO-8601 format.
+                  E.g. ''yyyy-MM-ddTHH:mm:ssZ''
+                format: date-time
+        '401':
+          description: >-
+            If the logged user is the administrator or the user is not logged,
+            HTTP Status Code 401 Unauthorized is returned.
+        '500':
+          description: >-
+            If an error occurs during the execution of the request, HTTP 500
+            Internal Server Error status code is returned. 
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+  /api/v1/administration/cataloguesStatMinDate:
+    x-summary: Get oldest statistic date
+    x-description: Returns the oldest timestamp of a ODMS catalogue statistic
+    get:
+      operationId: getMinDateNodesStat
+      produces:
+        - application/json
+      tags:
+        - Administration Api
+      security:
+        - Bearer: []
+      responses:
+        '200':
+          description: >-
+            The oldest timestamp of a ODMS catalogue statistic, in UTC ISO-8601
+            format. E.g. ''yyyy-MM-ddTHH:mm:ssZ''
+          schema:
+            type: object
+            properties:
+              minDate:
+                type: string
+                format: date-time
+        '401':
+          description: >-
+            If the logged user is the administrator or the user is not logged,
+            HTTP Status Code 401 Unauthorized is returned.
+        '500':
+          description: >-
+            If an error occurs during the execution of the request, HTTP 500
+            Internal Server Error status code is returned. 
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+  /api/v1/administration/statistics/catalogues:
+    x-summary: Catalogue Statistics
+    x-description: Returns the catalogues statistics.
+    post:
+      operationId: getNodeStatistics
+      tags:
+        - Administration Api
+      produces:
+        - application/json
+      security:
+        - Bearer: []
+      parameters:
+        - in: body
+          name: request
+          required: true
+          description: The object containing information for catalogues statistics retrieval.
+          schema:
+            $ref: '#/definitions/StatisticsRequest'
+      responses:
+        '200':
+          description: The catalogues statistics.
+        '400':
+          description: >-
+            If the request is not a valid input, HTTP 400 Bad Request status
+            code is returned.
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        '500':
+          description: >-
+            If an error occurs during the execution of the request, HTTP Status
+            Code 500 Internal Server Error is returned.
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+  /api/v1/administration/statistics/search:
+    x-summary: Search Statistics
+    x-description: Returns the search statistics.
+    post:
+      operationId: getSearchStatistics
+      tags:
+        - Administration Api
+      produces:
+        - application/json
+      security:
+        - Bearer: []
+      parameters:
+        - in: body
+          name: request
+          required: true
+          description: The object containing information for search statistics retrieval.
+          schema:
+            $ref: '#/definitions/StatisticsRequest'
+      responses:
+        '200':
+          description: The search statistics.
+        '400':
+          description: >-
+            If the request is not a valid input, HTTP 400 Bad Request status
+            code is returned.
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        '500':
+          description: >-
+            If an error occurs during the execution of the request, HTTP Status
+            Code 500 Internal Server Error is returned.
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+  /api/v1/administration/statistics/keyword:
+    x-summary: Keyword Statistics
+    x-description: Returns the keywords statistics.
+    post:
+      operationId: getKeywordStatistics
+      tags:
+        - Administration Api
+      produces:
+        - application/json
+      security:
+        - Bearer: []
+      parameters:
+        - in: body
+          name: request
+          required: true
+          description: The object containing information for keyword statistics retrieval.
+          schema:
+            $ref: '#/definitions/StatisticsRequest'
+      responses:
+        '200':
+          description: The keyword statistics.
+        '400':
+          description: >-
+            If the request is not a valid input, HTTP 400 Bad Request status
+            code is returned.
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        '500':
+          description: >-
+            If an error occurs during the execution of the request, HTTP Status
+            Code 500 Internal Server Error is returned.
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+  /api/v1/administration/logs:
+    x-summary: Logs
+    x-description: Get the Open Data Federation logs.
+    post:
+      operationId: getLogs
+      tags:
+        - Administration Api
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      security:
+        - Bearer: []
+      parameters:
+        - in: body
+          name: request
+          required: true
+          schema:
+            $ref: '#/definitions/LogsRequest'
+      responses:
+        '200':
+          description: The Idra log list.
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Log'
+        '400':
+          description: >-
+            If the request is not a valid input, HTTP 400 Bad Request status
+            code is returned.
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        '401':
+          description: >-
+            If the logged user is the administrator or the user is not logged,
+            HTTP Status Code 401 Unauthorized is returned.
+        '500':
+          description: >-
+            If an error occurs during the execution of the request, HTTP Status
+            Code 500 Internal Server Error is returned.
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+  /api/v1/administration/dcat-ap/dump/download:
+    x-summary: Download All Catalogues Dump
+    x-description: 
+    get:
+      operationId: downloadDatasetDump
+      tags:
+        - Administration Api
+      produces:
+        - application/octet-stream
+      security:
+        - Bearer: []
+      parameters:
+        - name: forceDump
+          in: query
+          type: boolean
+          default: false
+        - name: returnZip
+          in: query
+          type: boolean
+          default: false
+      responses:
+        '200':
+          description: The file containing the dump
+        '400':
+          description: >-
+            If the request is not a valid input, HTTP 400 Bad Request status
+            code is returned.
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        '401':
+          description: >-
+            If the logged user is the administrator or the user is not logged,
+            HTTP Status Code 401 Unauthorized is returned.
+        '500':
+          description: >-
+            If an error occurs during the execution of the request, HTTP Status
+            Code 500 Internal Server Error is returned.
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+  /api/v1/administration/dcat-ap/dump:
+    x-summary: All Catalogues Dump
+    x-description: 
+    get:
+      operationId: getDatasetDump
+      tags:
+        - Administration Api
+      produces:
+        - application/json
+        - text/xml
+      security:
+        - Bearer: []
+      parameters:
+        - name: forceDump
+          in: query
+          type: boolean
+          default: false
+      responses:
+        '200':
+          description: The DCAT_AP dump of the datasets.
+        '400':
+          description: >-
+            If the request is not a valid input, HTTP 400 Bad Request status
+            code is returned.
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        '401':
+          description: >-
+            If the logged user is the administrator or the user is not logged,
+            HTTP Status Code 401 Unauthorized is returned.
+        '500':
+          description: >-
+            If an error occurs during the execution of the request, HTTP Status
+            Code 500 Internal Server Error is returned.
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+  /api/v1/administration/dcat-ap/dump/download/{nodeID}:
+    x-summary: Single Catalogues Dump Download
+    x-description: 
+    get:
+      operationId: downloadDatasetDumpByNode
+      tags:
+        - Administration Api
+      produces:
+        - application/octet-stream
+      security:
+        - Bearer: []
+      parameters:
+        - name: forceDump
+          in: query
+          type: boolean
+          default: false
+        - name: returnZip
+          in: query
+          type: boolean
+          default: false
+        - in: path
+          name: nodeID
+          description: The unique identifier of the ODMS catalogue.
+          required: true
+          type: string
+      responses:
+        '200':
+          description: The file containing the DCAT_AP dump of the selected Catalogue.
+        '400':
+          description: >-
+            If the request is not a valid input, HTTP 400 Bad Request status
+            code is returned.
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        '401':
+          description: >-
+            If the logged user is the administrator or the user is not logged,
+            HTTP Status Code 401 Unauthorized is returned.
+        '500':
+          description: >-
+            If an error occurs during the execution of the request, HTTP Status
+            Code 500 Internal Server Error is returned.
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+  /api/v1/administration/dcat-ap/dump/{nodeID}:
+    x-summary: Single Catalogues Dump
+    x-description: 
+    get:
+      operationId: getDatasetDumpByNode
+      tags:
+        - Administration Api
+      produces:
+        - application/json
+        - text/xml
+      security:
+        - Bearer: []
+      parameters:
+        - name: forceDump
+          in: query
+          type: boolean
+          default: false
+        - in: path
+          name: nodeID
+          description: The unique identifier of the ODMS catalogue.
+          required: true
+          type: string
+      responses:
+        '200':
+          description: The the DCAT_AP dump of the selected Catalogue.
+        '400':
+          description: >-
+            If the request is not a valid input, HTTP 400 Bad Request status
+            code is returned.
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        '401':
+          description: >-
+            If the logged user is the administrator or the user is not logged,
+            HTTP Status Code 401 Unauthorized is returned.
+        '500':
+          description: >-
+            If an error occurs during the execution of the request, HTTP Status
+            Code 500 Internal Server Error is returned.
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+  /api/v1/administration/datalets:
+    x-summary: Get All Datalets
+    x-description:
+    get:
+      operationId: getAllDatalet
+      tags:
+        - Administration Api
+      produces:
+        - application/json
+      security:
+        - Bearer: []
+      responses:
+        '200':
+          description: Returns all of the datalets 
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Datalet'
+        '401':
+          description: >-
+            If the logged user is the administrator or the user is not logged,
+            HTTP Status Code 401 Unauthorized is returned.
+        '500':
+          description: >-
+            If an error occurs during the execution of the request, HTTP Status
+            Code 500 Internal Server Error is returned.
+          schema:
+            $ref: '#/definitions/ErrorResponse'        
+  /api/v1/administration/catalogues/{nodeID}/dataset/{datasetID}/distribution/{distributionID}/deleteDatalet/{dataletID}:
+    x-summary: Delete Datalet
+    x-description:
+    delete:
+      operationId: deleteDataletFromDistribution
+      tags:
+        - Administration Api
+      consumes:
+        - application/json
+      security:
+        - Bearer: []
+      parameters:
+        - name: nodeID
+          in: path
+          type: string
+          required: true
+        - name: datasetID
+          in: path
+          type: string
+          required: true
+        - name: distributionID
+          in: path
+          type: string
+          required: true
+        - name: dataletID
+          in: path
+          type: string
+          required: true
+      responses:
+        '200':
+          description: The datalet is successfully deleted
+        '401':
+          description: >-
+            If the logged user is the administrator or the user is not logged,
+            HTTP Status Code 401 Unauthorized is returned.
+        '500':
+          description: >-
+            If an error occurs during the execution of the request, HTTP Status
+            Code 500 Internal Server Error is returned.
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+  /api/v1/client/search:
+    x-summary: Metadata Search
+    x-description: It performs the federated search on all the dataset metadata belonging
+        to federated ODMS catalogue. It is possible to specific whether the
+        search is to do live, by directly querying specified catalogues or by
+        performing a query on the local search. In addition, it is possible to
+        specify whether the search is multilingual, by using translated filter
+        values, retrieved from the EuroVoc thesaurus. Please refer
+        to:'http://eurovoc.europa.eu'
+    post:
+      description: ''
+      operationId: searchDataset
+      tags:
+        - End User Api
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: request
+          required: true
+          description: >-
+            The dataset search request. Its filter list refers to DCATDatasets
+            fields. In order to search on all the datasets fields, it is
+            possible to specify a filter with "ALL" as field name. In addition,
+            pagination options enable to browse the list of resulting datasets,
+            which could be very large.
+          schema:
+            $ref: '#/definitions/SearchRequest'
+      responses:
+        '200':
+          description: The result matching the Search Request.
+          schema:
+            $ref: '#/definitions/SearchResult'
+        '400':
+          description: >-
+            If the request is not a valid input, HTTP 400 Bad Request status
+            code is returned.
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        '500':
+          description: >-
+            If an error occurs during the execution of the request, HTTP 500
+            Internal Server Error status code is returned.
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+  /api/v1/client/search/dcat-ap:
+    x-summary: Metadata Search DCATAP
+    x-description: It performs the federated search on all the dataset metadata belonging
+        to federated ODMS catalogue. The result of this API is serialized
+        following the header parameters **format** and **profile** It is
+        possible to specific whether the search is to do live, by directly
+        querying specified catalogues or by performing a query on the local search.
+        In addition, it is possible to specify whether the search is
+        multilingual, by using translated filter values, retrieved from the
+        EuroVoc thesaurus. Please refer to:'http://eurovoc.europa.eu'
+    post:
+      operationId: searchDatasetDCATAP
+      tags:
+        - End User Api
+      consumes:
+        - application/json
+      produces:
+        - application/json
+        - application/n-triples
+        - application/rdf+xml
+        - text/turtle
+        - text/n3
+      parameters:
+        - name: format
+          in: query
+          description: ''
+          type: string
+          default: RDFXML
+          enum:
+            - IDRA
+            - TURTLE
+            - NTRIPLES
+            - RDFXML
+            - N3
+            - RDFJSON
+            - JSONLD
+        - name: profile
+          in: query
+          description: ''
+          type: string
+          default: DCATAP
+          enum:
+            - DCATAP
+            - DCATAP_IT
+        - in: body
+          name: request
+          required: true
+          description: >-
+            The dataset search request. Its filter list refers to DCATDatasets
+            fields. In order to search on all the datasets fields, it is
+            possible to specify a filter with "ALL" as field name. In addition,
+            pagination options enable to browse the list of resulting datasets,
+            which could be very large.
+          schema:
+            $ref: '#/definitions/SearchRequest'
+      responses:
+        '200':
+          description: >-
+            The result matching the Search Request serialized following the two
+            parameters **format** and **profile**.
+          schema:
+            $ref: '#/definitions/SearchResult'
+        '400':
+          description: >-
+            If the request is not a valid input, HTTP 400 Bad Request status
+            code is returned.
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        '500':
+          description: >-
+            If an error occurs during the execution of the request, HTTP 500
+            Internal Server Error status code is returned.
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+  /api/v1/client/sparql/query:
+    x-summary: Execute SPARQL Query
+    x-description: It performs a SparQL query on all the RDF distributions of federated
+        datasets. Note that not all of the RDF distributions, belonging to
+        datasets of federated ODMS catalogues, may be found. This could happen if
+        some RDF distribution was skipped, according to specific Idra
+        configurations. (e.g. Size limit).
+    post:
+      operationId: runSparqlQuery
+      tags:
+        - End User Api
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: request
+          required: true
+          description: The SparQL query request.
+          schema:
+            $ref: '#/definitions/SparqlSearchRequest'
+      responses:
+        '200':
+          description: The SparQL query result in requested format.
+          schema:
+            $ref: '#/definitions/SparqlSearchResponse'
+        '400':
+          description: >-
+            If the request is not a valid input, HTTP 400 Bad Request status
+            code is returned.
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        '500':
+          description: >-
+            If an error occurs during the execution of the request, HTTP 500
+            Internal Server Error status code is returned.
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+  /api/v1/client/downloadFromUri:
+    x-summary: Download File
+    x-description: This API is used in order to avoid CORS problems during the creation of
+        a Datalet. It is in charge of the download of the file from the url
+        passed as input.
+    get:
+      operationId: downloadFromUri
+      tags:
+        - End User Api
+      parameters:
+        - name: url
+          in: query
+          description: >-
+            this parameter is the url of the file that will be used for the
+            Datalet
+          type: string
+        - name: format
+          in: query
+          description: the format of the file
+          type: string
+        - name: downloadFile
+          in: query
+          description: >-
+            when true, the file is properly downloaded; when false, this api
+            checks if the if the url responds with http status 200
+          type: boolean
+          default: true
+      responses:
+        '200':
+          description: If the file exists and the url does not responds with errors
+          schema:
+            type: string
+        '500':
+          description: >-
+            If an error occurs during the execution of the request, HTTP 500
+            Internal Server Error status code is returned.
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+  /api/v1/client/catalogues/{nodeID}/dataset/{datasetID}/distribution/{distributionID}/createDatalet:
+    x-summary: Create Datalet
+    x-description: 
+    post:
+      operationId: createDataletFromDistribution
+      tags:
+        - End User Api
+      consumes:
+        - application/json
+      parameters:
+        - name: nodeID
+          in: path
+          type: string
+          required: true
+        - name: datasetID
+          in: path
+          type: string
+          required: true
+        - name: distributionID
+          in: path
+          type: string
+          required: true
+        - name: request
+          in: body
+          schema:
+            $ref: '#/definitions/Datalet'
+      responses:
+        '200':
+          description: The datalet is successfully created
+        '500':
+          description: >-
+            If an error occurs during the execution of the request, HTTP 500
+            Internal Server Error status code is returned.
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+  /api/v1/client/catalogues/{nodeID}/dataset/{datasetID}/distribution/{distributionID}/datalets:
+    x-summary: Get Datalets from Distribution
+    x-description: Returns a list containing the list of all of the datalets created from
+        the distribution identified by the **distributionID**. **nodeID** and
+        **datasetID** parameter are used to validate the **distributionID**
+        parameter.
+    get:
+      operationId: getDataletByDistribution
+      tags:
+        - End User Api
+      produces:
+        - application/json
+      parameters:
+        - name: nodeID
+          in: path
+          type: string
+          required: true
+        - name: datasetID
+          in: path
+          type: string
+          required: true
+        - name: distributionID
+          in: path
+          type: string
+          required: true
+      responses:
+        '200':
+          description: Returns the datalets list for the provided distributionID
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Datalet'
+        '500':
+          description: >-
+            If an error occurs during the execution of the request, HTTP 500
+            Internal Server Error status code is returned.
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+  /api/v1/client/catalogues/{nodeID}/dataset/{datasetID}/distribution/{distributionID}/datalet/{dataletID}/updateViews:
+    x-summary: Update Datalet Views
+    x-description: Updates the **views** counter of the datalet identified by the
+        **dataletID** parameter
+    put:
+      operationId: updateDataletViews
+      tags:
+        - End User Api
+      consumes:
+        - application/json
+      parameters:
+        - name: nodeID
+          in: path
+          type: string
+          required: true
+        - name: datasetID
+          in: path
+          type: string
+          required: true
+        - name: distributionID
+          in: path
+          type: string
+          required: true
+        - name: dataletID
+          in: path
+          type: string
+          required: true
+      responses:
+        '200':
+          description: The **views** field has been updated
+        '500':
+          description: >-
+            If an error occurs during the execution of the request, HTTP 500
+            Internal Server Error status code is returned.
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+  /api/v1/odf/odms/search:
+    x-summary: Datasets Search 
+    x-description: 'It performs the federated search on all the dataset metadata belonging to federated ODMS catalogues. It is possible to specific whether the search is to do live, by directly querying specified catalogues or by performing a query on the local search.'
+    post:
+      operationId: searchDataset
+      tags:
+        - Federation Api
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: request
+          required: true
+          description: 'The dataset search request. Its filter list refers to DCATDatasets fields. In order to search on all the datasets fields, it is possible to specify a filter with "ALL" as field name. In addition, pagination options enable to browse the list of resulting datasets, which could be very large.'
+          schema:
+            $ref: '#/definitions/SearchRequest'
+      responses:
+        '200':
+          description: The result matching the Search Request.
+          schema:
+            type: object
+            properties:
+              results:
+                description: The result list of matching datasets.
+                type: array
+                items:
+                  $ref: '#/definitions/DCATDataset'
+              count:
+                description: The total count of matching datasets. This value should be used in order to select appropriate values of rows and start options in several requests.
+                type: integer
+                format: int64
+        '400':
+          description: 'If the request is not a valid input, HTTP 400 Bad Request status code is returned.'
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        '500':
+          description: 'If an error occurs during the execution of the request, HTTP 500 Internal Server Error status code is returned.'
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+  /api/v1/odf/odms/datasets:
+    x-summary: Retrieve Paginated Datasets
+    x-description: 'Get the list of all datasets metadata on the catalogue (paginated). The list of datasets will be divided by page and number of datasets per page, avoiding the one-time discharge of a great number of datasets.'
+    get:
+      operationId: getAllDatasets
+      tags:
+        - Federation Api
+      produces:
+        - application/json
+      parameters:
+        - in: query
+          name: rows
+          description: The number of results to be returned per request.
+          type: string
+          required: false
+          default: '10'
+        - in: query
+          name: offset
+          description: The offset in result list from which to start.
+          type: string
+          required: false
+          default: '0'
+      responses:
+        '200':
+          description: Return datasets list and total count
+          schema:
+            type: object
+            properties:
+              results:
+                description: 'The list of datasets metadata, compliant to DCAT Specification.'
+                type: array
+                items:
+                  $ref: '#/definitions/DCATDataset'
+              count:
+                description: The total count of matching datasets. This value should be used in order to select appropriate values of rows and offset options in several requests.
+                type: integer
+                format: int64
+        '400':
+          description: 'If the request is not a valid input, HTTP 400 Bad Request status code is returned.'
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        '500':
+          description: 'If an error occurs during the execution of the request, HTTP 500 Internal Server Error status code is returned.'
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+  /api/v1/odf/odms/datasets/{datasetID}:
+    x-summary: Retrieve Single Dataset
+    x-description: Get the dataset identified by the requested datasetID.
+    get:
+      operationId: getDataset
+      tags:
+        - Federation Api
+      produces:
+        - application/json
+      parameters:
+        - in: path
+          name: datasetID
+          description: The id of the requested dataset.
+          type: string
+          required: true
+      responses:
+        '200':
+          description: Return the requested dataset.
+          schema:
+            $ref: '#/definitions/DCATDataset'
+        '400':
+          description: 'If the request is not a valid input, HTTP 400 Bad Request status code is returned.'
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        '500':
+          description: 'If an error occurs during the execution of the request, HTTP 500 Internal Server Error status code is returned.'
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+  /api/v1/odf/odms/datasets/info:
+    x-summary: Datasets Summary
+    x-description: Get the summary list of all available datasets providing the identifiers and the releaseDate and updateDate date  
+    get:
+      operationId: GetAllDatasetsID
+      tags:
+        - Federation Api
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: The info list of all available datasets (id and date info)
+          schema:
+            type: array
+            items:
+              type: object
+              description: 'The object containing dataset id, issued and modified date.'
+              properties:
+                releaseDate:
+                  description: 'Date of formal issuance (e.g., publication) of the dataset, in UTC ISO-8601 format. E.g. ''''yyyy-MM-ddTHH:mm:ssZ'''
+                  type: string
+                  format: date-time
+                updateDate:
+                  description: 'Most recent date on which the dataset was changed, updated or modified, in UTC ISO-8601 format. E.g. ''''yyyy-MM-ddTHH:mm:ssZ'''''
+                  type: string
+                  format: date-time
+                identifier:
+                  description: The unique identifier of the dataset
+                  type: string
+        '400':
+          description: 'If the request is not a valid input, HTTP 400 Bad Request status code is returned.'
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        '500':
+          description: 'If an error occurs during the execution of the request, HTTP 500 Internal Server Error status code is returned.'
+          schema:
+            $ref: '#/definitions/ErrorResponse' 
+definitions:
+  Configuration:
+    description: >-
+      It represents the configuration set of Open Data Federation, as an array
+      of key-value pairs.
+    properties:
+      parameters:
+        items:
+          $ref: '#/definitions/ConfigurationParameter'
+          type: object
+        title: parameters
+        type: array
+        uniqueItems: false
+    title: Configuration
+    type: object
+  ConfigurationParameter:
+    description: 'It represents a single configuration parameter, as a key-value pair.'
+    properties:
+      parameterName:
+        title: parameterName
+        type: string
+      parameterValue:
+        title: parameterValue
+        type: string
+    required:
+      - parameterName
+      - parameterValue
+    title: ConfigurationParameter
+    type: object
+  ErrorResponse:
+    description: It represents an error to be reported.
+    properties:
+      statusCode:
+        title: statusCode
+        description: The HTTP status code corresponding to the occured error.
+        type: string
+      technicalMessage:
+        title: technicalMessage
+        description: The message of the specific technical Exception.
+        type: string
+      errorCode:
+        title: errorCode
+        description: The name of the specific technical Exception.
+        type: string
+      userMessage:
+        title: userMessage
+        description: A descriptive message to be returned to the user.
+        type: string
+    required:
+      - statusCode
+      - technicalMessage
+      - errorCode
+    title: ErrorReport
+    type: object
+  ODMSCatalogue:
+    description: Representation of an Open Data Management System catalogue.
+    properties:
+      id:
+        title: id
+        type: string
+        description: >-
+          The unique identifier of the ODMS catalogue. When adding a new catalogue, this
+          field is ignored.
+      name:
+        title: name
+        description: Descriptive name of the ODMS catalogue.
+        type: string
+      host:
+        title: host
+        description: Complete URL where the ODMS catalogue is hosted.
+        type: string
+      APIKey:
+        title: APIKey
+        description: 'The APIKey, if any, provided by the ODMS catalogue.'
+        type: string
+      nodeType:
+        $ref: '#/definitions/ODMSCatalogueType'
+      federationLevel:
+        $ref: '#/definitions/ODMSCatalogueFederationLevel'
+      publisherName:
+        description: The Publisher name for the ODMS catalogue
+        type: string
+      publisherUrl:
+        description: The Publisher url for the ODMS catalogue
+        type: string
+      publisherEmail:
+        description: The Publisher email for the ODMS catalogue
+        type: string
+      datasetCount:
+        title: datasetCount
+        type: integer
+        description: The count of total datasets published in the ODMS catalogue.
+      nodeState:
+        $ref: '#/definitions/ODMSCatalogueState'
+      registerDate:
+        type: string
+        format: date-time
+        description: >-
+          Creation timestamp in UTC ISO 8601 format. E.g.
+          ''yyyy-MM-ddTHH:mm:ssZ''
+      lastUpdateDate:
+        type: string
+        format: date-time
+        description: >-
+          Last Update timestamp in UTC ISO 8601 format. E.g.
+          ''yyyy-MM-ddTHH:mm:ssZ''
+      refreshPeriod:
+        title: refreshPeriod
+        type: integer
+        description: The refresh period (seconds) for the ODMS catalogue synchronization.
+      description:
+        title: description
+        type: string
+        description: 'A description of the ODMS catalogue publisher, purposes, etc.'
+      image:
+        $ref: '#/definitions/ODMSCatalogueImage'
+      rdfCount:
+        title: rdfCount
+        type: integer
+        description: The count of total RDFs published in the ODMS catalogue.
+      location:
+        title: location
+        type: string
+        description: >-
+          The geographic location of the ODMS catalogue, described as GEOJSON. Please
+          refer to 'http://geojson.org/geojson-spec.html'
+      locationDescription:
+        title: locationDescription
+        type: string
+        description: The textual description of the geographic ODMS catalogue location.
+      synchLock:
+        $ref: '#/definitions/ODMSSynchLock'
+      messageCount:
+        type: integer
+        format: int64
+        description: The total number of messages for the ODMS catalogue.
+      isActive:
+        type: boolean
+        description: If true, the ODMS catalogue is **active** and end users can search over his datasets following the federationLevel specifications. If false, end users can't search over the datasets of the ODMS catalogue.
+      country:
+        type: string
+        description: This field represents the country which this ODMS catalogue belongs to.
+      category:
+        type: string
+        description: This field represents the category which this ODMS catalogue belongs to.
+      dumpFilePath:
+        type: string
+        description: If the ODMSCatalogueType is different than **DCATDUMP** this field will be null. The field represent the path of the dump file in the file system
+      dumpString:
+        type: string
+        description: If the ODMSCatalogueType is different than **DCATDUMP** this field will be null. The field contains the string representation of the dump file
+      dumpURL:
+        type: string
+        description: If the ODMSCatalogueType is different than **DCATDUMP** this field will be null. The field contains the url of the dump file.
+      dcatProfile:
+        description: If the ODMSCatalogueType is different than **DCATDUMP** this field will be null.
+        $ref: '#/definitions/DCATAPProfile'
+      sitemap:
+        description: If the ODMSCatalogueType is different than **WEB** this field will be null.
+        $ref: '#/definitions/WebScraperSitemap'
+    required:
+      - name
+      - host
+      - nodeType
+      - federationLevel
+      - refreshPeriod
+    title: Node
+    type: object
+  DCATAPProfile:
+    type: string
+    description: The DCAT-AP profile of the ODMS catalogue.
+    enum:
+      - DCATAP
+      - DCATAP_IT
+  ODMSSynchLock:
+    type: string
+    description: The synchronization state of the ODMS catalogue.
+    enum:
+      - FIRST
+      - PERIODIC
+      - NONE
+  ODMSCatalogueFederationLevel:
+    type: string
+    description: The Idra Federation Level for the ODMS catalogue.
+    enum:
+      - LEVEL_0
+      - LEVEL_1
+      - LEVEL_2
+      - LEVEL_3
+  ODMSCatalogueType:
+    type: string
+    description: 'The ODMS catalogue type, based on the type of technology and exposed APIs.'
+    enum:
+      - CKAN
+      - SOCRATA
+      - NATIVE
+      - WEB
+      - DCATDUMP
+      - DKAN
+  ODMSCatalogueState:
+    type: string
+    description: The current network status of the ODMS catalogue.
+    enum:
+      - ONLINE
+      - OFFLINE
+  ODMSCatalogueImage:
+    description: The image associated to an ODMS catalogue 
+    type: object
+    properties:
+      imageId:
+        type: integer
+        format: int32
+        description: The identifier for the image
+      imageData:
+        type: string
+        format: byte
+        description: >-
+          A base64 representation of a ODMS catalogue  image. E.g.
+          "data:image/png;base64,iVBORw0KGgoAAAANSUhE...."
+  ODMSCatalogueMessage:
+    type: object
+    description: >-
+      The message containing information about the lifecycle of a specific ODMS
+      catalogue .
+    properties:
+      id:
+        title: id
+        type: string
+        description: >-
+          The unique identifier of the ODMS catalogue . When adding a new catalogue , this
+          field is ignored.
+      nodeID:
+        type: string
+        description: The catalogue  to which the message belongs to.
+      message:
+        type: string
+        description: The message content.
+      date:
+        type: string
+        description: >-
+          The timestamp relative to the message in UTC ISO-8601 format. E.g.
+          ''yyyy-MM-ddTHH:mm:ssZ''
+        format: date-time
+  WebScraperSitemap:
+    description: The Sitemap used for federate WEB catalogue s using scraping functionality.
+    type: object
+    properties:
+      id:
+        description: The identifier of the sitemap
+        type: string
+      startUrl:
+        description: The start url for the scraping process
+        type: string
+      datasetSelectors:
+        description: ''
+        type: array
+        items:
+          $ref: '#/definitions/WebScraperSelector'
+      navigationParameter:
+        description: ''
+        $ref: '#/definitions/NavigationParameter'
+  NavigationParameter:
+    description: ''
+    type: object
+    properties:
+      id:
+        description: ''
+        type: string
+      name: 
+        description: ''
+        type: string
+      type: 
+        description: ''
+        type: string
+        enum:
+          - QUERY_RANGE
+          - PATH_RANGE
+          - QUERY_PAGE
+          - PATH_PAGE
+      startValue:
+        description: ''
+        type: string
+      endValue:
+        description: ''
+        type: string
+      pagesNumber:
+        description: ''
+        type: integer
+        format: int32
+      datasetPerPage:
+        description: ''
+        type: integer
+        format: int32
+      enumValues:
+        description: ''
+        type: array
+        items:
+          type: string
+      pageSelectors:
+        description: ''
+        type: array
+        items:
+          $ref: '#/definitions/WebScraperSelector'
+        
+  WebScraperSelector:
+    description: ''
+    type: object
+    properties:
+      id:
+        description: ''
+        type: string
+      parentSelectors:
+        description: ''
+        type: array
+        items:
+          type: string
+      type:
+        type: string
+        enum:
+          - SelectorElementAttribute
+          - SelectorText
+      extractAttribute:
+        description: ''
+        type: string
+      multiple:
+        description: ''
+        type: boolean
+      name:
+        description: ''
+        type: string
+      selector:
+        description: ''
+        type: string
+      stopValues:
+        description: ''
+        type: array
+        items:
+          type: string
+      defaultStopValues:
+        description: ''
+        type: array
+        items:
+          type: string
+  RdfPrefix:
+    description: Representation of a RDF prefix
+    type: object
+    properties:
+      id:
+        type: string
+      prefix:
+        type: string
+      namespace:
+        type: string
+    required:
+      - prefix
+      - namespace
+  User:
+    description: Representation of an Idra user.
+    type: object
+    properties:
+      username:
+        type: string
+        description: The unique user name.
+      password:
+        type: string
+        description: The Idra user password.
+    required:
+      - username
+      - password
+  PasswordChange:
+    description: >-
+      The object providing the information in order to perform the user password
+      change.
+    type: object
+    properties:
+      oldPassword:
+        type: string
+        description: The user password to be changed.
+      newPassword:
+        type: string
+        description: The new user password.
+      newPasswordConfirm:
+        type: string
+        description: The confirmation of new user password.
+      username:
+        type: string
+        description: The username which password is related to.
+    required:
+      - oldPassword
+      - newPassword
+      - newPasswordConfirm
+      - username
+  StatisticsRequest:
+    description: >-
+      The object containing information for  either catalogue , keyword or search
+      statistics retrieval.
+    type: object
+    properties:
+      countries:
+        type: array
+        description: All the countries from which searches are performed
+        items:
+          type: string
+      aggregationLevel:
+        type: string
+        description: Specifies the temporal aggregation level of returned statistics.
+        enum:
+          - year
+          - month
+          - week
+          - day
+      startDate:
+        type: string
+        description: >-
+          Start date of the temporal interval, in UTC ISO-8601 format. E.g.
+          ''yyyy-MM-ddTHH:mm:ssZ''
+        format: date-time
+      endDate:
+        type: string
+        description: >-
+          End date of the temporal interval, in UTC ISO-8601 format. E.g.
+          ''yyyy-MM-ddTHH:mm:ssZ''
+        format: date-time
+      nodesID:
+        type: array
+        description: A list of ODMS catalogue IDs for which to retrieve statistics.
+        items:
+          type: string
+          description: The unique identifier of a ODMS catalogue.
+    required:
+      - aggregationLevel
+      - startDate
+      - endDate
+  LogsRequest:
+    type: object
+    description: The object representing a request for Idra platform logs.
+    properties:
+      levelList:
+        type: array
+        items:
+          $ref: '#/definitions/LogLevel'
+      startDate:
+        type: string
+        description: >-
+          Start date of the temporal interval, in UTC ISO-8601 format. E.g.
+          ''yyyy-MM-ddTHH:mm:ssZ''
+        format: date-time
+      endDate:
+        type: string
+        description: >-
+          End date of the temporal interval, in UTC ISO-8601 format. E.g.
+          ''yyyy-MM-ddTHH:mm:ssZ''
+        format: date-time
+  Log:
+    type: object
+    description: The object representing an Idra platform Log
+    properties:
+      logger:
+        type: string
+        description: The internal logger entity that created the Log
+      level:
+        $ref: '#/definitions/LogLevel'
+      message:
+        type: string
+        description: The log message itself
+      timestamp:
+        type: string
+        description: >-
+          The log message timestamp, in UTC ISO-8601 format. E.g.
+          ''yyyy-MM-ddTHH:mm:ssZ''
+        format: date-time
+  LogLevel:
+    type: string
+    description: The log message level.
+    enum:
+      - INFO
+      - ERROR
+      - WARNING
+      - DEBUG
+      - FATAL
+  DCATDataset:
+    title: DCATDataset
+    description: >-
+      It represents metadata of an Open Data dataset compliant to DCAT naming
+      specification, which defines a dataset with the following statement. A
+      collection of data, published or curated by a single agent, and available
+      for access or download in one or more formats. For further information,
+      please refer to 'https://www.w3.org/TR/vocab-dcat/'.
+    type: object
+    properties:
+      id:
+        description: >-
+          A unique identifier of the dataset, generated and internally used by
+          Idra.
+        type: string
+      nodeID:
+        description: The id of the ODMS catalogue which the dataset belongs to.
+        type: string
+      title:
+        description: A name given to the dataset.
+        type: string
+      description:
+        description: Free-text account of the dataset.
+        type: string
+      distributions:
+        description: ''
+        type: array
+        items:
+          $ref: '#/definitions/DCATDistribution'
+      theme:
+        description: ''
+        type: array
+        items:
+          $ref: '#/definitions/SKOSConcept'
+      publisher:
+        $ref: '#/definitions/FOAFAgent'
+      contactPoint:
+        description: ''
+        type: array
+        items:
+          $ref: '#/definitions/VCardOrganization'
+      keywords:
+        description: ''
+        type: array
+        items:
+          type: string
+      accessRights:
+        description: ''
+        type: string
+      conformsTo:
+        description: ''
+        type: array
+        items:
+          $ref: '#/definitions/DCTStandard'
+      documentation:
+        description: ''
+        type: array
+        items:
+          type: string
+      frequency:
+        description: ''
+        type: string
+      hasVersion:
+        description: ''
+        type: array
+        items:
+          type: string
+      isVersionOf:
+        description: ''
+        type: array
+        items:
+          type: string
+      landingPage:
+        description: ''
+        type: string
+      language:
+        description: ''
+        type: array
+        items:
+          type: string
+      provenance:
+        description: ''
+        type: array
+        items:
+          type: string
+      releaseDate:
+        description: >-
+          Date of formal issuance (e.g., publication) of the dataset, in UTC
+          ISO-8601 format. E.g. ''yyyy-MM-ddTHH:mm:ssZ''
+        type: string
+      updateDate:
+        description: >-
+          Most recent date on which the dataset was changed, updated or
+          modified, in UTC ISO-8601 format. E.g. ''yyyy-MM-ddTHH:mm:ssZ''
+        type: string
+      identifier:
+        description: A unique identifier of the dataset.
+        type: string
+      otherIdentifier:
+        description: ''
+        type: array
+        items:
+          type: string
+      sample:
+        description: ''
+        type: array
+        items:
+          type: string
+      source:
+        description: ''
+        type: array
+        items:
+          type: string
+      spatialCoverage:
+        $ref: '#/definitions/DCTLocation'
+      temporalCoverage:
+        $ref: '#/definitions/DCTPeriodOfTime'
+      type:
+        description: ''
+        type: string
+      version:
+        description: ''
+        type: string
+      versionNodes:
+        description: ''
+        type: array
+        items:
+          type: string
+      rightsHolder:
+        $ref: '#/definitions/FOAFAgent'
+      creator:
+        $ref: '#/definitions/FOAFAgent'
+      subject:
+        description: ''
+        type: array
+        items:
+          $ref: '#/definitions/SKOSConcept'
+      legacyIdentifier:
+        description: ''
+        type: string
+    required:
+      - id
+      - nodeID
+      - identifier
+      - title
+      - description
+  DCATDistribution:
+    title: DCATDistribution
+    description: >-
+      It represents a specific available form of a dataset. Each dataset might
+      be available in different forms, these forms might represent different
+      formats of the dataset or different endpoints. Examples of distributions
+      include a downloadable CSV file, an API or an RSS feed
+    type: object
+    properties:
+      id:
+        description: >-
+          A unique identifier of the dataset, generated and internally used by
+          Idra.
+        type: string
+      storedRDF:
+        description: ''
+        type: boolean
+      nodeID:
+        description: The id of the ODMS catalogue which the distribution belongs to.
+        type: string
+      accessURL:
+        description: ''
+        type: string
+      description:
+        description: ''
+        type: string
+      format:
+        description: ''
+        type: string
+      license:
+        $ref: '#/definitions/DCTLicenseDocument'
+      byteSize:
+        description: ''
+        type: string
+      checksum:
+        $ref: '#/definitions/SPDXChecksum'
+      documentation:
+        description: ''
+        type: array
+        items:
+          type: string
+      downloadURL:
+        description: ''
+        type: string
+      language:
+        description: ''
+        type: array
+        items:
+          type: string
+      linkedSchemas:
+        description: ''
+        type: array
+        items:
+          $ref: '#/definitions/DCTStandard'
+      mediaType:
+        description: ''
+        type: string
+      releaseDate:
+        description: ''
+        type: string
+      updateDate:
+        description: ''
+        type: string
+      rights:
+        description: ''
+        type: string
+      status:
+        $ref: '#/definitions/SKOSConcept'
+      title:
+        description: ''
+        type: string
+      hasDatalets:
+        description: ''
+        type: boolean
+    required:
+      - id
+      - nodeID
+      - accessUrl
+  DCTStandard:
+    title: DCTStandard
+    description: ''
+    type: object
+    properties:
+      id:
+        description: the identified of the DCTStandard
+        type: string
+      nodeID:
+        description: the id of the Catalogue which the DCTStandard belongs to
+        type: string
+      identifier:
+        description: ''
+        type: string
+      title:
+        description: ''
+        type: string
+      description:
+        description: ''
+        type: string
+      referenceDocumentation:
+        description: ''
+        type: array
+        items:
+          type: string
+  SKOSPrefLabel:
+    title: SKOSPrefLabel
+    description: ''
+    type: object
+    properties:
+      id:
+        description: ''
+        type: string
+      nodeID:
+        description: ''
+        type: string
+      language:
+        description: ''
+        type: string
+      value:
+        description: ''
+        type: string
+  SKOSConcept:
+    title: SKOSConcept
+    description: ''
+    type: object
+    properties:
+      id:
+        description: ''
+        type: string
+      nodeID:
+        description: ''
+        type: string
+      resourceUri:
+        description: ''
+        type: string
+      propertyUri:
+        description: ''
+        type: string
+      prefLabel:
+        description: ''
+        type: array
+        items:
+          $ref: '#/definitions/SKOSPrefLabel'
+  DCTLocation:
+    title: DCTLocation
+    description: ''
+    type: object
+    properties:
+      id:
+        description: ''
+        type: string
+      nodeID:
+        description: ''
+        type: string
+      uri:
+        description: ''
+        type: string
+      geographicalIdentifier:
+        description: ''
+        type: string
+      geographicalName:
+        description: ''
+        type: string
+      geometry:
+        description: ''
+        type: string
+  DCTPeriodOfTime:
+    title: DCTPeriodOfTime
+    description: ''
+    type: object
+    properties:
+      id:
+        description: ''
+        type: string
+      nodeID:
+        description: ''
+        type: string
+      uri:
+        description: ''
+        type: string
+      startDate:
+        description: ''
+        type: string
+      endDate:
+        description: ''
+        type: string
+  DCTLicenseDocument:
+    title: DCTLicenseDocument
+    description: ''
+    type: object
+    properties:
+      id:
+        description: ''
+        type: string
+      nodeID:
+        description: ''
+        type: string
+      uri:
+        description: ''
+        type: string
+      name:
+        description: ''
+        type: string
+      type:
+        description: ''
+        type: string
+      versionInfo:
+        description: ''
+        type: string
+  SPDXChecksum:
+    title: SPDXChecksum
+    description: ''
+    type: object
+    properties:
+      id:
+        description: ''
+        type: string
+      nodeID:
+        description: ''
+        type: string
+      uri:
+        description: ''
+        type: string
+      algorithm:
+        description: ''
+        type: string
+      checksumValue:
+        description: ''
+        type: string
+  FOAFAgent:
+    title: FOAFAgent
+    description: It represents a generic agent.
+    properties:
+      id:
+        description: ''
+        type: string
+      name:
+        description: The name of the agent
+        type: string
+      resourceUri:
+        description: ''
+        type: string
+      propertyUri:
+        description: ''
+        type: string
+      mbox:
+        description: >-
+          A personal mailbox, ie. an Internet mailbox associated with exactly
+          one owner.
+        type: string
+      homepage:
+        description: >-
+          A homepage in this sense is a public Web document, typically but not
+          necessarily available in HTML format.
+        type: string
+      type:
+        description: >-
+          The nature or genre of the Agent. (eg. person, group, software or
+          physical artifact).
+        type: string
+      identifier:
+        description: ''
+        type: string
+      nodeID:
+        description: The id of the ODMS catalogue which the dataset agent belongs to.
+        type: string
+    required:
+      - name
+      - nodeID
+  VCardOrganization:
+    title: VCardOrganization
+    description: >-
+      It represents a vCard, which is a specification developed by the IETF for
+      the description of people and organisations. Please refer
+      to:'https://www.w3.org/TR/vcard-rdf/'
+    type: object
+    properties:
+      id:
+        description: ''
+        type: string
+      resourceUri:
+        description: ''
+        type: string
+      propertyUri:
+        description: ''
+        type: string
+      fn:
+        description: The full name of the object.
+        type: string
+      nodeID:
+        description: ' The id of the ODMS catalogue which the dataset contact point belongs to'
+        type: string
+      hasEmail:
+        description: The email address of the object.
+        type: string
+      hasTelephoneValue:
+        description: ''
+        type: string
+      hasTelephoneType:
+        description: ''
+        type: string
+    required:
+      - fn
+      - nodeID
+  SearchFilter:
+    title: SearchFilter
+    description: It represents a filter criterion for searching on a specific field.
+    type: object
+    properties:
+      field:
+        description: The field name on which to search.
+        type: string
+        example: "ALL"
+      value:
+        description: The field value to search.
+        type: string
+        example: ""
+    required:
+      - field
+      - value
+  SearchDateFilter:
+    title: SearchDateFilter
+    description: It represents a date interval criterion for searching on a specific field.
+    type: object
+    properties:
+      start:
+        description: >-
+          Start Date of time interval, in UTC ISO-8601 format. E.g.
+          ''yyyy-MM-ddTHH:mm:ssZ''
+        type: string
+        format: date-time
+        example: '2018-01-01T00:00:00Z'
+      end:
+        description: >-
+          End Date of time interval, in UTC ISO-8601 format. E.g.
+          ''yyyy-MM-ddTHH:mm:ssZ''
+        type: string
+        format: date-time
+        example: '2018-01-01T23:59:59Z'
+    required:
+      - start
+      - end
+  EuroVocLanguage:
+    title: EuroVocLanguage
+    description: ''
+    type: object
+    properties:
+      languageName:
+        type: string
+        enum:
+          - BG
+          - ES
+          - CS
+          - DA
+          - DE
+          - ET
+          - EL
+          - EN
+          - FR
+          - GA
+          - HR
+          - IT
+          - LV
+          - LT
+          - HU
+          - MT
+          - NL
+          - PL
+          - PT
+          - RO
+          - SK
+          - SL
+          - FI
+          - SV
+          - MK
+          - SQ
+          - SR
+  SearchEuroVocFilter:
+    title: SearchEuroVocFilter
+    description: ''
+    type: object
+    properties:
+      sourceLanguage:
+        description: ''
+        $ref: '#/definitions/EuroVocLanguage'
+        example: 'IT'
+      targetLanguages:
+        description: ''
+        type: array
+        items:
+          $ref: '#/definitions/EuroVocLanguage'
+          example: ['EN','FR']
+  SearchRequest:
+    title: SearchRequest
+    description: >-
+      It represents the request issued to 'searchDataset' operation. It contains
+      the filter list, search type, etc. Rows and start properties specify
+      pagination options, in order to return a (rows) number of results per
+      request, starting from a specific offset (start).
+    properties:
+      filters:
+        description: This filters list must contain at least one element.
+        type: array
+        minItems: 1
+        uniqueItems: true
+        items:
+          $ref: '#/definitions/SearchFilter'
+      releaseDate:
+        description: >-
+          Date Interval (Start and End Date) of formal issuance (e.g.,
+          publication) of the dataset, in UTC ISO-8601 format. E.g.
+          ''yyyy-MM-ddTHH:mm:ssZ''
+        $ref: '#/definitions/SearchDateFilter'
+      updateDate:
+        description: >-
+          Date Interval (Start and End Date) of date on which the dataset was
+          changed, updated or modified, in UTC ISO-8601 format. E.g.
+          ''yyyy-MM-ddTHH:mm:ssZ''
+        $ref: '#/definitions/SearchDateFilter'
+      live:
+        description: Whether the search is to do live or cache
+        type: boolean
+        default: false
+      euroVocFilter:
+        description: >-
+          Whether the search is multilingual, by using the EuroVoc thesaurus.
+          Please refer to 'http://eurovoc.europa.eu'
+        $ref: '#/definitions/SearchEuroVocFilter'
+      sort:
+        $ref: '#/definitions/SortOption'
+      rows:
+        description: The number of results to be returned per request.
+        type: string
+        example: '10'
+      start:
+        description: The offset in result list from which to start.
+        type: string
+        example: '0'
+      nodes:
+        type: array
+        items:
+          type: integer
+          example: ['1','2']
+    required:
+      - filters
+      - live
+      - euroVoc
+      - sort
+      - rows
+      - start
+  SortOption:
+    title: SortOption
+    description: ''
+    type: object
+    properties:
+      field:
+        description: ''
+        type: string
+        example: 'title'
+      mode:
+        $ref: '#/definitions/SortMode'
+        example: 'asc'
+  SortMode:
+    title: SortMode
+    description: It indicates whether the sort is to do in ascendent or descendent order.
+    type: string
+    enum:
+      - asc
+      - desc
+  SparqlSearchRequest:
+    title: SparqlSearchRequest
+    type: object
+    description: It represents the request issued to 'runSparqlQuery' operation.
+    properties:
+      query:
+        description: >-
+          The string representing SparQL Query to be issued. Please refer to
+          'https://www.w3.org/TR/rdf-sparql-query/'
+        type: string
+      format:
+        description: The format type of resulting query.
+        $ref: '#/definitions/SparqlResultFormat'
+    required:
+      - query
+      - format
+  SparqlResultFormat:
+    title: SparqlResultFormat
+    description: ''
+    type: string
+    enum:
+      - rdf
+      - json
+      - xml
+  SparqlSearchResponse:
+    type: object
+    description: >-
+      It represents the response of a SparQL Query Request. Please refer
+      to'https://www.w3.org/TR/rdf-sparql-query/'
+    properties:
+      result:
+        description: The actual query response.
+        type: string
+      contentType:
+        description: 'The format type of resulting query, according to the requested one.'
+        $ref: '#/definitions/SparqlResultFormat'
+  SearchFacet:
+    title: SearchFacet
+    description: ''
+    type: object
+    properties:
+      facet:
+        description: ''
+        type: string
+      keyword:
+        description: ''
+        type: string
+      search_value:
+        description: ''
+        type: string
+  SearchFacetsList:
+    title: SearchFacetsList
+    description: ''
+    type: object
+    properties:
+      displayName:
+        type: string
+        description: ''
+      search_parameter:
+        type: string
+        description: ''
+      values:
+        type: array
+        description: ''
+        items:
+          $ref: '#/definitions/SearchFacet'
+  SearchResult:
+    title: SearchResult
+    description: It represents the result of a metadata search operation
+    type: object
+    properties:
+      count:
+        description: It is the total number of the datasets matching the search criteria
+        type: integer
+        format: int64
+      results:
+        description: >-
+          It is the list of the datasets matching the search criteria. This list
+          is paginated following the search parameters **rows** and **start**
+        type: array
+        items:
+          $ref: '#/definitions/DCATDataset'
+      facets:
+        description: >-
+          This field contains the list of the facets resulting from the search
+          criteria.
+        type: array
+        items:
+          $ref: '#/definitions/SearchFacetsList'
+  DCATAPFormat:
+    title: DCATAPFormat
+    description: ''
+    enum:
+      - IDRA
+      - TURTLE
+      - NTRIPLES
+      - RDF/XML
+      - N3
+      - RDF/JSON
+      - JSON-LD
+  Datalet:
+    title: Datalet
+    description: >-
+      This object models a Datalet created through DEEP an output of the project
+      ROUTE-TO-PA
+    type: object
+    properties:
+      id:
+        description: The unique identifier of the Datalet
+        type: string
+      nodeID:
+        description: The identifier of the catalogue which the datalet belongs to
+        type: string
+      datasetID:
+        description: The identifier of the dataset which the datalet belongs to
+        type: string
+      distributionID:
+        description: The identifier of the distribution which the datalet belongs to
+        type: string
+      datalet_html:
+        description: >-
+          this is the html frame produced by DEEP tools that contains the
+          Datalet
+        type: string
+      title:
+        description: The title of the datalet
+        type: string
+      customTitle:
+        description: >-
+          if false, the title is created through DEEP, otherwise the title of
+          the datalet is created automatically by Idra
+        type: boolean
+      registerDate:
+        description: Datalet's registration date in UTC ISO-8601 format
+        type: string
+        format: date-time
+      lastSeenDate:
+        description: Datalet's last seen date in UTC ISO-8601 format
+        type: string
+        format: date-time
+      views:
+        description: >-
+          The number of times which this dataset has been visualized from the
+          Idra's GUI
+        type: integer
+        format: int32
