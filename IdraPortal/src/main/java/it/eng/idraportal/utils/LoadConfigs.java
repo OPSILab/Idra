@@ -78,27 +78,6 @@ public class LoadConfigs extends HttpServlet {
 		 
 		json=new JSONObject(prop);
 		
-		/*
-		 * Problem with reverse proxy
-		 * TODO: check this answer 
-		 * https://stackoverflow.com/questions/25911469/request-getscheme-is-returning-http-instead-of-returning-https-in-java
-		 * */
-//		String serverUri = request.getScheme() + "://" + 
-//	             request.getServerName() +   
-//	             ("".equalsIgnoreCase(request.getServerPort()+"")?"":":" + request.getServerPort());
-//		
-//		System.out.println("\n\n\n");
-//		System.out.println(serverUri);
-//		System.out.println("\n\n\n");
-//		String adminURL = json.getString("ADMIN_SERVICES_BASE_URL");
-//		if(!adminURL.startsWith("http")) {
-//			json.put("ADMIN_SERVICES_BASE_URL", serverUri+(adminURL.startsWith("/")?"":"/")+adminURL);
-//		}
-//		String clientURL = json.getString("CLIENT_SERVICES_BASE_URL");
-//		if(!clientURL.startsWith("http")) {
-//			json.put("CLIENT_SERVICES_BASE_URL", serverUri+(clientURL.startsWith("/")?"":"/")+clientURL);
-//		}
-
 		out.write(json.toString());
 		
 	}

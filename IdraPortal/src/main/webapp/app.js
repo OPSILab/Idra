@@ -43,6 +43,17 @@
 //		ODMSNodesAPI.buildCache();
 //	}]);
 
+	app.run(['config','$location',function(config,$location) {
+		var adminURL = config.ADMIN_SERVICES_BASE_URL;
+		if(!adminURL.startsWith('http')){
+			config.ADMIN_SERVICES_BASE_URL=$location.protocol() + "://" + $location.host() + ":" + $location.port()+(adminURL.startsWith("/")?"":"/")+adminURL;
+		}
+		var clientURL = config.CLIENT_SERVICES_BASE_URL;
+		if(!config.CLIENT_SERVICES_BASE_URL.startsWith('http')){
+			config.CLIENT_SERVICES_BASE_URL=$location.protocol() + "://" + $location.host() + ":" + $location.port()+(clientURL.startsWith("/")?"":"/")+clientURL;
+		}
+	}]);
+
 	app.config(['uiZeroclipConfigProvider', function(uiZeroclipConfigProvider) {
 		uiZeroclipConfigProvider.setZcConf({
 			swfPath: "bower_components/zeroclipboard/dist/ZeroClipboard.swf"
