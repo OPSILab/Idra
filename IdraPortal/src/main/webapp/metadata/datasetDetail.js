@@ -279,7 +279,7 @@ angular.module("IdraPlatform").controller('DatasetDetailCtrl',['$scope','$rootSc
 //		console.log("GET DATASET");
 //		var req = {
 //				method: 'GET',
-//				url: config.CLIENT_SERVICES_BASE_URL+"/node/"+$scope.dataset.nodeID+"/dataset/"+$scope.dataset.id,
+//				url: config.CLIENT_SERVICES_BASE_URL+"/catalogues/"+$scope.dataset.nodeID+"/dataset/"+$scope.dataset.id,
 //				headers: {
 //					'Content-Type': 'application/json'
 //				}
@@ -307,7 +307,7 @@ angular.module("IdraPlatform").controller('DatasetDetailCtrl',['$scope','$rootSc
 		
 		var req = {
 				method: 'GET',
-				url: config.CLIENT_SERVICES_BASE_URL+"/node/"+nodeID+"/dataset/"+datasetID+"/distribution/"+distribution.id+"/datalets",
+				url: config.CLIENT_SERVICES_BASE_URL+"/catalogues/"+nodeID+"/dataset/"+datasetID+"/distribution/"+distribution.id+"/datalets",
 				headers: {
 					'Content-Type': 'application/json'
 				}

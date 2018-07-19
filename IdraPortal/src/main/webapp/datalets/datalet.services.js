@@ -50,7 +50,7 @@ function dataletsAPI($log,$http,config,$rootScope){
 		$log.info("Get Datalets By Distribution");
 		return $http({
 			method: 'GET',
-			url: config.CLIENT_SERVICES_BASE_URL+"/node/"+nodeID+"/dataset/"+datasetID+"/distribution/"+distributionID+"/datalets",
+			url: config.CLIENT_SERVICES_BASE_URL+"/catalogues/"+nodeID+"/dataset/"+datasetID+"/distribution/"+distributionID+"/datalets",
 			headers: {
 				'Content-Type': 'application/json'
 			}
@@ -61,7 +61,7 @@ function dataletsAPI($log,$http,config,$rootScope){
 		$log.info("Update Datalet view");
 		return $http({
 			method: 'PUT',
-			url: config.CLIENT_SERVICES_BASE_URL+"/node/"+datalet.nodeID+"/dataset/"+datalet.datasetID+"/distribution/"+datalet.distributionID+"/datalet/"+datalet.id+"/updateViews",
+			url: config.CLIENT_SERVICES_BASE_URL+"/catalogues/"+datalet.nodeID+"/dataset/"+datalet.datasetID+"/distribution/"+datalet.distributionID+"/datalet/"+datalet.id+"/updateViews",
 			headers: {
 				'Content-Type': 'application/json'	
 			}
@@ -72,7 +72,7 @@ function dataletsAPI($log,$http,config,$rootScope){
 		$log.info("Delete Datalet");
 		return $http({
 				method: 'DELETE',
-				url: config.ADMIN_SERVICES_BASE_URL+"/node/"+datalet.nodeID+"/dataset/"+datalet.datasetID+"/distribution/"+datalet.distributionID+"/deleteDatalet/"+datalet.id,
+				url: config.ADMIN_SERVICES_BASE_URL+"/catalogues/"+datalet.nodeID+"/dataset/"+datalet.datasetID+"/distribution/"+datalet.distributionID+"/deleteDatalet/"+datalet.id,
 				headers: {
 					'Content-Type': 'application/json',
 					'Authorization': "Bearer " +$rootScope.token	
