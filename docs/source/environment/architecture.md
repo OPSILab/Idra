@@ -5,7 +5,7 @@ platform is responsible for collecting metadata of Open Data from federated ODMS
 (LOD), importing them into a specific repository in order to perform queries on them.
 The following picture illustrates the architecture of Idra.
 
-![alt tag](odfarchitecture.png "Idra Architecture")
+![alt tag](idra_architecture.png "Idra Architecture")
 
 Its main components are:
 
