@@ -332,14 +332,14 @@
 				<md-grid-list class="gridListdemoDynamicTiles" md-cols="3" md-cols-sm="2" md-cols-xs="2" md-cols-md="5"
 					md-cols-gt-md="7" md-row-height-gt-md="1:2" md-row-height="4:3"
 					md-gutter="8px" md-gutter-gt-sm="4px"> 
-					<md-grid-tile  ng-class="getCssClass(theme)"  ng-repeat="theme in dcatThemes track by $index" md-colspan-sm="1"
-					md-colspan-xs="1" md-colspan-md="1" >
+					<md-grid-tile  ng-class="getCssClass(theme)" ng-click="searchByCategory(theme)"  ng-repeat="theme in dcatThemes track by $index" md-colspan-sm="1"
+					md-colspan-xs="1" md-colspan-md="1" style="cursor:pointer">
 <!-- 					<md-icon md-svg-icon="images/dcat_themes_icon/{{theme.value}}.svg"></md-icon> -->
 					 <img ng-src="images/dcat_themes_icon/{{theme.value}}.svg"
 					style="max-height: 40%"> 
 					<md-grid-tile-footer style="overflow:unset;background-color:#ffffff">
 					<h3>
-						<a class="text-center" href="javascript:void(0)" ng-click="searchByCategory(theme)">{{theme.text}}</a>
+						<a class="text-center" href="javascript:void(0)" >{{theme.text}}</a>
 					</h3>
 				</md-grid-tile-footer> </md-grid-tile> </md-grid-list>
 			</div>
