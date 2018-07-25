@@ -280,10 +280,10 @@ Tomcat “webapps” folder.
     -   In **configuration.properties** file, change the following properties:
 		- Base url part of **ADMIN\_SERVICES\_BASE\_URL** property with the **PUBLIC** domain where
 			is exposed the runtime environment. (Example:
-			[*https://idra.opsilab.it/Idra/api/v1/administration*](https://idra.opsilab.it/Idra/api/v1/administration))
+			[*https://opendatafederation.eng.it/Idra/api/v1/administration*](https://opendatafederation.eng.it/Idra/api/v1/administration))
 		- Base url part of **CLIENT\_SERVICES\_BASE\_URL** property with the **PUBLIC** domain where
 			is exposed the runtime environment. (Example:
-			[*https://idra.opsilab.it/Idra/api/v1/client*](https://idra.opsilab.it/Idra/api/v1/client))
+			[*https://opendatafederation.eng.it/Idra/api/v1/client*](https://opendatafederation.eng.it/Idra/api/v1/client))
 -   Idra/WEB-INF/classes/
 
     -   In **configuration.properties** file, change the following
