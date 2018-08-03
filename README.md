@@ -331,6 +331,14 @@ When the home page is showed, perform the following steps:
     `curl http://BASEPATH/IdraPortal/api/v1/administration/version`
  - Check that you get the version number as output, along with other information about palatform version and release timestamp    
 
+## Idra Sandbox
+A demo instance of Idra - Open Data Federation Platform is available at the following link: 
+https://idra-sandbox.opsilab.it
+
+In order to test Idra's administration functionalities the login credentials are:
+
+ - username: **admin**
+ - password: **admin** 
 
 ## Support / Contact / Contribution
 
