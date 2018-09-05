@@ -159,6 +159,10 @@ public class ODMSCatalogue {
 	// @Transient
 	private DCATAPProfile dcatProfile;
 
+	@Transient
+	private DCATAPFormat dcatFormat;
+	
+	
 	public ODMSCatalogue() {
 		this.setSynchLock(ODMSSynchLock.NONE);
 		this.location = "";
@@ -499,6 +503,14 @@ public class ODMSCatalogue {
 		this.dcatProfile = profile;
 	}
 
+	public DCATAPFormat getDcatFormat() {
+		return dcatFormat;
+	}
+
+	public void setDcatFormat(DCATAPFormat dcatFormat) {
+		this.dcatFormat = dcatFormat;
+	}
+	
 	public String getCountry() {
 		return country;
 	}

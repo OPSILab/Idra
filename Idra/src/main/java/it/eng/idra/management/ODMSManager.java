@@ -368,16 +368,15 @@ public class ODMSManager {
 							switch (node.getDCATProfile()) {
 
 							case DCATAP_IT:
-								m = new DCATAPITDeserializer().dumpToModel(node.getDumpString(), node.getHost());
+								m = new DCATAPITDeserializer().dumpToModel(node.getDumpString(), node);
 								break;
 							default:
 								// If no profile was provided, instantiate a base DCATAP Deserializer
-								m = new DCATAPDeserializer().dumpToModel(node.getDumpString(), node.getHost());
+								m = new DCATAPDeserializer().dumpToModel(node.getDumpString(), node);
 								break;
 
 							}
 
-							// Model m = DCATAPDeserializer.dumpToModel(node.getDumpString());
 							String odmsDumpFilePath = PropertyManager.getProperty(ODFProperty.ODMS_DUMP_FILE_PATH);
 							try {
 								DCATAPSerializer.writeModelToFile(m, DCATAPFormat.RDFXML, odmsDumpFilePath,

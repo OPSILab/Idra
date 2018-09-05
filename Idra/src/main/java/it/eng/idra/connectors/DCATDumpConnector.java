@@ -22,18 +22,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.HttpClient;
 import org.apache.http.client.ResponseHandler;
-import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 import org.apache.jena.rdf.model.Model;
@@ -41,12 +35,8 @@ import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.riot.RiotException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-
 import it.eng.idra.beans.ODFProperty;
 import it.eng.idra.beans.dcat.DCATAPFormat;
-import it.eng.idra.beans.dcat.DCATAPProfile;
 import it.eng.idra.beans.dcat.DCATDataset;
 import it.eng.idra.beans.odms.ODMSCatalogue;
 import it.eng.idra.beans.odms.ODMSSynchronizationResult;
@@ -163,21 +153,41 @@ public class DCATDumpConnector implements IODMSConnector {
 		List<DCATDataset> datasetsList = new ArrayList<DCATDataset>();
 
 		// Pass the Node Host as base URI for the model
-		Model m = deserializer.dumpToModel(dumpString, node.getHost());
-
-		Matcher matcher = deserializer.getDatasetPattern().matcher(dumpString);
+		Model m = deserializer.dumpToModel(dumpString, node);
+		Matcher matcher = deserializer.getDatasetPattern(node.getDcatFormat()).matcher(dumpString);
 		String datasetURI = null;
+		int hits = 0;
 		while (matcher.find()) {
+
+			datasetURI = null;
 			try {
-				if ((datasetURI = matcher.group(2)) != null) {
+
+				switch (node.getDcatFormat()) {
+
+				case TURTLE:
+					datasetURI = matcher.group(1);
+					break;
+
+				// RDFXML is the default
+				default:
+					datasetURI = matcher.group(1);
+					break;
+
+				}
+
+				if (StringUtils.isNotBlank(datasetURI)) {
+
 					Resource r = m.getResource(datasetURI);
 					datasetsList.add(deserializer.resourceToDataset(nodeID, r));
 				}
+
 			} catch (Exception e) {
 				logger.info("Skipped dataset - There was an error: " + e.getMessage() + " while deserializing dataset: "
 						+ datasetURI);
+				System.out.println(hits++);
 			}
 		}
+
 
 		if (datasetsList.size() != 0) {
 			DCATAPSerializer.writeModelToFile(m, DCATAPFormat.RDFXML, odmsDumpFilePath, "dumpFileString_" + nodeID);

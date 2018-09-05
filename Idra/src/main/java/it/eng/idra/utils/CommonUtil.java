@@ -42,7 +42,7 @@ public class CommonUtil {
 	private static Logger logger = LogManager.getLogger(CommonUtil.class);
 	private static DateTimeFormatter dtFormatter = DateTimeFormatter.ISO_OFFSET_DATE_TIME.withZone(ZoneOffset.UTC);
 	private static String[] dateFormats = { "dd/MM/yyyy", "yyyy-MM-dd", "EEE MMM dd HH:mm:ss zzz yyyy",
-			"EEEE dd MMMM yyyy", "dd MMMM yyyy", "" };
+			"EEEE dd MMMM yyyy", "dd MMMM yyyy", "yyyy-MM-dd'T'HH:mm:ss[XXX][X]"  };
 
 	public static Ordering<ODMSCatalogue> idOrder = new Ordering<ODMSCatalogue>() {
 		public int compare(ODMSCatalogue one, ODMSCatalogue other) {
@@ -164,7 +164,7 @@ public class CommonUtil {
 	public static String fromLocalToUtcDate(String originalDateString, Locale locale) {
 
 		if (StringUtils.isNotBlank(originalDateString)) {
-			String dateString = originalDateString.toLowerCase();
+			String dateString = originalDateString.toUpperCase();
 
 			if (locale == null) {
 				Locale[] locales = Locale.getAvailableLocales();
