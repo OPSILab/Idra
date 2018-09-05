@@ -26,6 +26,7 @@ import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.rdf.model.Statement;
 import org.apache.jena.riot.RiotException;
 
+import it.eng.idra.beans.dcat.DCATAPFormat;
 import it.eng.idra.beans.dcat.DCATAPProfileNotValidException;
 import it.eng.idra.beans.dcat.DCATDataset;
 import it.eng.idra.beans.dcat.DCATDistribution;
@@ -36,10 +37,11 @@ import it.eng.idra.beans.dcat.FOAFAgent;
 import it.eng.idra.beans.dcat.SKOSConcept;
 import it.eng.idra.beans.dcat.SPDXChecksum;
 import it.eng.idra.beans.dcat.VCardOrganization;
+import it.eng.idra.beans.odms.ODMSCatalogue;
 
 public interface IDCATAPDeserialize {
 
-	public Model dumpToModel(String modelText, String baseURI) throws RiotException;
+	public Model dumpToModel(String modelText, ODMSCatalogue node) throws RiotException;
 
 	public DCATDataset resourceToDataset(String nodeID, Resource datasetResource) throws DCATAPProfileNotValidException;
 
@@ -73,6 +75,6 @@ public interface IDCATAPDeserialize {
 
 	String extractLanguageFromURI(String uri);
 
-	Pattern getDatasetPattern();
+	Pattern getDatasetPattern(DCATAPFormat format);
 
 }

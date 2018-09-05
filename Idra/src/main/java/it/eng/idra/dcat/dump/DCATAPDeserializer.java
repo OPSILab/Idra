@@ -32,6 +32,7 @@ import org.apache.jena.rdf.model.LiteralRequiredException;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.Property;
+import org.apache.jena.rdf.model.RDFNode;
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.rdf.model.ResourceFactory;
 import org.apache.jena.rdf.model.ResourceRequiredException;
@@ -63,27 +64,34 @@ import it.eng.idra.beans.dcat.SKOSConceptTheme;
 import it.eng.idra.beans.dcat.SKOSPrefLabel;
 import it.eng.idra.beans.dcat.SPDXChecksum;
 import it.eng.idra.beans.dcat.VCardOrganization;
+import it.eng.idra.beans.odms.ODMSCatalogue;
 import it.eng.idra.utils.CommonUtil;
 
 public class DCATAPDeserializer implements IDCATAPDeserialize {
 
-	private static final Pattern datasetPattern = Pattern.compile("\\w*<dcat:Dataset rdf:about=\\\"(.*)\\\"");
+	private static final Pattern rdfDatasetPattern = Pattern.compile("\\w*<dcat:Dataset rdf:about=\\\"(.*)\\\"");
+	private static final Pattern turtleDatasetPattern = Pattern.compile("<(.*)>\\R\\s*a dcat:Dataset");
+
 	private static final String GEO_BASE_URI = "http://publications.europa.eu/mdr/authority/place";
 	private static final String GEO_BASE_URI_ALT = "http://www.geonames.org";
 
 	public DCATAPDeserializer() {
 	}
 
-	public Model dumpToModel(String modelText, String nodeBaseURI) throws RiotException {
+	public Model dumpToModel(String modelText, ODMSCatalogue node) throws RiotException {
 
+		String nodeBaseURI = node.getHost();
 		// create an empty model
 		Model model = ModelFactory.createDefaultModel();
 		for (DCATAPFormat format : DCATAPFormat.values()) {
 			try {
 				model.read(new ByteArrayInputStream(modelText.getBytes(StandardCharsets.UTF_8)), nodeBaseURI,
 						format.formatName());
+				node.setDcatFormat(format);
+				break;
 			} catch (RiotException e) {
-				if (!e.getMessage().contains("Content is not allowed in prolog"))
+				if (!e.getMessage().contains("Content is not allowed in prolog") && !e.getMessage()
+						.contains("[line: 1, col: 1 ] Expected BNode or IRI: Got: [DIRECTIVE:prefix]"))
 					throw e;
 				else
 					continue;
@@ -201,7 +209,12 @@ public class DCATAPDeserializer implements IDCATAPDeserialize {
 		// Iterate over source properties
 		StmtIterator sourceIt = datasetResource.listProperties(DCTerms.source);
 		while (sourceIt.hasNext()) {
-			source.add(sourceIt.next().getString());
+			Statement sourceStm = sourceIt.next();
+			try {
+				source.add(sourceStm.getString());
+			} catch (LiteralRequiredException e) {
+				source.add(sourceStm.getResource().getURI());
+			}
 		}
 
 		// Handle spatial property
@@ -562,10 +575,9 @@ public class DCATAPDeserializer implements IDCATAPDeserialize {
 
 		String agentIdentifier = null, agentUri = null, agentName = null, agentMbox = null, agentHomepage = null,
 				agentType = null;
+		Resource agentResource = null;
 
-		Resource agentResource = agentStatement.getResource();
-
-		if (agentResource != null) {
+		if (agentStatement != null && (agentResource = agentStatement.getResource()) != null) {
 
 			agentUri = agentResource.getURI();
 			if (agentResource.hasProperty(FOAF.name))
@@ -682,9 +694,9 @@ public class DCATAPDeserializer implements IDCATAPDeserialize {
 			mediaType = r.getProperty(DCAT.mediaType).getString();
 
 		if (r.hasProperty(DCTerms.issued))
-			releaseDate = CommonUtil.fixBadUTCDate(r.getProperty(DCTerms.issued).getString());
+			releaseDate = extractDate(r.getProperty(DCTerms.issued));
 		if (r.hasProperty(DCTerms.modified))
-			updateDate = CommonUtil.fixBadUTCDate(r.getProperty(DCTerms.modified).getString());
+			updateDate = extractDate(r.getProperty(DCTerms.modified));
 		if (r.hasProperty(DCTerms.rights))
 			rights = r.getProperty(DCTerms.rights).getString();
 
@@ -781,8 +793,15 @@ public class DCATAPDeserializer implements IDCATAPDeserialize {
 
 	}
 
-	public Pattern getDatasetPattern() {
-		return datasetPattern;
+	public Pattern getDatasetPattern(DCATAPFormat format) {
+
+		switch (format) {
+
+		case TURTLE:
+			return turtleDatasetPattern;
+		default:
+			return rdfDatasetPattern;
+		}
 	}
 
 }
