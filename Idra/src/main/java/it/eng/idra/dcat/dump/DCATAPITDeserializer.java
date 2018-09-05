@@ -263,9 +263,9 @@ public class DCATAPITDeserializer extends DCATAPDeserializer {
 		return null;
 	}
 
-	@Override
-	public Pattern getDatasetPattern() {
-		return datasetPattern;
-	}
+//	@Override
+//	public Pattern getDatasetPattern() {
+//		return datasetPattern;
+//	}
 
 }

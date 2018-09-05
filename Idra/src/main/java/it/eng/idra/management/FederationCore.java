@@ -38,7 +38,6 @@ import it.eng.idra.beans.odms.ODMSCatalogueType;
 import it.eng.idra.beans.odms.ODMSSynchLock;
 import it.eng.idra.cache.CachePersistenceManager;
 import it.eng.idra.cache.MetadataCacheManager;
-import it.eng.idra.dcat.dump.DCATAPDumpManager;
 import it.eng.idra.odfscheduler.ODFScheduler;
 import it.eng.idra.odfscheduler.SchedulerNotInitialisedException;
 import it.eng.idra.search.EuroVocTranslator;
