@@ -94,6 +94,7 @@ public class SKOSConcept implements Serializable {
 		setPrefLabel(prefLabel != null ? prefLabel : Arrays.asList(new SKOSPrefLabel()));
 	}
 
+	
 	/*
 	 * @Id
 	 * 

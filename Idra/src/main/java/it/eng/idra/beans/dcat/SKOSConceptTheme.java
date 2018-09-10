@@ -40,15 +40,15 @@ public class SKOSConceptTheme extends SKOSConcept {
 	public SKOSConceptTheme() {
 		super();
 	}
-	
+
 	public SKOSConceptTheme(SKOSConcept concept) {
-		super(concept.getPropertyUri(),concept.getPropertyUri(),concept.getPrefLabel(),concept.getNodeID());
+		super(concept.getPropertyUri(), concept.getResourceUri(), concept.getPrefLabel(), concept.getNodeID());
 	}
-	
+
 	public SKOSConceptTheme(String propertyUri, String resourceUri, List<SKOSPrefLabel> prefLabel, String nodeID) {
-		super(propertyUri,resourceUri,prefLabel,nodeID);
+		super(propertyUri, resourceUri, prefLabel, nodeID);
 	}
-	
+
 	public static SKOSConceptTheme jsonToSKOSConcept(JSONObject obj, String propertyUri, String nodeID) {
 
 		return new SKOSConceptTheme(propertyUri, obj.optString("resourceUri"),
@@ -60,5 +60,5 @@ public class SKOSConceptTheme extends SKOSConcept {
 		return new SKOSConceptTheme(propertyUri, (String) doc.getFieldValue("resourceUri"), SKOSPrefLabel
 				.jsonArrayToPrefLabelList(new JSONArray(doc.getFieldValue("prefLabel").toString()), nodeID), nodeID);
 	}
-	
+
 }

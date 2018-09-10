@@ -212,7 +212,8 @@ public class ODMSSynchJob implements InterruptableJob{
 					} else if (node.getNodeType().equals(ODMSCatalogueType.WEB)) {
 						synchWebODMSNode(node);
 					} else if (node.getNodeType().equals(ODMSCatalogueType.DCATDUMP)) {
-						synchDUMPODMSNode(node);
+						// Do nothing for node type DUMP
+//						synchDUMPODMSNode(node);
 					}
 
 				} catch (Exception e) {
