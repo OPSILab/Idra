@@ -1,0 +1,3 @@
+- Fix: Feature request: add link in images categories (#1)
+- Fix: DUMP federation/synchronization bugs for TURTLE format 
+- Fix: Theme/Subject deserialization when prefLabel is not present.
