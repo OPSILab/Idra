@@ -30,7 +30,7 @@ import org.json.JSONObject;
 @Entity
 @Table(name = "subject")
 @DiscriminatorValue("2")
-public class SKOSConceptSubject extends SKOSConcept{
+public class SKOSConceptSubject extends SKOSConcept {
 
 	/**
 	 * 
@@ -40,15 +40,15 @@ public class SKOSConceptSubject extends SKOSConcept{
 	public SKOSConceptSubject() {
 		super();
 	}
-	
+
 	public SKOSConceptSubject(SKOSConcept concept) {
-		super(concept.getPropertyUri(),concept.getPropertyUri(),concept.getPrefLabel(),concept.getNodeID());
+		super(concept.getPropertyUri(), concept.getResourceUri(), concept.getPrefLabel(), concept.getNodeID());
 	}
-	
+
 	public SKOSConceptSubject(String propertyUri, String resourceUri, List<SKOSPrefLabel> prefLabel, String nodeID) {
-		super(propertyUri,resourceUri,prefLabel,nodeID);
+		super(propertyUri, resourceUri, prefLabel, nodeID);
 	}
-	
+
 	public static SKOSConceptSubject jsonToSKOSConcept(JSONObject obj, String propertyUri, String nodeID) {
 
 		return new SKOSConceptSubject(propertyUri, obj.optString("resourceUri"),
@@ -60,5 +60,5 @@ public class SKOSConceptSubject extends SKOSConcept{
 		return new SKOSConceptSubject(propertyUri, (String) doc.getFieldValue("resourceUri"), SKOSPrefLabel
 				.jsonArrayToPrefLabelList(new JSONArray(doc.getFieldValue("prefLabel").toString()), nodeID), nodeID);
 	}
-	
+
 }

@@ -87,7 +87,7 @@ public class DCATAPITDeserializer extends DCATAPDeserializer {
 			description = datasetResource.getRequiredProperty(DCTerms.description).getString();
 
 		// Handle theme concepts
-		theme = deserializeConcept(nodeID, datasetResource, DCAT.theme,SKOSConceptTheme.class);
+		theme = deserializeConcept(nodeID, datasetResource, DCAT.theme, SKOSConceptTheme.class);
 
 		publisher = deserializeFOAFAgent(nodeID, datasetResource.getProperty(DCTerms.publisher));
 
@@ -168,7 +168,12 @@ public class DCATAPITDeserializer extends DCATAPDeserializer {
 		// Iterate over source properties
 		StmtIterator sourceIt = datasetResource.listProperties(DCTerms.source);
 		while (sourceIt.hasNext()) {
-			source.add(sourceIt.next().getString());
+			Statement sourceStm = sourceIt.next();
+			try {
+				source.add(sourceStm.getString());
+			} catch (LiteralRequiredException e) {
+				source.add(sourceStm.getResource().getURI());
+			}
 		}
 
 		// Handle spatial property
@@ -191,7 +196,7 @@ public class DCATAPITDeserializer extends DCATAPDeserializer {
 		}
 
 		// Handle subject concepts
-		subject = deserializeConcept(nodeID, datasetResource, DCTerms.subject,SKOSConceptSubject.class);
+		subject = deserializeConcept(nodeID, datasetResource, DCTerms.subject, SKOSConceptSubject.class);
 
 		// Handle RightsHolder
 		if (datasetResource.hasProperty(DCTerms.rightsHolder))
@@ -263,9 +268,9 @@ public class DCATAPITDeserializer extends DCATAPDeserializer {
 		return null;
 	}
 
-//	@Override
-//	public Pattern getDatasetPattern() {
-//		return datasetPattern;
-//	}
+	// @Override
+	// public Pattern getDatasetPattern() {
+	// return datasetPattern;
+	// }
 
 }
