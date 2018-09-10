@@ -67,17 +67,21 @@ public class DCATDumpConnector implements IODMSConnector {
 		this.node = node;
 		this.nodeID = String.valueOf(node.getId());
 
-		switch (node.getDCATProfile()) {
+		if (node.getDCATProfile() != null) {
+			switch (node.getDCATProfile()) {
 
-		case DCATAP_IT:
-			deserializer = new DCATAPITDeserializer();
-			break;
-		default:
+			case DCATAP_IT:
+				deserializer = new DCATAPITDeserializer();
+				break;
+			default:
+				// If no valid profile was provided, instantiate a base DCATAP Deserializer
+				deserializer = new DCATAPDeserializer();
+				break;
+			}
+			
+		} else
 			// If no profile was provided, instantiate a base DCATAP Deserializer
 			deserializer = new DCATAPDeserializer();
-			break;
-
-		}
 
 	}
 
