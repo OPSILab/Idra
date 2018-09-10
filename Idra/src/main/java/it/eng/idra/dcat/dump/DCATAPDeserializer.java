@@ -32,12 +32,12 @@ import org.apache.jena.rdf.model.LiteralRequiredException;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.Property;
-import org.apache.jena.rdf.model.RDFNode;
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.rdf.model.ResourceFactory;
 import org.apache.jena.rdf.model.ResourceRequiredException;
 import org.apache.jena.rdf.model.Statement;
 import org.apache.jena.rdf.model.StmtIterator;
+import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RiotException;
 import org.apache.jena.shared.PropertyNotFoundException;
 import org.apache.jena.sparql.vocabulary.FOAF;
@@ -69,11 +69,12 @@ import it.eng.idra.utils.CommonUtil;
 
 public class DCATAPDeserializer implements IDCATAPDeserialize {
 
-	private static final Pattern rdfDatasetPattern = Pattern.compile("\\w*<dcat:Dataset rdf:about=\\\"(.*)\\\"");
-	private static final Pattern turtleDatasetPattern = Pattern.compile("<(.*)>\\R\\s*a dcat:Dataset");
+	protected static final Pattern rdfDatasetPattern = Pattern.compile("\\w*<dcat:Dataset rdf:about=\\\"(.*)\\\"");
+	protected static final Pattern turtleDatasetPattern = Pattern.compile("<(.*)>\\R\\s*a dcat:Dataset");
 
-	private static final String GEO_BASE_URI = "http://publications.europa.eu/mdr/authority/place";
-	private static final String GEO_BASE_URI_ALT = "http://www.geonames.org";
+	protected static final String THEME_BASE_URI = "http://publications.europa.eu/resource/authority/data-theme/";
+	protected static final String GEO_BASE_URI = "http://publications.europa.eu/mdr/authority/place";
+	protected static final String GEO_BASE_URI_ALT = "http://www.geonames.org";
 
 	public DCATAPDeserializer() {
 	}
@@ -313,6 +314,18 @@ public class DCATAPDeserializer implements IDCATAPDeserialize {
 						Statement labelS = labelIt.next();
 						labelList.add(new SKOSPrefLabel(labelS.getLanguage(), labelS.getString(), nodeID));
 					}
+				
+					// For theme, the label is the Final label. e.g. http://publications.europa.eu/resource/authority/data-theme/GOVE	
+				} else if (toExtractP.getURI().equals(DCAT.theme.getURI())) {
+					String extractedLabel = extractThemeFromURI(conceptURI);
+					labelList = new ArrayList<SKOSPrefLabel>();
+					labelList.add(new SKOSPrefLabel("ENG", extractedLabel, nodeID));
+					
+				// For subject, the label is the entire URI. e.g. http://eurovoc.europa.eu/106
+				} else if (toExtractP.getURI().equals(DCTerms.subject.getURI())) {
+					String extractedLabel = conceptURI;
+					labelList = new ArrayList<SKOSPrefLabel>();
+					labelList.add(new SKOSPrefLabel("ENG", extractedLabel, nodeID));
 				}
 
 				try {
@@ -320,13 +333,8 @@ public class DCATAPDeserializer implements IDCATAPDeserialize {
 							.newInstance(new SKOSConcept(toExtractP.getURI(), conceptURI, labelList, nodeID)));
 				} catch (InstantiationException | IllegalAccessException | IllegalArgumentException
 						| InvocationTargetException | NoSuchMethodException | SecurityException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-				// if (!IRIFactory.iriImplementation().create(conceptURI).hasViolation(false))
-				// conceptList.add(extractThemeFromURI(conceptURI));
-				// else
-				// conceptList.add(conceptURI);
 			}
 		}
 		return conceptList;
@@ -782,6 +790,17 @@ public class DCATAPDeserializer implements IDCATAPDeserialize {
 
 	}
 
+	public String extractSubjectFromURI(String uri) {
+
+		Matcher matcher = Pattern
+				.compile("http:\\/\\/eurovoc\\.europa\\.eu(\\/|#)(\\w*)")
+				.matcher(uri);
+		String result = null;
+
+		return (matcher.find() && (result = matcher.group(2)) != null) ? result : "";
+
+	}
+	
 	public String extractLanguageFromURI(String uri) {
 
 		Matcher matcher = Pattern
