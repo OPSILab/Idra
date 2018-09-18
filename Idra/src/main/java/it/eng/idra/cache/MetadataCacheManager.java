@@ -117,6 +117,35 @@ public class MetadataCacheManager {
 		throw new DatasetNotFoundException("Dataset not found in cache for id:" + id);
 
 	}
+	
+	
+	public static DCATDataset getDatasetBySeoID(String seoIdentifier)
+			throws DatasetNotFoundException, IOException, SolrServerException {
+
+		SolrQuery query = new SolrQuery();
+		QueryResponse rsp;
+
+		// Don't touch
+		query.setQuery("(seoIdentifier:\"" + seoIdentifier + "\")");
+
+		query.set("parent_filter", "content_type:" + CacheContentType.dataset);
+		query.set("defType", "edismax");
+		query.addFilterQuery("{!parent which=$parent_filter}");
+		query.setParam("fl", "*,[child parentFilter=$parent_filter limit=1000]");
+
+		rsp = server.query(query);
+		SolrDocumentList docs = rsp.getResults();
+
+		DCATDataset tmp = null;
+		for (SolrDocument doc_tmp : docs) {
+			tmp = DCATDataset.docToDataset(doc_tmp);
+			if (tmp.getSeoIdentifier().equals(seoIdentifier)) {
+				return tmp;
+			}
+		}
+		throw new DatasetNotFoundException("Dataset not found in cache for seoIdentifier:" + seoIdentifier);
+
+	}
 
 	/**
 	 * Searches all Dataset belonging to the passed nodeID on local SOLR cache
@@ -237,7 +266,7 @@ public class MetadataCacheManager {
 		jpaInstance = new CachePersistenceManager();
 
 		// Deletes dataset from DB
-		DCATDataset matchingDataset = getDataset(nodeID, dataset.getId());
+		DCATDataset matchingDataset = getDataset(nodeID, dataset.getLegacyIdentifier());
 		jpaInstance.jpaDeleteDataset(matchingDataset);
 
 		// Deletes dataset from SOLR server
@@ -373,8 +402,15 @@ public class MetadataCacheManager {
 		// Check if dataset is present, otherwise throw a
 		// DatasetNotFoundException
 		// DCATDataset matchingDataset = getDataset(dataset.getId(),false);
-		DCATDataset matchingDataset = getDataset(nodeID, dataset.getOtherIdentifier().get(0).getValue());
+		//DCATDataset matchingDataset = getDataset(nodeID, dataset.getOtherIdentifier().get(0).getValue());
+		DCATDataset matchingDataset = getDataset(nodeID, dataset.getLegacyIdentifier());
 
+		//Settiamo i vecchi id e seoid
+		dataset.setId(matchingDataset.getId());
+		dataset.setSeoIdentifier(matchingDataset.getSeoIdentifier());
+		
+		//TODO: gestire anche le datalets
+		
 		// Update dataset from persistence
 		// jpaInstance.jpaDelete(dataset);
 		jpaInstance.jpaDeleteDataset(matchingDataset);
@@ -1155,15 +1191,15 @@ public class MetadataCacheManager {
 						i++;
 						logger.debug("Persisting " + i);
 
-						cachePersistence.jpaPersistDataset(dataset);
-						server.add(dataset.toDoc());
-
 						/*
 						 * Add distribution RDFs (if any) to the LODCache
 						 */
 						if (enableRdf)
-							handleRDFDistributions(cachePersistence, false, dataset);
+							dataset=handleRDFDistributions(dataset);
 
+						cachePersistence.jpaPersistDataset(dataset);
+						server.add(dataset.toDoc());
+						
 					} catch (EntityExistsException e) {
 						logger.info("Dataset with Id: " + dataset.getId() + " is already present, then skipped");
 						currentSkipped++;
@@ -1215,11 +1251,13 @@ public class MetadataCacheManager {
 						try {
 							i++;
 							logger.info("Persisting dataset: " + i);
+							
+							if (enableRdf)
+								dataset=handleRDFDistributions(dataset);
+						
 							cachePersistence.jpaPersistOrMergeAndCommitDataset(dataset);
 							server.add(dataset.toDoc());
 							server.commit();
-							if (enableRdf)
-								handleRDFDistributions(cachePersistence, true, dataset);
 
 						} catch (RollbackException | IllegalStateException ex) {
 							logger.info("Transaction Failed while committing dataset with Id: " + dataset.getId()
@@ -1322,18 +1360,16 @@ public class MetadataCacheManager {
 
 	}
 
-	private static void handleRDFDistributions(CachePersistenceManager cachePersistence, boolean getTransaction,
-			DCATDataset dataset) {
+	private static DCATDataset handleRDFDistributions(DCATDataset dataset) {
 
 		boolean hasStoredRDF = false;
-		List<DCATDistribution> distributionsToAdd = dataset.getDistributions().stream().filter(x -> x.getId() != null)
-				.collect(Collectors.toList());
+		List<DCATDistribution> distributionsToAdd = dataset.getDistributions().stream().filter(x -> x.isRDF()).collect(Collectors.toList());
 
 		if (distributionsToAdd != null && !distributionsToAdd.isEmpty()) {
 
 			for (DCATDistribution dist : distributionsToAdd) {
 
-				if (dist.isRDF()) {
+				//if (dist.isRDF()) {
 
 					logger.info("Adding new RDF to LODCache - " + dist.getAccessURL().getValue());
 					try {
@@ -1350,7 +1386,7 @@ public class MetadataCacheManager {
 							hasStoredRDF = true;
 							dist.setStoredRDF(true);
 
-							cachePersistence.jpaUpdateDistribution(dist, getTransaction);
+							//cachePersistence.jpaUpdateDistribution(dist, getTransaction);
 							logger.info(
 									"Adding new RDF to LODCache - " + dist.getAccessURL().getValue() + " -Successful");
 						} else {
@@ -1365,8 +1401,6 @@ public class MetadataCacheManager {
 								+ e.getMessage() + "\n Then this RDF was skipped and not stored on LODCache");
 
 					}
-
-				}
 			}
 
 		}
@@ -1375,11 +1409,12 @@ public class MetadataCacheManager {
 		 * Update the hasStored flag of the dataset, if there was at least one
 		 * distribution with RDF stored in LODCache
 		 */
-		if (hasStoredRDF) {
+		if (hasStoredRDF) 
 			dataset.setHasStoredRDF(hasStoredRDF);
-			cachePersistence.jpaUpdateDataset(dataset, getTransaction);
-		}
+			//cachePersistence.jpaUpdateDataset(dataset, getTransaction);
+//		}
 		distributionsToAdd = null;
+		return dataset;
 
 	}
 
