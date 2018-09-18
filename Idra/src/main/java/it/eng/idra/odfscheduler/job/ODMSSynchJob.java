@@ -87,7 +87,7 @@ public class ODMSSynchJob implements InterruptableJob{
 		try {
 			logger.info("Starting synch job for catalogue: "+context.getJobDetail().getJobDataMap().get("nodeID"));
 			ODMSCatalogue node = ODMSManager.getODMSCatalogue((int) context.getJobDetail().getJobDataMap().get("nodeID"));
-			if (!node.isFederating() && node.isUnlocked()) {
+			if (!node.isFederating() && node.isUnlocked() && node.isActive()) {
 				node.setSynchLock(ODMSSynchLock.PERIODIC);
 				ODMSManager.updateODMSCatalogue(node, false);
 				try {
@@ -189,8 +189,7 @@ public class ODMSSynchJob implements InterruptableJob{
 
 				try {
 
-					if (!node.getNodeType().equals(ODMSCatalogueType.WEB)
-							&& !node.getNodeType().equals(ODMSCatalogueType.DCATDUMP)) {
+					if (!node.getNodeType().equals(ODMSCatalogueType.DCATDUMP)) {
 
 						if (!node.getNodeType().equals(ODMSCatalogueType.CKAN))
 							presentDatasets = MetadataCacheManager.getAllDatasetsByODMSCatalogue(node.getId());
@@ -209,8 +208,6 @@ public class ODMSSynchJob implements InterruptableJob{
 							updatedRDF += ODMSSynchJob.updateDataset(node, dataset);
 						}
 
-					} else if (node.getNodeType().equals(ODMSCatalogueType.WEB)) {
-						synchWebODMSNode(node);
 					} else if (node.getNodeType().equals(ODMSCatalogueType.DCATDUMP)) {
 						// Do nothing for node type DUMP
 //						synchDUMPODMSNode(node);
@@ -347,7 +344,7 @@ public class ODMSSynchJob implements InterruptableJob{
 		logger.info("\n--- Creating dataset ---" + dataset.getId() + " " + dataset.getTitle().getValue() + "\n");
 		try {
 			// MetadataCacheManager.getDataset(dataset.getId(),false);
-			MetadataCacheManager.getDataset(node.getId(), dataset.getOtherIdentifier().get(0).getValue());
+			MetadataCacheManager.getDataset(node.getId(), dataset.getLegacyIdentifier());
 			logger.info("Dataset is already present");
 		} catch (DatasetNotFoundException ex) {
 			// If a dataset is not found, create one

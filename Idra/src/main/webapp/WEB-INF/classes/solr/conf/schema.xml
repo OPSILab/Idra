@@ -102,6 +102,9 @@
 	<field name="legacyIdentifier" type="string" indexed="true"
 		stored="true" required="false" multiValued="false" />
 
+	<field name="seoIdentifier" type="string" indexed="true"
+		stored="true" required="false" multiValued="false" />
+
 	<field name="title" type="string" indexed="true" stored="true"
 		required="false" multiValued="false" />
 	<field name="description" type="text_general" indexed="true"

@@ -26,6 +26,7 @@ import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import javax.persistence.AttributeOverride;
@@ -122,6 +123,7 @@ public class DCATDataset implements Serializable {
 	private List<SKOSConceptSubject> subject;
 
 	private String legacyIdentifier;
+	private String seoIdentifier;
 	// TODO To be Removed
 	// OLD: According to DCAT Specs, the license is at Distribution or Catalog
 	// level
@@ -140,8 +142,8 @@ public class DCATDataset implements Serializable {
 			FOAFAgent rightsHolder, FOAFAgent creator, List<SKOSConceptSubject> subject) {
 
 		super();
-		// setId(UUID.randomUUID().toString());
-		setId(identifier + "-" + nodeID);
+		 setId(UUID.randomUUID().toString()+ "-" + nodeID);
+		//setId(identifier + "-" + nodeID);
 		setNodeID(nodeID);
 		setDistributions(distributions);
 
@@ -206,7 +208,9 @@ public class DCATDataset implements Serializable {
 				StringUtils.isNotBlank(releaseDate) ? releaseDate : "1970-01-01T00:00:00Z"));
 		setUpdateDate(new DCATProperty(DCTerms.modified, RDFS.Literal.getURI(),
 				StringUtils.isNotBlank(updateDate) ? updateDate : "1970-01-01T00:00:00Z"));
+		
 		setIdentifier(new DCATProperty(DCTerms.identifier, RDFS.Literal.getURI(), identifier));
+		
 		setOtherIdentifier(otherIdentifier != null
 				? otherIdentifier.stream()
 						.map(item -> new DCATProperty(
@@ -263,6 +267,8 @@ public class DCATDataset implements Serializable {
 		// : Arrays.asList(new DCATProperty(DCTerms.subject, SKOS.Concept.getURI(),
 		// "")));
 		setSubject(subject);
+		
+//		this.setSeoIdentifier(CommonUtil.extractSeoIdentifier(title, identifier));
 	}
 
 	public DCATDataset(String nodeID, String title, String description, List<DCATDistribution> distributions,
@@ -280,9 +286,28 @@ public class DCATDataset implements Serializable {
 				type, version, versionNotes, rightsHolder, creator, subject);
 
 		this.setLegacyIdentifier(legacyIdentifier);
+		this.setSeoIdentifier(CommonUtil.extractSeoIdentifier(title, getId(),getNodeID()));
 
 	}
 
+	public DCATDataset(String nodeID, String title, String description, List<DCATDistribution> distributions,
+			List<SKOSConceptTheme> theme, FOAFAgent publisher, List<VCardOrganization> contactPoint, List<String> keywords,
+			String accessRights, List<DCTStandard> conformsTo, List<String> documentation, String frequency,
+			List<String> hasVersion, List<String> isVersionOf, String landingPage, List<String> language,
+			List<String> provenance, String releaseDate, String updateDate, String identifier,
+			List<String> otherIdentifier, List<String> sample, List<String> source, DCTLocation spatialCoverage,
+			DCTPeriodOfTime temporalCoverage, String type, String version, List<String> versionNotes,
+			FOAFAgent rightsHolder, FOAFAgent creator, List<SKOSConceptSubject> subject, String legacyIdentifier,String seoID) {
+
+		this(nodeID, title, description, distributions, theme, publisher, contactPoint, keywords, accessRights,
+				conformsTo, documentation, frequency, hasVersion, isVersionOf, landingPage, language, provenance,
+				releaseDate, updateDate, identifier, otherIdentifier, sample, source, spatialCoverage, temporalCoverage,
+				type, version, versionNotes, rightsHolder, creator, subject);
+
+		this.setLegacyIdentifier(legacyIdentifier);
+		this.setSeoIdentifier(seoID);
+
+	}
 	/*
 	 * @Id
 	 * 
@@ -740,10 +765,20 @@ public class DCATDataset implements Serializable {
 		this.legacyIdentifier = legacyIdentifier;
 	}
 
+	public String getSeoIdentifier() {
+		return seoIdentifier;
+	}
+
+	public void setSeoIdentifier(String seoIdentifier) {
+		this.seoIdentifier = seoIdentifier;
+	}
+	
 	/*
 	 * Defines equality principle for a Dataset based on dcatIdentifier + its own
 	 * nodeID Alternatively is used otherIdentifier + nodeID
 	 */
+
+	
 
 	@Override
 	public boolean equals(Object obj) {
@@ -756,7 +791,8 @@ public class DCATDataset implements Serializable {
 			return false;
 		DCATDataset other = (DCATDataset) obj;
 
-		if (this.getId().equals(other.getId())) {
+//		if (this.getId().equals(other.getId())) {
+		if (this.getLegacyIdentifier().equals(other.getLegacyIdentifier())) {
 			return true;
 		} else {
 			return false;
@@ -765,7 +801,7 @@ public class DCATDataset implements Serializable {
 
 	@Override
 	public int hashCode() {
-		return this.getId().hashCode();
+		return this.getLegacyIdentifier().hashCode();
 	}
 
 	public SolrInputDocument toDoc() {
@@ -785,7 +821,7 @@ public class DCATDataset implements Serializable {
 		} catch (Exception e) {
 			doc.addField("legacyIdentifier", "");
 		}
-
+		
 		String desc_tmp = description.getValue();
 		try {
 			while (desc_tmp.getBytes("UTF-8").length >= 32766) {
@@ -920,6 +956,15 @@ public class DCATDataset implements Serializable {
 		if (keywords != null && !keywords.isEmpty())
 			doc.addField("keywords", keywords);
 		
+		try {
+			if(StringUtils.isNotBlank(seoIdentifier))
+				doc.addField("seoIdentifier",seoIdentifier);
+			else
+				doc.addField("seoIdentifier", CommonUtil.extractSeoIdentifier(title.getValue(), id,nodeID));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
 		return doc;
 	}
 
@@ -1002,7 +1047,7 @@ public class DCATDataset implements Serializable {
 		if (StringUtils.isNotBlank(dataset_modified))
 			dataset_modified = CommonUtil.toUtcDate(doc.getFieldValue("updateDate").toString());
 
-		return new DCATDataset(nodeID, doc.getFieldValue("title").toString(),
+		DCATDataset d= new DCATDataset(nodeID, doc.getFieldValue("title").toString(),
 				doc.getFieldValue("description").toString(), distrList, themeList, publisher, contactPointList,
 				(ArrayList<String>) doc.getFieldValue("keywords"), doc.getFieldValue("accessRights").toString(),
 				conformsToList, (ArrayList<String>) doc.getFieldValue("documentation"),
@@ -1014,10 +1059,14 @@ public class DCATDataset implements Serializable {
 				(ArrayList<String>) doc.getFieldValue("sample"), (ArrayList<String>) doc.getFieldValue("source"),
 				spatialCoverage, temporalCoverage, doc.getFieldValue("type").toString(),
 				doc.getFieldValue("version").toString(), (ArrayList<String>) doc.getFieldValue("versionNotes"),
-				rightsHolder, creator, subjectList, doc.getFieldValue("legacyIdentifier").toString());
+				rightsHolder, creator, subjectList, doc.getFieldValue("legacyIdentifier").toString(),doc.getFieldValue("seoIdentifier").toString());
+	
+		d.setId(doc.getFieldValue("id").toString());
+		d.setHasStoredRDF((Boolean) doc.getFieldValue("hasStoredRDF"));
+		return d;
 
 	}
-
+	
 	@Override
 	public String toString() {
 		return "DCATDataset [id=" + id + ", nodeID=" + nodeID + ", title=" + title.getValue() + "identifier="

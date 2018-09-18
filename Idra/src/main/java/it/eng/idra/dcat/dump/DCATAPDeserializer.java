@@ -108,7 +108,7 @@ public class DCATAPDeserializer implements IDCATAPDeserialize {
 		// Properties to be mapped among different CKAN fallback fields
 
 		String title = null, description = null, accessRights = null, frequency = null, landingPage = null,
-				releaseDate = null, updateDate = null, identifier = null, type = null, version = null;
+				releaseDate = null, updateDate = null, identifier = null, type = null, version = null,legacyIdentifier=null;
 
 		List<DCTStandard> conformsTo = null;
 		List<SKOSConceptTheme> theme = new ArrayList<SKOSConceptTheme>();
@@ -242,11 +242,14 @@ public class DCATAPDeserializer implements IDCATAPDeserialize {
 		while (distrIt.hasNext()) {
 			distributionList.add(resourceToDCATDistribution(distrIt.next().getResource(), nodeID));
 		}
-
+		
+		//MOD robcalla 17/09 : adding explicit legacy identifier as the landing page
+		legacyIdentifier=landingPage;
+		
 		mapped = new DCATDataset(nodeID, title, description, distributionList, theme, publisher, contactPointList,
 				keywords, accessRights, conformsTo, documentation, frequency, hasVersion, isVersionOf, landingPage,
 				language, provenance, releaseDate, updateDate, identifier, otherIdentifier, sample, source,
-				spatialCoverage, temporalCoverage, type, version, versionNotes, rightsHolder, creator, subject);
+				spatialCoverage, temporalCoverage, type, version, versionNotes, rightsHolder, creator, subject,legacyIdentifier);
 
 		distributionList = null;
 		contactPointList = null;
