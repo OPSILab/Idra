@@ -267,7 +267,7 @@ Note. Change the port number according to the configuration of
 server.xml file of Tomcat “conf” folder (default 8080)
 
 Through the RDF4J GUI, select “new repository” on the left menu, then
-create a new repository of type **“Native Java Store”** called **“ODF”**.
+create a new repository of type **“Native Java Store”** called **“Idra”**.
 
 ### Configuration
 
@@ -303,7 +303,7 @@ Tomcat “webapps” folder.
              -   **sesameServerURI** with the URL where to find the "repositories" endpoint of RDF4J.  Example: 
              `http\\://localhost\:8080/rdf4j-server/repositories/`
              -  **sesameEndPoint** with the URL where to find the "query" endpoint.                Example:
-             `http\://localhost\:8080/rdf4j-workbench/repositories/ODF/query`
+             `http\://localhost\:8080/rdf4j-workbench/repositories/Idra/query`
    
     -   In **hibernate.properties** file, change the following
         properties:
