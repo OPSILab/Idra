@@ -16,9 +16,15 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 package it.eng.idra.authentication;
+
+import it.eng.idra.utils.PropertyManager;
+import it.eng.idra.utils.idm.fiware.FiwareIDMConnector;
+import it.eng.idra.utils.idm.fiware.configuration.IDMProperty;
+import it.eng.idra.utils.idm.fiware.model.Role;
+import it.eng.idra.utils.idm.fiware.model.UserInfo;
+
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Date;
+import java.util.Set;
 
 import javax.annotation.Priority;
 import javax.ws.rs.NotAuthorizedException;
@@ -28,78 +34,38 @@ import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.Provider;
 
-import it.eng.idra.management.FederationCore;
-
 @Secured
 @Provider
 @Priority(1)
 public class AuthenticationFilter implements ContainerRequestFilter {
 
+	private static final FiwareIDMConnector idm = new FiwareIDMConnector();
+
 	@Override
-    public void filter(ContainerRequestContext requestContext) throws IOException {
-    	
-//		logger.info("FILTRO");
-		
-        // Get the HTTP Authorization header from the request
-        String authorizationHeader = 
-            requestContext.getHeaderString(HttpHeaders.AUTHORIZATION);
-//        logger.info("Here");
-//        logger.info(authorizationHeader);
-        // Check if the HTTP Authorization header is present and formatted correctly 
-        if (authorizationHeader == null || authorizationHeader.equals("undefined") || !authorizationHeader.startsWith("Bearer ")) {
-            throw new NotAuthorizedException("Authorization header must be provided");
-        }
+	public void filter(ContainerRequestContext requestContext) throws IOException {
 
-//        logger.info("Token");
-        // Extract the token from the HTTP Authorization header
-        String token = authorizationHeader.substring("Bearer".length()).trim();
-//        logger.info(token);
-        
-        try {
-        	
-            // Validate the token
-            validateToken(token);
+		String authorizationHeader = requestContext.getHeaderString(HttpHeaders.AUTHORIZATION);
+		if (authorizationHeader == null || authorizationHeader.equals("undefined")
+				|| !authorizationHeader.startsWith("Bearer ")) {
+			throw new NotAuthorizedException("Authorization header must be provided");
+		}
+		String token = authorizationHeader.substring("Bearer".length()).trim();
+		try {
+			validateToken(token);
+		} catch (Exception e) {
+			requestContext.abortWith(Response.status(Response.Status.UNAUTHORIZED).build());
+		}
+	}
 
-        } catch (Exception e) {
-            requestContext.abortWith(
-                Response.status(Response.Status.UNAUTHORIZED).build());
-        }
-    }
+	private void validateToken(String token) throws Exception {
+		UserInfo user = idm.getUserInfo(token);
+		Set<Role> roles = user.getRoles();
+		if (roles != null && !roles.isEmpty()
+				&& roles.contains(new Role(PropertyManager.getProperty(IDMProperty.IDM_ADMIN_ROLE_NAME), null))) {
+			// OK
+		} else {
+			throw new Exception("The User has no Admin role");
+		}
 
-    private void validateToken(String token) throws Exception {
-        // Check if it was issued by the server and if it's not expired
-        // Throw an Exception if the token is invalid
-    	
-//    	int defaultValidationPeriod = Integer.parseInt( FederationCore.getSettings().get("token_validation") );
-    	int defaultValidationPeriod = 3600000;
-    			
-    	ArrayList<LoggedUser> list = FederationCore.getLogUser();
-    	
-    	if(list.size()==0){
-    		throw new Exception();
-    	}
-    	
-    	for(int i=0; i<list.size(); i++){
-    		LoggedUser tmp = list.get(i);
-    		if(tmp.getToken().equals(token)){
-				Date n = new Date();
-				if((n.getTime() - tmp.getCreationDate().getTime()) > defaultValidationPeriod){ //da prendere il default
-					list.remove(i);
-					throw new Exception();
-				}else{
-					tmp.setCreationDate(n);
-					break;
-				}
-			}else if(i==list.size()-1 && !tmp.getToken().equals(token)){
-				throw new Exception();
-			}    		
-    	}
-//		if(tmp.getUsername().equals(username)){
-//		
-//	}else if( i==list.size()-1 && !tmp.getUsername().equals(username)){
-////		logger.info("HERERERRE");
-//		throw new Exception();
-//	}
-   	
-    }
+	}
 }
