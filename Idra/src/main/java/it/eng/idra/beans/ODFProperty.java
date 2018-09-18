@@ -52,8 +52,8 @@ public enum ODFProperty {
 	SESAME_SERVER_URI("sesameServerURI"),
 	SESAME_ENDPOINT("sesameEndPoint"),
 	WEB_CONNECTOR_DEFAULT_STOP_VALUES("webConnectorDefaultStopValues"),
-	ENABLE_STATISTICS("enableStatistics");
-	
+	ENABLE_STATISTICS("enableStatistics"),
+	ENABLE_IDM("idm.enable");
 
 	private final String text;
 

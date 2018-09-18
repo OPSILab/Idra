@@ -15,90 +15,82 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
+
+<%@ page contentType="text/html; charset=UTF-8"%>
+<%@ page language="java" import="java.util.*"%>
+<%@ page import="it.eng.idraportal.utils.PropertyManager"%>
+
 <!doctype html>
 <html lang="en">
 <head>
 
-<!-- <base href=""> -->
 
 <title>Idra - Open Data Federation Platform</title>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-<link href="css/bootstrap-custom.min.css" rel="stylesheet">
-<link href="css/label.min.css" rel="stylesheet">
-<link href="css/table.css" rel="stylesheet">
-<link href="css/spinner.css" rel="stylesheet">
-<link href="css/footer.css" rel="stylesheet">
-<link href="css/gridlist.css" rel="stylesheet">
+<link rel="stylesheet" href="css/bootstrap-custom.min.css">
+<link rel="stylesheet" href="css/label.min.css">
+<link rel="stylesheet" href="css/table.css">
+<link rel="stylesheet" href="css/spinner.css">
+<link rel="stylesheet" href="css/footer.css">
+<link rel="stylesheet" href="css/gridlist.css">
 
-<link href="bower_components/angular-xeditable/dist/css/xeditable.css"
-	rel="stylesheet">
-<link rel="stylesheet"
-	href="bower_components/ng-tags-input/ng-tags-input.min.css">
-<link rel="stylesheet"
-	href="bower_components/ng-tags-input/ng-tags-input.bootstrap.min.css">
-<link
-	href="bower_components/angular-dialog-service/dist/dialogs.min.css"
-	rel="stylesheet">
+<link rel="stylesheet" href="bower_components/angular-xeditable/dist/css/xeditable.css">
+<link rel="stylesheet" href="bower_components/ng-tags-input/ng-tags-input.min.css">
+<link rel="stylesheet" href="bower_components/ng-tags-input/ng-tags-input.bootstrap.min.css">
+<link rel="stylesheet" href="bower_components/angular-dialog-service/dist/dialogs.min.css">
 <!--    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css" rel="stylesheet"> -->
 <!--    Include roboto.css to use the Roboto web font, material.css to include the theme and ripples.css to style the ripple effect -->
 <!--    Non presenti in bower quindi li lascio per ora -->
 
-<link rel="stylesheet"
-	href="bower_components/angular-material/angular-material.min.css">
+<link rel="stylesheet" href="bower_components/angular-material/angular-material.min.css">
 
-<link href="material-bootstrap/css/roboto.min.css" rel="stylesheet">
-<link href="material-bootstrap/css/material-fullpalette.css"
-	rel="stylesheet">
-<link href="material-bootstrap/css/ripples.min.css" rel="stylesheet">
+<link rel="stylesheet" href="material-bootstrap/css/roboto.min.css">
+<link rel="stylesheet" href="material-bootstrap/css/material-fullpalette.css">
+<link rel="stylesheet" href="material-bootstrap/css/ripples.min.css">
 
-<link rel="stylesheet" type="text/css"
-	href="bower_components/ng-img-crop/compile/minified/ng-img-crop.css">
+<link rel="stylesheet" href="bower_components/ng-img-crop/compile/minified/ng-img-crop.css">
+<link rel="stylesheet" href="bower_components/flag-icon-css/css/flag-icon.min.css">
+<link rel="stylesheet" href="bower_components/angular-ui-switch/angular-ui-switch.css">
 
-<link rel="stylesheet" type="text/css"
-	href="bower_components/flag-icon-css/css/flag-icon.min.css">
+<link rel="stylesheet" href="css/flag.css">
+<link rel="stylesheet" href="css/main.css">
+<link rel="stylesheet" href="css/navbar.css">
 
-<link rel="stylesheet" type="text/css"
-	href="bower_components/angular-ui-switch/angular-ui-switch.css">
-
-<link href="css/flag.css" rel="stylesheet">
-<link href="css/main.css" rel="stylesheet">
-<link href="css/navbar.css" rel="stylesheet">
 
 <style type="text/css">
-
-.breadcrumb{
-	background-color:#ffffff;
+.breadcrumb {
+	background-color: #ffffff;
 }
 
 .switch {
-  background: rgb(225, 44, 32);
-  border-color: rgb(225, 44, 32);
+	background: rgb(225, 44, 32);
+	border-color: rgb(225, 44, 32);
 }
 
 .table td.text {
-  max-width: 177px;
+	max-width: 177px;
 }
 
 .table td.text span {
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  display: block;
-  max-width: 100%;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	display: block;
+	max-width: 100%;
 }
 
-.md-chips{
-	font-size:inherit;
+.md-chips {
+	font-size: inherit;
 }
 
 .ace_editor {
 	height: 250px;
 }
 
-.md-chips{
-  box-shadow: 0 0px !important;
+.md-chips {
+	box-shadow: 0 0px !important;
 }
 
 a.disabled {
@@ -171,30 +163,30 @@ a.disabled {
 	margin-right: 10px;
 }
 
-.app-modal-window .modal-dialog{
-  width: 95%;
-  height: 95%;
-/*   background-color:#ffffff; */
+.app-modal-window .modal-dialog {
+	width: 95%;
+	height: 95%;
+	/*   background-color:#ffffff; */
 }
 
-.app-modal-window .modal-content{
-  width: 100%;
-  height: 100%;
-  background-color:rgba(255, 255, 255, 1); 
+.app-modal-window .modal-content {
+	width: 100%;
+	height: 100%;
+	background-color: rgba(255, 255, 255, 1);
 }
 
-.app-modal-window .modal-body{
-  width: 100%;
-  height: 100%;
-/*   background-color:#ffffff; */
+.app-modal-window .modal-body {
+	width: 100%;
+	height: 100%;
+	/*   background-color:#ffffff; */
 }
 
 .st-sort-ascent:before {
-    content: '\25B2';
+	content: '\25B2';
 }
 
 .st-sort-descent:before {
-    content: '\25BC';
+	content: '\25BC';
 }
 
 [ng\:cloak], [ng-cloak], .ng-cloak {
@@ -202,187 +194,205 @@ a.disabled {
 }
 </style>
 
-
+<style type="text/css">
+	div.m-app-loading {
+		position: fixed;
+	}
+	
+	div.m-app-loading div.animated-container {
+		background-color: #FFFFFF;
+		bottom: 0px;
+		left: 0px;
+		opacity: 1.0;
+		position: fixed;
+		right: 0px;
+		top: 0px;
+		z-index: 999999;
+	}
+	
+	div.m-app-loading div.animated-container.ng-leave {
+		opacity: 1.0;
+		transition: all linear 200ms;
+		-webkit-transition: all linear 200ms;
+	}
+	
+	div.m-app-loading div.animated-container.ng-leave-active {
+		opacity: 0;
+	}
+	
+	div.m-app-loading div.messaging {
+		color: #333333;
+		font-family: monospace;
+		left: 0px;
+		position: absolute;
+		right: 0px;
+		text-align: center;
+		top: 30%;
+	}
+	
+	div.m-app-loading h1 {
+		font-size: 26px;
+		line-height: 35px;
+		margin: 0px 0px 20px 0px;
+	}
+	
+	div.m-app-loading p {
+		font-size: 18px;
+		line-height: 14px;
+		margin: 0px 0px 0px 0px;
+	}
+</style>
 
 </head>
 <body>
 
 	<div class="m-app-loading">
-		<style type="text/css">
-div.m-app-loading {
-	position: fixed;
-}
-
-div.m-app-loading div.animated-container {
-	background-color: #FFFFFF;
-	bottom: 0px;
-	left: 0px;
-	opacity: 1.0;
-	position: fixed;
-	right: 0px;
-	top: 0px;
-	z-index: 999999;
-}
-
-div.m-app-loading div.animated-container.ng-leave {
-	opacity: 1.0;
-	transition: all linear 200ms;
-	-webkit-transition: all linear 200ms;
-}
-
-div.m-app-loading div.animated-container.ng-leave-active {
-	opacity: 0;
-}
-
-div.m-app-loading div.messaging {
-	color: #333333;
-	font-family: monospace;
-	left: 0px;
-	position: absolute;
-	right: 0px;
-	text-align: center;
-	top: 30%;
-}
-
-div.m-app-loading h1 {
-	font-size: 26px;
-	line-height: 35px;
-	margin: 0px 0px 20px 0px;
-}
-
-div.m-app-loading p {
-	font-size: 18px;
-	line-height: 14px;
-	margin: 0px 0px 0px 0px;
-}
-</style>
-		<!--         BEGIN: Actual animated container. -->
+	<!--         BEGIN: Actual animated container. -->
 		<div class="animated-container">
 			<div class="messaging">
-			<!-- FESTIVAL -->
-<!-- 								<img class="img-responsive" src="./images/logo.png" -->
-<!-- 									style="margin: 0 auto;"> -->
-<!-- 								<p style="margin-top: 10px;">Loading Open Data -->
-<!-- 								Catalogue</p> -->
-			
-			<!--NO FESTIVAL -->
-
-				<img class="img-responsive " src="images/spinner.gif"
-					style="margin: 0 auto; max-width: 5%;">
-				<p style="margin-top: 1.2em; font-size: 28px;">Loading Idra - Open Data Federation Platform</p>
-					
+				<img class="img-responsive " src="images/spinner.gif" style="margin: 0 auto; max-width: 5%;">
+				<p style="margin-top: 1.2em; font-size: 28px;">Loading Idra -
+					Open Data Federation Platform</p>
 			</div>
 			<!--         END: Actual animated container. -->
 		</div>
 	</div>
 	<!--     END: App-Loading Screen. -->
-<div class="wrapper" style="background-color: #FFFFFF;">
-	<div id="header" ng-controller="HeaderController" ng-cloak="">
-		<div class="us-spinner-wrapper" ng-show="spinneractive">
-			<div us-spinner="{radius:50, width:15, length: 25,color:'#44313f'}"
-				spinner-key="spinner-1"></div>
-		</div>
-		<div class="navbar navbar-default"> 
-			<div class="container-fluid" style="margin: 10px 0px 0px 0px;">
-				<div class="navbar-header">
-				<a class="navbar-brand text-center" href="#/metadata" style="margin-left: 0px">
-					<p class="navbar-text" style="margin-top:-4px;margin-bottom:0px;">Idra - Open Data Federation Platform</p>
-				</a>
-				<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-responsive-collapse">
-			        <span class="icon-bar"></span>
-			        <span class="icon-bar"></span>
-			        <span class="icon-bar"></span>
-			      </button> 
-				</div>
-				<div class="navbar-collapse collapse navbar-responsive-collapse">
-					<ul class="nav navbar-nav navbar-right">
-						<li
-							ng-class="{ active: isActive('/metadata') || isActive('/showDatasets') || isActive('/showDatasetDetail') || isActive('/createDatalet') }"><a
-							href="#/metadata"><strong>Dataset Search</strong></a></li>
-						<li
-							ng-class="{ active: isActive('/sparql') || isActive('/showSparqlResult') }"><a
-							href="#/sparql"><strong>SPARQL Search</strong></a></li>
-						<li ng-class="{ active: isActive('/viewCatalogues')}"><a
-							href="#/viewCatalogues"><strong>Federated Catalogues</strong></a></li>
+	
+	
+	<div class="wrapper" style="background-color: #FFFFFF;">
+<!-- HEADER -->			
+		<div id="header" ng-controller="HeaderController" ng-cloak="">
+			<div class="us-spinner-wrapper" ng-show="spinneractive">
+				<div us-spinner="{radius:50, width:15, length: 25,color:'#44313f'}" spinner-key="spinner-1"></div>
+			</div>
+			
+<!-- NAVBAR -->			
+			<div class="navbar navbar-default">
+				<div class="container-fluid" style="margin: 10px 0px 0px 0px;">
+					<div class="navbar-header">
+						<a class="navbar-brand text-center" href="#/metadata"
+							style="margin-left: 0px">
+							<p class="navbar-text"
+								style="margin-top: -4px; margin-bottom: 0px;">Idra - Open
+								Data Federation Platform</p>
+						</a>
+						<button type="button" class="navbar-toggle" data-toggle="collapse"
+							data-target=".navbar-responsive-collapse">
+							<span class="icon-bar"></span> <span class="icon-bar"></span> <span
+								class="icon-bar"></span>
+						</button>
+					</div>
+					<div class="navbar-collapse collapse navbar-responsive-collapse">
+						<ul class="nav navbar-nav navbar-right">
+							<li
+								ng-class="{ active: isActive('/metadata') || isActive('/showDatasets') || isActive('/showDatasetDetail') || isActive('/createDatalet') }"><a
+								href="#/metadata"><strong>Dataset Search</strong></a></li>
+							<li
+								ng-class="{ active: isActive('/sparql') || isActive('/showSparqlResult') }"><a
+								href="#/sparql"><strong>SPARQL Search</strong></a></li>
+							<li ng-class="{ active: isActive('/viewCatalogues')}"><a
+								href="#/viewCatalogues"><strong>Federated
+										Catalogues</strong></a></li>
 
-						<li ng-if="token!=undefined"
-							ng-class="{ active: isActive('/catalogues') || isActive('/node') || isActive('/configuration') || isActive('/logs') || isActive('/statistics') || isActive('/dataletsManagement')}"
-							dropdown><a href class="dropdown-toggle" dropdown-toggle><strong>Administration</strong><b
-								class="caret"></b></a>
-							<ul class="dropdown-menu">
-								<li
-									ng-class="{ active: isActive('/catalogues') || isActive('/addNode') }"><a
-									href="#/catalogues"><strong>Manage Catalogues</strong></a></li>
-<!-- 								<li -->
-<!-- 									ng-class="{ active: isActive('/federableNodes') }"><a -->
-<!-- 									href="#federableNodes">Manage Federable Catalogues</a></li> -->
-								<li ng-class="{ active: isActive('/configuration')}"><a
-									href="#/configuration"><strong>Manage Configurations</strong></a></li>
-								<li ng-show="dataletEnabled" ng-class="{ active: isActive('/dataletsManagement')}"><a
-									href="#/dataletsManagement"><strong>Manage Datalets</strong></a></li>
-								<li ng-class="{ active: isActive('/logs')}"><a href="#logs"><strong>View
-										Logs</strong></a></li>
-							</ul></li>
+							<li ng-if="token!=undefined" ng-class="{ active: isActive('/catalogues') || isActive('/node') || isActive('/configuration') || isActive('/logs') || isActive('/statistics') || isActive('/dataletsManagement')}" dropdown>
+								<a href class="dropdown-toggle" dropdown-toggle><strong>Administration</strong><b class="caret"></b></a>
+								<ul class="dropdown-menu">
+									<li ng-class="{ active: isActive('/catalogues') || isActive('/addNode') }">
+										<a href="#/catalogues"><strong>Manage Catalogues</strong></a>
+									</li>
+									<!-- 								<li -->
+									<!-- 									ng-class="{ active: isActive('/federableNodes') }"><a -->
+									<!-- 									href="#federableNodes">Manage Federable Catalogues</a></li> -->
+									<li ng-class="{ active: isActive('/configuration')}">
+										<a href="#/configuration"><strong>Manage
+												Configurations</strong></a>
+									</li>
+									<li ng-show="dataletEnabled" ng-class="{ active: isActive('/dataletsManagement')}">
+										<a href="#/dataletsManagement"><strong>Manage
+												Datalets</strong></a>
+									</li>
+									<li ng-class="{ active: isActive('/logs')}">
+										<a href="#logs"><strong>View Logs</strong></a>
+									</li>
+								</ul>
+							</li>
+							
 							<li class="loginBtns">
 								<form ng-if="token==undefined" class="navbar-form"
 									ng-controller="LoginCtrl">
-									<button type="button" class="btn btn-default"
-										ng-click="signIn()">Login</button>
+									<button type="button" class="btn btn-default" ng-click="signIn()">
+										Login
+									</button>
 								</form>
+								
 								<form ng-if="token!=undefined" class="navbar-form"
 									ng-controller="LogoutCtrl">
 									<button type="button" class="btn btn-default"
 										ng-click="logout()">Logout</button>
 								</form>
+								
 							</li>
-					</ul>
+						</ul>
+					</div>
+					<form id="loginform" method="GET" ng-if="token==undefined" class="navbar-form" action="<%=PropertyManager.getProperty("idm.fiware.protocol")+ "://" + PropertyManager.getProperty("idm.fiware.host") + "/oauth2/authorize"%>">
+						<input type="hidden" name="response_type" value="code" /> <input
+						type="hidden" name="client_id"
+						value="<%=PropertyManager.getProperty("idm.client.id") %>" /> <input
+						type="hidden" id="loginstate" name="state" value="" /> <input
+						type="hidden" name="redirect_uri"
+						value="<%=PropertyManager.getProperty("idm.redirecturi") %>" />
+					</form>
+					
 				</div>
 			</div>
+<!-- END NAVBAR -->	
+		
 		</div>
-	</div>
+<!-- END HEADER -->	
 
-		<div id="content" class="container-fluid" ng-cloak=""
-		ng-controller="ContentCTRL">
-		<div class="us-spinner-wrapper" ng-show="spinneractive">
-			<div us-spinner="{radius:50, width:15, length: 25,color:'#44313f'}"
-				spinner-key="spinner-1"></div>
-		</div>
-		<div class="col-md-10 col-md-offset-1" ng-controller="AlertCtrl">
-			<div class="col-md-6 col-md-offset-3">
-				<alert type='{{alertType}}' style="text-align:center"
-					ng-show="alert" close="closeAlert()" dismiss-on-timeout="3000">
-				{{textAlert}} </alert>
+		<div id="content" class="container-fluid" ng-cloak="" ng-controller="ContentCTRL">
+			
+			<div class="us-spinner-wrapper" ng-show="spinneractive">
+				<div us-spinner="{radius:50, width:15, length: 25,color:'#44313f'}" spinner-key="spinner-1"></div>
+			</div>
+			<div class="col-md-10 col-md-offset-1" ng-controller="AlertCtrl">
+				<div class="col-md-6 col-md-offset-3">
+					<alert type='{{alertType}}' style="text-align:center" ng-show="alert" close="closeAlert()" dismiss-on-timeout="3000">
+					{{textAlert}} </alert>
+				</div>
+			</div>
+
+			<div class="col-md-10 col-md-offset-1">
+				<div ng-view></div>
 			</div>
 		</div>
-		
-		<div class="col-md-10 col-md-offset-1">
-			<div ng-view></div>
+		<div class="push"></div>
+
+	</div>
+<!--  END WRAPPER -->
+<!-- FOOTER -->
+	<div class="footer" style="display: none">
+		<div class="col-md-12 col-lg-12 col-sm-12">
+			<div class="col-md-4 col-lg-4 col-sm-4"></div>
+			<div class="col-md-4 col-lg-4 col-sm-4">
+				<a href="https://www.eng.it/" target="_blank"><img
+					class="img-responsive center-block footerImages small-margin"
+					ng-src="images/logo_eng-100.jpg" /></a>
+			</div>
+			<div class="col-md-4 col-lg-4 col-sm-4"></div>
+		</div>
+		<div class="col-md-12 col-lg-12 col-sm-12 text-center copyright">
+			<div class="col-md-4 col-lg-4 col-sm-4"></div>
+			<div class="col-md-4 col-lg-4 col-sm-4">
+				<p>Copyright &copy;Engineering 2018.</p>
+			</div>
+			<div class="col-md-4 col-lg-4 col-sm-4">
+				<a class="pull-right" href="#/credits">Credits</a>
+			</div>
 		</div>
 	</div>
-	<div class="push"></div>
-	
-</div>
-
-<div class="footer" style="display:none">
-					<div class="col-md-12 col-lg-12 col-sm-12">
-                        <div class="col-md-4 col-lg-4 col-sm-4" >
-                        </div>
-                        <div class="col-md-4 col-lg-4 col-sm-4" >
-                                <a href="https://www.eng.it/" target="_blank"><img class="img-responsive center-block footerImages small-margin"
-                                        ng-src="images/logo_eng-100.jpg" /></a>
-                        </div>
-                        <div class="col-md-4 col-lg-4 col-sm-4">
-                        </div>
-                     </div>
-                    <div class="col-md-12 col-lg-12 col-sm-12 text-center copyright">
-                    	<div class="col-md-4 col-lg-4 col-sm-4" >
-                        </div>
-						<div class="col-md-4 col-lg-4 col-sm-4" ><p>Copyright &copy;Engineering 2018.</p></div>
-						<div class="col-md-4 col-lg-4 col-sm-4" >
-							<a class="pull-right" href="#/credits">Credits</a>
-                        </div>
-					</div>
-</div>
+<!-- END FOOTER -->
 
 
 	<script type="text/ng-template" id="ModalContent.html">
@@ -450,7 +460,7 @@ div.m-app-loading p {
 </div>
 </script>
 
-<script type="text/ng-template" id="ModalEurovoc.html">
+	<script type="text/ng-template" id="ModalEurovoc.html">
 <div class="modal-header">
 	<button type="button" class="close" aria-hidden="true" ng-click="cancel()">x</button>
     <h3 class="modal-title">Eurovoc Languages</h3>
@@ -516,7 +526,7 @@ div.m-app-loading p {
 </div>
 </script>
 
-<script type="text/ng-template" id="ModalContentSingle.html">
+	<script type="text/ng-template" id="ModalContentSingle.html">
 <div class="modal-header">
 	<button type="button" class="close" aria-hidden="true" ng-click="cancel()">x</button>
     <h3 class="modal-title">{{title}}</h3>
@@ -560,7 +570,7 @@ div.m-app-loading p {
 </div>
 </script>
 
-<script type="text/ng-template" id="ModalDistribution.html">
+	<script type="text/ng-template" id="ModalDistribution.html">
 <div class="modal-header">
 	<button type="button" class="close" aria-hidden="true" ng-click="cancel()">x</button>
     <h3 class="modal-title">Distribution Detail</h3>
@@ -653,7 +663,7 @@ div.m-app-loading p {
 
 </script>
 
-<script type="text/ng-template" id="ModalDataletAdmin.html">
+	<script type="text/ng-template" id="ModalDataletAdmin.html">
 <div class="modal-header">
 	<button type="button" class="close" aria-hidden="true" ng-click="cancel()">x</button>
     <h3 class="modal-title">Datalet Detail</h3>
@@ -666,10 +676,10 @@ div.m-app-loading p {
 </div>
 </script>
 
-<script type="text/ng-template" id="ModalDatalet.html">
+	<script type="text/ng-template" id="ModalDatalet.html">
 	<iframe width="100%" height="100%" ng-src="{{iframeURL}}"></iframe>
 </script>
-<script type="text/ng-template" id="deletecatalogue_dialog.html">
+	<script type="text/ng-template" id="deletecatalogue_dialog.html">
 <div class="modal-header dialog-header-confirm">
 	<button type="button" class="close" ng-click="no()">&times;</button>
 	<h4 class="modal-title">
@@ -684,75 +694,44 @@ div.m-app-loading p {
 	<button type="button" class="btn btn-primary" ng-click="no()">No</button>
 </div>
 </script>
-	<script type="text/javascript"
-		src="bower_components/jquery/jquery.js"></script>
 
-	<script type="text/javascript"
-		src="bower_components/angular/angular.js"></script>
-	<script src="bower_components/angular-aria/angular-aria.js"></script>
-	<script src="bower_components/angular-material/angular-material.js"></script>
-
-	<script type="text/javascript"
-		src="bower_components/angular-animate/angular-animate.js"></script>
-	<script type="text/javascript"
-		src="bower_components/angular-route/angular-route.js"></script>
-	<script type="text/javascript"
-		src="bower_components/angular-cookies/angular-cookies.js"></script>
-	<script type="text/javascript"
-		src="bower_components/angular-sanitize/angular-sanitize.js"></script>
-	<script type="text/javascript"
-		src="bower_components/ace-builds/src-noconflict/ace.js"></script>
-	<script type="text/javascript"
-		src="bower_components/angular-ui-ace/ui-ace.js"></script>
-
-	<script type="text/javascript"
-		src="bower_components/angular-bootstrap/ui-bootstrap.js"></script>
-
-	<script type="text/javascript"
-		src="bower_components/ace-builds/src-noconflict/ext-language_tools.js"></script>
-	<script type="text/javascript"
-		src="bower_components/angular-bootstrap/ui-bootstrap-tpls.js"></script>
-	<script type="text/javascript"
-		src="bower_components/angular-smart-table/dist/smart-table.js"></script>
-	<script type="text/javascript"
-		src="bower_components/angular-xeditable/dist/js/xeditable.js"></script>
-	<script type="text/javascript"
-		src="bower_components/spin.js/spin.js"></script>
-
-	<script type="text/javascript"
-		src="bower_components/angular-spinner/angular-spinner.js"></script>
-
-	<script type="text/javascript"
-		src="bower_components/angular-dialog-service/dist/dialogs.js"></script>
-	<script type="text/javascript"
-		src="bower_components/angular-md5/angular-md5.js"></script>
-	<script type="text/javascript"
-		src="bower_components/zeroclipboard/dist/ZeroClipboard.js"></script>
-	<script type="text/javascript"
-		src="bower_components/angular-zeroclipboard/dist/angular-zeroclipboard.min.js"></script>
-
-	<script type="text/javascript"
-		src="bower_components/ng-tags-input/ng-tags-input.js"></script>
-
-	<script type="text/javascript"
-		src="bower_components/ng-img-crop/compile/minified/ng-img-crop.js"></script>
-	<script type="text/javascript"
-		src="bower_components/angular-utils-pagination/dirPagination.js"></script>
-
-	<script src="bower_components/marked/lib/marked.js"></script>
-	<script src="bower_components/angular-marked/dist/angular-marked.js"></script>
-	<script src="bower_components/angular-file-saver/dist/angular-file-saver.bundle.js"></script>
-	<script src="bower_components/ng-country-select/dist/ng-country-select.js"></script>
+	<script type="text/javascript" src="bower_components/jquery/jquery.js"></script>
+	<script type="text/javascript" src="bower_components/angular/angular.js"></script>
+	<script type="text/javascript" src="bower_components/angular-aria/angular-aria.js"></script>
+	<script type="text/javascript" src="bower_components/angular-material/angular-material.js"></script>
+	<script type="text/javascript" src="bower_components/angular-animate/angular-animate.js"></script>
+	<script type="text/javascript" src="bower_components/angular-route/angular-route.js"></script>
+	<script type="text/javascript" src="bower_components/angular-cookies/angular-cookies.js"></script>
+	<script type="text/javascript" src="bower_components/angular-sanitize/angular-sanitize.js"></script>
+	<script type="text/javascript" src="bower_components/ace-builds/src-noconflict/ace.js"></script>
+	<script type="text/javascript" src="bower_components/angular-ui-ace/ui-ace.js"></script>
+	<script type="text/javascript" src="bower_components/angular-bootstrap/ui-bootstrap.js"></script>
+	<script type="text/javascript" src="bower_components/ace-builds/src-noconflict/ext-language_tools.js"></script>
+	<script type="text/javascript" src="bower_components/angular-bootstrap/ui-bootstrap-tpls.js"></script>
+	<script type="text/javascript" src="bower_components/angular-smart-table/dist/smart-table.js"></script>
+	<script type="text/javascript" src="bower_components/angular-xeditable/dist/js/xeditable.js"></script>
+	<script type="text/javascript" src="bower_components/spin.js/spin.js"></script>
+	<script type="text/javascript" src="bower_components/angular-spinner/angular-spinner.js"></script>
+	<script type="text/javascript" src="bower_components/angular-dialog-service/dist/dialogs.js"></script>
+	<script type="text/javascript" src="bower_components/angular-md5/angular-md5.js"></script>
+	<script type="text/javascript" src="bower_components/zeroclipboard/dist/ZeroClipboard.js"></script>
+	<script type="text/javascript" src="bower_components/angular-zeroclipboard/dist/angular-zeroclipboard.min.js"></script>
+	<script type="text/javascript" src="bower_components/ng-tags-input/ng-tags-input.js"></script>
+	<script type="text/javascript" src="bower_components/ng-img-crop/compile/minified/ng-img-crop.js"></script>
+	<script type="text/javascript" src="bower_components/angular-utils-pagination/dirPagination.js"></script>
+	<script type="text/javascript" src="bower_components/marked/lib/marked.js"></script>
+	<script type="text/javascript" src="bower_components/angular-marked/dist/angular-marked.js"></script>
+	<script type="text/javascript" src="bower_components/angular-file-saver/dist/angular-file-saver.bundle.js"></script>
+	<script type="text/javascript" src="bower_components/ng-country-select/dist/ng-country-select.js"></script>
+	<script type="text/javascript" src="bower_components/angular-ui-switch/angular-ui-switch.min.js"></script>
+	<script type="text/javascript" src="bower_components/underscore/underscore.js"></script>
+	<script type="text/javascript" src="bower_components/angular-underscore-module/angular-underscore-module.js"></script>
 		
-	<script src="bower_components/angular-ui-switch/angular-ui-switch.min.js"></script>
-	<script src="bower_components/underscore/underscore.js"></script>
-	<script src="bower_components/angular-underscore-module/angular-underscore-module.js"></script>
-		
-<!-- 	<script src='bower_components/angular-tag-cloud/src/ng-tag-cloud.js'></script> -->
-<script src="bower_components/d3/d3.min.js"></script>
-<script src="bower_components/d3-cloud/build/d3.layout.cloud.js"></script>
-<script src="bower_components/angular-d3-word-cloud/dist/angular-word-cloud.min.js"></script>
-		
+	<!-- 	<script src='bower_components/angular-tag-cloud/src/ng-tag-cloud.js'></script> -->
+	<script type="text/javascript" src="bower_components/d3/d3.min.js"></script>
+	<script type="text/javascript" src="bower_components/d3-cloud/build/d3.layout.cloud.js"></script>
+	<script type="text/javascript" src="bower_components/angular-d3-word-cloud/dist/angular-word-cloud.min.js"></script>
+	
 	<script type="text/javascript" src="app.js"></script>
 	<script type="text/javascript" src="catalogues/catalogues.services.js"></script>
 	<script type="text/javascript" src="catalogues/catalogues.js"></script>
@@ -763,10 +742,9 @@ div.m-app-loading p {
 	<script type="text/javascript" src="sparql/sparql.js"></script>
 	<script type="text/javascript" src="js/mode-sparql.js"></script>
 	<script type="text/javascript" src="configuration/configuration.js"></script>
-	
+
 	<script type="text/javascript" src="metadata/defaultparameter.services.js"></script>
 	<script type="text/javascript" src="metadata/metadata.services.js"></script>
-	
 	<script type="text/javascript" src="metadata/metadata.js"></script>
 	<script type="text/javascript" src="metadata/datasetResults.js"></script>
 	<script type="text/javascript" src="metadata/datasetDetail.js"></script>
@@ -778,20 +756,35 @@ div.m-app-loading p {
 	<script type="text/javascript" src="logPage/logging.js"></script>
 	<script type="text/javascript" src="credits/credits.js"></script>
 
+	<script type="text/javascript" src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+	<script type="text/javascript" src="material-bootstrap/js/material.min.js"></script>
+	<script type="text/javascript" src="material-bootstrap/js/ripples.min.js"></script>
+	
+<!-- INIT -->
+	<script>
+	
+		$(document).ready(function() {
+			console.log("Welcome.");
+			
+			var sessiontoken = '<%=request.getSession().getAttribute("loggedin")%>';
+			var sessionrefreshtoken = '<%=request.getSession().getAttribute("refresh_token")%>';
+			var sessionusername = '<%=request.getSession().getAttribute("username")%>';
+			document.cookie = "loggedin="+sessiontoken+";path=/";
+			document.cookie = "refresh_token="+sessionrefreshtoken+";path=/";
+			document.cookie = "username="+sessionusername+";path=/";
+			
+			// This command is used to initialize some elements and make them work properly
+			$.material.init();
+			
+			var loc = window.document.location;
+			var postloginuri = loc.protocol+"//"+loc.host+"/"+loc.pathname.split("/")[1]+"<%=PropertyManager.getProperty("idm.postlogin")%>";
+			$('#loginstate').val(btoa(postloginuri));
+			$('#loginstate').parent().find('button').prop('inactive', false);
+			console.log("$location.path(): "+window.location.href);
+			console.log((window.location.href).split('http://').pop().split('.').shift())
+		});
+	</script>
+<!-- END INIT -->
 
-<!-- 	<!-- Your site ends --> 
-	<script type="text/javascript"
-		src="bower_components/bootstrap/dist/js/bootstrap.js"></script>
-
-<!-- 	<script type="text/javascript" -->
-<!-- 		src="material-bootstrap/js/ripples.js"></script> -->
-<!-- 	<script type="text/javascript" -->
-<!-- 		src="material-bootstrap/js/material.js"></script>		 -->
-<!-- 	<script> 
-// 		$(document).ready(function() {
-// 			// This command is used to initialize some elements and make them work properly
-// 			$.material.init();
-// 		});
-<!-- 	</script> -->
 </body>
 </html>

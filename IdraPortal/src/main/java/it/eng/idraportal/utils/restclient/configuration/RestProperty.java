@@ -15,31 +15,24 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package it.eng.idra.utils;
+package it.eng.idraportal.utils.restclient.configuration;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import javax.persistence.AttributeConverter;
+public enum RestProperty {
+	HTTP_PROXY_ENABLED("http.proxyEnabled"),
+	HTTP_PROXY_HOST("http.proxyHost"),
+	HTTP_PROXY_USER("http.proxyUser"),
+	HTTP_PROXY_PORT("http.proxyPort"),
+	HTTP_PROXY_PASSWORD("http.proxyPassword"),
+	HTTP_PROXY_NONPROXYHOSTS("http.nonProxyHosts");
 
-import org.apache.commons.lang3.StringUtils;
+	private final String text;
 
-public class StringListToStringConverter implements AttributeConverter<List<String>, String> {
-
-	@Override
-	public String convertToDatabaseColumn(List<String> attribute) {
-		return attribute == null ? null : String.join(";;", attribute);
+	private RestProperty(final String text) {
+		this.text = text;
 	}
 
 	@Override
-	public List<String> convertToEntityAttribute(String dbData) {
-		if (StringUtils.isBlank(dbData))
-			return new ArrayList<>();
-
-//		try (Stream<String> stream = Arrays.stream(dbData.split(";;"))) {
-//			return stream.map(String::valueOf).collect(Collectors.toList());
-			 return new ArrayList<>(Arrays.asList(dbData.split(",")));
-//		}
+	public String toString() {
+		return text;
 	}
-
 }
