@@ -1,3 +1,5 @@
 - Fix: Feature request: add link in images categories (#1)
 - Fix: DUMP federation/synchronization bugs for TURTLE format 
 - Fix: Theme/Subject deserialization when prefLabel is not present.
+- New Feature: add a different permalink for every dataset (#2).
+- Fix: RDF bug fixed.
