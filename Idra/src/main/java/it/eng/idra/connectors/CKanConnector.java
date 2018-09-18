@@ -435,8 +435,10 @@ public class CKanConnector implements IODMSConnector {
 			identifier = d.getId();
 
 			// Convert date fields into ISO 8601 format with UTC time zone
-			releaseDate = CommonUtil.fixBadUTCDate(d.getMetadata_created());
-			updateDate = CommonUtil.fixBadUTCDate(d.getMetadata_modified());
+			if(StringUtils.isNotBlank(d.getMetadata_created()))
+				releaseDate = CommonUtil.fixBadUTCDate(d.getMetadata_created());
+			if(StringUtils.isNotBlank(d.getMetadata_modified()))
+				updateDate = CommonUtil.fixBadUTCDate(d.getMetadata_modified());
 
 			if (StringUtils.isNotBlank(geographicalIdentifier) || StringUtils.isNotBlank(geographicalName)
 					|| StringUtils.isNotBlank(geometry))

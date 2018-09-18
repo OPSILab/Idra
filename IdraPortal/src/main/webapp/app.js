@@ -152,6 +152,10 @@
 			templateUrl:'metadata/DatasetDetail.html',
 			controller:'DatasetDetailCtrl'
 		}).
+		when('/dataset/:seoID',{
+			templateUrl:'metadata/DatasetDetail.html',
+			controller:'DatasetDetailCtrl'
+		}).
 		when('/datalets',{
 			templateUrl:'datalets/DataletClient.html',
 			controller:'DataletClientCtrl'

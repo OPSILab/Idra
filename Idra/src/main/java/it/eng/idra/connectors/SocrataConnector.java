@@ -56,6 +56,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
+import java.util.UUID;
+
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
@@ -212,7 +214,7 @@ public class SocrataConnector implements IODMSConnector {
 
 		return new DCATDataset(nodeID, title, description, distributionList, themeList, publisher, contactPointList,
 				keywords, null, null, null, null, null, null, landingPage, null, null, issued, modified, identifier,
-				null, null, null, null, null, null, null, null, null, null, null);
+				null, null, null, null, null, null, null, null, null, null, null,identifier);
 	}
 
 	/**

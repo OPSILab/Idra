@@ -880,7 +880,7 @@ public class ClientAPI {
 	public Response getCatalogueDatasets(@Context HttpServletRequest httpRequest,@PathParam("nodeID") String nodeID) {
 
 		try {
-			List<DCATDataset> result = MetadataCacheManager.getAllDatasetsByODMSNode(Integer.parseInt(nodeID));
+			List<DCATDataset> result = MetadataCacheManager.getAllDatasetsByODMSCatalogue(Integer.parseInt(nodeID));
 			return Response.status(Response.Status.OK).entity(GsonUtil.obj2Json(result, GsonUtil.datasetListType)).build();
 
 		} catch (NumberFormatException e) {
@@ -929,7 +929,35 @@ public class ClientAPI {
 			return handleErrorResponse500(e);
 		}
 	}
-	 */
+	*/
+	@GET
+	@Path("/datasets/{seoID}")
+	@Consumes({ MediaType.APPLICATION_JSON })
+	@Produces("application/json")
+	public Response getDatasetBySeoID(@Context HttpServletRequest httpRequest,@PathParam("seoID") String seoID) {
+
+		try {
+			DCATDataset result = MetadataCacheManager.getDatasetBySeoID(seoID);
+			return Response.status(Response.Status.OK).entity(GsonUtil.obj2Json(result, GsonUtil.datasetType)).build();
+
+		} catch (NumberFormatException e) {
+			// TODO Auto-generated catch block
+			return handleErrorResponse500(e);
+		} catch (DatasetNotFoundException e) {
+			// TODO Auto-generated catch block
+			return handleErrorResponse500(e);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			return handleErrorResponse500(e);
+		} catch (SolrServerException e) {
+			// TODO Auto-generated catch block
+			return handleErrorResponse500(e);
+		} catch (GsonUtilException e) {
+			// TODO Auto-generated catch block
+			return handleErrorResponse500(e);
+		}
+	}
+	 
 	private static Response handleErrorResponse500(Exception e) {
 
 		e.printStackTrace();
