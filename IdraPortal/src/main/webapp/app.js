@@ -425,7 +425,10 @@
 	app.controller('LoginCtrl',['$scope','$rootScope','$http','md5','config','$cookies','$window',function($scope,$rootScope,$http,md5,config,$cookies,$window){
 
 		$scope.signIn = function(){
-			$window.location.assign('#/login');
+			if (config["idm.enable"] === "true")
+				$('#loginform').submit();
+			else
+				$window.location.assign('#/login');
 		}
 
 		$scope.username='';
@@ -448,7 +451,7 @@
 
 			$rootScope.startSpin();
 			$http(req).then(function(value){
-				console.log(value);
+				console.log("Login response: " + value);
 				$rootScope.stopSpin();
 				//$rootScope.loggedUsername=$scope.username;
 				$rootScope.token=value.data;
@@ -473,6 +476,8 @@
 	app.controller('LogoutCtrl',['$scope','$rootScope','$http','config','$cookies','$window',function($scope,$rootScope,$http,config,$cookies,$window){
 
 
+		
+		
 		$scope.logout = function(){
 
 			var token = $rootScope.token;
@@ -507,6 +512,38 @@
 				$cookies.remove('loggedin',{"path":"/"});
 				$cookies.remove('username',{"path":"/"});
 //				$rootScope.showAlert('danger',value.data.userMessage);
+				$window.location.assign('#/metadata');
+			});
+		}
+
+		$scope.idmlogout = function(){
+
+			var token = $rootScope.token;
+			var username = $rootScope.loggedUsername;
+
+			var req = {
+					method: 'GET',
+					url: "logout",
+					headers: {
+						'Content-Type': 'application/json',
+						'Authorization': "Bearer " +$rootScope.token
+					}};			
+
+			$rootScope.startSpin();
+			$http(req).then(function(value){
+				$rootScope.stopSpin();
+				$rootScope.loggedUsername = undefined;
+				$rootScope.token=undefined;
+				$cookies.remove('loggedin',{"path":"/"});
+				$cookies.remove('username',{"path":"/"});
+				$window.location.assign('#/metadata');
+			}, 
+			function(value){
+				$rootScope.stopSpin();
+				$rootScope.loggedUsername = undefined;
+				$rootScope.token=undefined;
+				$cookies.remove('loggedin',{"path":"/"});
+				$cookies.remove('username',{"path":"/"});
 				$window.location.assign('#/metadata');
 			});
 

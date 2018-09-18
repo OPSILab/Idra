@@ -138,7 +138,7 @@ public class AdministrationAPI {
 			if (node.isActive() == null) {
 				node.setActive(false);
 			}
-			
+
 			if (node.isActive()) {
 				FederationCore.registerODMSCatalogue(node);
 			} else {
@@ -184,13 +184,13 @@ public class AdministrationAPI {
 				e.printStackTrace();
 				nodes.stream().forEach(node -> node.setMessageCount(0L));
 			}
-			
-			nodes.sort((n1, n2) -> n1.getId()-n2.getId());
+
+			nodes.sort((n1, n2) -> n1.getId() - n2.getId());
 
 			return Response.status(Response.Status.OK).entity(GsonUtil.obj2Json(nodes, GsonUtil.nodeListType)).build();
 
 		} catch (Exception e) {
-			logger.error("Exception raised "+e.getLocalizedMessage());
+			logger.error("Exception raised " + e.getLocalizedMessage());
 			return handleErrorResponse500(e);
 		}
 
@@ -207,29 +207,29 @@ public class AdministrationAPI {
 			node = FederationCore.getODMSCatalogue(Integer.parseInt(id));
 
 			if (node.isActive()) {
-				logger.error("Node "+node.getHost()+" already active");
-				throw new ODMSCatalogueChangeActiveStateException("Node "+node.getHost()+" already active");
+				logger.error("Node " + node.getHost() + " already active");
+				throw new ODMSCatalogueChangeActiveStateException("Node " + node.getHost() + " already active");
 			}
-			
-			if(node.getNodeType().equals(ODMSCatalogueType.DCATDUMP)) {
+
+			if (node.getNodeType().equals(ODMSCatalogueType.DCATDUMP)) {
 				if (StringUtils.isBlank(node.getDumpURL()) && StringUtils.isBlank(node.getDumpString())
 						&& StringUtils.isNotBlank(node.getDumpFilePath())) {
-					
+
 					// Read the content of the file from the file system
 					String dumpString = new String(Files.readAllBytes(Paths.get(node.getDumpFilePath())));
 					node.setDumpString(dumpString);
 				}
 			}
-			
+
 			FederationCore.activateODMSCatalogue(node);
 
 			return Response.status(Response.Status.OK).build();
 
 		} catch (ODMSCatalogueChangeActiveStateException e) {
-			logger.error("Node "+node.getHost()+" raised: "+e.getLocalizedMessage());
+			logger.error("Node " + node.getHost() + " raised: " + e.getLocalizedMessage());
 			return handleBadRequestErrorResponse(e);
 		} catch (Exception e) {
-			logger.error("Node "+node.getHost()+" raised: "+e.getLocalizedMessage());
+			logger.error("Node " + node.getHost() + " raised: " + e.getLocalizedMessage());
 			return handleErrorResponse500(e);
 		}
 	}
@@ -245,8 +245,8 @@ public class AdministrationAPI {
 
 			node = FederationCore.getODMSCatalogue(Integer.parseInt(id));
 			if (!node.isActive()) {
-				logger.error("Node "+node.getHost()+" already inactive");
-				throw new ODMSCatalogueChangeActiveStateException("Node "+node.getHost()+" already inactive");
+				logger.error("Node " + node.getHost() + " already inactive");
+				throw new ODMSCatalogueChangeActiveStateException("Node " + node.getHost() + " already inactive");
 			}
 
 			FederationCore.deactivateODMSCatalogue(node, keepDatasets);
@@ -254,14 +254,14 @@ public class AdministrationAPI {
 			return Response.status(Response.Status.OK).build();
 
 		} catch (ODMSCatalogueChangeActiveStateException e) {
-			logger.error("Node "+node.getHost()+" raised: "+e.getLocalizedMessage());
+			logger.error("Node " + node.getHost() + " raised: " + e.getLocalizedMessage());
 			return handleBadRequestErrorResponse(e);
 		} catch (Exception e) {
-			logger.error("Node "+node.getHost()+" raised: "+e.getLocalizedMessage());
+			logger.error("Node " + node.getHost() + " raised: " + e.getLocalizedMessage());
 			return handleErrorResponse500(e);
 		}
 	}
-	
+
 	@GET
 	@Secured
 	@Path("/catalogues/{nodeId}")
@@ -276,15 +276,15 @@ public class AdministrationAPI {
 					.build();
 
 		} catch (NumberFormatException e) {
-			logger.error("NumberFormatException with parameter "+nodeId);
+			logger.error("NumberFormatException with parameter " + nodeId);
 			return handleBadRequestErrorResponse(e);
 
 		} catch (ODMSCatalogueNotFoundException | NullPointerException e) {
-			logger.error("Exception "+e.getLocalizedMessage());
+			logger.error("Exception " + e.getLocalizedMessage());
 			return handleNodeNotFoundErrorResponse(e, nodeId);
 
 		} catch (Exception e) {
-			logger.error("Exception "+e.getLocalizedMessage());
+			logger.error("Exception " + e.getLocalizedMessage());
 			return handleErrorResponse500(e);
 
 		}
@@ -305,26 +305,28 @@ public class AdministrationAPI {
 			ODMSCatalogue currentNode = ODMSManager.getODMSCatalogue(Integer.parseInt(nodeId));
 
 			if (!requestNode.getNodeType().equals(currentNode.getNodeType())) {
-				logger.error("Update node "+currentNode.getHost()+" type is not allowed");
-				throw new Exception("Update node "+currentNode.getHost()+" type is not allowed");
+				logger.error("Update node " + currentNode.getHost() + " type is not allowed");
+				throw new Exception("Update node " + currentNode.getHost() + " type is not allowed");
 			}
 
 			if (!requestNode.isActive().equals(currentNode.isActive())) {
-				logger.error("Update Active State for node " +currentNode.getHost()+ " is not allowed");
-				throw new ODMSCatalogueChangeActiveStateException("Update Active State for node " +currentNode.getHost()+ " is not allowed");
+				logger.error("Update Active State for node " + currentNode.getHost() + " is not allowed");
+				throw new ODMSCatalogueChangeActiveStateException(
+						"Update Active State for node " + currentNode.getHost() + " is not allowed");
 			}
 
 			if (requestNode.getNodeType().equals(ODMSCatalogueType.DCATDUMP)) {
 				if ((StringUtils.isBlank(currentNode.getDumpURL()) && StringUtils.isNotBlank(requestNode.getDumpURL()))
 						&& (!requestNode.getDumpURL().equals(currentNode.getDumpURL()))) {
-					logger.info("Updating the DUMP Url for node: "+currentNode.getHost());
+					logger.info("Updating the DUMP Url for node: " + currentNode.getHost());
 				} else {
 					String dumpString = IOUtils.toString(fileInputStream, StandardCharsets.UTF_8);
 					if (StringUtils.isNotBlank(dumpString)) {
-						logger.info("Updating dump file for node "+currentNode.getHost());
+						logger.info("Updating dump file for node " + currentNode.getHost());
 					} else if (StringUtils.isBlank(requestNode.getDumpFilePath())
 							&& StringUtils.isNotBlank(currentNode.getDumpFilePath())) {
-						logger.info("Dump file path was empty for "+currentNode.getHost()+" , setting the previous");
+						logger.info(
+								"Dump file path was empty for " + currentNode.getHost() + " , setting the previous");
 						requestNode.setDumpFilePath(currentNode.getDumpFilePath());
 					}
 				}
@@ -332,7 +334,7 @@ public class AdministrationAPI {
 
 			if (requestNode.getNodeType().equals(ODMSCatalogueType.WEB)) {
 				if (requestNode.getSitemap() == null) {
-					logger.error("Sitemap was null, setting the previous for node "+currentNode.getHost());
+					logger.error("Sitemap was null, setting the previous for node " + currentNode.getHost());
 					requestNode.setSitemap(currentNode.getSitemap());
 				}
 			} else {
@@ -340,14 +342,14 @@ public class AdministrationAPI {
 			}
 
 			boolean rescheduleJob = false;
-			if(requestNode.getRefreshPeriod()!=currentNode.getRefreshPeriod()) {
-				rescheduleJob=true;
+			if (requestNode.getRefreshPeriod() != currentNode.getRefreshPeriod()) {
+				rescheduleJob = true;
 			}
-			
+
 			if (requestNode != null) {
 				requestNode.setId(Integer.parseInt(nodeId));
 
-				FederationCore.updateFederatedODMSCatalogue(requestNode,rescheduleJob);
+				FederationCore.updateFederatedODMSCatalogue(requestNode, rescheduleJob);
 
 				return Response.status(Response.Status.OK).build();
 			} else {
@@ -367,7 +369,7 @@ public class AdministrationAPI {
 	}
 
 	@DELETE
-//	@Secured
+	@Secured
 	@Path("/catalogues/{nodeId}")
 	@Produces("application/json")
 	public Response unregisterODMSCatalogue(@PathParam("nodeId") String nodeId) {
@@ -376,9 +378,9 @@ public class AdministrationAPI {
 		try {
 
 			node = FederationCore.getODMSCatalogue(Integer.parseInt(nodeId));
-			logger.info("Deleting ODMS catalogue with host: " + node.getHost() + " and id "+nodeId+" - START");
+			logger.info("Deleting ODMS catalogue with host: " + node.getHost() + " and id " + nodeId + " - START");
 			FederationCore.unregisterODMSCatalogue(node);
-			logger.info("Deleting ODMS node with id: " + node.getHost() + " and id "+nodeId+" - COMPLETE");
+			logger.info("Deleting ODMS node with id: " + node.getHost() + " and id " + nodeId + " - COMPLETE");
 			return Response.status(Response.Status.OK).build();
 
 		} catch (NumberFormatException e) {
@@ -402,7 +404,7 @@ public class AdministrationAPI {
 		int nodeID = Integer.parseInt(nodeId);
 
 		try {
-			logger.info("Forcing the synchronization for node "+nodeId);
+			logger.info("Forcing the synchronization for node " + nodeId);
 			FederationCore.startODMSCatalogueSynch(nodeID);
 			return Response.status(Response.Status.OK).build();
 
@@ -827,7 +829,7 @@ public class AdministrationAPI {
 
 			return Response.status(Response.Status.OK)
 					.entity(GsonUtil.obj2Json(messageList, GsonUtil.messageListType).toString()).build();
-		} catch(ODMSCatalogueNotFoundException e) {
+		} catch (ODMSCatalogueNotFoundException e) {
 			return handleNodeNotFoundErrorResponse(e, nodeId);
 		} catch (Exception e) {
 			return handleErrorResponse500(e);
@@ -838,7 +840,8 @@ public class AdministrationAPI {
 	@Secured
 	@Path("/catalogues/{nodeId}/messages/{messageID}")
 	@Produces("application/json")
-	public Response getODMSCatalogueMessage(@PathParam("nodeId") String nodeId, @PathParam("messageID") String messageID) {
+	public Response getODMSCatalogueMessage(@PathParam("nodeId") String nodeId,
+			@PathParam("messageID") String messageID) {
 
 		try {
 			int nodeID = Integer.parseInt(nodeId);
@@ -849,7 +852,7 @@ public class AdministrationAPI {
 			return Response.status(Response.Status.OK)
 					.entity(GsonUtil.obj2Json(message, GsonUtil.messageType).toString()).build();
 
-		} catch(ODMSCatalogueNotFoundException e) {
+		} catch (ODMSCatalogueNotFoundException e) {
 			return handleNodeNotFoundErrorResponse(e, nodeId);
 		} catch (NumberFormatException e) {
 			return handleBadRequestErrorResponse(e);
@@ -872,7 +875,7 @@ public class AdministrationAPI {
 			FederationCore.deleteODMSMessage(nodeID, message_id);
 			return Response.status(Response.Status.OK).build();
 
-		}catch(ODMSCatalogueNotFoundException e) {
+		} catch (ODMSCatalogueNotFoundException e) {
 			return handleNodeNotFoundErrorResponse(e, nodeId);
 		} catch (NumberFormatException e) {
 			return handleBadRequestErrorResponse(e);
@@ -889,12 +892,12 @@ public class AdministrationAPI {
 
 		int nodeID = Integer.parseInt(nodeId);
 		try {
-			
+
 			ODMSManager.getODMSCatalogue(nodeID);
 			FederationCore.deleteAllODMSMessage(nodeID);
 			return Response.status(Response.Status.OK).build();
-		
-		}catch(ODMSCatalogueNotFoundException e) {
+
+		} catch (ODMSCatalogueNotFoundException e) {
 			return handleNodeNotFoundErrorResponse(e, nodeId);
 		} catch (Exception e) {
 			return handleErrorResponse500(e);
@@ -1077,7 +1080,7 @@ public class AdministrationAPI {
 	private static Response handleBadRequestErrorResponse(Exception e) {
 
 		e.printStackTrace();
-		logger.error("Exception "+e.getLocalizedMessage());
+		logger.error("Exception " + e.getLocalizedMessage());
 		ErrorResponse error = new ErrorResponse(String.valueOf(Response.Status.BAD_REQUEST.getStatusCode()),
 				e.getMessage(), e.getClass().getSimpleName(), "The request body is not a valid JSON");
 		return Response.status(Response.Status.BAD_REQUEST).type(MediaType.APPLICATION_JSON).entity(error.toJson())
@@ -1087,7 +1090,7 @@ public class AdministrationAPI {
 	private static Response handlePrefixNotFoundErrorResponse(Exception e, String prefixId) {
 
 		e.printStackTrace();
-		logger.error("Prefix "+prefixId+" raised exception "+e.getLocalizedMessage());
+		logger.error("Prefix " + prefixId + " raised exception " + e.getLocalizedMessage());
 		ErrorResponse error = new ErrorResponse(String.valueOf(Response.Status.NOT_FOUND.getStatusCode()),
 				e.getMessage(), e.getClass().getSimpleName(), "No prefix found with id: " + prefixId);
 		return Response.status(Response.Status.NOT_FOUND).type(MediaType.APPLICATION_JSON).entity(error.toJson())
@@ -1096,7 +1099,7 @@ public class AdministrationAPI {
 
 	private static Response handleNodeNotFoundErrorResponse(Exception e, String nodeId) {
 
-		logger.error("NodeID "+nodeId+" not found: "+e.getLocalizedMessage());
+		logger.error("NodeID " + nodeId + " not found: " + e.getLocalizedMessage());
 		ErrorResponse error = new ErrorResponse(String.valueOf(Response.Status.NOT_FOUND.getStatusCode()),
 				e.getMessage(), e.getClass().getSimpleName(),
 				"The ODMS node does not exist in the federation: " + nodeId);
@@ -1107,7 +1110,7 @@ public class AdministrationAPI {
 	private static Response handleNodeHostNotFoundErrorResponse(Exception e, String nodeHost) {
 
 		e.printStackTrace();
-		logger.error("NodeHost "+nodeHost+" not found: "+e.getLocalizedMessage());
+		logger.error("NodeHost " + nodeHost + " not found: " + e.getLocalizedMessage());
 		ErrorResponse error = new ErrorResponse(String.valueOf(Response.Status.NOT_FOUND.getStatusCode()),
 				e.getMessage(), e.getClass().getSimpleName(),
 				"The ODMS node with host URL: " + nodeHost + " does not exist");
@@ -1118,7 +1121,7 @@ public class AdministrationAPI {
 	private static Response handleNodeForbiddenErrorResponse(Exception e, String nodeHost) {
 
 		e.printStackTrace();
-		logger.error("NodeHost "+nodeHost+" forbidden: "+e.getLocalizedMessage());
+		logger.error("NodeHost " + nodeHost + " forbidden: " + e.getLocalizedMessage());
 		ErrorResponse error = new ErrorResponse(String.valueOf(Response.Status.FORBIDDEN.getStatusCode()),
 				e.getMessage(), e.getClass().getSimpleName(),
 				"The ODMS node with host URL: " + nodeHost + " is forbidden!");
@@ -1129,7 +1132,7 @@ public class AdministrationAPI {
 	private static Response handleNodeOfflineErrorResponse(Exception e, String nodeHost) {
 
 		e.printStackTrace();
-		logger.error("NodeHost "+nodeHost+" offline: "+e.getLocalizedMessage());
+		logger.error("NodeHost " + nodeHost + " offline: " + e.getLocalizedMessage());
 		ErrorResponse error = new ErrorResponse(String.valueOf(Response.Status.FORBIDDEN.getStatusCode()),
 				e.getMessage(), e.getClass().getSimpleName(),
 				"The ODMS node with host URL: " + nodeHost + " is offline!");
