@@ -367,7 +367,7 @@ public class AdministrationAPI {
 	}
 
 	@DELETE
-//	@Secured
+	@Secured
 	@Path("/catalogues/{nodeId}")
 	@Produces("application/json")
 	public Response unregisterODMSCatalogue(@PathParam("nodeId") String nodeId) {
