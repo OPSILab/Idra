@@ -245,10 +245,10 @@ public class OpenDataFederationNativeConnector implements IODMSConnector {
 			}
 		}
 
-		return new DCATDataset(nodeID, title, description, distributionList, themeList, publisher, contactPointList,
+		return new DCATDataset(nodeID,identifier, title, description, distributionList, themeList, publisher, contactPointList,
 				keywords, accessRights, conformsTo, documentation, frequency, hasVersion, isVersionOf, landingPage,
-				language, provenance, releaseDate, updateDate, identifier, otherIdentifier, sample, source,
-				spatialCoverage, temporalCoverage, type, version, versionNotes, rightsHolder, creator, subjectList,identifier);
+				language, provenance, releaseDate, updateDate, otherIdentifier, sample, source,
+				spatialCoverage, temporalCoverage, type, version, versionNotes, rightsHolder, creator, subjectList);
 
 	}
 

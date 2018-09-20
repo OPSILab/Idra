@@ -212,9 +212,9 @@ public class DkanConnector implements IODMSConnector {
 			}
 		}
 
-		return new DCATDataset(nodeID, title, description, distributionList, themeList, publisher, contactPointList,
-				keywords, null, null, null, null, null, null, landingPage, null, null, issued, modified, identifier,
-				null, null, null, null, null, null, null, null, null, null, null,identifier);
+		return new DCATDataset(nodeID,identifier, title, description, distributionList, themeList, publisher, contactPointList,
+				keywords, null, null, null, null, null, null, landingPage, null, null, issued, modified,
+				null, null, null, null, null, null, null, null, null, null, null);
 	}
 
 	/**

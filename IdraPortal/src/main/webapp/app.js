@@ -152,7 +152,7 @@
 			templateUrl:'metadata/DatasetDetail.html',
 			controller:'DatasetDetailCtrl'
 		}).
-		when('/dataset/:seoID',{
+		when('/dataset/:id',{
 			templateUrl:'metadata/DatasetDetail.html',
 			controller:'DatasetDetailCtrl'
 		}).
