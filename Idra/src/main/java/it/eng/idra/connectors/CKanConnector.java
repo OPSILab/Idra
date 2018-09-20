@@ -244,8 +244,7 @@ public class CKanConnector implements IODMSConnector {
 		// Properties to be mapped among different CKAN fallback fields
 
 		String title = null, description = null, accessRights = null, frequency = null, landingPage = null,
-				releaseDate = null, updateDate = null, identifier = null, type = null, version = null,
-				legacyIdentifier = null;
+				releaseDate = null, updateDate = null, identifier = null, type = null, version = null;
 
 		String publisherIdentifier = null, publisherUri = null, publisherName = null, publisherMbox = null,
 				publisherHomepage = null, publisherType = null;
@@ -271,8 +270,6 @@ public class CKanConnector implements IODMSConnector {
 				source = new ArrayList<String>(), versionNotes = new ArrayList<String>();
 
 		List<DCATDistribution> distributionList = new ArrayList<DCATDistribution>();
-
-		legacyIdentifier = d.getName();
 
 		otherIdentifier.add(d.getName());
 
@@ -504,11 +501,10 @@ public class CKanConnector implements IODMSConnector {
 				}
 		}
 
-		mapped = new DCATDataset(nodeID, title, description, distributionList, themeList, publisher, contactPointList,
+		mapped = new DCATDataset(nodeID,identifier, title, description, distributionList, themeList, publisher, contactPointList,
 				keywords, accessRights, conformsTo, documentation, frequency, hasVersion, isVersionOf, landingPage,
-				language, provenance, releaseDate, updateDate, identifier, otherIdentifier, sample, source,
-				spatialCoverage, temporalCoverage, type, version, versionNotes, rightsHolder, creator, subjectList,
-				legacyIdentifier);
+				language, provenance, releaseDate, updateDate, otherIdentifier, sample, source,
+				spatialCoverage, temporalCoverage, type, version, versionNotes, rightsHolder, creator, subjectList);
 
 		distributionList = null;
 		publisher = null;

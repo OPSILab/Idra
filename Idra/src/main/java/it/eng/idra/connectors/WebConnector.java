@@ -124,7 +124,7 @@ public class WebConnector implements IODMSConnector {
 		List<DatasetSelector> distrSelectors = new ArrayList<DatasetSelector>();
 
 		String title = null, description = null, accessRights = null, frequency = null, landingPage = null,
-				releaseDate = null, updateDate = null, identifier = null, type = null, version = null,legacyIdentifier=null;
+				releaseDate = null, updateDate = null, identifier = null, type = null, version = null;
 
 		String publisherIdentifier = null, publisherUri = null, publisherName = null, publisherMbox = null,
 				publisherHomepage = null, publisherType = null;
@@ -408,18 +408,18 @@ public class WebConnector implements IODMSConnector {
 		if (StringUtils.isBlank(updateDate))
 			updateDate = releaseDate;
 		// if (StringUtils.isBlank(landingPage))
-		landingPage = doc.baseUri();
+		//landingPage = doc.baseUri();
 		//MOD robcalla 17/09 -> adding explicit legacyIdentifier as the landingPage of the dataset
-		legacyIdentifier = landingPage;
+		//legacyIdentifier = landingPage;
 		// identifier = title.replaceAll(":|\\s", "-") + "_" +
 		// CommonUtil.parseDate(releaseDate).toEpochSecond();
-		identifier = title.replaceAll(":|\\s", "-") + "_" + UUID.randomUUID().toString();
+		identifier = landingPage;
 		//Adding legacy identifier for WebConnector
 		
-		mapped = new DCATDataset(nodeID, title, description, distributionList, themeList, publisher, contactPointList,
+		mapped = new DCATDataset(nodeID,identifier, title, description, distributionList, themeList, publisher, contactPointList,
 				keywords, accessRights, conformsTo, documentation, frequency, hasVersion, isVersionOf, landingPage,
-				language, provenance, releaseDate, updateDate, identifier, otherIdentifier, sample, source,
-				spatialCoverage, temporalCoverage, type, version, versionNotes, rightsHolder, creator, subjectList,legacyIdentifier);
+				language, provenance, releaseDate, updateDate, otherIdentifier, sample, source,
+				spatialCoverage, temporalCoverage, type, version, versionNotes, rightsHolder, creator, subjectList);
 
 		distributionList = null;
 		publisher = null;

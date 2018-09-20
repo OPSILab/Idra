@@ -65,7 +65,7 @@ public class DCATAPITDeserializer extends DCATAPDeserializer {
 		// Properties to be mapped among different CKAN fallback fields
 
 		String title = null, description = null, accessRights = null, frequency = null, landingPage = null,
-				releaseDate = null, updateDate = null, identifier = null, type = null, version = null, legacyIdentifier=null;
+				releaseDate = null, updateDate = null, identifier = null, type = null, version = null;
 
 		List<DCTStandard> conformsTo = null;
 		List<SKOSConceptTheme> theme = null;
@@ -154,6 +154,8 @@ public class DCATAPITDeserializer extends DCATAPDeserializer {
 
 		if (datasetResource.hasProperty(DCTerms.identifier))
 			identifier = datasetResource.getProperty(DCTerms.identifier).getString();
+		else
+			identifier = landingPage;
 
 		// Iterate over otherIdentifier properties
 		otherIdentifier = deserializeOtherIdentifier(datasetResource);
@@ -212,13 +214,10 @@ public class DCATAPITDeserializer extends DCATAPDeserializer {
 			distributionList.add(resourceToDCATDistribution(distrIt.next().getResource(), nodeID));
 		}
 
-		//MOD robcalla 17/09 : adding explicit legacy identifier as the landing page
-		legacyIdentifier=landingPage;
-		
-		mapped = new DCATDataset(nodeID, title, description, distributionList, theme, publisher, contactPointList,
+		mapped = new DCATDataset(nodeID,identifier, title, description, distributionList, theme, publisher, contactPointList,
 				keywords, accessRights, conformsTo, documentation, frequency, hasVersion, isVersionOf, landingPage,
-				language, provenance, releaseDate, updateDate, identifier, otherIdentifier, sample, source,
-				spatialCoverage, temporalCoverage, type, version, versionNotes, rightsHolder, creator, subject,legacyIdentifier);
+				language, provenance, releaseDate, updateDate, otherIdentifier, sample, source,
+				spatialCoverage, temporalCoverage, type, version, versionNotes, rightsHolder, creator, subject);
 
 		distributionList = null;
 		contactPointList = null;

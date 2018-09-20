@@ -97,7 +97,8 @@ public class MetadataCacheManager {
 		QueryResponse rsp;
 
 		// Don't touch
-		query.setQuery("(id:\"" + id + "\" or legacyIdentifier:\"" + id + "\") and nodeID:" + nodeID);
+		//query.setQuery("(id:\"" + id + "\" or legacyIdentifier:\"" + id + "\") and nodeID:" + nodeID);
+		query.setQuery("(id:\"" + id + "\" or identifier:\"" + id + "\") and nodeID:" + nodeID);
 
 		query.set("parent_filter", "content_type:" + CacheContentType.dataset);
 		query.set("defType", "edismax");
@@ -110,7 +111,7 @@ public class MetadataCacheManager {
 		DCATDataset tmp = null;
 		for (SolrDocument doc_tmp : docs) {
 			tmp = DCATDataset.docToDataset(doc_tmp);
-			if (tmp.getLegacyIdentifier().equals(id) || tmp.getId().equals(id)) {
+			if (tmp.getIdentifier().getValue().equals(id)) {
 				return tmp;
 			}
 		}
@@ -119,14 +120,15 @@ public class MetadataCacheManager {
 	}
 	
 	
-	public static DCATDataset getDatasetBySeoID(String seoIdentifier)
+	public static DCATDataset getDatasetByID(String id)
 			throws DatasetNotFoundException, IOException, SolrServerException {
 
 		SolrQuery query = new SolrQuery();
 		QueryResponse rsp;
 
 		// Don't touch
-		query.setQuery("(seoIdentifier:\"" + seoIdentifier + "\")");
+		//query.setQuery("(id:\"" + id + "\" or seoIdentifier:\"" + id + "\")");
+		query.setQuery("(id:\"" + id + "\")");
 
 		query.set("parent_filter", "content_type:" + CacheContentType.dataset);
 		query.set("defType", "edismax");
@@ -139,11 +141,11 @@ public class MetadataCacheManager {
 		DCATDataset tmp = null;
 		for (SolrDocument doc_tmp : docs) {
 			tmp = DCATDataset.docToDataset(doc_tmp);
-			if (tmp.getSeoIdentifier().equals(seoIdentifier)) {
+			if (tmp.getId().equals(id)) {
 				return tmp;
 			}
 		}
-		throw new DatasetNotFoundException("Dataset not found in cache for seoIdentifier:" + seoIdentifier);
+		throw new DatasetNotFoundException("Dataset not found in cache for seoIdentifier:" + id);
 
 	}
 
@@ -266,7 +268,8 @@ public class MetadataCacheManager {
 		jpaInstance = new CachePersistenceManager();
 
 		// Deletes dataset from DB
-		DCATDataset matchingDataset = getDataset(nodeID, dataset.getLegacyIdentifier());
+		//DCATDataset matchingDataset = getDataset(nodeID, dataset.getLegacyIdentifier());
+		DCATDataset matchingDataset = getDataset(nodeID, dataset.getIdentifier().getValue());
 		jpaInstance.jpaDeleteDataset(matchingDataset);
 
 		// Deletes dataset from SOLR server
@@ -403,11 +406,12 @@ public class MetadataCacheManager {
 		// DatasetNotFoundException
 		// DCATDataset matchingDataset = getDataset(dataset.getId(),false);
 		//DCATDataset matchingDataset = getDataset(nodeID, dataset.getOtherIdentifier().get(0).getValue());
-		DCATDataset matchingDataset = getDataset(nodeID, dataset.getLegacyIdentifier());
+		//DCATDataset matchingDataset = getDataset(nodeID, dataset.getLegacyIdentifier());
+		DCATDataset matchingDataset = getDataset(nodeID, dataset.getIdentifier().getValue());
 
 		//Settiamo i vecchi id e seoid
 		dataset.setId(matchingDataset.getId());
-		dataset.setSeoIdentifier(matchingDataset.getSeoIdentifier());
+		//dataset.setSeoIdentifier(matchingDataset.getSeoIdentifier());
 		
 		//TODO: gestire anche le datalets
 		
@@ -1395,9 +1399,9 @@ public class MetadataCacheManager {
 
 						}
 
-					} catch (IOException e) {
+					} catch (Exception e) {
 
-						logger.error("IOException while adding rdf: " + dist.getAccessURL().getValue() + " "
+						logger.error("Exception while adding rdf: " + dist.getAccessURL().getValue() + " "
 								+ e.getMessage() + "\n Then this RDF was skipped and not stored on LODCache");
 
 					}
