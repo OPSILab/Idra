@@ -17,7 +17,7 @@
  ******************************************************************************/
 angular.module("IdraPlatform").controller('DatasetDetailCtrl',['$scope','$rootScope','$http','config','$anchorScroll','$location','$modal','$sce','$window','dataletsAPI','dialogs','$routeParams',function($scope,$rootScope,$http,config,$anchorScroll,$location,$modal,$sce,$window,dataletsAPI,dialogs,$routeParams){
 	
-	console.log($routeParams.seoID);
+	console.log($routeParams.id);
 	//console.log($routeParams.catalogue);
 	
 	var checkDistributionFormat = function(distribution){
@@ -77,10 +77,11 @@ angular.module("IdraPlatform").controller('DatasetDetailCtrl',['$scope','$rootSc
 		}
 	};
 	
-	if($rootScope.datasetDetail==undefined || $rootScope.datasetDetail.seoIdentifier != $routeParams.seoID){
+	//if($rootScope.datasetDetail==undefined || $rootScope.datasetDetail.seoIdentifier != $routeParams.id){
+	if($rootScope.datasetDetail==undefined || $rootScope.datasetDetail.id != $routeParams.id){
 		var req = {
 			method: 'GET',
-			url: config.CLIENT_SERVICES_BASE_URL+'/datasets/'+$routeParams.seoID,
+			url: config.CLIENT_SERVICES_BASE_URL+'/datasets/'+$routeParams.id,
 			headers: {
 				'Content-Type': 'application/json',
 			}

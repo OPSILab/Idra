@@ -954,13 +954,13 @@ public class ClientAPI {
 	}
 	*/
 	@GET
-	@Path("/datasets/{seoID}")
+	@Path("/datasets/{id}")
 	@Consumes({ MediaType.APPLICATION_JSON })
 	@Produces("application/json")
-	public Response getDatasetBySeoID(@Context HttpServletRequest httpRequest,@PathParam("seoID") String seoID) {
+	public Response getDatasetByID(@Context HttpServletRequest httpRequest,@PathParam("id") String id) {
 
 		try {
-			DCATDataset result = MetadataCacheManager.getDatasetBySeoID(seoID);
+			DCATDataset result = MetadataCacheManager.getDatasetByID(id);
 			return Response.status(Response.Status.OK).entity(GsonUtil.obj2Json(result, GsonUtil.datasetType)).build();
 
 		} catch (NumberFormatException e) {

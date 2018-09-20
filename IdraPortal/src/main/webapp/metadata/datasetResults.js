@@ -341,7 +341,8 @@ angular.module("IdraPlatform").controller('DataSetCtrl',['$scope','$rootScope','
 //		//console.log(JSON.stringify(dataset));
 		$rootScope.datasetDetail=dataset;					
 //		$window.location.assign('#/showDatasetDetail');
-		$window.location.assign('./#/dataset/'+dataset.seoIdentifier);
+		//$window.location.assign('./#/dataset/'+dataset.seoIdentifier);
+		$window.location.assign('./#/dataset/'+dataset.id);
 	}
 
 	$scope.gotoTop = function() {

@@ -28,6 +28,7 @@ import java.time.format.DateTimeParseException;
 import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
 import java.util.Locale;
+import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -298,7 +299,7 @@ public class CommonUtil {
 		}
 		String arr1 [] = internalIdentifier.split("-");
 		logger.debug("seoID: "+seoId+"-"+arr1[arr1.length-2]+"-"+nodeID);
-		return seoId+"-"+arr1[arr1.length-2]+"-"+nodeID;
+		return seoId+"-"+arr1[arr1.length-1]+"-"+nodeID;
 	}
 	
 	
@@ -311,12 +312,4 @@ public class CommonUtil {
 				//.replaceAll("[^\\p{M}]", ""); -> it works also for japanese char but solr doesn't return the proper dataset
 	}
 	
-	
-//	public static void main(String args[]) {
-//		String jap="高度情報通信ネット                  ワーク社会の形成に関す                る予算_平成26年度";
-//		System.out.println(extractSeoIdentifier(jap,"test"));
-//		String h="Helsingin ulkomaalaistaustainen väestö sukupuolen       -        ja syntymämaan/kansalaisuuden mukaan 2004-2016";
-//		System.out.println(extractSeoIdentifier(h,"testasodnoaisnd-saidoaisnd-aosidnoaisnd-oaisndoiasnd-oiasndoaisdn"));
-//		//System.out.println(jap.toLowerCase().replaceAll("[_+-.,!@#$%^*():?=\\\\;&amp;\\/|&gt;&lt;&quot;']"," "));
-//	}
 }
