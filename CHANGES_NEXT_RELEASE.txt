@@ -3,3 +3,4 @@
 - Fix: Theme/Subject deserialization when prefLabel is not present.
 - New Feature: add a different permalink for every dataset (#2).
 - Fix: RDF bug fixed.
+- Fix: The list of federated catalogues, shown on the portal, is wrong. (#6).
