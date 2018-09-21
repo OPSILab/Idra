@@ -620,7 +620,7 @@ public class ClientAPI {
 
 			List<Datalet> existingDatalets = null;
 
-			DCATDataset dataset = MetadataCacheManager.getDataset(Integer.parseInt(nodeID), datasetID);
+			DCATDataset dataset = MetadataCacheManager.getDatasetByID(datasetID);
 			boolean updateSolr = false;
 			for (DCATDistribution d : dataset.getDistributions()) {
 				if (d.getId().equals(distributionID)) {
