@@ -477,7 +477,7 @@
 
 						</td>
 					</tr>
-					<tr ng-show="dataset.spatialCoverage!=undefined">
+					<tr ng-show="dataset.spatialCoverage!=undefined && (dataset.spatialCoverage.geographicalName!='' || dataset.spatialCoverage.geometry!='')">
 						<td><span style="font-weight: bold;">Spatial Coverage:</span></td>
 						<td><span
 							ng-show="dataset.spatialCoverage.geographicalName!=''">{{dataset.spatialCoverage.geographicalName}}</span>
