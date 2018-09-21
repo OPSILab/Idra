@@ -285,7 +285,7 @@ public class CommonUtil {
 		Matcher regexMatcher = regex.matcher(title1);
 		foundMatch = regexMatcher.find();
 		if(!foundMatch) {
-			return internalIdentifier;
+			return internalIdentifier+"-"+nodeID;
 		}
 		
 		String seoId="";
