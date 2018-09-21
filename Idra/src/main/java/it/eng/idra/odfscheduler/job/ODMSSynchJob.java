@@ -344,7 +344,7 @@ public class ODMSSynchJob implements InterruptableJob{
 		logger.info("\n--- Creating dataset ---" + dataset.getId() + " " + dataset.getTitle().getValue() + "\n");
 		try {
 			// MetadataCacheManager.getDataset(dataset.getId(),false);
-			MetadataCacheManager.getDataset(node.getId(), dataset.getIdentifier().getValue());
+			MetadataCacheManager.getDatasetByIdentifier(node.getId(), dataset.getIdentifier().getValue());
 			logger.info("Dataset is already present");
 		} catch (DatasetNotFoundException ex) {
 			// If a dataset is not found, create one

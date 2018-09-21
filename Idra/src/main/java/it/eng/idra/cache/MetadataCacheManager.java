@@ -90,7 +90,7 @@ public class MetadataCacheManager {
 	 * @throws DatasetNotFoundException
 	 * @returns DCatDataset The dataset matching id
 	 */
-	public static DCATDataset getDataset(int nodeID, String id)
+	public static DCATDataset getDatasetByIdentifier(int nodeID, String id)
 			throws DatasetNotFoundException, IOException, SolrServerException {
 
 		SolrQuery query = new SolrQuery();
@@ -98,7 +98,7 @@ public class MetadataCacheManager {
 
 		// Don't touch
 		//query.setQuery("(id:\"" + id + "\" or legacyIdentifier:\"" + id + "\") and nodeID:" + nodeID);
-		query.setQuery("(id:\"" + id + "\" or identifier:\"" + id + "\") and nodeID:" + nodeID);
+		query.setQuery("(identifier:\"" + id + "\") and nodeID:" + nodeID);
 
 		query.set("parent_filter", "content_type:" + CacheContentType.dataset);
 		query.set("defType", "edismax");
@@ -269,7 +269,7 @@ public class MetadataCacheManager {
 
 		// Deletes dataset from DB
 		//DCATDataset matchingDataset = getDataset(nodeID, dataset.getLegacyIdentifier());
-		DCATDataset matchingDataset = getDataset(nodeID, dataset.getIdentifier().getValue());
+		DCATDataset matchingDataset = getDatasetByIdentifier(nodeID, dataset.getIdentifier().getValue());
 		jpaInstance.jpaDeleteDataset(matchingDataset);
 
 		// Deletes dataset from SOLR server
@@ -407,7 +407,7 @@ public class MetadataCacheManager {
 		// DCATDataset matchingDataset = getDataset(dataset.getId(),false);
 		//DCATDataset matchingDataset = getDataset(nodeID, dataset.getOtherIdentifier().get(0).getValue());
 		//DCATDataset matchingDataset = getDataset(nodeID, dataset.getLegacyIdentifier());
-		DCATDataset matchingDataset = getDataset(nodeID, dataset.getIdentifier().getValue());
+		DCATDataset matchingDataset = getDatasetByIdentifier(nodeID, dataset.getIdentifier().getValue());
 
 		//Settiamo i vecchi id e seoid
 		dataset.setId(matchingDataset.getId());
