@@ -144,6 +144,9 @@ public class DCATDataset implements Serializable {
 		super();
 		setId(CommonUtil.extractSeoIdentifier(title, UUID.randomUUID().toString(),nodeID));
 		setNodeID(nodeID);
+		
+		setIdentifier(new DCATProperty(DCTerms.identifier, RDFS.Literal.getURI(), identifier));
+		
 		setDistributions(distributions);
 		setTitle(new DCATProperty(DCTerms.title, RDFS.Literal.getURI(), title));
 		setDescription(new DCATProperty(DCTerms.description, RDFS.Literal.getURI(), description));
@@ -206,9 +209,7 @@ public class DCATDataset implements Serializable {
 				StringUtils.isNotBlank(releaseDate) ? releaseDate : "1970-01-01T00:00:00Z"));
 		setUpdateDate(new DCATProperty(DCTerms.modified, RDFS.Literal.getURI(),
 				StringUtils.isNotBlank(updateDate) ? updateDate : "1970-01-01T00:00:00Z"));
-		
-		setIdentifier(new DCATProperty(DCTerms.identifier, RDFS.Literal.getURI(), identifier));
-		
+			
 		setOtherIdentifier(otherIdentifier != null
 				? otherIdentifier.stream()
 						.map(item -> new DCATProperty(
