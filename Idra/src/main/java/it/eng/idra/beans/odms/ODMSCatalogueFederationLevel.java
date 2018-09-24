@@ -18,5 +18,13 @@
 package it.eng.idra.beans.odms;
 
 public enum ODMSCatalogueFederationLevel {
-	LEVEL_0, LEVEL_1, LEVEL_2, LEVEL_3
+	/*
+	 * LEVEL_0: Catalogue added to the federation, no dataset added, no searches enabled
+	 * LEVEL_1: Catalogue added to the federation, no dataset added, live search enabled
+	 * LEVEL_2: Catalogue added to the federation, dataset added, cache search enabled, synchronization enabled
+	 * LEVEL_3: Catalogue added to the federation, dataset added, live/cache search enabled, synchronization enabled
+	 * LEVEL_4: Catalogue added to the federation, dataset added, cache search enabled, synchronization not enabled
+	 * */
+	LEVEL_0, LEVEL_1, LEVEL_2, LEVEL_3, LEVEL_4
+	
 }
