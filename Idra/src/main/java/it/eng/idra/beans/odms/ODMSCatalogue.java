@@ -19,10 +19,6 @@ package it.eng.idra.beans.odms;
 
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
-import java.util.TimeZone;
-
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -33,17 +29,15 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.JoinColumns;
 import javax.persistence.OneToOne;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
 import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
 import it.eng.idra.beans.dcat.DCATAPFormat;
 import it.eng.idra.beans.dcat.DCATAPProfile;
+import it.eng.idra.beans.orion.OrionConfiguration;
 import it.eng.idra.beans.webscraper.WebScraperSitemap;
 import it.eng.idra.utils.JsonRequired;
 
@@ -156,6 +150,10 @@ public class ODMSCatalogue {
 	@Column(name = "category", nullable = true)
 	private String category;
 
+	@OneToOne(orphanRemoval = true, cascade = { CascadeType.ALL, CascadeType.REMOVE })
+	@JoinColumn(name = "orion_id")
+	private OrionConfiguration orionConfig;
+	
 	// @Transient
 	private DCATAPProfile dcatProfile;
 
@@ -525,6 +523,14 @@ public class ODMSCatalogue {
 
 	public void setCategory(String category) {
 		this.category = category;
+	}
+
+	public OrionConfiguration getOrionConfig() {
+		return orionConfig;
+	}
+
+	public void setOrionConfig(OrionConfiguration orionConfig) {
+		this.orionConfig = orionConfig;
 	}
 
 	public boolean isOnline() {

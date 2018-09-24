@@ -327,6 +327,7 @@ angular.module("IdraPlatform").controller('DatasetDetailCtrl',['$scope','$rootSc
 	$scope.showDatalets = function(datasetID,nodeID,distribution){
 		$rootScope.distributionTitle = distribution.title;
 		$rootScope.datasetTitle = $rootScope.datasetDetail.title;
+		$rootScope.dataletDatasetID = datasetID;
 		$rootScope.datalets=[];
 		
 		var req = {

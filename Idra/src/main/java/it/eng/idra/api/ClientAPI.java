@@ -980,6 +980,34 @@ public class ClientAPI {
 			return handleErrorResponse500(e);
 		}
 	}
+	
+	@GET
+	@Path("executeOrionQuery")
+	@Consumes({ MediaType.APPLICATION_JSON })
+	@Produces("application/json")
+	public Response executeOrionQuery(@Context HttpServletRequest httpRequest,
+			@QueryParam("catalogue") String nodeID,@QueryParam("cbQueryID") String queryID) {
+		ErrorResponse err=null;
+		if(StringUtils.isBlank(nodeID)) {
+			err = new ErrorResponse(String.valueOf(Response.Status.BAD_REQUEST.getStatusCode()), "Missing mandatory query parameter: catalogue", String.valueOf(Response.Status.BAD_REQUEST.getStatusCode()), "Missing mandatory query parameter: catalogue");
+		}
+
+		if(StringUtils.isBlank(queryID)) {
+			err = new ErrorResponse(String.valueOf(Response.Status.BAD_REQUEST.getStatusCode()), "Missing mandatory query parameter: cbQueryID", String.valueOf(Response.Status.BAD_REQUEST.getStatusCode()), "Missing mandatory query parameter: cbQueryID");	
+		}
+		
+		try {
+			return Response.status(Response.Status.NOT_FOUND).entity(GsonUtil.obj2Json(err, GsonUtil.errorResponseSetType)).build();
+		} catch (GsonUtilException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+		}
+		
+		//return Response.status(Response.Status.OK).build();
+		
+	}
+	
 	 
 	private static Response handleErrorResponse500(Exception e) {
 
