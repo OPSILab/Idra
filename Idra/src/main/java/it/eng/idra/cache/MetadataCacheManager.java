@@ -219,32 +219,28 @@ public class MetadataCacheManager {
 	 * @throws DatasetNotFoundException
 	 * @returns List<String> the list of the Datasets ID of the node
 	 */
-	public static List<String> getAllDatasetsIDByODMSCatalogue(int nodeId, boolean nativeID)
+	public static HashMap<String,ArrayList<String>> getCKANDatasetNamesIdentifiers(int nodeId)
 			throws DatasetNotFoundException, IOException, SolrServerException {
 		SolrQuery query = new SolrQuery();
 		QueryResponse rsp;
-		List<String> idList = new ArrayList<String>();
+		HashMap<String,ArrayList<String>> idMap = new HashMap<String,ArrayList<String>>();
 
 		query.setQuery("nodeID:" + nodeId);
 
 		query.set("parent_filter", "content_type:" + "dataset");
 		query.set("defType", "edismax");
 		query.addFilterQuery("{!parent which=$parent_filter}");
-		query.setParam("fl", (nativeID ? "otherIdentifier" : "id") + ",[child parentFilter=$parent_filter limit=1000]");
+		//query.setParam("fl", (nativeID ? "identifier" : "id") + ",[child parentFilter=$parent_filter limit=1000]");
+		query.setParam("fl", "otherIdentifier,identifier"+ ",[child parentFilter=$parent_filter limit=1000]");
 		query.set("rows", "1000000");
 		// query.set("fl", nativeID ? "otherIdentifier" : "id");
 
 		rsp = server.query(query);
 
 		for (SolrDocument doc : rsp.getResults()) {
-
-			if (nativeID)
-				idList.add(((ArrayList<String>) doc.getFieldValue("otherIdentifier")).get(0));
-			else
-				idList.add((String) doc.getFieldValue("id"));
-
+				idMap.put((String) doc.getFieldValue("identifier"),(ArrayList<String>) doc.getFieldValue("otherIdentifier"));
 		}
-		return idList;
+		return idMap;
 	}
 
 	/**
