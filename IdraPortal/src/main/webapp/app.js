@@ -425,7 +425,7 @@
 	app.controller('LoginCtrl',['$scope','$rootScope','$http','md5','config','$cookies','$window',function($scope,$rootScope,$http,md5,config,$cookies,$window){
 
 		$scope.signIn = function(){
-			if (config["idm.enable"] === "true")
+			if (config["idm.authentication.method"] === "FIWARE")
 				$('#loginform').submit();
 			else
 				$window.location.assign('#/login');
@@ -436,15 +436,15 @@
 
 		$scope.login = function(){
 
+			
 			var req = {
 					method: 'POST',
 					url: config.ADMIN_SERVICES_BASE_URL+config.LOGIN_SERVICE,
+					dataType: 'json',
 					headers: {
 						'Content-Type': 'application/json'
 					},
-					data:{
-						//'username':"admin",
-						//'password':md5.createHash("f3st1v4l")						
+					data:{					
 						'username':$scope.username,
 						'password':md5.createHash($scope.password)
 					}};			
@@ -453,7 +453,6 @@
 			$http(req).then(function(value){
 				console.log("Login response: " + value);
 				$rootScope.stopSpin();
-				//$rootScope.loggedUsername=$scope.username;
 				$rootScope.token=value.data;
 				$rootScope.loggedUsername = $scope.username;
 				$cookies.put('loggedin', value.data,{"path":"/"});

@@ -17,7 +17,7 @@
  ******************************************************************************/
 package it.eng.idra.management;
 
-import it.eng.idra.authentication.LoggedUser;
+import it.eng.idra.authentication.basic.LoggedUser;
 import it.eng.idra.beans.ConfigurationParameter;
 import it.eng.idra.beans.DCATThemes;
 import it.eng.idra.beans.Log;
@@ -75,7 +75,6 @@ public class FederationCore {
 	private static CachePersistenceManager jpa;
 	// private static PersistenceManager manageBeansJpa;
 
-	private static ArrayList<LoggedUser> logUser = new ArrayList<LoggedUser>();
 	static Logger logger = LogManager.getLogger(FederationCore.class);
 
 	private static HashMap<String, String> settings = new HashMap<String, String>();
@@ -120,13 +119,7 @@ public class FederationCore {
 	// FederationCore.manageBeansJpa = manageBeans;
 	// }
 
-	public static ArrayList<LoggedUser> getLogUser() {
-		return logUser;
-	}
 
-	public void setLogUser(ArrayList<LoggedUser> logUser) {
-		FederationCore.logUser = logUser;
-	}
 
 	public static HashMap<String, String> getSettings() {
 		return settings;
@@ -159,71 +152,71 @@ public class FederationCore {
 		}
 	}
 
-	public static boolean validatePassword(String username, String password) throws SQLException {
+//	public static boolean validatePassword(String username, String password) throws SQLException {
+//
+//		PersistenceManager manageBeansJpa = new PersistenceManager();
+//		try {
+//			User tmp = manageBeansJpa.getUser(username);
+//			if (!tmp.getPassword().equals(password)) {
+//				return false;
+//			}
+//
+//			return true;
+//		} finally {
+//			manageBeansJpa.jpaClose();
+//		}
+//	}
 
-		PersistenceManager manageBeansJpa = new PersistenceManager();
-		try {
-			User tmp = manageBeansJpa.getUser(username);
-			if (!tmp.getPassword().equals(password)) {
-				return false;
-			}
+//	public static String login(String username, String password)
+//			throws SQLException, NullPointerException, NoSuchAlgorithmException {
+//		PersistenceManager manageBeansJpa = new PersistenceManager();
+//		try {
+//			User tmp = manageBeansJpa.getUser(username);
+//			if (!tmp.getPassword().equals(password)) {
+//
+//				logger.error("Username or password invalid");
+//
+//				throw new NullPointerException("Username or password invalid!");
+//
+//			} else {
+//				Random random = new SecureRandom();
+//				String t = new BigInteger(130, random).toString(32);
+//				String token = CommonUtil.encodePassword(tmp.getUsername() + t);
+//				LoggedUser u = new LoggedUser(tmp.getUsername(), token);
+//				logUser.add(u);
+//				logger.info("Login success");
+//				return token;
+//			}
+//		} finally {
+//			manageBeansJpa.jpaClose();
+//		}
+//	}
 
-			return true;
-		} finally {
-			manageBeansJpa.jpaClose();
-		}
-	}
+//	public static boolean updateUserPassword(String username, String newPassword)
+//			throws SQLException, NoSuchAlgorithmException, InvalidPasswordException {
+//		PersistenceManager manageBeansJpa = new PersistenceManager();
+//		try {
+//			User u = manageBeansJpa.getUser(username);
+//			manageBeansJpa.updateUserPassword(u, newPassword);
+//			return validatePassword(u.getUsername(), newPassword);
+//		} finally {
+//			manageBeansJpa.jpaClose();
+//		}
+//	}
 
-	public static String login(String username, String password)
-			throws SQLException, NullPointerException, NoSuchAlgorithmException {
-		PersistenceManager manageBeansJpa = new PersistenceManager();
-		try {
-			User tmp = manageBeansJpa.getUser(username);
-			if (!tmp.getPassword().equals(password)) {
-
-				logger.error("Username or password invalid");
-
-				throw new NullPointerException("Username or password invalid!");
-
-			} else {
-				Random random = new SecureRandom();
-				String t = new BigInteger(130, random).toString(32);
-				String token = CommonUtil.encodePassword(tmp.getUsername() + t);
-				LoggedUser u = new LoggedUser(tmp.getUsername(), token);
-				logUser.add(u);
-				logger.info("Login success");
-				return token;
-			}
-		} finally {
-			manageBeansJpa.jpaClose();
-		}
-	}
-
-	public static boolean updateUserPassword(String username, String newPassword)
-			throws SQLException, NoSuchAlgorithmException, InvalidPasswordException {
-		PersistenceManager manageBeansJpa = new PersistenceManager();
-		try {
-			User u = manageBeansJpa.getUser(username);
-			manageBeansJpa.updateUserPassword(u, newPassword);
-			return validatePassword(u.getUsername(), newPassword);
-		} finally {
-			manageBeansJpa.jpaClose();
-		}
-	}
-
-	public static void logout(String username) {
-		int remove = -1;
-		for (int i = 0; i < logUser.size(); i++) {
-			if (logUser.get(i).getUsername().equals(username)) {
-				remove = i;
-			}
-		}
-		if (remove >= 0) {
-			logUser.remove(remove);
-		}
-
-		logger.info("Logout success");
-	}
+//	public static void logout(String username) {
+//		int remove = -1;
+//		for (int i = 0; i < logUser.size(); i++) {
+//			if (logUser.get(i).getUsername().equals(username)) {
+//				remove = i;
+//			}
+//		}
+//		if (remove >= 0) {
+//			logUser.remove(remove);
+//		}
+//
+//		logger.info("Logout success");
+//	}
 
 	/*
 	 * ODMS MESSAGES DELEGATE METHODS
@@ -756,4 +749,9 @@ public class FederationCore {
 	// deleteLogsTimer.cancel();
 	// }
 
+	
+	public static Logger getLogger() {
+		return logger;
+	}
+	
 }
