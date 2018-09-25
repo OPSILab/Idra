@@ -25,6 +25,7 @@ import javax.ws.rs.core.Application;
 
 import org.glassfish.jersey.media.multipart.MultiPartFeature;
 
+import it.eng.idra.authentication.AuthenticationManager;
 import it.eng.idra.beans.ODFProperty;
 import it.eng.idra.utils.PropertyManager;
 
@@ -42,11 +43,11 @@ public class ApplicationConfig extends Application {
 		resources.add(it.eng.idra.api.FederationAPIMockup.class);
 		resources.add(org.glassfish.jersey.media.multipart.MultiPartFeature.class);
 		resources.add(it.eng.idra.api.CORSResponseFilter.class);
-		
-		if (Boolean.parseBoolean(PropertyManager.getProperty(ODFProperty.ENABLE_IDM)) == true)
-			resources.add(it.eng.idra.authentication.AuthenticationFilter.class);
-		else
-			resources.add(it.eng.idra.authentication.BasicAuthenticationFilter.class);
+		try {
+			resources.add(AuthenticationManager.getActiveAuthenticationManager().getFilterClass());
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		}
 		
 		return resources;
 	}

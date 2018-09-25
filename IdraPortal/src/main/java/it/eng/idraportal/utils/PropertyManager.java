@@ -21,7 +21,7 @@ import java.io.IOException;
 import java.util.Optional;
 import java.util.Properties;
 
-import it.eng.idraportal.utils.idm.fiware.configuration.IDMProperty;
+import it.eng.idraportal.idm.configuration.IDMProperty;
 import it.eng.idraportal.utils.restclient.configuration.RestProperty;
 
 public class PropertyManager {
@@ -41,18 +41,18 @@ public class PropertyManager {
 	public static String getProperty(String propName) {
 		return props.getProperty(propName);
 	}
-	
-	public static String getProperty(RestProperty propName) {
-		Optional<String> prop = Optional.ofNullable(System.getenv(propName.toString()));
-		return prop.orElse(props.getProperty(propName.toString()));
-	}
-	
-	public static Properties getProperties(){
-		return props;
-	}
 
 	public static String getProperty(IDMProperty propName) {
 		return props.getProperty(propName.toString());
 	}
-	
+
+	public static String getProperty(RestProperty propName) {
+		Optional<String> prop = Optional.ofNullable(System.getenv(propName.toString()));
+		return prop.orElse(props.getProperty(propName.toString()));
+	}
+
+	public static Properties getProperties() {
+		return props;
+	}
+
 }

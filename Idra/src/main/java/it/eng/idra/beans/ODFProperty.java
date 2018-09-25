@@ -18,13 +18,13 @@
 package it.eng.idra.beans;
 
 public enum ODFProperty {
-	IDRA_VERSION("IDRA_VERSION"),
-	IDRA_RELEASE_TIMESTAMP("IDRA_RELEASE_TIMESTAMP"),
-	DB_HOST("DB_HOST"),
-	DB_HOST_MIN("DB_HOST_MIN"),
-	DB_NAME("DB_NAME"),
-	DB_USERNAME("DB_USERNAME"),
-	DB_PASSWORD("DB_PASSWORD"),
+	IDRA_VERSION("idra.version"),
+	IDRA_RELEASE_TIMESTAMP("idra.release.timestamp"),
+	DB_HOST("idra.db.host"),
+	DB_HOST_MIN("idra.db.host.min"),
+	DB_NAME("idra.db.name"),
+	DB_USERNAME("idra.db.user"),
+	DB_PASSWORD("idra.db.password"),
 	HTTP_PROXY_ENABLED("http.proxyEnabled"),
 	HTTP_PROXY_HOST("http.proxyHost"),
 	HTTP_PROXY_USER("http.proxyUser"),
@@ -36,25 +36,26 @@ public enum ODFProperty {
 	HTTPS_PROXY_PORT("https.proxyPort"),
 	HTTPS_PROXY_PASSWORD("https.proxyPassword"),
 	HTTPS_PROXY_NONPROXYHOSTS("https.nonProxyHosts"),
-	LOAD_CACHE_FROM_DB("loadCacheFromDB"),
-	SYNCH_ON_START("synchOnStart"),
-	ODMS_DUMP_FILE_PATH("odmsDumpFilePath"),
-	ODMS_DUMP_FILE_PREFIX("odmsDumpFilePrefix"),
-	DUMP_FILE_PATH("dumpFilePath"),
-	DUMP_FILE_NAME("dumpFileName"),
-	DUMP_FORMAT("dumpFormat"),
-	DUMP_PROFILE("dumpProfile"),
-	DUMP_PERIOD("dumpPeriod"),
-	DUMP_ZIP_FILE("dumpZipFile"),
-	DUMP_ON_START("dumpOnStart"),
-	ENABLE_RDF("enableRdf"),
-	SESAME_REPO_NAME("sesameRepositoryName"),
-	SESAME_SERVER_URI("sesameServerURI"),
-	SESAME_ENDPOINT("sesameEndPoint"),
-	WEB_CONNECTOR_DEFAULT_STOP_VALUES("webConnectorDefaultStopValues"),
-	ENABLE_STATISTICS("enableStatistics"),
-	ENABLE_IDM("idm.enable");
-
+	LOAD_CACHE_FROM_DB("idra.cache.loadfromdb"),
+	SYNCH_ON_START("idra.synch.onstart"),
+	ODMS_DUMP_FILE_PATH("idra.odms.dump.file.path"),
+	ODMS_DUMP_FILE_PREFIX("idra.odms.dump.file.prefix"),
+	DUMP_FILE_PATH("idra.dump.file.path"),
+	DUMP_FILE_NAME("idra.dump.file.name"),
+	DUMP_FORMAT("idra.dump.format"),
+	DUMP_PROFILE("idra.dump.profile"),
+	DUMP_PERIOD("idra.dump.period"),
+	DUMP_ZIP_FILE("idra.dump.file.zip"),
+	DUMP_ON_START("idra.dump.onstart"),
+	ENABLE_RDF("idra.lod.enable"),
+	SESAME_REPO_NAME("idra.lod.repo.name"),
+	SESAME_SERVER_URI("idra.lod.server.uri"),
+	SESAME_ENDPOINT("idra.lod.server.uri.query"),
+	WEB_CONNECTOR_DEFAULT_STOP_VALUES("idra.scraper.defaultStopValues"),
+	ENABLE_STATISTICS("idra.statistics.enable"),
+	AUTHENTICATION_METHOD("idra.authentication.method");
+	
+	
 	private final String text;
 
 	private ODFProperty(final String text) {

@@ -41,6 +41,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import it.eng.idra.beans.ODFProperty;
 import it.eng.idra.beans.dcat.DCATAPFormat;
+import it.eng.idra.beans.dcat.DCATAPProfile;
 import it.eng.idra.beans.dcat.DCATDataset;
 import it.eng.idra.beans.odms.ODMSCatalogue;
 import it.eng.idra.beans.odms.ODMSSynchronizationResult;
@@ -80,7 +81,8 @@ public class DCATDumpConnector implements IODMSConnector {
 			}
 			
 		} else
-			// If no profile was provided, instantiate a base DCATAP Deserializer
+			// If no profile was provided, instantiate a base DCATAP Deserializer and set the profile
+			node.setDCATProfile(DCATAPProfile.DCATAP);
 			deserializer = new DCATAPDeserializer();
 
 	}
