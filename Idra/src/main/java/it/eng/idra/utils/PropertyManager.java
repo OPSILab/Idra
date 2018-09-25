@@ -21,8 +21,8 @@ import java.io.IOException;
 import java.util.Optional;
 import java.util.Properties;
 
+import it.eng.idra.authentication.fiware.configuration.IDMProperty;
 import it.eng.idra.beans.ODFProperty;
-import it.eng.idra.utils.idm.fiware.configuration.IDMProperty;
 import it.eng.idra.utils.restclient.configuration.RestProperty;
 
 public class PropertyManager {

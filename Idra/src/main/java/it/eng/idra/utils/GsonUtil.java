@@ -39,7 +39,7 @@ import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
 import com.google.gson.reflect.TypeToken;
 
-import it.eng.idra.authentication.LoggedUser;
+import it.eng.idra.authentication.basic.LoggedUser;
 import it.eng.idra.beans.*;
 import it.eng.idra.beans.dcat.DCATDataset;
 import it.eng.idra.beans.dcat.DCATProperty;

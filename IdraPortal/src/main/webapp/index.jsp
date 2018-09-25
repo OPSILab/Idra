@@ -16,6 +16,7 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 
+<%@page import="it.eng.idraportal.idm.configuration.IDMProperty"%>
 <%@ page contentType="text/html; charset=UTF-8"%>
 <%@ page language="java" import="java.util.*"%>
 <%@ page import="it.eng.idraportal.utils.PropertyManager"%>
@@ -335,13 +336,13 @@ a.disabled {
 							</li>
 						</ul>
 					</div>
-					<form id="loginform" method="GET" ng-if="token==undefined" class="navbar-form" action="<%=PropertyManager.getProperty("idm.fiware.protocol")+ "://" + PropertyManager.getProperty("idm.fiware.host") + "/oauth2/authorize"%>">
+					<form id="loginform" method="GET" ng-if="token==undefined" class="navbar-form" action="<%=PropertyManager.getProperty(IDMProperty.IDM_PROTOCOL)+ "://" + PropertyManager.getProperty(IDMProperty.IDM_HOST) + "/oauth2/authorize"%>">
 						<input type="hidden" name="response_type" value="code" /> <input
 						type="hidden" name="client_id"
-						value="<%=PropertyManager.getProperty("idm.client.id") %>" /> <input
+						value="<%=PropertyManager.getProperty(IDMProperty.IDM_CLIENT_ID) %>" /> <input
 						type="hidden" id="loginstate" name="state" value="" /> <input
 						type="hidden" name="redirect_uri"
-						value="<%=PropertyManager.getProperty("idm.redirecturi") %>" />
+						value="<%=PropertyManager.getProperty(IDMProperty.IDM_REDIRECT_URI) %>" />
 					</form>
 					
 				</div>
@@ -766,21 +767,28 @@ a.disabled {
 		$(document).ready(function() {
 			console.log("Welcome.");
 			
-			var sessiontoken = '<%=request.getSession().getAttribute("loggedin")%>';
-			var sessionrefreshtoken = '<%=request.getSession().getAttribute("refresh_token")%>';
-			var sessionusername = '<%=request.getSession().getAttribute("username")%>';
-			document.cookie = "loggedin="+sessiontoken+";path=/";
-			document.cookie = "refresh_token="+sessionrefreshtoken+";path=/";
-			document.cookie = "username="+sessionusername+";path=/";
+<%-- 			var sessiontoken = '<%=request.getSession().getAttribute("loggedin")%>'; --%>
+<%-- 			var sessionrefreshtoken = '<%=request.getSession().getAttribute("refresh_token")%>'; --%>
+<%-- 			var sessionusername = '<%=request.getSession().getAttribute("username")%>'; --%>
+// 			if (sessiontoken != "null")
+// 				document.cookie = "loggedin="+sessiontoken+";path=/";
+// 			if (sessionrefreshtoken != "null")
+// 				document.cookie = "refresh_token="+sessionrefreshtoken+";path=/";
+// 			if (sessionusername != "null")
+// 				document.cookie = "username="+sessionusername+";path=/";
 			
 			// This command is used to initialize some elements and make them work properly
 			$.material.init();
 			
 			var loc = window.document.location;
-			var postloginuri = loc.protocol+"//"+loc.host+"/"+loc.pathname.split("/")[1]+"<%=PropertyManager.getProperty("idm.postlogin")%>";
+<%-- 			var postloginuri = loc.protocol+"//"+loc.host+"/"+loc.pathname.split("/")[1]+"<%=PropertyManager.getProperty("idm.postlogin")%>"; --%>
+			
+			// The URI of the PostLogin must be the RedirectUri, that is the Idra Login service
+			var postloginuri = "<%=PropertyManager.getProperty(IDMProperty.IDM_REDIRECT_URI)%>";
+// 			console.log("postloginuri" + postloginuri);
 			$('#loginstate').val(btoa(postloginuri));
 			$('#loginstate').parent().find('button').prop('inactive', false);
-			console.log("$location.path(): "+window.location.href);
+			console.log("$location.path(): "+ window.location.href);
 			console.log((window.location.href).split('http://').pop().split('.').shift())
 		});
 	</script>

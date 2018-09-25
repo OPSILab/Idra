@@ -17,12 +17,18 @@
  ******************************************************************************/
 package it.eng.idra.api;
 
-import it.eng.idra.authentication.LoggedUser;
+import it.eng.idra.authentication.AuthenticationManager;
+import it.eng.idra.authentication.BasicAuthenticationManager;
+import it.eng.idra.authentication.FiwareIDMAuthenticationManager;
 import it.eng.idra.authentication.Secured;
+import it.eng.idra.authentication.basic.LoggedUser;
+import it.eng.idra.authentication.fiware.model.Token;
+import it.eng.idra.authentication.fiware.model.UserInfo;
 import it.eng.idra.beans.Datalet;
 import it.eng.idra.beans.ErrorResponse;
 import it.eng.idra.beans.Log;
 import it.eng.idra.beans.LogsRequest;
+import it.eng.idra.beans.ODFAuthenticationMethod;
 import it.eng.idra.beans.ODFProperty;
 import it.eng.idra.beans.PasswordChange;
 import it.eng.idra.beans.RdfPrefix;
@@ -51,6 +57,9 @@ import it.eng.idra.utils.PropertyManager;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.InetAddress;
+import java.net.URI;
+import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -58,11 +67,14 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.DefaultValue;
+import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
@@ -72,6 +84,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.NewCookie;
 import javax.ws.rs.core.Response;
 
 import org.apache.commons.io.IOUtils;
@@ -572,17 +585,102 @@ public class AdministrationAPI {
 
 	}
 
+	@GET
+	@Path("/login")
+	@Consumes({ MediaType.APPLICATION_JSON })
+	@Produces("text/plain")
+	public Response loginGet(@DefaultValue("") @QueryParam("code") String code,
+			@Context HttpServletRequest httpRequest) {
+
+		try {
+			Object token = null;
+			AuthenticationManager authInstance = AuthenticationManager.getActiveAuthenticationManager();
+
+			switch (ODFAuthenticationMethod.valueOf(PropertyManager.getProperty(ODFProperty.AUTHENTICATION_METHOD))) {
+
+			case FIWARE:
+
+				if (StringUtils.isBlank(code))
+					return Response.status(Response.Status.BAD_REQUEST).build();
+
+				Token t = (Token) authInstance.login(null, null, code);
+				UserInfo info = FiwareIDMAuthenticationManager.getInstance().getUserInfo(t.getAccess_token());
+
+				token = t.getAccess_token();
+
+				String refresh_token = t.getRefresh_token();
+
+				if (token != null && ((String) token).trim().length() > 0) {
+					// HttpSession session = httpRequest.getSession();
+					// session.setAttribute("loggedin", token);
+					// session.setAttribute("refresh_token", refresh_token);
+					// session.setAttribute("username", info.getDisplayName());
+					return Response.seeOther(URI.create("/IdraPortal"))
+							.cookie(new NewCookie("loggedin", (String) token, "/", "", "comment", 100, false))
+							.cookie(new NewCookie("refresh_token", refresh_token, "/", "", "comment", 100, false))
+							.cookie(new NewCookie("username", info.getDisplayName(), "/", "", "comment", 100, false))
+							.build();
+				} else {
+					return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+				}
+
+			default:
+				String input = IOUtils.toString(httpRequest.getInputStream(), Charset.defaultCharset());
+				User user = GsonUtil.json2Obj(input, GsonUtil.userType);
+				token = (String) authInstance.login(user.getUsername(), user.getPassword(), null);
+				return Response.status(Response.Status.OK).entity(token).build();
+			}
+
+		} catch (GsonUtilException e) {
+			return handleBadRequestErrorResponse(e);
+		} catch (NullPointerException e) {
+			return handleErrorResponseLogin(e);
+		} catch (Exception e) {
+			return handleErrorResponse500(e);
+		}
+
+	}
+
 	@POST
 	@Path("/login")
 	@Consumes({ MediaType.APPLICATION_JSON })
 	@Produces("text/plain")
-	public Response login(final String input) {
+	public Response loginPost(@Context HttpServletRequest httpRequest) {
 
 		try {
+			Object token = null;
+			AuthenticationManager authInstance = AuthenticationManager.getActiveAuthenticationManager();
 
-			User user = GsonUtil.json2Obj(input, GsonUtil.userType);
+			switch (ODFAuthenticationMethod.valueOf(PropertyManager.getProperty(ODFProperty.AUTHENTICATION_METHOD))) {
 
-			String token = FederationCore.login(user.getUsername(), user.getPassword());
+			case FIWARE:
+				String code = httpRequest.getParameter("code");
+				if (StringUtils.isBlank(code))
+					return Response.status(Response.Status.BAD_REQUEST).build();
+
+				Token t = (Token) authInstance.login(null, null, code);
+				UserInfo info = FiwareIDMAuthenticationManager.getInstance().getUserInfo(t.getAccess_token());
+
+				token = t.getAccess_token();
+				token = (String) token;
+
+				String refresh_token = t.getRefresh_token();
+
+				if (token != null && ((String) token).trim().length() > 0) {
+					HttpSession session = httpRequest.getSession();
+					session.setAttribute("loggedin", token);
+					session.setAttribute("refresh_token", refresh_token);
+					session.setAttribute("username", info.getDisplayName());
+				}
+
+				return Response.temporaryRedirect(URI.create(httpRequest.getContextPath() + "/IdraPortal")).build();
+
+			default:
+				String input = IOUtils.toString(httpRequest.getInputStream(), Charset.defaultCharset());
+				User user = GsonUtil.json2Obj(input, GsonUtil.userType);
+				token = (String) authInstance.login(user.getUsername(), user.getPassword(), null);
+				break;
+			}
 
 			return Response.status(Response.Status.OK).entity(token).build();
 
@@ -614,9 +712,9 @@ public class AdministrationAPI {
 				return Response.status(Response.Status.BAD_REQUEST).entity(error.toJson()).build();
 			}
 
-			if (FederationCore.validatePassword(passChange.getUsername(), passChange.getOldPassword())) {
+			if (BasicAuthenticationManager.validatePassword(passChange.getUsername(), passChange.getOldPassword())) {
 
-				FederationCore.updateUserPassword(passChange.getUsername(), passChange.getNewPassword());
+				BasicAuthenticationManager.updateUserPassword(passChange.getUsername(), passChange.getNewPassword());
 
 				JsonObject out = new JsonObject();
 				out.addProperty("message", "Password successfully updated!");
@@ -638,15 +736,23 @@ public class AdministrationAPI {
 	@Secured
 	@Consumes({ MediaType.APPLICATION_JSON })
 	@Produces("application/json")
-	public Response logout(final String input) {
+	public Response logout(@Context HttpServletRequest httpRequest) {
 
 		try {
 
-			LoggedUser user = GsonUtil.json2Obj(input, GsonUtil.loggedUserType);
+			// switch
+			// (ODFAuthenticationMethod.valueOf(PropertyManager.getProperty(ODFProperty.AUTHENTICATION_METHOD)))
+			// {
 
-			FederationCore.logout(user.getUsername());
+			// case FIWARE:
+			// return authInstance.logout(httpRequest);
+			// default:
+			AuthenticationManager authInstance = AuthenticationManager.getActiveAuthenticationManager();
 
-			return Response.status(Response.Status.OK).build();
+			return authInstance.logout(httpRequest);
+			// }
+
+			// return Response.status(Response.Status.OK).build();
 
 		} catch (GsonUtilException e) {
 			return handleBadRequestErrorResponse(e);
