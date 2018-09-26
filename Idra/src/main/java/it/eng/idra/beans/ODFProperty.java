@@ -52,7 +52,10 @@ public enum ODFProperty {
 	SESAME_SERVER_URI("sesameServerURI"),
 	SESAME_ENDPOINT("sesameEndPoint"),
 	WEB_CONNECTOR_DEFAULT_STOP_VALUES("webConnectorDefaultStopValues"),
-	ENABLE_STATISTICS("enableStatistics");
+	ENABLE_STATISTICS("enableStatistics"),
+	ORION_FILE_DUMP_PATH("orionDumpFilePath"),
+	ORION_INTERNAL_API("orionInternalAPI")
+	;
 	
 
 	private final String text;

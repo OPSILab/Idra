@@ -115,7 +115,7 @@ public class AdministrationAPI {
 			// If the node type is DCATDUMP, if the dump URL is blank, try to get the
 			// dump from the uploaded file
 			if (node.getNodeType().equals(ODMSCatalogueType.DCATDUMP)) {
-				if ((StringUtils.isBlank(node.getDumpURL()))) {
+				if (StringUtils.isBlank(node.getDumpURL())) {
 					if (fileInputStream == null)
 						throw new IOException("The dump part of the request is empty");
 
@@ -127,7 +127,6 @@ public class AdministrationAPI {
 								"The node must have either the dumpURL or dump file in the \" dump \" part of the multipart request");
 				}
 			} else {
-
 				node.setDumpURL(null);
 				node.setDumpFilePath(null);
 			}
@@ -135,6 +134,26 @@ public class AdministrationAPI {
 			if (!node.getNodeType().equals(ODMSCatalogueType.WEB))
 				node.setSitemap(null);
 
+			if(!node.getNodeType().equals(ODMSCatalogueType.ORION)) {
+				node.setOrionConfig(null);
+			}else {
+				if(node.getOrionConfig()==null) {
+					ErrorResponse error = new ErrorResponse(String.valueOf(Response.Status.BAD_REQUEST.getStatusCode()),
+							"Orion Catalogues must have theri configuration parameters!", "400", "Orion Catalogue must have its configuration parameters!");
+					return Response.status(Response.Status.BAD_REQUEST).entity(error.toJson()).build();
+				}
+				
+				if(StringUtils.isBlank(node.getOrionConfig().getOrionDatasetDumpString()) && fileInputStream==null)
+						throw new IOException("Orion Catalogue must have a dump string or a dump file");
+				
+				if(StringUtils.isBlank(node.getOrionConfig().getOrionDatasetDumpString())) {
+					String dumpString = IOUtils.toString(fileInputStream, StandardCharsets.UTF_8);
+					if (StringUtils.isNotBlank(dumpString)) {
+						node.getOrionConfig().setOrionDatasetDumpString(dumpString);
+					}
+				}
+			}
+			
 			if (node.isActive() == null) {
 				node.setActive(false);
 			}

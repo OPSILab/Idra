@@ -1202,6 +1202,12 @@ public class MetadataCacheManager {
 							dataset=handleRDFDistributions(dataset);
 
 						cachePersistence.jpaPersistDataset(dataset);
+						
+						//Se è orion devo farlo qui il tracchiggio sulle distribution in quanto prima non ho l'id della distro
+						if(node.getNodeType().equals(ODMSCatalogueType.ORION)) {
+							handleORIONDistribution(cachePersistence,node,dataset);
+						}
+						
 						server.add(dataset.toDoc());
 						
 					} catch (EntityExistsException e) {
@@ -1422,6 +1428,21 @@ public class MetadataCacheManager {
 
 	}
 
+	private static void handleORIONDistribution(CachePersistenceManager cachePersistence,ODMSCatalogue node,DCATDataset dataset) {
+		String internalAPI=PropertyManager.getProperty(ODFProperty.ORION_INTERNAL_API);
+		for(DCATDistribution distribution : dataset.getDistributions()) {
+			String url="";
+			if(!node.getOrionConfig().isAuthenticated() && StringUtils.isBlank(distribution.getOrionDistributionConfig().getFiwareService()) && (StringUtils.isBlank(distribution.getOrionDistributionConfig().getFiwareServicePath()) || distribution.getOrionDistributionConfig().getFiwareServicePath().equals("/"))) {
+				url=node.getHost()+"?"+distribution.getOrionDistributionConfig().getQuery();
+			}else {
+				url= internalAPI+"?cbQueryID="+distribution.getId()+"&catalogue="+node.getId(); //dovrei mettere l'id della query -> dovrebbe già esserci in quanto la persistenza viene fatta con il nodo,																//Serve anche l'id del nodo? per recuperare il token
+			}
+			distribution.setDownloadURL(url);
+			distribution.setAccessURL(url);
+			cachePersistence.jpaUpdateDistribution(distribution,false);
+		}
+	}
+	
 	public static void onFinalize() {
 		try {
 			server.close();

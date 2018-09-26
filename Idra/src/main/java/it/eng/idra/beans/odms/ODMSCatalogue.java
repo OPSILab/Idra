@@ -37,7 +37,7 @@ import javax.persistence.Transient;
 
 import it.eng.idra.beans.dcat.DCATAPFormat;
 import it.eng.idra.beans.dcat.DCATAPProfile;
-import it.eng.idra.beans.orion.OrionConfiguration;
+import it.eng.idra.beans.orion.OrionCatalogueConfiguration;
 import it.eng.idra.beans.webscraper.WebScraperSitemap;
 import it.eng.idra.utils.JsonRequired;
 
@@ -52,7 +52,7 @@ public class ODMSCatalogue {
 	private int id;
 
 	@JsonRequired
-	@Column(name = "name", unique = true, nullable = false)
+	@Column(name = "name", unique = true, nullable = false) //TODO: levare unique + mettere url-api
 	private String name;
 
 	@JsonRequired
@@ -152,7 +152,7 @@ public class ODMSCatalogue {
 
 	@OneToOne(orphanRemoval = true, cascade = { CascadeType.ALL, CascadeType.REMOVE })
 	@JoinColumn(name = "orion_id")
-	private OrionConfiguration orionConfig;
+	private OrionCatalogueConfiguration orionConfig;
 	
 	// @Transient
 	private DCATAPProfile dcatProfile;
@@ -525,11 +525,11 @@ public class ODMSCatalogue {
 		this.category = category;
 	}
 
-	public OrionConfiguration getOrionConfig() {
+	public OrionCatalogueConfiguration getOrionConfig() {
 		return orionConfig;
 	}
 
-	public void setOrionConfig(OrionConfiguration orionConfig) {
+	public void setOrionConfig(OrionCatalogueConfiguration orionConfig) {
 		this.orionConfig = orionConfig;
 	}
 
@@ -555,7 +555,8 @@ public class ODMSCatalogue {
 
 	public boolean isCacheable() {
 		return federationLevel.equals(ODMSCatalogueFederationLevel.LEVEL_2)
-				|| federationLevel.equals(ODMSCatalogueFederationLevel.LEVEL_3);
+				|| federationLevel.equals(ODMSCatalogueFederationLevel.LEVEL_3) 
+				|| federationLevel.equals(ODMSCatalogueFederationLevel.LEVEL_4);
 	}
 
 	@PrePersist
