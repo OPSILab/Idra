@@ -157,81 +157,101 @@ following commands (*username* and *password* are your credential,
 
 -   **Git**: open a command prompt and execute:
 
-    -   `git config --global http.proxy http://username:password@proxyhost:proxyport`
-
-    -   `git config --global https.proxy http://username:password@proxyhost:proxyport`
-
+    ```
+    git config --global http.proxy http://username:password@proxyhost:proxyport
+    ```
+    ```
+    git config --global https.proxy http://username:password@proxyhost:proxyport
+    ```
+    
 -   **Npm**: open a command prompt and execute:
 
-    -   `npm config set proxy http://username:password@proxyhost:proxyport`
-
-    -   `npm config set https-proxy http://username:password@proxyhost:proxyport`
-
+    ```
+    npm config set proxy http://username:password@proxyhost:proxyport
+    ```
+    ```
+    npm config set https-proxy http://username:password@proxyhost:proxyport
+    ```
 -   **Bower**: change the current directory to the one that contains the
-    “*bower.json*” file and create/edit the “*.bowerrc*” file and add
+    `bower.json` file and create/edit the `.bowerrc` file and add
     the proxy configuration:
 
     -   `"proxy" : "http://username:password@proxyhost:proxyport"`
 
     -   `"https-proxy" : "http://username:password@proxyhost:proxyport"`
 
--   **Maven**: edit the file “*Path\_Of\_Maven/conf/settings.xml*” and
-    add to the “*&lt;proxies&gt;*” section the proper configuration
+-   **Maven**: edit the file `*Path\_Of\_Maven/conf/settings.xml*` and
+    add to the `&lt;proxies&gt;` section the proper configuration
     following the example provided in the same file (please refer to
-    maven guide https://maven.apache.org/guides/mini/guide-proxies.html)
+    Maven guide https://maven.apache.org/guides/mini/guide-proxies.html)
 
 ## Create WAR packages
 
 Open a command prompt and execute the following command to clone the
 repository:
 
--   `git clone https://github.com/OPSILab/Idra.git`
+  ```
+   git clone https://github.com/OPSILab/Idra.git
+  ```
 
 Move in the folder OpenDataFederation
-
--   `cd Idra`
+  ```
+  cd Idra
+  `````
 
 In this folder you will find two subfolders:
 
--   **Idra**: this folder contains the server side
+-   **`Idra`**: this folder contains the server side
     application of Idra
 
--   **IdraPortal:** this folder contains the client side application
+-   **`IdraPortal:`** this folder contains the client side application
     of Idra
 
 ### Execute the following commands to create the *Idra.war*
 
--   move in Idra folder: `cd Idra`
-
--   `mvn package`
-
+-   move in Idra folder:
+    ```
+    cd Idra
+    ```
+    and then:
+    
+    ```
+    mvn package
+    ```
 **Note**. Execute this command in a network without proxy because of jitpack dependency.
 
 ### Execute the following commands to create the *IdraPortal.war*
 
--   move in IdraPortal folder: `cd IdraPortal`
-
--   `cd /src/main/webapp`
-
--   `bower install`
-
--   `cd ../../..`
-
--   `mvn package`
-
+-   move in IdraPortal folder:
+   
+    ```
+    cd IdraPortal
+    ```
+    ```
+    cd /src/main/webapp
+    ```
+    ```
+    bower install
+    ```
+    ```
+    cd ../../..
+    ```
+    ```
+    mvn package
+    ```
 ## Deployment
 
 ### Artefacts
 
 These are the artefacts that must be installed in order to run Idra:
 
--   Idra.war
+-   **`Idra.war`**
 
--   IdraPortal.war
+-   **`IdraPortal.war`**
 
--   rdf4j-workbench.war & rdf4j-sesame.war  (you can get both [here](http://www.eclipse.org/downloads/download.php?file=/rdf4j/eclipse-rdf4j-2.2.1-sdk.zip) , into "war" folder)
+-   **`rdf4j-workbench.war & rdf4j-sesame.war`**  (you can get both [here](http://www.eclipse.org/downloads/download.php?file=/rdf4j/eclipse-rdf4j-2.2.1-sdk.zip) , into "war" folder)
 
--   idra_db.sql
+-   **`idra_db.sql`**
 
 ### Database creation
 
@@ -241,76 +261,121 @@ collected Open Datasets.
 So before deploying the application, it is necessary to create a new
 database, by importing in the MySQL server the provided SQL dump file:
 
--   **idra_db.sql**
+-   **`idra_db.sql`**
 
 This dump already contains the statement that creates the
-“**idra_db**” DB automatically. In addition it creates an
+`idra_db` DB automatically. In addition it creates an
 administration user with the following credentials:
 
-**username: admin**
+**`username: admin`**
 
-**password: admin**
+**`password: admin`**
 
 **Note**. To change the administrator password login in the Idra Portal with the previous credentials then go to the **Administration -> Manage Configurations -> Update Password** section.
 
 ### WARs deployment
 
-Move all the WAR artifacts to the “webapps” folder of Tomcat
+Move all the WAR artifacts to the `webapps` folder of Tomcat
 installation, start it up and wait until they are deployed.
 
 ### RDF repository creation
 
 Once the Tomcat server started, go with browser to the URL
-**“localhost:8080/rdf4j-workbench”**
+`localhost:8080/rdf4j-workbench`
 
 Note. Change the port number according to the configuration of
-server.xml file of Tomcat “conf” folder (default 8080)
+`server.xml` file of Tomcat `conf` folder (default 8080)
 
 Through the RDF4J GUI, select “new repository” on the left menu, then
-create a new repository of type **“Native Java Store”** called **“ODF”**.
+create a new repository of type `Native Java Store` called `Idra`.
 
 ### Configuration
 
 Once all the WAR files are deployed and the server has started, modify
 the following configuration files, located in the deployed folders of
-Tomcat “webapps” folder.
+Tomcat `webapps` folder.
 
--   IdraPortal/WEB-INF/classes/
+-   **`IdraPortal/WEB-INF/classes/`**
 
-    -   In **configuration.properties** file, change the following properties:
-		- Base url part of **ADMIN\_SERVICES\_BASE\_URL** property with the **PUBLIC** domain where
+    -   In **`configuration.properties`** file, change the following properties:
+		- Base url part of **`ADMIN\_SERVICES\_BASE\_URL`** property with the **PUBLIC** domain where
 			is exposed the runtime environment. (Example:
-			[*https://opendatafederation.eng.it/Idra/api/v1/administration*](https://opendatafederation.eng.it/Idra/api/v1/administration))
-		- Base url part of **CLIENT\_SERVICES\_BASE\_URL** property with the **PUBLIC** domain where
+			[*https://idra.eng.it/Idra/api/v1/administration*](https://idra.eng.it/Idra/api/v1/administration))
+		- Base url part of **`CLIENT\_SERVICES\_BASE\_URL`** property with the **PUBLIC** domain where
 			is exposed the runtime environment. (Example:
-			[*https://opendatafederation.eng.it/Idra/api/v1/client*](https://opendatafederation.eng.it/Idra/api/v1/client))
--   Idra/WEB-INF/classes/
+			[*https://idra.eng.it/Idra/api/v1/client*](https://idra.eng.it/Idra/api/v1/client))
+-   **`Idra/WEB-INF/classes/`**
 
-    -   In **configuration.properties** file, change the following
+    -   In **`configuration.properties`** file, change the following
         properties:
 
-        -   **DB\_HOST, DB\_USERNAME, DB\_PASSWORD** with the actual
+        -   **`idra.db.host`, `idra.db.user`, `idra.db.password`** with the actual
             parameters of the MySQL server installation.
 
-        -   **http.proxyHost, http.proxyPort,
-            http.proxyUser, http.proxyPassword** with the proxy
-            parameters, leave blank if none. Change **http.proxyEnabled** to **true**              if the previous proxy parameters are provided.
+        -   **`http.proxyHost`, `http.proxyPort`,
+            `http.proxyUser`, `http.proxyPassword`** with the proxy
+            parameters, leave blank if none. Change **`http.proxyEnabled`** to **`true`** if the previous proxy parameters are provided.
 
-        -   **odmsDumpFilePath** and **dumpFilePath** with the folder path where to                 save the DCAT-AP dump files. **NOTE** The path **MUST** end with "\\" or              "/". 
-        -   **sesameRepositoryName** must have the same value of the
+        -   **`idra.odms.dump.file.path`** and **`idra.dump.file.path`** with the folder path where to save the DCAT-AP dump files.
+        **NOTE**. The path **MUST** end with "\\" or              "/". 
+
+        -   **`idra.lod.enable`** to **`true`**, in order to enable RDF (Linked Open Data) retrieval, configured with the following parameters, according to the Tomcat configuration, as described in the “**RDF repository creation**” step:
+             -   **`idra.lod.server.uri`** with the URL where to find the "repositories" endpoint of RDF4J.  Example: `http\\://localhost\:8080/rdf4j-server/repositories/`
+             -  **`idra.lod.server.uri.query`** with the URL where to find the "**query**" endpoint. Example: `http\://localhost\:8080/rdf4j-workbench/repositories/Idra/query`
+             -   **`idra.lod.repo.name`** must have the same value of the
             newly created RDF repository.
-        -   **enableRdf** to **true**, in order to enable RDF retrieval, configured with the following parameters, according to the Tomcat configuration, as described in the “**RDF repository creation**” step:
-             -   **sesameServerURI** with the URL where to find the "repositories" endpoint of RDF4J.  Example: 
-             `http\\://localhost\:8080/rdf4j-server/repositories/`
-             -  **sesameEndPoint** with the URL where to find the "query" endpoint.                Example:
-             `http\://localhost\:8080/rdf4j-workbench/repositories/ODF/query`
    
-    -   In **hibernate.properties** file, change the following
+    -   In **`hibernate.properties`** file, change the following
         properties:
         
-        -   **hibernate.connection.url**, **hibernate.connection.username,
-            hibernate.connection.password** with the actual parameters
+        -   **`hibernate.connection.url`**, **`hibernate.connection.username`,
+            `hibernate.connection.password`** with the actual parameters
             of the MySQL server installation.
+#### Authentication Configuration
+Idra Platform supports the following authentication mechanisms:
+- **Basic Authentication**: Basic login of the Administrator provided by Idra Platform itself.
+- **Fiware Identity Manager**: Authentication of the Administrator via an external     instance of Fiware Identity Manager, namely **Keyrock**. Both versions 6 and 7 are supported.
+
+In order to select which Authorization mechanism to use and configure it accordingly, modify the following configuration files, located in the deployed folders of
+Tomcat `webapps` folder.
+-   **`IdraPortal/WEB-INF/classes/`**
+    -   in **`configuration.properties`** file, change the following property:
+        - **`idm.authentication.method`**: allowed values are **`BASIC`** and **`FIWARE`** 
+-  **`Idra/WEB-INF/classes/`**
+    - in **`configuration.properties`** file, change the following property:
+        - **`idra.authentication.method`**: allowed values are **`BASIC`** and **`FIWARE`** 
+
+##### Configuring Idra with Fiware IdM Authentication
+If the Fiware Identity Manager option was selected (**`FIWARE`**), in order to correctly execute the OAuth2 flow:
+- Idra Platform must be registered as an **Application** in the Fiware IdM, by specifying, in the registration form, following parameters:
+    - **URL**: **`http://IDRA_PORTAL_HOST/IdraPortal`**
+    - **CallbackURL**: **`http://IDRA_HOST/Idra/api/v1/administration/login`**
+
+**Note**. Replace **`IDRA_PORTAL_HOST`** and **`IDRA_HOST`** with the actual values, namely the Base URl where Idra Platform is deployed.
+
+- The User that wants to authenticate itself as Administrator in Idra, must be authorized and have the **"Admin"** role for that application.
+
+**Note**. Please see the [Fiware Identity Manager](https://fiware-idm.readthedocs.io/en/latest/api/#def-apiOAuth) manual for further information about the registration process, user roles, and **Oauth2** APIs.
+
+###### Configuring Idra as OAuth2 Client for Fiware IdM authentication
+The registration process, described above, provides **`Client Id`** and **`Client Secret`**, which will be used by Idra platform to perform the Oauth2 flow as a Client.
+Modify the following configuration files, located in the deployed folders of Tomcat `webapps` folder.
+-   **`IdraPortal/WEB-INF/classes/`**
+    -   in **`configuration.properties`** file, change the following properties:
+        - **`idm.client.id`**: **`Client Id`** provided by the Fiware IdM .
+        - **`idm.client.secret`**: **`Client Secret`** provided by the Fiware IdM.
+        - **`idm.redirecturi`**:**`http://IDRA_HOST/Idra/api/v1/administration/login`**, (same value of the **callbackURL** specified above in the IdM).
+        - **`idm.logout.callback`**: **`http://IDRA_PORTAL_HOST/IdraPortal`**, (same value of the **URL** specified above in the IdM).
+        - **`idm.protocol`**: Protocol of Fiware IdM instance (`http` or `https`)
+        - **`idm.host`**: Host of Fiware IdM instance. (**INCLUDE ALSO THE PORT, IF ANY**).
+    
+-  **`Idra/WEB-INF/classes/`**
+    - in **`configuration.properties`** file, change the following property:
+        - **`idm.client.id`**, **`idm.client.secret`**, **`idm.redirecturi`**, **`idm.logout.callback`**, **`idm.protocol`**, **`idm.host`** with the **same** values specified above for Idra Portal.
+        - **`idm.fiware.version`**: The version of the Fiware IdM, namely Keyrock. Allowed values are **6** and **7**.
+        - **`idm.admin.role.name`**: Role name that User must have in the IDM to be authenticated as Idra Administrator. (default: **ADMIN**).
+
+**Note**. Replace **`IDRA_PORTAL_HOST`** and **`IDRA_HOST`** with the actual values, namely the **Base URL** where Idra Platform is deployed.
 
 ### Sanity Checks
 In order to apply the previous changes, restart the Tomcat server. The Sanity Checks are the steps that the Administrator will take to verify that the installation is ready to be used and tested.

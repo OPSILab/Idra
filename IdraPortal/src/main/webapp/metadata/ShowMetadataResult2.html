@@ -110,7 +110,9 @@
 					ng-repeat="dataset in visualDataset.dataset track by $index"
 					md-theme-watch style="width:100%;margin: 0px 0px 8px 0px"> <md-card-title>
 				<md-card-title-text md-truncate > 
-				<h4 md-truncate class="md-headline" style="margin: 0px 0px 0px 0px"><a href="javascript:void(0)" ng-click="openDatasetDetails(dataset)" ng-bind-html="dataset.title"></a></h4> 
+				<h4 md-truncate class="md-headline" style="margin: 0px 0px 0px 0px">
+				<a href="javascript:void(0)" ng-click="openDatasetDetails(dataset)" ng-bind-html="dataset.title"></a></h4> 
+<!-- 				<a href="./#/dataset/{{dataset.seoIdentifier}}" ng-bind-html="dataset.title"></a></h4> -->
 				<span class="md-subhead" style="color: #6a6b68; padding-top:0px" ><strong>{{getRealName(dataset.nodeID)}}</strong></span>
 				</md-card-title-text> </md-card-title> 
 				<md-card-content style="padding-bottom:0px">

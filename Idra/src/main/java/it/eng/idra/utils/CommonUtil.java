@@ -19,13 +19,16 @@ package it.eng.idra.utils;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.text.Normalizer;
 import java.time.LocalDate;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.time.temporal.ChronoUnit;
+import java.util.Arrays;
 import java.util.Locale;
+import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -269,4 +272,44 @@ public class CommonUtil {
 		return emailPattern.matcher(emailValue).find();
 	}
 
+	public static String extractSeoIdentifier(String title, String internalIdentifier,String nodeID) {
+//		String title1 = unaccent(title).toLowerCase().replaceAll("[^\\p{L}\\p{Z}\\p{N}]","");
+//		String title1 = unaccent(title).toLowerCase().replaceAll("[^\\w\\s]","");
+//		String title1 = unaccent(title.toLowerCase()).replaceAll("[_+-.,!@#$%^*():?=\\\\;&amp;\\/|&gt;&lt;&quot;']","");
+		String title1 = StringUtils.normalizeSpace(unaccent(title.trim().toLowerCase()).replaceAll("[^\\p{L}\\p{Z}\\p{N}]",""));
+		
+		//In order to support this features for non ASCII characters, the internalIdentifier is used
+		//since it can be a problem with solr server
+		boolean foundMatch = false;
+		Pattern regex = Pattern.compile("\\p{L}");
+		Matcher regexMatcher = regex.matcher(title1);
+		foundMatch = regexMatcher.find();
+		if(!foundMatch) {
+			return internalIdentifier+"-"+nodeID;
+		}
+		
+		String seoId="";
+		logger.debug("Old: "+title);
+		logger.debug("New: "+title1);
+		String arr[] = title1.split(" ");
+		if(arr.length>4) {
+			seoId = String.join("-",Arrays.copyOfRange(arr, 0, 4));
+		}else {
+			seoId = String.join("-",arr);
+		}
+		String arr1 [] = internalIdentifier.split("-");
+		logger.debug("seoID: "+seoId+"-"+arr1[arr1.length-2]+"-"+nodeID);
+		return seoId+"-"+arr1[arr1.length-1]+"-"+nodeID;
+	}
+	
+	
+	//https://stackoverflow.com/questions/3322152/is-there-a-way-to-get-rid-of-accents-and-convert-a-whole-string-to-regular-lette
+	
+	public static String unaccent(String src) {
+		return Normalizer
+				.normalize(src, Normalizer.Form.NFD)
+				.replaceAll("[^\\p{ASCII}]", "");
+				//.replaceAll("[^\\p{M}]", ""); -> it works also for japanese char but solr doesn't return the proper dataset
+	}
+	
 }
