@@ -196,6 +196,8 @@ public class DCATAPDeserializer implements IDCATAPDeserialize {
 
 		if (datasetResource.hasProperty(DCTerms.identifier))
 			identifier = datasetResource.getProperty(DCTerms.identifier).getString();
+		else
+			identifier = landingPage;
 
 		// Iterate over otherIdentifier properties
 		otherIdentifier = deserializeOtherIdentifier(datasetResource);
@@ -242,10 +244,10 @@ public class DCATAPDeserializer implements IDCATAPDeserialize {
 		while (distrIt.hasNext()) {
 			distributionList.add(resourceToDCATDistribution(distrIt.next().getResource(), nodeID));
 		}
-
-		mapped = new DCATDataset(nodeID, title, description, distributionList, theme, publisher, contactPointList,
+		
+		mapped = new DCATDataset(nodeID,identifier, title, description, distributionList, theme, publisher, contactPointList,
 				keywords, accessRights, conformsTo, documentation, frequency, hasVersion, isVersionOf, landingPage,
-				language, provenance, releaseDate, updateDate, identifier, otherIdentifier, sample, source,
+				language, provenance, releaseDate, updateDate, otherIdentifier, sample, source,
 				spatialCoverage, temporalCoverage, type, version, versionNotes, rightsHolder, creator, subject);
 
 		distributionList = null;

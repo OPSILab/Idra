@@ -738,7 +738,7 @@ public class DCATDistribution implements Serializable {
 				doc.getFieldValue("rights").toString(), status, doc.getFieldValue("title").toString(),
 				(Boolean) doc.getFieldValue("hasDatalets"));
 		// datalets);
-
+		distr.setStoredRDF((Boolean) doc.getFieldValue("storedRDF"));
 		return distr;
 	}
 

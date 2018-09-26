@@ -1133,7 +1133,7 @@ public class AdministrationAPI {
 
 			List<Datalet> remainingDatalet = jpa.jpaGetDataletByDistributionID(distributionID);
 			if (remainingDatalet.size() == 0) {
-				DCATDataset dataset = MetadataCacheManager.getDataset(Integer.parseInt(nodeID), datasetID);
+				DCATDataset dataset = MetadataCacheManager.getDatasetByID(datasetID);
 				dataset.getDistributions().stream().filter(x -> x.getId().equals(distributionID)).findFirst().get()
 						.setHasDatalets(false);
 				MetadataCacheManager.updateDatasetInsertDatalet(Integer.parseInt(nodeID), dataset);

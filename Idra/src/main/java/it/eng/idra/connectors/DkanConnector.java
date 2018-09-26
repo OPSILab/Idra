@@ -56,6 +56,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
+import java.util.UUID;
+
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
@@ -210,8 +212,8 @@ public class DkanConnector implements IODMSConnector {
 			}
 		}
 
-		return new DCATDataset(nodeID, title, description, distributionList, themeList, publisher, contactPointList,
-				keywords, null, null, null, null, null, null, landingPage, null, null, issued, modified, identifier,
+		return new DCATDataset(nodeID,identifier, title, description, distributionList, themeList, publisher, contactPointList,
+				keywords, null, null, null, null, null, null, landingPage, null, null, issued, modified,
 				null, null, null, null, null, null, null, null, null, null, null);
 	}
 
@@ -505,17 +507,8 @@ public class DkanConnector implements IODMSConnector {
 			try {
 				int oldIndex = oldDatasets.indexOf(d);
 				int newIndex = newDatasets.indexOf(d);
-				// System.out.println("-----------------------\n");
-				// System.out.println(oldDatasets.get(oldIndex).getDcat_modified().getValue());
-				// System.out.println(newDatasets.get(newIndex).getDcat_modified().getValue());
-				// System.out.println("-----------------------\n\n");
 				oldDate.setTime(DCATDateF.parse(oldDatasets.get(oldIndex).getUpdateDate().getValue()));
 				newDate.setTime(DKANDateF.parse(newDatasets.get(newIndex).getUpdateDate().getValue()));
-				// oldDate.setTime(sdf.parse(oldDatasets.get(oldIndex).getDcat_modified().getValue()));
-				// oldDate.setTimeInMillis(sdf.parse(parseDate(oldDatasets.get(oldIndex).getDcat_modified().getValue())).getTime());
-				//
-				//// newDate.setTime(sdf.parse(newDatasets.get(newIndex).getDcat_modified().getValue()));
-				// newDate.setTimeInMillis(sdf.parse(parseDate(newDatasets.get(newIndex).getDcat_modified().getValue())).getTime());
 
 				if (newDate.after(oldDate)) {
 					syncrhoResult.addToChangedList(d);

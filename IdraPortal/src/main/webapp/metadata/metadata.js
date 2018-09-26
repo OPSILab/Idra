@@ -545,12 +545,12 @@ angular.module("IdraPlatform").controller('MetadataCtrl',['$scope','$http','conf
 	
 	
 	function manageNodes(nodes){
-		$scope.numberOfCatalogues=nodes.length;
 		for(i=0; i<nodes.length; i++){
 			if(nodes[i].synchLock != 'FIRST' && nodes[i].federationLevel!="LEVEL_0" && nodes[i].isActive!=false){
 				$scope.nodes.push({id: nodes[i].id, name: nodes[i].name, federationLevel:nodes[i].federationLevel});
 				$scope.federatedLevels[nodes[i].id]= nodes[i].federationLevel;
 				allNodesIDs.push(nodes[i].id);
+				$scope.numberOfCatalogues=allNodesIDs.length;
 				if(previouslySelected!=undefined){
 					if(previouslySelected.indexOf(nodes[i].id)>=0){
 						$scope.selectedNodeID.push(nodes[i].id);
