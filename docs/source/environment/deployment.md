@@ -81,16 +81,11 @@ Tomcat `webapps` folder.
         **NOTE**. The path **MUST** end with "\\" or              "/". 
 
         -   **`idra.lod.enable`** to **`true`**, in order to enable RDF (Linked Open Data) retrieval, configured with the following parameters, according to the Tomcat configuration, as described in the “**RDF repository creation**” step:
-             -   **`idra.lod.server.uri`** with the URL where to find the "repositories" endpoint of RDF4J.  Example: `http\\://localhost\:8080/rdf4j-server/repositories/`
+             -  **`idra.lod.server.uri`** with the URL where to find the "repositories" endpoint of RDF4J.  Example: `http\\://localhost\:8080/rdf4j-server/repositories/`
              -  **`idra.lod.server.uri.query`** with the URL where to find the "**query**" endpoint. Example: `http\://localhost\:8080/rdf4j-workbench/repositories/Idra/query`
-             -   **`idra.lod.repo.name`** must have the same value of the
+             -  **`idra.lod.repo.name`** must have the same value of the
             newly created RDF repository.
 																																																					 
-																												
-																  
-																										   
-																			  
-   
     -   In **`hibernate.properties`** file, change the following
         properties:
         
