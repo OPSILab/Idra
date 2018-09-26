@@ -19,13 +19,17 @@ package it.eng.idra.connectors;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.Locale;
 import java.util.Map;
+import java.util.TimeZone;
 import java.util.Map.Entry;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
@@ -44,6 +48,10 @@ import org.apache.logging.log4j.Logger;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
+
+import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Sets;
+import com.google.common.collect.Sets.SetView;
 
 import it.eng.idra.beans.dcat.DCATDataset;
 import it.eng.idra.beans.dcat.DCATDistribution;
@@ -400,14 +408,17 @@ public class WebConnector implements IODMSConnector {
 		if (StringUtils.isBlank(updateDate))
 			updateDate = releaseDate;
 		// if (StringUtils.isBlank(landingPage))
-		landingPage = doc.baseUri();
-
+		//landingPage = doc.baseUri();
+		//MOD robcalla 17/09 -> adding explicit legacyIdentifier as the landingPage of the dataset
+		//legacyIdentifier = landingPage;
 		// identifier = title.replaceAll(":|\\s", "-") + "_" +
 		// CommonUtil.parseDate(releaseDate).toEpochSecond();
-		identifier = title.replaceAll(":|\\s", "-") + "_" + UUID.randomUUID().toString();
-		mapped = new DCATDataset(nodeID, title, description, distributionList, themeList, publisher, contactPointList,
+		identifier = landingPage;
+		//Adding legacy identifier for WebConnector
+		
+		mapped = new DCATDataset(nodeID,identifier, title, description, distributionList, themeList, publisher, contactPointList,
 				keywords, accessRights, conformsTo, documentation, frequency, hasVersion, isVersionOf, landingPage,
-				language, provenance, releaseDate, updateDate, identifier, otherIdentifier, sample, source,
+				language, provenance, releaseDate, updateDate, otherIdentifier, sample, source,
 				spatialCoverage, temporalCoverage, type, version, versionNotes, rightsHolder, creator, subjectList);
 
 		distributionList = null;
@@ -621,12 +632,51 @@ public class WebConnector implements IODMSConnector {
 	public ODMSSynchronizationResult getChangedDatasets(List<DCATDataset> oldDatasets, String startingDate)
 			throws Exception {
 
-		// There isn't a way to track skipped/merged datasets, the Node is entirely
-		// refederated
+		ArrayList<DCATDataset> newDatasets = (ArrayList<DCATDataset>) getAllDatasets();
+		ODMSSynchronizationResult syncrhoResult = new ODMSSynchronizationResult();
 
-		return null;
+		ImmutableSet<DCATDataset> newSets = ImmutableSet.copyOf(newDatasets);
+		ImmutableSet<DCATDataset> oldSets = ImmutableSet.copyOf(oldDatasets);
+
+		int deleted = 0, added = 0, changed = 0;
+
+		/// Find added datasets
+		// difference(current,present)
+		SetView<DCATDataset> diff = Sets.difference(newSets, oldSets);
+		logger.info("New Packages: " + diff.size());
+		for (DCATDataset d : diff) {
+			syncrhoResult.addToAddedList(d);
+			added++;
+		}
+
+		// Find removed datasets
+		// difference(present,current)
+		SetView<DCATDataset> diff1 = Sets.difference(oldSets, newSets);
+		logger.info("Deleted Packages: " + diff1.size());
+		for (DCATDataset d : diff1) {
+			syncrhoResult.addToDeletedList(d);
+			deleted++;
+		}
+
+		// Find updated datasets
+		// intersection(present,current)
+		SetView<DCATDataset> intersection = Sets.intersection(newSets, oldSets);
+		logger.fatal("Changed Packages: " + intersection.size());
+
+		for (DCATDataset d : intersection) {
+				syncrhoResult.addToChangedList(d);
+				changed++;
+		}
+		
+		logger.info("Changed " + syncrhoResult.getChangedDatasets().size());
+		logger.info("Added " + syncrhoResult.getAddedDatasets().size());
+		logger.info("Deleted " + syncrhoResult.getDeletedDatasets().size());
+		logger.info("Expected new dataset count: " + (node.getDatasetCount() - deleted + added));
+
+		return syncrhoResult;
 	}
 
+	
 	private static <T> Predicate<T> distinctByKey(Function<? super T, Object> keyExtractor) {
 		Map<Object, Boolean> map = new ConcurrentHashMap<>();
 		return t -> map.putIfAbsent(keyExtractor.apply(t), Boolean.TRUE) == null;

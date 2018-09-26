@@ -19,7 +19,6 @@ package it.eng.idra.connectors;
 
 import it.eng.idra.beans.dcat.DCATDataset;
 import it.eng.idra.beans.dcat.DCATDistribution;
-import it.eng.idra.beans.dcat.DCATProperty;
 import it.eng.idra.beans.dcat.DCTLicenseDocument;
 import it.eng.idra.beans.dcat.DCTLocation;
 import it.eng.idra.beans.dcat.DCTPeriodOfTime;
@@ -58,9 +57,6 @@ import org.apache.jena.vocabulary.DCTerms;
 import org.apache.logging.log4j.*;
 import org.apache.solr.client.solrj.SolrServerException;
 import org.ckan.*;
-import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Sets;
-import com.google.common.collect.Sets.SetView;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -244,8 +240,7 @@ public class CKanConnector implements IODMSConnector {
 		// Properties to be mapped among different CKAN fallback fields
 
 		String title = null, description = null, accessRights = null, frequency = null, landingPage = null,
-				releaseDate = null, updateDate = null, identifier = null, type = null, version = null,
-				legacyIdentifier = null;
+				releaseDate = null, updateDate = null, identifier = null, type = null, version = null;
 
 		String publisherIdentifier = null, publisherUri = null, publisherName = null, publisherMbox = null,
 				publisherHomepage = null, publisherType = null;
@@ -271,8 +266,6 @@ public class CKanConnector implements IODMSConnector {
 				source = new ArrayList<String>(), versionNotes = new ArrayList<String>();
 
 		List<DCATDistribution> distributionList = new ArrayList<DCATDistribution>();
-
-		legacyIdentifier = d.getName();
 
 		otherIdentifier.add(d.getName());
 
@@ -435,8 +428,10 @@ public class CKanConnector implements IODMSConnector {
 			identifier = d.getId();
 
 			// Convert date fields into ISO 8601 format with UTC time zone
-			releaseDate = CommonUtil.fixBadUTCDate(d.getMetadata_created());
-			updateDate = CommonUtil.fixBadUTCDate(d.getMetadata_modified());
+			if(StringUtils.isNotBlank(d.getMetadata_created()))
+				releaseDate = CommonUtil.fixBadUTCDate(d.getMetadata_created());
+			if(StringUtils.isNotBlank(d.getMetadata_modified()))
+				updateDate = CommonUtil.fixBadUTCDate(d.getMetadata_modified());
 
 			if (StringUtils.isNotBlank(geographicalIdentifier) || StringUtils.isNotBlank(geographicalName)
 					|| StringUtils.isNotBlank(geometry))
@@ -502,11 +497,10 @@ public class CKanConnector implements IODMSConnector {
 				}
 		}
 
-		mapped = new DCATDataset(nodeID, title, description, distributionList, themeList, publisher, contactPointList,
+		mapped = new DCATDataset(nodeID,identifier, title, description, distributionList, themeList, publisher, contactPointList,
 				keywords, accessRights, conformsTo, documentation, frequency, hasVersion, isVersionOf, landingPage,
-				language, provenance, releaseDate, updateDate, identifier, otherIdentifier, sample, source,
-				spatialCoverage, temporalCoverage, type, version, versionNotes, rightsHolder, creator, subjectList,
-				legacyIdentifier);
+				language, provenance, releaseDate, updateDate, otherIdentifier, sample, source,
+				spatialCoverage, temporalCoverage, type, version, versionNotes, rightsHolder, creator, subjectList);
 
 		distributionList = null;
 		publisher = null;
@@ -541,8 +535,10 @@ public class CKanConnector implements IODMSConnector {
 		
 //		if(StringUtils.isBlank(value)) return null;
 		
-		
+		//TODO: regex & groups
 		List<String> result = new ArrayList<String>();
+		
+		if(StringUtils.isBlank(value)) return result;
 		
 		if (value.startsWith("["))
 			try {
@@ -589,6 +585,9 @@ public class CKanConnector implements IODMSConnector {
 //		if(StringUtils.isBlank(value)) return null;
 		
 		List<DCTStandard> result=new ArrayList<DCTStandard>();
+		
+		if(StringUtils.isBlank(value)) return result;
+		
 		if (value.startsWith("["))
 			try {
 				result.addAll(GsonUtil.json2Obj(value, GsonUtil.stringListType));
@@ -801,18 +800,21 @@ public class CKanConnector implements IODMSConnector {
 		 * 
 		 */
 
-		List<String> oldDatasetsID = null;
-		String[] newDatasetsID = null;
+		HashMap<String,ArrayList<String>> idMap=null;
+		List<String> oldDatasetsID = new ArrayList<String>();
+		List<String> newDatasetsNames = new ArrayList<String>();
 		try {
 			logger.info("Starting to retrieve present datasets of the node from cache");
-			oldDatasetsID = MetadataCacheManager.getAllDatasetsIDByODMSCatalogue(node.getId(), true);
-
+			//oldDatasetsID = MetadataCacheManager.getAllDatasetsIDByODMSCatalogue(node.getId(), true);
+			idMap = MetadataCacheManager.getCKANDatasetNamesIdentifiers(node.getId());
+			oldDatasetsID=new ArrayList<String>(idMap.keySet());
 		} catch (DatasetNotFoundException | IOException | SolrServerException e) {
 			logger.info(e.getMessage());
 		}
 
-		try {
-			newDatasetsID = c.getAllDatasetsID();
+	try {
+			newDatasetsNames = Arrays.asList(c.getAllDatasetsID());
+			
 		} catch (CKANException | MalformedURLException e) {
 			e.printStackTrace();
 			logger.info(e.getMessage());
@@ -822,32 +824,71 @@ public class CKanConnector implements IODMSConnector {
 				throw e;
 		}
 
-		// System.out.println("New dataset size: "+newDatasetsID.length);
-
-		ImmutableSet<String> newSets = ImmutableSet.copyOf(newDatasetsID);
-		ImmutableSet<String> oldSets = ImmutableSet.copyOf(oldDatasetsID);
+		
+		//k -> identifier 
+		//elements ->arrayList of name and other identifiers
+		int deleted = 0;
+		for(String k : idMap.keySet()) {
+			List<String> names = idMap.get(k);
+			boolean isPresent=false;
+			for(String n:names) {
+				if(newDatasetsNames.contains(n)) {
+					isPresent=true;
+					break;
+				}
+			}
+			if(!isPresent) {
+				//No match of identifiers in the new Array -> deleted
+				/* -> No perché in questo modo non funzionano cancella gli RDF dato che il dataset non ha distribution -> 
+				 * dobbiamo andare a prendere quelli della cache
+				DCATDataset deletedDataset = new DCATDataset();
+				deletedDataset.setNodeID(new Integer(node.getId()).toString());
+				deletedDataset.setIdentifier(new DCATProperty(DCTerms.identifier, RDFS.Literal.getURI(), k));
+				syncrhoResult.addToDeletedList(deletedDataset);
+				deleted++;*/
+				
+				try {
+					//In questo modo quando deve cancellare ha il dataset con tutte le info 
+					syncrhoResult.addToDeletedList(MetadataCacheManager.getDatasetByIdentifier(Integer.parseInt(nodeID), k));
+					deleted++;
+				} catch (NumberFormatException | DatasetNotFoundException | IOException | SolrServerException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}				
+				
+			}
+			
+		}
+		logger.info("Deleted Packages: " + deleted);
+		/*
+		 * OLD -> NO
+		 * 
+		 * ImmutableSet<String> newSets = ImmutableSet.copyOf(newDatasetsIdentifiers);
+		ImmutableSet<String> oldSets = ImmutableSet.copyOf(oldDatasetsIdentifiers);
 		logger.info(" Start to compare the new and old dataset IDs lists: " + " New size: " + newSets.size()
 				+ " - Old size: " + oldSets.size());
 		SetView<String> diff = Sets.difference(oldSets, newSets);
 
 		int deleted = 0;
 		logger.info("Deleted Packages: " + diff.size());
-		for (String id : diff) {
-
+		for (String identifier : diff) {
 			DCATDataset deletedDataset = new DCATDataset();
-			deletedDataset.setId(id);
+			//deletedDataset.setId(id);
 			deletedDataset.setNodeID(new Integer(node.getId()).toString());
+			//This line is the cause of the nullpointerexception
 			deletedDataset.setOtherIdentifier(Arrays.asList(new DCATProperty("dcat:altIdentifier", id)));
 			deleted++;
 			syncrhoResult.addToDeletedList(deletedDataset);
-		}
+		}*/
 
+		
+		
 		/**********************************************************************************************/
 		/*
 		 * FOR ADDED AND UPDATED DATASETS, RETRIEVES ALL DATASETS WITH METADATA CREATED
 		 * AND MODIFIED AFTER THE LAST UPDATE DATE
 		 */
-
+		
 		int changed = 0, added = 0, offset = 0;
 		Dataset.SearchResults result = null;
 
@@ -888,16 +929,16 @@ public class CKanConnector implements IODMSConnector {
 
 			for (Dataset d : result.results) {
 
-				if (oldDatasetsID.contains(d.getName())) {
+				if (oldDatasetsID.contains(d.getId())) {
 					syncrhoResult.addToChangedList(datasetToDCAT(d, node));
 					changed++;
-				} else if (newSets.contains(d.getName())) {
+				} else if (newDatasetsNames.contains(d.getName())) {
 					syncrhoResult.addToAddedList(datasetToDCAT(d, node));
 					added++;
 				}
 
 			}
-
+			
 			logger.info("NodeID: " + nodeID + " Changed " + syncrhoResult.getChangedDatasets().size());
 			logger.info("NodeID: " + nodeID + " Added " + syncrhoResult.getAddedDatasets().size());
 			logger.info("NodeID: " + nodeID + " Deleted " + syncrhoResult.getDeletedDatasets().size());

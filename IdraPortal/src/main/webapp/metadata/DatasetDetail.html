@@ -16,7 +16,7 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <!-- <div class="datasetPage"> -->
-<div class="datasetPage"  id="scrollHere">
+<div class="datasetPage"  id="top">
 <ul class="breadcrumb">
   <li class="breadcrumb-item"><a href="#metadata">Home</a></li>
   <li class="breadcrumb-item"><a href="#showDatasets">Datasets</a></li>
@@ -477,7 +477,7 @@
 
 						</td>
 					</tr>
-					<tr ng-show="dataset.spatialCoverage!=undefined">
+					<tr ng-show="dataset.spatialCoverage!=undefined && (dataset.spatialCoverage.geographicalName!='' || dataset.spatialCoverage.geometry!='')">
 						<td><span style="font-weight: bold;">Spatial Coverage:</span></td>
 						<td><span
 							ng-show="dataset.spatialCoverage.geographicalName!=''">{{dataset.spatialCoverage.geographicalName}}</span>

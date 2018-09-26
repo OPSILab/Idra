@@ -613,20 +613,24 @@ public class ODMSManager {
 
 		} catch (Exception e) {
 			e.printStackTrace();
-			if (e.getClass().equals(ODMSCatalogueOfflineException.class)) {
+			if (e.getClass().equals(ODMSCatalogueOfflineException.class) || e.getClass().equals(ODMSCatalogueNotFoundException.class)) {
 
 				logger.info("Check node: Setting node state to OFFLINE");
 				node.setNodeState(ODMSCatalogueState.OFFLINE);
 				ODMSManager.updateODMSCatalogue(node, true);
 				return ODMSCatalogueState.OFFLINE;
 
-			} else if (e.getClass().equals(ODMSCatalogueNotFoundException.class)) {
+			} 
+			//Since the this method is used during the synchronization, the node is already federated
+			//and it must not be removed
+			/*else if (e.getClass().equals(ODMSCatalogueNotFoundException.class)) {
 
 				logger.info("Check Node: The node host was not found");
 				federatedNodes.remove(federatedNodes.indexOf(node));
 				throw new ODMSCatalogueNotFoundException("The node host was not found");
 
-			} else
+			}*/ 
+			else
 				throw new ODMSManagerException("There was an error while checking the ODMS Node: " + e.getMessage());
 		}
 	}
@@ -644,20 +648,24 @@ public class ODMSManager {
 
 		} catch (Exception e) {
 
-			if (e.getClass().equals(ODMSCatalogueOfflineException.class)) {
+			if (e.getClass().equals(ODMSCatalogueOfflineException.class) || e.getClass().equals(ODMSCatalogueNotFoundException.class)) {
 
 				logger.info("Check node: Setting node state to OFFLINE");
 				node.setNodeState(ODMSCatalogueState.OFFLINE);
 				ODMSManager.updateODMSCatalogue(node, true);
 				return 0;
 
-			} else if (e.getClass().equals(ODMSCatalogueNotFoundException.class)) {
+			} 
+			//Since the this method is used during the synchronization, the node is already federated
+			//and it must not be removed
+			/*else if (e.getClass().equals(ODMSCatalogueNotFoundException.class)) {
 
 				logger.info("Check Node: The node host was not found");
 				federatedNodes.remove(federatedNodes.indexOf(node));
 				throw new ODMSCatalogueNotFoundException("The node host was not found");
 
-			} else
+			}*/ 
+			else
 				throw new ODMSManagerException("There was an error while checking the ODMS Node: " + e.getMessage());
 		}
 	}
