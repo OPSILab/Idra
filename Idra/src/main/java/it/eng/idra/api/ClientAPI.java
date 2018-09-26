@@ -20,8 +20,6 @@ package it.eng.idra.api;
 import it.eng.idra.beans.Datalet;
 import it.eng.idra.beans.ErrorResponse;
 import it.eng.idra.beans.EuroVocLanguage;
-import it.eng.idra.beans.OrderBy;
-import it.eng.idra.beans.OrderType;
 import it.eng.idra.beans.dcat.DCATAPFormat;
 import it.eng.idra.beans.dcat.DCATAPProfile;
 import it.eng.idra.beans.dcat.DCATAPWriteType;
@@ -31,7 +29,10 @@ import it.eng.idra.beans.exception.DatasetNotFoundException;
 import it.eng.idra.beans.exception.EuroVocTranslationNotFoundException;
 import it.eng.idra.beans.odms.ODMSCatalogue;
 import it.eng.idra.beans.odms.ODMSCatalogueNotFoundException;
-import it.eng.idra.beans.odms.ODMSSynchLock;
+import it.eng.idra.beans.odms.ODMSCatalogueType;
+import it.eng.idra.beans.odms.ODMSManagerException;
+import it.eng.idra.beans.orion.OrionCatalogueConfiguration;
+import it.eng.idra.beans.orion.OrionDistributionConfig;
 import it.eng.idra.beans.search.SearchDateFilter;
 import it.eng.idra.beans.search.SearchEuroVocFilter;
 import it.eng.idra.beans.search.SearchFilter;
@@ -52,13 +53,10 @@ import it.eng.idra.utils.GsonUtilException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.time.Duration;
-import java.time.LocalTime;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
@@ -78,6 +76,7 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.client.Invocation;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
@@ -88,7 +87,6 @@ import javax.ws.rs.core.StreamingOutput;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.jena.query.QueryParseException;
-import org.json.JSONArray;
 import org.json.JSONObject;
 
 import org.apache.logging.log4j.*;
@@ -982,11 +980,11 @@ public class ClientAPI {
 	}
 	
 	@GET
-	@Path("executeOrionQuery")
+	@Path("executeOrionQuery/{cbQueryID}/catalogue/{catalogueID}")
 	@Consumes({ MediaType.APPLICATION_JSON })
 	@Produces("application/json")
 	public Response executeOrionQuery(@Context HttpServletRequest httpRequest,
-			@QueryParam("catalogue") String nodeID,@QueryParam("cbQueryID") String queryID) {
+			@PathParam("catalogueID") String nodeID,@PathParam("cbQueryID") String queryID) {
 		ErrorResponse err=null;
 		if(StringUtils.isBlank(nodeID)) {
 			err = new ErrorResponse(String.valueOf(Response.Status.BAD_REQUEST.getStatusCode()), "Missing mandatory query parameter: catalogue", String.valueOf(Response.Status.BAD_REQUEST.getStatusCode()), "Missing mandatory query parameter: catalogue");
@@ -997,15 +995,74 @@ public class ClientAPI {
 		}
 		
 		try {
-			return Response.status(Response.Status.NOT_FOUND).entity(GsonUtil.obj2Json(err, GsonUtil.errorResponseSetType)).build();
-		} catch (GsonUtilException e) {
+			ODMSCatalogue catalogue = FederationCore.getODMSCatalogue(Integer.parseInt(nodeID), false);
+			if(!catalogue.getNodeType().equals(ODMSCatalogueType.ORION)) {
+				err = new ErrorResponse(String.valueOf(Response.Status.BAD_REQUEST.getStatusCode()), "Catalogue: "+nodeID+" is not ORION", String.valueOf(Response.Status.BAD_REQUEST.getStatusCode()), "Catalogue: "+nodeID+" is not ORION");
+			}else {
+				
+				OrionCatalogueConfiguration catalogueConfig = catalogue.getOrionConfig();
+				OrionDistributionConfig distributionConfig = MetadataCacheManager.getOrionDistributionConfig(queryID);
+				
+				String compiledUri=catalogue.getHost()+"?"+distributionConfig.getQuery();
+				
+				client = ClientBuilder.newClient();
+
+				WebTarget webTarget = client.target(compiledUri);
+				Invocation.Builder builder = webTarget.request();
+				if(StringUtils.isNotBlank(distributionConfig.getFiwareService())) {
+					builder = builder.header("Fiware-Service",distributionConfig.getFiwareService());
+				}
+				
+				if(StringUtils.isNotBlank(distributionConfig.getFiwareServicePath())) {
+					builder = builder.header("Fiware-ServicePath",distributionConfig.getFiwareServicePath());
+				}
+				
+				if(catalogueConfig.isAuthenticated())
+					builder = builder.header("X-Auth-Token",catalogueConfig.getAuthToken());
+				
+				Response request = builder.get();
+				ResponseBuilder responseBuilder = Response.status(request.getStatus());
+				final InputStream responseStream = (InputStream) request.getEntity();
+				StreamingOutput output = new StreamingOutput() {
+					@Override
+					public void write(OutputStream out) throws IOException, WebApplicationException {
+						int length;
+						byte[] buffer = new byte[1024];
+						while ((length = responseStream.read(buffer)) != -1) {
+							out.write(buffer, 0, length);
+						}
+						out.flush();
+						responseStream.close();
+					}
+				};
+
+				responseBuilder.entity(output);
+				
+				MultivaluedMap<String, Object> headers = request.getHeaders();
+				Set<String> keys = headers.keySet();
+				logger.info("Status: " + request.getStatus());
+				
+
+				for (String k : keys) {
+					if (!k.toLowerCase().equals("access-control-allow-origin"))
+						responseBuilder.header(k, headers.get(k).get(0));
+				}
+				
+				return responseBuilder.build();
+				
+			}
+			
+			return Response.status(Response.Status.OK).build();
+		} catch(ODMSCatalogueNotFoundException e) {
+			err = new ErrorResponse(String.valueOf(Response.Status.NOT_FOUND.getStatusCode()), "Catalogues with id: "+nodeID+" not found", String.valueOf(Response.Status.NOT_FOUND.getStatusCode()), "Catalogues with id: "+nodeID+" not found");
+			return Response.status(Response.Status.NOT_FOUND).build();	
+		} catch (NumberFormatException | ODMSManagerException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
-			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+			//e.printStackTrace();
+			return handleErrorResponse500(e);
 		}
 		
-		//return Response.status(Response.Status.OK).build();
-		
+				
 	}
 	
 	 

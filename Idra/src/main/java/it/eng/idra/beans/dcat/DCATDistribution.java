@@ -637,9 +637,9 @@ public class DCATDistribution implements Serializable {
 		if (mediaType != null)
 			doc.addField("mediaType", mediaType.getValue());
 
-		if (StringUtils.isNotBlank(releaseDate.getValue()))
+		if (releaseDate!=null && StringUtils.isNotBlank(releaseDate.getValue()))
 			doc.addField("releaseDate", releaseDate.getValue());
-		if (StringUtils.isNotBlank(updateDate.getValue()))
+		if (releaseDate!=null && StringUtils.isNotBlank(updateDate.getValue()))
 			doc.addField("updateDate", updateDate.getValue());
 		if (rights != null)
 			doc.addField("rights", rights.getValue());
