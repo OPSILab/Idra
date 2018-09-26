@@ -51,6 +51,7 @@ import it.eng.idra.beans.dcat.SPDXChecksum;
 import it.eng.idra.beans.odms.ODMSCatalogue;
 import it.eng.idra.beans.odms.ODMSCatalogueImage;
 import it.eng.idra.beans.odms.ODMSCatalogueMessage;
+import it.eng.idra.beans.orion.OrionDistributionConfig;
 import it.eng.idra.beans.search.DCATAPSearchResult;
 import it.eng.idra.beans.search.SearchFacet;
 import it.eng.idra.beans.search.SearchFilter;
@@ -147,6 +148,14 @@ public final class GsonUtil {
 	
 	public static Type datasetListType = new TypeToken<List<DCATDataset>>() {
 	}.getType();
+	
+	public static Type orionDistributionListType = new TypeToken<List<OrionDistributionConfig>>() {
+	}.getType();
+	
+	public static Type orionDistributionType = new TypeToken<OrionDistributionConfig>() {
+	}.getType();
+	
+	
 
 	public static Type sparqlSearchRequestType = new TypeToken<SparqlSearchRequest>() {
 	}.getType();
@@ -294,6 +303,5 @@ public final class GsonUtil {
 			return pojo;
 
 		}
-	}
-
+	}	
 }
