@@ -372,7 +372,8 @@ public class FederationCore {
 				ODMSManager.updateODMSCatalogue(node, false);
 
 				// Registration of new node completed, starting quartz job
-				ODFScheduler.getSingletonInstance().startCataloguesSynchJob(node, false);
+				if(!node.getFederationLevel().equals(ODMSCatalogueFederationLevel.LEVEL_4))
+					ODFScheduler.getSingletonInstance().startCataloguesSynchJob(node, false);
 
 				// Everything fine reload list of nodes without images
 				ODMSManager.updateODMSCatalogueList();

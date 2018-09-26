@@ -17,38 +17,36 @@
  ******************************************************************************/
 package it.eng.idra.beans.orion;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinColumns;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.LazyCollection;
-import org.hibernate.annotations.LazyCollectionOption;
 
 @Entity
 @Table(name = "odms_orionconfig")
-public class OrionConfiguration {
+public class OrionCatalogueConfiguration {
 
 	private String id;
 	private boolean isAuthenticated;
 	private String authToken;
-	private List<OrionDataset> orionDataset;
+	private String orionDatasetDumpString;
+	private String orionDatasetFilePath;
 	
-	public OrionConfiguration() {}
+	public OrionCatalogueConfiguration() {}
 	
-	public OrionConfiguration(boolean isAuthenticated, String authToken, List<OrionDataset> datasets) {
+	public OrionCatalogueConfiguration(boolean isAuthenticated, String authToken, String datasets) {
 		super();
 		this.isAuthenticated = isAuthenticated;
 		this.authToken = authToken;
-		this.orionDataset = datasets;
+		this.orionDatasetDumpString = datasets;
+	}
+	
+	public OrionCatalogueConfiguration(boolean isAuthenticated, String authToken, String datasets,String dumpPath) {
+		this(isAuthenticated, authToken, datasets);
+		this.orionDatasetFilePath=dumpPath;
 	}
 	
 	@Id
@@ -72,16 +70,22 @@ public class OrionConfiguration {
 	public void setAuthToken(String authToken) {
 		this.authToken = authToken;
 	}
-	
-	@LazyCollection(LazyCollectionOption.FALSE)
-	@OneToMany(cascade = { CascadeType.ALL })
-	@JoinColumns({ @JoinColumn(name = "id", referencedColumnName = "orion_config_id")})
-	public List<OrionDataset> getOrionDataset() {
-		return orionDataset;
+
+	@Transient
+	public String getOrionDatasetDumpString() {
+		return orionDatasetDumpString;
 	}
 
-	public void setOrionDataset(List<OrionDataset> orionDataset) {
-		this.orionDataset = orionDataset;
+	public void setOrionDatasetDumpString(String orionDatasetDump) {
+		this.orionDatasetDumpString = orionDatasetDump;
+	}
+
+	public String getOrionDatasetFilePath() {
+		return orionDatasetFilePath;
+	}
+
+	public void setOrionDatasetFilePath(String orionDatasetFilePath) {
+		this.orionDatasetFilePath = orionDatasetFilePath;
 	}
 
 	@Override
@@ -102,7 +106,7 @@ public class OrionConfiguration {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		OrionConfiguration other = (OrionConfiguration) obj;
+		OrionCatalogueConfiguration other = (OrionCatalogueConfiguration) obj;
 		if (authToken == null) {
 			if (other.authToken != null)
 				return false;

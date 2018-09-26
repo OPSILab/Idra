@@ -83,6 +83,7 @@ public class ODMSManager {
 			ODMSConnectorsList.put(ODMSCatalogueType.WEB, "it.eng.idra.connectors.WebConnector");
 			ODMSConnectorsList.put(ODMSCatalogueType.DCATDUMP, "it.eng.idra.connectors.DCATDumpConnector");
 			ODMSConnectorsList.put(ODMSCatalogueType.DKAN, "it.eng.idra.connectors.DkanConnector");
+			ODMSConnectorsList.put(ODMSCatalogueType.ORION, "it.eng.idra.connectors.OrionConnector");
 
 		} catch (Exception e) {
 			e.printStackTrace();
