@@ -17,9 +17,13 @@
  ******************************************************************************/
 package it.eng.idra.utils;
 
+import java.io.FileWriter;
+import java.io.IOException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.text.Normalizer;
+import java.time.Duration;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
@@ -312,4 +316,20 @@ public class CommonUtil {
 				//.replaceAll("[^\\p{M}]", ""); -> it works also for japanese char but solr doesn't return the proper dataset
 	}
 	
+	public static void storeFile(String filePath,String fileName,String content) throws IOException {
+		FileWriter out = null;
+		logger.info("Writing model to file: " + filePath + fileName);
+
+		Instant tick = Instant.now();
+		try {
+			out = new FileWriter(filePath + fileName);
+			out.write(content);
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			out.close();
+			Instant tock = Instant.now();
+			logger.info("File writing completed in: " + Duration.between(tick, tock).toString());
+		}
+	}
 }

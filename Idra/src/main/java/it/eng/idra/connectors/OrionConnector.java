@@ -55,6 +55,7 @@ import it.eng.idra.beans.odms.ODMSCatalogue;
 import it.eng.idra.beans.odms.ODMSSynchronizationResult;
 import it.eng.idra.beans.orion.OrionCatalogueConfiguration;
 import it.eng.idra.beans.orion.OrionDistributionConfig;
+import it.eng.idra.management.ODMSManager;
 import it.eng.idra.utils.CommonUtil;
 import it.eng.idra.utils.GsonUtil;
 import it.eng.idra.utils.PropertyManager;
@@ -304,6 +305,7 @@ public class OrionConnector implements IODMSConnector {
 						conf.setFiwareService(o.optString("fiwareService", null));
 						conf.setFiwareServicePath(o.optString("fiwareServicePath", null));
 						conf.setQuery(o.getString("query"));
+						conf.setNodeID(nodeID);
 						//TODO: add validation for query
 						distro.setOrionDistributionConfig(conf);
 					}else {
@@ -335,18 +337,23 @@ public class OrionConnector implements IODMSConnector {
 		if(StringUtils.isBlank(orionConfig.getOrionDatasetDumpString())){
 			orionConfig.setOrionDatasetDumpString(new String(Files.readAllBytes(Paths.get(orionConfig.getOrionDatasetFilePath()))));
 		}
-		
-		if(StringUtils.isBlank(orionConfig.getOrionDatasetFilePath())) {
-			storeFile(orionFilePath,"orionDump_"+nodeID,orionConfig.getOrionDatasetDumpString());
-		}
-		
-		//No perché non passa dal costruttore e quindi non mette il seoid
-		//GsonUtil.json2Obj(orionConfig.getOrionDatasetDumpString(), GsonUtil.datasetListType);
+				
 		List<DCATDataset> result = new ArrayList<DCATDataset>();
 		JSONArray datasets_json=new JSONArray(orionConfig.getOrionDatasetDumpString());
 		for(int i=0; i<datasets_json.length(); i++)
 			result.add(datasetToDCAT(datasets_json.get(i),node ));
 		
+		//if(StringUtils.isBlank(orionConfig.getOrionDatasetFilePath())) {
+			
+		try {
+			CommonUtil.storeFile(orionFilePath,"orionDump_"+nodeID,node.getOrionConfig().getOrionDatasetDumpString());
+			node.getOrionConfig().setOrionDatasetFilePath(orionFilePath+"orionDump_"+nodeID);
+			node.getOrionConfig().setOrionDatasetDumpString(null);
+			ODMSManager.updateODMSCatalogue(node, true);
+		}catch(IOException e) {
+			e.printStackTrace();
+		}
+		//}		
 		return result;
 
 	}
@@ -355,23 +362,6 @@ public class OrionConnector implements IODMSConnector {
 	public ODMSSynchronizationResult getChangedDatasets(List<DCATDataset> oldDatasets, String startingDate)
 			throws Exception {
 		return null;
-	}
-
-	protected void storeFile(String filePath,String fileName,String content) throws IOException {
-		FileWriter out = null;
-		logger.info("Writing model to file: " + filePath + fileName);
-
-		Instant tick = Instant.now();
-		try {
-			out = new FileWriter(filePath + fileName);
-			out.write(content);
-		} catch (Exception e) {
-			e.printStackTrace();
-		} finally {
-			out.close();
-			Instant tock = Instant.now();
-			logger.info("File writing completed in: " + Duration.between(tick, tock).toString());
-		}
 	}
 	
 	private <T extends SKOSConcept> List<T> extractConceptList(String propertyUri, List<String> concepts,Class<T> type) {
