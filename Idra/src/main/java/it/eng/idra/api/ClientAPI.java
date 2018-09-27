@@ -1040,7 +1040,7 @@ public class ClientAPI {
 				
 				MultivaluedMap<String, Object> headers = request.getHeaders();
 				Set<String> keys = headers.keySet();
-				logger.info("Status: " + request.getStatus());
+				//logger.info("Status: " + request.getStatus());
 				
 
 				for (String k : keys) {
