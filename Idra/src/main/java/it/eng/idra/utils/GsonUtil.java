@@ -64,8 +64,6 @@ import it.eng.idra.beans.statistics.StatisticsRequest;
 
 public final class GsonUtil {
 
-	private static GsonBuilder gsonBuilder = new GsonBuilder();
-
 	private static DateTimeFormatter dtFormatter = DateTimeFormatter.ISO_OFFSET_DATE_TIME.withZone(ZoneOffset.UTC);
 
 	public static Type nodeType = new TypeToken<ODMSCatalogue>() {
@@ -155,8 +153,6 @@ public final class GsonUtil {
 	public static Type orionDistributionType = new TypeToken<OrionDistributionConfig>() {
 	}.getType();
 	
-	
-
 	public static Type sparqlSearchRequestType = new TypeToken<SparqlSearchRequest>() {
 	}.getType();
 
@@ -187,7 +183,7 @@ public final class GsonUtil {
 	public static Type prefLabelType = new TypeToken<SKOSPrefLabel>() {
 	}.getType();
 	
-	private static Gson gson = gsonBuilder
+	private static GsonBuilder gsonBuilder = new GsonBuilder()
 			.registerTypeAdapter(ZonedDateTime.class, new JsonDeserializer<ZonedDateTime>() {
 				public ZonedDateTime deserialize(JsonElement jsonElement, Type type,
 						JsonDeserializationContext jsonDeserializationContext) throws JsonParseException {
@@ -217,11 +213,11 @@ public final class GsonUtil {
 			.registerTypeAdapter(SearchRequest.class, new AnnotatedDeserializer<LogsRequest>())
 			.registerTypeAdapter(SearchFilter.class, new AnnotatedDeserializer<LogsRequest>())
 			.registerTypeAdapter(ErrorResponse.class, new AnnotatedDeserializer<ErrorResponse>())
-
-			// .registerTypeAdapterFactory(HibernateProxyTypeAdapter.FACTORY)
-
 			.registerTypeHierarchyAdapter(GregorianCalendar.class, new CalendarAdapter())
-			.registerTypeAdapter(ODMSCatalogueImage.class, new ImageSerializer()).create();
+			.registerTypeAdapter(ODMSCatalogueImage.class, new ImageSerializer());
+	
+	private static Gson gson = gsonBuilder.create();
+	private static Gson gsonExcludeFields = gsonBuilder.excludeFieldsWithoutExposeAnnotation().create();
 
 	public static <T> T json2Obj(String json, Class<T> t) throws GsonUtilException {
 		T obj = null;
@@ -262,6 +258,28 @@ public final class GsonUtil {
 
 		try {
 			json = gson.toJson(obj, t);
+		} catch (Exception e) {
+			throw new GsonUtilException("Object to JSON failed: " + e.getMessage());
+		}
+		return json;
+	}
+	
+	public static <T> String obj2JsonWithExclude(Object obj, Class<T> t) throws GsonUtilException {
+		String json = null;
+
+		try {
+			json = gsonExcludeFields.toJson(obj, t);
+		} catch (Exception e) {
+			throw new GsonUtilException("Object to JSON failed: " + e.getMessage());
+		}
+		return json;
+	}
+
+	public static <T> String obj2JsonWithExclude(Object obj, Type t) throws GsonUtilException {
+		String json = null;
+
+		try {
+			json = gsonExcludeFields.toJson(obj, t);
 		} catch (Exception e) {
 			throw new GsonUtilException("Object to JSON failed: " + e.getMessage());
 		}

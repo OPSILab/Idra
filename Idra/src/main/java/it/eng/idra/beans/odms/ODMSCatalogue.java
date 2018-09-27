@@ -38,6 +38,8 @@ import javax.persistence.PreUpdate;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import com.google.gson.annotations.Expose;
+
 import it.eng.idra.beans.dcat.DCATAPFormat;
 import it.eng.idra.beans.dcat.DCATAPProfile;
 import it.eng.idra.beans.orion.OrionCatalogueConfiguration;
@@ -54,14 +56,17 @@ public class ODMSCatalogue {
 	@Id
 	@Column(name = "id")
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Expose
 	private int id;
 
 	@JsonRequired
 	@Column(name = "name", unique = true, nullable = false) //TODO: levare unique + mettere url-api
+	@Expose
 	private String name;
 
 	@JsonRequired
 	@Column(name = "host", unique = true, nullable = false)
+	@Expose
 	private String host;
 
 	@Column(name = "api_key", unique = false, nullable = true)
@@ -70,6 +75,7 @@ public class ODMSCatalogue {
 	@JsonRequired
 	@Column(name = "type", unique = false, nullable = false)
 	@Enumerated(EnumType.STRING)
+	@Expose
 	private ODMSCatalogueType nodeType;
 
 	@JsonRequired
@@ -79,27 +85,31 @@ public class ODMSCatalogue {
 
 	@JsonRequired
 	@Column(name = "publisher_name", unique = false, nullable = false)
+	@Expose
 	private String publisherName;
 
 	@Column(name = "publisher_url", unique = false, nullable = true)
+	@Expose
 	private String publisherUrl;
 
 	@Column(name = "publisher_email", unique = false, nullable = true)
+	@Expose
 	private String publisherEmail;
 
 	@Column(name = "dataset_count")
+	@Expose
 	private int datasetCount;
 
 	@Column(name = "state", unique = false, nullable = false)
 	@Enumerated(EnumType.STRING)
+	@Expose
 	private ODMSCatalogueState nodeState;
 
 	@Column(name = "register_date", updatable = true)
-	// @Temporal(TemporalType.TIMESTAMP)
 	private ZonedDateTime registerDate;
 
 	@Column(name = "last_update_date")
-	// @Temporal(TemporalType.TIMESTAMP)
+	@Expose
 	private ZonedDateTime lastUpdateDate;
 
 	@JsonRequired
@@ -107,12 +117,14 @@ public class ODMSCatalogue {
 	private int refreshPeriod;
 
 	@Column(name = "description", columnDefinition = "TEXT")
+	@Expose
 	private String description;
 
 	// @Column(name = "image", columnDefinition = "LONGTEXT")
 
 	@OneToOne(fetch = FetchType.LAZY, cascade = { CascadeType.ALL })
 	@JoinColumn(name = "image_id")
+	@Expose
 	private ODMSCatalogueImage image;
 
 	@Transient
@@ -125,9 +137,11 @@ public class ODMSCatalogue {
 	private int datasetStart;
 
 	@Column(name = "location", columnDefinition = "LONGTEXT")
+	@Expose
 	private String location;
 
 	@Column(name = "locationDescription", columnDefinition = "MEDIUMTEXT")
+	@Expose
 	private String locationDescription;
 
 	@Transient
@@ -147,12 +161,15 @@ public class ODMSCatalogue {
 	private String dumpURL;
 
 	@Column(name = "isActive", nullable = true)
+	@Expose
 	private Boolean isActive;
 
 	@Column(name = "country", nullable = true)
+	@Expose
 	private String country;
 
 	@Column(name = "category", nullable = true)
+	@Expose
 	private String category;
 
 	@OneToOne(orphanRemoval = true, cascade = { CascadeType.ALL, CascadeType.REMOVE })
