@@ -372,8 +372,7 @@ public class FederationCore {
 				ODMSManager.updateODMSCatalogue(node, false);
 
 				// Registration of new node completed, starting quartz job
-				if(!node.getFederationLevel().equals(ODMSCatalogueFederationLevel.LEVEL_4))
-					ODFScheduler.getSingletonInstance().startCataloguesSynchJob(node, false);
+				ODFScheduler.getSingletonInstance().startCataloguesSynchJob(node, false);
 
 				// Everything fine reload list of nodes without images
 				ODMSManager.updateODMSCatalogueList();
@@ -642,8 +641,12 @@ public class FederationCore {
 		try {
 			ODFScheduler odfScheduler = ODFScheduler.getSingletonInstance();
 			if (odfScheduler.isJobRunning(Integer.toString(node.getId()))) {
+				logger.info("Interrupting job for catalogue: "+node.getId());
 				odfScheduler.interruptJob(Integer.toString(node.getId()));
 			}
+			logger.info("Deleting job for catalogue: "+node.getId());
+			odfScheduler.deleteJob(Integer.toString(node.getId()));
+			
 		} catch (SchedulerNotInitialisedException | SchedulerException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -687,11 +690,21 @@ public class FederationCore {
 			startNow = true;
 		}
 
-		try {
-			ODFScheduler.getSingletonInstance().startCataloguesSynchJob(node, startNow);
-		} catch (SchedulerNotInitialisedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		if(!node.getFederationLevel().equals(ODMSCatalogueFederationLevel.LEVEL_4)) {
+			try {
+				ODFScheduler.getSingletonInstance().startCataloguesSynchJob(node, startNow);
+			} catch (SchedulerNotInitialisedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}else {
+			if(startNow)
+				try {
+					MetadataCacheManager.loadCacheFromODMSCatalogue(node);
+				} catch (InvocationTargetException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 		}
 
 	}

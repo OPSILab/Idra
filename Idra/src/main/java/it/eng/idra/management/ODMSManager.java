@@ -35,6 +35,7 @@ import it.eng.idra.connectors.webscraper.WebScraper;
 import it.eng.idra.dcat.dump.DCATAPDeserializer;
 import it.eng.idra.dcat.dump.DCATAPITDeserializer;
 import it.eng.idra.dcat.dump.DCATAPSerializer;
+import it.eng.idra.utils.CommonUtil;
 import it.eng.idra.utils.PropertyManager;
 
 import java.io.IOException;
@@ -362,7 +363,7 @@ public class ODMSManager {
 					node.setDatasetCount(0);
 
 					assignedNodeID = jpa.jpaInsertODMSCatalogue(node);
-
+					boolean updateNode=false;
 					if (node.getNodeType().equals(ODMSCatalogueType.DCATDUMP)) {
 						if (StringUtils.isNotBlank(node.getDumpString())) {
 							Model m = null;
@@ -388,9 +389,20 @@ public class ODMSManager {
 							}
 
 						}
-						updateInactiveODMSCatalogue(node);
+						updateNode=true;
+					}else if(node.getNodeType().equals(ODMSCatalogueType.ORION)) {
+						
+						String orionDumpFilePath=PropertyManager.getProperty(ODFProperty.ORION_FILE_DUMP_PATH);
+						try {
+							CommonUtil.storeFile(orionDumpFilePath,"orionDump_"+assignedNodeID,node.getOrionConfig().getOrionDatasetDumpString());
+							node.getOrionConfig().setOrionDatasetFilePath(orionDumpFilePath+"orionDump_"+assignedNodeID);
+							updateNode=true;
+						}catch(IOException e) {
+							e.printStackTrace();
+						}
 					}
-
+					if(updateNode)
+						updateInactiveODMSCatalogue(node);
 					getNodesLock = false;
 					federatedNodes.add(node);
 

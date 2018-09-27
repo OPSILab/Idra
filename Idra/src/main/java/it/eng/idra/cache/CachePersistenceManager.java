@@ -614,6 +614,9 @@ public class CachePersistenceManager {
 		q = em.createNativeQuery("DELETE FROM dcat_concept where nodeID= " + nodeID + " and dataset_id is null ");
 		q.executeUpdate();
 		
+		q = em.createQuery("DELETE FROM OrionDistributionConfig where nodeID= " + nodeID);
+		q.executeUpdate();
+		
 		em.getTransaction().commit();
 
 		logger.info("HIBERNATE: Delete Transaction COMMIT");
