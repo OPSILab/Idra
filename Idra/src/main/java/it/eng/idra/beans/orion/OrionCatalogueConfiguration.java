@@ -32,20 +32,28 @@ public class OrionCatalogueConfiguration {
 	private String id;
 	private boolean isAuthenticated;
 	private String authToken;
+	private String refreshToken;
+	private String oauth2Endpoint;
+	private String clientID;
+	private String clientSecret;
 	private String orionDatasetDumpString;
 	private String orionDatasetFilePath;
 	
 	public OrionCatalogueConfiguration() {}
 	
-	public OrionCatalogueConfiguration(boolean isAuthenticated, String authToken, String datasets) {
+	public OrionCatalogueConfiguration(boolean isAuthenticated, String authToken,String refreshToken,String oauth2Endpoint,String client_id,String client_secret, String datasets) {
 		super();
 		this.isAuthenticated = isAuthenticated;
 		this.authToken = authToken;
+		this.refreshToken=refreshToken;
+		this.oauth2Endpoint=oauth2Endpoint;
+		this.clientID=client_id;
+		this.clientSecret=client_secret;
 		this.orionDatasetDumpString = datasets;
 	}
 	
-	public OrionCatalogueConfiguration(boolean isAuthenticated, String authToken, String datasets,String dumpPath) {
-		this(isAuthenticated, authToken, datasets);
+	public OrionCatalogueConfiguration(boolean isAuthenticated, String authToken,String refreshToken,String oauth2Endpoint,String client_id,String client_secret, String datasets,String dumpPath) {
+		this(isAuthenticated, authToken, refreshToken,oauth2Endpoint,client_id,client_secret,datasets);
 		this.orionDatasetFilePath=dumpPath;
 	}
 	
@@ -87,6 +95,38 @@ public class OrionCatalogueConfiguration {
 	public void setOrionDatasetFilePath(String orionDatasetFilePath) {
 		this.orionDatasetFilePath = orionDatasetFilePath;
 	}
+	
+	public String getRefreshToken() {
+		return refreshToken;
+	}
+
+	public void setRefreshToken(String refreshToken) {
+		this.refreshToken = refreshToken;
+	}
+
+	public String getOauth2Endpoint() {
+		return oauth2Endpoint;
+	}
+
+	public void setOauth2Endpoint(String oauth2Endpoint) {
+		this.oauth2Endpoint = oauth2Endpoint;
+	}
+
+	public String getClientID() {
+		return clientID;
+	}
+
+	public void setClientID(String client_id) {
+		this.clientID = client_id;
+	}
+
+	public String getClientSecret() {
+		return clientSecret;
+	}
+
+	public void setClientSecret(String client_secret) {
+		this.clientSecret = client_secret;
+	}
 
 	@Override
 	public int hashCode() {
@@ -121,5 +161,5 @@ public class OrionCatalogueConfiguration {
 			return false;
 		return true;
 	}
-	
+		
 }

@@ -29,6 +29,7 @@ import it.eng.idra.beans.odms.ODMSCatalogueFederationLevel;
 import it.eng.idra.management.ODMSManager;
 import it.eng.idra.odfscheduler.job.DCATAPDumpJob;
 import it.eng.idra.odfscheduler.job.DeleteLogsJob;
+import it.eng.idra.odfscheduler.job.OAUTHTokenSynchJob;
 import it.eng.idra.odfscheduler.job.ODMSSynchJob;
 
 import static org.quartz.SimpleScheduleBuilder.*;
@@ -275,6 +276,30 @@ public class ODFScheduler {
     				logger.error("Error while Starting synch for catalogue: "+node.getName()+" " + e.getMessage());
     			}
     		}
+    	}
+    }
+    
+    public void startOAUTHTokenSynchJob(ODMSCatalogue node) {
+    	try {
+    		JobDetail job = JobBuilder.newJob(OAUTHTokenSynchJob.class)
+    				.withIdentity("synchToken_"+Integer.toString(node.getId()), "jobs").usingJobData("nodeID",node.getId()).
+    				build();
+
+    		Trigger trigger = TriggerBuilder
+    				.newTrigger()
+    				.withIdentity("synchToken_"+Integer.toString(node.getId()), "triggers")
+    				.withSchedule(simpleSchedule().repeatForever()
+    						.withIntervalInSeconds(3600) //Ogni ora fa il check 
+    						.withMisfireHandlingInstructionNextWithExistingCount())
+    				.build();
+
+    		scheduler.scheduleJob(job, trigger);
+    		logger.info("Token Synch Job scheduled for catalogue "+node.getName());
+
+    	} catch (SchedulerException e) {
+    		logger.error("Error while scheduling Token synch job for node "+node.getName()+": " + e.getMessage());
+    	} catch(Exception e) {
+    		logger.error("Generic Error while scheduling Token synch job for node "+node.getName()+": " + e.getMessage());
     	}
     }
     
