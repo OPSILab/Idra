@@ -140,8 +140,17 @@ public class AdministrationAPI {
 			}else {
 				if(node.getOrionConfig()==null) {
 					ErrorResponse error = new ErrorResponse(String.valueOf(Response.Status.BAD_REQUEST.getStatusCode()),
-							"Orion Catalogues must have theri configuration parameters!", "400", "Orion Catalogue must have its configuration parameters!");
+							"Orion Catalogue must have its configuration parameters!", "400", "Orion Catalogue must have its configuration parameters!");
 					return Response.status(Response.Status.BAD_REQUEST).entity(error.toJson()).build();
+				}
+				
+				if(node.getOrionConfig().isAuthenticated()) {
+					if(StringUtils.isBlank(node.getOrionConfig().getAuthToken()) || StringUtils.isBlank(node.getOrionConfig().getRefreshToken()) || StringUtils.isBlank(node.getOrionConfig().getOauth2Endpoint())
+							|| StringUtils.isBlank(node.getOrionConfig().getClientID()) || StringUtils.isBlank(node.getOrionConfig().getClientSecret())) {
+						ErrorResponse error = new ErrorResponse(String.valueOf(Response.Status.BAD_REQUEST.getStatusCode()),
+								"Please provide all of the authentication configuration parameters", "400", "Please provide all of the authentication configuration parameters");
+						return Response.status(Response.Status.BAD_REQUEST).entity(error.toJson()).build();
+					}
 				}
 				
 				if(StringUtils.isBlank(node.getOrionConfig().getOrionDatasetDumpString()) && fileInputStream==null)
