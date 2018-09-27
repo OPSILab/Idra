@@ -239,40 +239,43 @@ public class ODFScheduler {
     }
     
     public void startCataloguesSynchJob(ODMSCatalogue node,boolean startNow) {
-        try {
-            JobDetail job = JobBuilder.newJob(ODMSSynchJob.class)
-                    .withIdentity(Integer.toString(node.getId()), "jobs").usingJobData("nodeID",node.getId()).
-                    build();
-                       
-            Date d = Date.from(node.getRegisterDate().toInstant());
-            
-            Trigger trigger = TriggerBuilder
-                    .newTrigger()
-                    .withIdentity(Integer.toString(node.getId()), "triggers")
-                    .startAt(d)
-                    .withSchedule(simpleSchedule().repeatForever()
-                    		.withIntervalInSeconds(node.getRefreshPeriod())
-                    		.withMisfireHandlingInstructionNextWithExistingCount())
-                    .build();
-                       
-            scheduler.scheduleJob(job, trigger);
-            logger.info("Synch Job scheduled for catalogue "+node.getName());
-            
-        } catch (SchedulerException e) {
-            logger.error("Error while scheduling synch job for node "+node.getName()+": " + e.getMessage());
-        } catch(Exception e) {
-        	logger.error("Generic Error while scheduling synch job for node "+node.getName()+": " + e.getMessage());
-        }
-        
-        if(startNow) {
-        	logger.info("Starting now synch for catalogue: "+node.getName());
-        	try {
-				scheduler.triggerJob(jobKey(Integer.toString(node.getId()),"jobs"));
-			} catch (SchedulerException e) {
-				// TODO Auto-generated catch block
-				logger.error("Error while Starting synch for catalogue: "+node.getName()+" " + e.getMessage());
-			}
-        }
+    	//LEVEL_4 -> non deve sincronizzarsi
+    	if(!node.getFederationLevel().equals(ODMSCatalogueFederationLevel.LEVEL_4)) {
+    		try {
+    			JobDetail job = JobBuilder.newJob(ODMSSynchJob.class)
+    					.withIdentity(Integer.toString(node.getId()), "jobs").usingJobData("nodeID",node.getId()).
+    					build();
+
+    			Date d = Date.from(node.getRegisterDate().toInstant());
+
+    			Trigger trigger = TriggerBuilder
+    					.newTrigger()
+    					.withIdentity(Integer.toString(node.getId()), "triggers")
+    					.startAt(d)
+    					.withSchedule(simpleSchedule().repeatForever()
+    							.withIntervalInSeconds(node.getRefreshPeriod())
+    							.withMisfireHandlingInstructionNextWithExistingCount())
+    					.build();
+
+    			scheduler.scheduleJob(job, trigger);
+    			logger.info("Synch Job scheduled for catalogue "+node.getName());
+
+    		} catch (SchedulerException e) {
+    			logger.error("Error while scheduling synch job for node "+node.getName()+": " + e.getMessage());
+    		} catch(Exception e) {
+    			logger.error("Generic Error while scheduling synch job for node "+node.getName()+": " + e.getMessage());
+    		}
+
+    		if(startNow) {
+    			logger.info("Starting now synch for catalogue: "+node.getName());
+    			try {
+    				scheduler.triggerJob(jobKey(Integer.toString(node.getId()),"jobs"));
+    			} catch (SchedulerException e) {
+    				// TODO Auto-generated catch block
+    				logger.error("Error while Starting synch for catalogue: "+node.getName()+" " + e.getMessage());
+    			}
+    		}
+    	}
     }
     
     public boolean isJobRunning(String jobName) throws SchedulerException {

@@ -30,6 +30,7 @@ import it.eng.idra.beans.User;
 import it.eng.idra.beans.dcat.DCATDataset;
 import it.eng.idra.beans.odms.ODMSAlreadyPresentException;
 import it.eng.idra.beans.odms.ODMSManagerException;
+import it.eng.idra.beans.orion.OrionCatalogueConfiguration;
 import it.eng.idra.beans.odms.ODMSCatalogue;
 import it.eng.idra.beans.odms.ODMSCatalogueChangeActiveStateException;
 import it.eng.idra.beans.odms.ODMSCatalogueForbiddenException;
@@ -237,6 +238,15 @@ public class AdministrationAPI {
 					// Read the content of the file from the file system
 					String dumpString = new String(Files.readAllBytes(Paths.get(node.getDumpFilePath())));
 					node.setDumpString(dumpString);
+				}
+			}
+			
+			if(node.getNodeType().equals(ODMSCatalogueType.ORION)) {
+				OrionCatalogueConfiguration conf = node.getOrionConfig();
+				if (StringUtils.isBlank(conf.getOrionDatasetDumpString()) && StringUtils.isNotBlank(conf.getOrionDatasetFilePath())) {
+					// Read the content of the file from the file system
+					String dumpOrion = new String(Files.readAllBytes(Paths.get(conf.getOrionDatasetFilePath())));
+					node.getOrionConfig().setOrionDatasetDumpString(dumpOrion);
 				}
 			}
 			

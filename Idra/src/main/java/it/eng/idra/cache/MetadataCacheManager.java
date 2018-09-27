@@ -1203,7 +1203,7 @@ public class MetadataCacheManager {
 
 						cachePersistence.jpaPersistDataset(dataset);
 						
-						//Se è orion devo farlo qui il tracchiggio sulle distribution in quanto prima non ho l'id della distro
+						//Se è orion setting sulle downloadURL e accessURL delle distribution
 						if(node.getNodeType().equals(ODMSCatalogueType.ORION)) {
 							handleORIONDistribution(cachePersistence,node,dataset);
 						}
@@ -1266,6 +1266,10 @@ public class MetadataCacheManager {
 								dataset=handleRDFDistributions(dataset);
 						
 							cachePersistence.jpaPersistOrMergeAndCommitDataset(dataset);
+							//Se è orion setting sulle downloadURL e accessURL delle distribution
+							if(node.getNodeType().equals(ODMSCatalogueType.ORION)) {
+								handleORIONDistribution(cachePersistence,node,dataset);
+							}
 							server.add(dataset.toDoc());
 							server.commit();
 

@@ -33,17 +33,19 @@ public class OrionDistributionConfig{
 	 * 
 	 */	
 	private String id;
+	private String nodeID;
 	private String query; //The query parameter string to be provided to orion
 	private String fiwareService;
 	private String fiwareServicePath;
 	
 	public OrionDistributionConfig() {}
 
-	public OrionDistributionConfig(String query, String fiwareService, String fiwareServicePath) {
+	public OrionDistributionConfig(String query, String fiwareService, String fiwareServicePath,String nodeID) {
 		super();
 		this.query = query;
 		this.fiwareService = fiwareService;
 		this.fiwareServicePath = fiwareServicePath;
+		this.nodeID=nodeID;
 	}
 
 	@Id
@@ -80,6 +82,14 @@ public class OrionDistributionConfig{
 
 	public void setFiwareServicePath(String fiwareServicePath) {
 		this.fiwareServicePath = fiwareServicePath;
+	}
+
+	public String getNodeID() {
+		return nodeID;
+	}
+
+	public void setNodeID(String nodeID) {
+		this.nodeID = nodeID;
 	}
 		
 }
