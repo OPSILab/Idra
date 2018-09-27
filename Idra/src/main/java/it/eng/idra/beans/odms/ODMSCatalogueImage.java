@@ -24,6 +24,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import com.google.gson.annotations.Expose;
+
 @Entity
 @Table(name = "odms_image")
 public class ODMSCatalogueImage {
@@ -31,8 +33,10 @@ public class ODMSCatalogueImage {
 	@Id
 	@Column(name = "image_id")
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Expose
 	private int imageId;
 	@Column(columnDefinition = "LONGTEXT")
+	@Expose
 	private String imageData;
 
 	public ODMSCatalogueImage(){}

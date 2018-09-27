@@ -199,6 +199,7 @@ public class AdministrationAPI {
 	}
 
 	@GET
+	@Secured
 	@Path("/catalogues")
 	@Produces("application/json")
 	public Response getODMSCatalogues(@QueryParam("withImage") boolean withImage) {
