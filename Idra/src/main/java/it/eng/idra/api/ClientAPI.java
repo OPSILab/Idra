@@ -20,6 +20,8 @@ package it.eng.idra.api;
 import it.eng.idra.beans.Datalet;
 import it.eng.idra.beans.ErrorResponse;
 import it.eng.idra.beans.EuroVocLanguage;
+import it.eng.idra.beans.OrderBy;
+import it.eng.idra.beans.OrderType;
 import it.eng.idra.beans.dcat.DCATAPFormat;
 import it.eng.idra.beans.dcat.DCATAPProfile;
 import it.eng.idra.beans.dcat.DCATAPWriteType;
@@ -31,6 +33,7 @@ import it.eng.idra.beans.odms.ODMSCatalogue;
 import it.eng.idra.beans.odms.ODMSCatalogueNotFoundException;
 import it.eng.idra.beans.odms.ODMSCatalogueType;
 import it.eng.idra.beans.odms.ODMSManagerException;
+import it.eng.idra.beans.odms.ODMSSynchLock;
 import it.eng.idra.beans.orion.OrionCatalogueConfiguration;
 import it.eng.idra.beans.orion.OrionDistributionConfig;
 import it.eng.idra.beans.search.SearchDateFilter;
@@ -53,10 +56,13 @@ import it.eng.idra.utils.GsonUtilException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.time.Duration;
+import java.time.LocalTime;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
@@ -87,6 +93,7 @@ import javax.ws.rs.core.StreamingOutput;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.jena.query.QueryParseException;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import org.apache.logging.log4j.*;
@@ -706,10 +713,8 @@ public class ClientAPI {
 
 	}
 	
-	//NEW APIs
-	/*
 	@GET
-	@Path("/search_catalogues_list")
+	@Path("/cataloguesInfo")
 	@Produces("application/json")
 	public Response listNodes(@Context HttpServletRequest httpRequest) {
 		LocalTime time1 = LocalTime.now();
@@ -832,7 +837,7 @@ public class ClientAPI {
 				nodes = nodes.subList(off, row);
 			}
 			
-			JSONArray array = new JSONArray(GsonUtil.obj2Json(nodes, GsonUtil.nodeListType));
+			JSONArray array = new JSONArray(GsonUtil.obj2JsonWithExclude(nodes, GsonUtil.nodeListType));
 			JSONObject result = new JSONObject();
 			result.put("count", count);
 			result.put("catalogues", array);
@@ -852,12 +857,12 @@ public class ClientAPI {
 	@Path("/catalogues/{nodeID}")
 	@Consumes({ MediaType.APPLICATION_JSON })
 	@Produces("application/json")
-	public Response getSingleCatalogue(@Context HttpServletRequest httpRequest,@PathParam("nodeID") String nodeID) {
+	public Response getSingleCatalogue(@Context HttpServletRequest httpRequest,@PathParam("nodeID") String nodeID,@QueryParam("withImage") @DefaultValue("true") boolean withImage) {
 
 		try {
-			ODMSCatalogue result = FederationCore.getODMSCatalogue(Integer.parseInt(nodeID));
+			ODMSCatalogue result = FederationCore.getODMSCatalogue(Integer.parseInt(nodeID), withImage);
 			if(result.isActive())
-				return Response.status(Response.Status.OK).entity(GsonUtil.obj2Json(result, GsonUtil.nodeType)).build();
+				return Response.status(Response.Status.OK).entity(GsonUtil.obj2JsonWithExclude(result, GsonUtil.nodeType)).build();
 			else {
 				ErrorResponse err = new ErrorResponse(String.valueOf(Response.Status.NOT_FOUND.getStatusCode()), "Catalogues with id: "+nodeID+" not found", String.valueOf(Response.Status.NOT_FOUND.getStatusCode()), "Catalogues with id: "+nodeID+" not found");
 				return Response.status(Response.Status.NOT_FOUND).entity(GsonUtil.obj2Json(err, GsonUtil.errorResponseSetType)).build();
@@ -872,9 +877,13 @@ public class ClientAPI {
 		} catch (ODMSCatalogueNotFoundException e) {
 			// TODO Auto-generated catch block
 			return handleBadRequestErrorResponse(e);
+		} catch (ODMSManagerException e) {
+			// TODO Auto-generated catch block
+			return handleBadRequestErrorResponse(e);
 		}
 	}
 	
+	/*
 	@GET
 	@Path("/catalogues/{nodeID}/datasets")
 	@Consumes({ MediaType.APPLICATION_JSON })
@@ -923,7 +932,7 @@ public class ClientAPI {
 			
 			ODMSCatalogue cat= FederationCore.getODMSCatalogue(Integer.parseInt(nodeID));
 			if(cat.isActive()) {
-				DCATDataset result = MetadataCacheManager.getDataset(Integer.parseInt(nodeID), datasetID);
+				DCATDataset result = MetadataCacheManager.getDatasetByID(datasetID);
 				return Response.status(Response.Status.OK).entity(GsonUtil.obj2Json(result, GsonUtil.datasetType)).build();
 			}else {
 				ErrorResponse err = new ErrorResponse(String.valueOf(Response.Status.NOT_FOUND.getStatusCode()), "Catalogues with id: "+nodeID+" not found", String.valueOf(Response.Status.NOT_FOUND.getStatusCode()), "Catalogues with id: "+nodeID+" not found");
@@ -949,8 +958,8 @@ public class ClientAPI {
 			// TODO Auto-generated catch block
 			return handleBadRequestErrorResponse(e);
 		}
-	}
-	*/
+	}*/
+	
 	@GET
 	@Path("/datasets/{id}")
 	@Consumes({ MediaType.APPLICATION_JSON })
