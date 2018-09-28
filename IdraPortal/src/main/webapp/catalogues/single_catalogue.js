@@ -41,6 +41,31 @@ angular.module("IdraPlatform").controller('CatalogueCtrl',['$scope','$http','con
 	
 	/*NEW Upload file methods for new Catalogues type*/
 	
+	$scope.fileUploadORION = function(fileEl){
+		var files = fileEl.files;
+		  var file = files[0];
+		  console.log(file);
+		  if(file.name.endsWith(".json")){
+			  var reader = new FileReader();
+
+			  reader.onloadend = function(evt) {
+				  if (evt.target.readyState === FileReader.DONE) {
+					  $scope.$apply(function () {
+						  //JSON
+						  //$scope.node.orionConfig.orionDumpString = JSON.parse(evt.target.result);
+						  //string
+						  $scope.node.orionConfig.orionDatasetDumpString = evt.target.result;
+					  });
+				  }
+			  };
+
+			  reader.readAsText(file);
+		  }else{
+			  dialogs.error("Wrong file","Please provide a .json file");
+			  return;
+		  }
+	};
+	
 	$scope.fileUploadWEB = function(fileEl){
 		var files = fileEl.files;
 		  var file = files[0];
@@ -184,7 +209,16 @@ angular.module("IdraPlatform").controller('CatalogueCtrl',['$scope','$http','con
 				dumpFilePath:null,
 				country:'',
 				category:'',
-				isActive:true
+				isActive:true,
+				orionConfig:{
+					isAuthenticated:false,
+					authToken:"",
+					refreshToken:"",
+					clientID:"",
+					clientSecret:"",
+					oauth2Endpoint:"",
+					orionDatasetDumpString:""
+				}
 				};
 
 		
@@ -255,7 +289,16 @@ angular.module("IdraPlatform").controller('CatalogueCtrl',['$scope','$http','con
 					dumpFilePath:null,
 					country:'',
 					category:'',
-					isActive:true
+					isActive:true,
+					orionConfig:{
+						isAuthenticated:false,
+						authToken:"",
+						refreshToken:"",
+						clientID:"",
+						clientSecret:"",
+						oauth2Endpoint:"",
+						orionDatasetDumpString:""
+					}
 			};
 			
 		}else{
@@ -427,6 +470,9 @@ angular.module("IdraPlatform").controller('CatalogueCtrl',['$scope','$http','con
 			case 'DCATDUMP':
 				node.federationLevel='LEVEL_2';
 				break;
+			case 'ORION':
+				node.federationLevel='LEVEL_4';
+				break;
 			default:
 				break;
 			}
@@ -438,6 +484,12 @@ angular.module("IdraPlatform").controller('CatalogueCtrl',['$scope','$http','con
 				}
 			}
 
+			if(node.nodeType == 'ORION'){
+				if(angular.equals({}, node.orionConfig)){
+					dialogs.error("Missing Configuration","Please add Orion configurations!");
+					return;
+				}
+			}
 
 
 			//$rootScope.startSpin();

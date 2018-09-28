@@ -815,6 +815,8 @@ public class ClientAPI {
 				break;
 			}
 
+			//TODO: enable pagination
+			/* 
 			int row=CommonUtil.ROWSDEFAULT;
 			int off=CommonUtil.OFFSETDEFAULT;
 			
@@ -836,7 +838,7 @@ public class ClientAPI {
 				}
 				nodes = nodes.subList(off, row);
 			}
-			
+			*/
 			JSONArray array = new JSONArray(GsonUtil.obj2JsonWithExclude(nodes, GsonUtil.nodeListType));
 			JSONObject result = new JSONObject();
 			result.put("count", count);
