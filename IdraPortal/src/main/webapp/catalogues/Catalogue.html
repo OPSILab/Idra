@@ -69,49 +69,53 @@
 						host exists</p>
 				</div>
 				<div class="col-md-6 form-group">
-<!-- 					<div class="col-md-4 col-sm-2 col-xs-2"> -->
-<!-- 						<div class="flag-wrapper" style="margin-bottom:0px"> -->
-<!-- 							<div -->
-<!-- 								class="img-thumbnail flag flag-icon-background flag-icon-squared" -->
-<!-- 								ng-class="flagImg"></div> -->
-<!-- 						</div> -->
-<!-- 					</div> -->
-<!-- 					<div class="col-md-8 col-sm-10 col-xs-10"> -->
-						<label for="name">Country:</label>
-						<country-select class="form-control" ng-model="node.country"></country-select>
-<!-- 					</div> -->
+					<label for="nodeType">Type:</label> <select class="form-control"
+						ng-model="node.nodeType" class="form-control"
+						ng-disabled="mode=='update'"
+						ng-options="option for option in types | orderBy:'toString()'" ng-required>
+					</select>
 				</div>
-				<div class="col-md-6 form-group">
+				<div class="col-md-3 form-group">
 					<label for="host">Active:
-<!-- 					<a ng-show="mode=='create'" href="javascript:void(0)" class="btn-flat btn-xs mdi-material-deep-orange"> -->
-<!-- 					<i class="mdi-action-info"></i> -->
-<!-- 					<md-tooltip>With Yes the Catalogue's datasets will be added to cache. With No the Catalogue will be added to the Federable list</md-tooltip></a>  -->
 					</label> <select
 						class="form-control" ng-model="node.isActive" ng-disabled="mode=='update'"
 						ng-options="option.value as option.text for option in activeMode">
 					</select>
 				</div>
-				<div class="col-md-6 form-group">
-					<label for="nodeType">Type:</label> <select class="form-control"
-						ng-model="node.nodeType" class="form-control"
-						ng-disabled="mode=='update'"
-						ng-options="option for option in types" ng-required>
-					</select>
-				</div>
-				<div class="col-md-6 form-group">
+				<div class="col-md-3 form-group">
 					<label for="refreshPeriod">Refresh Period:</label> <select
 						class="form-control" ng-model="node.refreshPeriod"
 						class="form-control"
 						ng-options="option.value as option.text for option in updatePeriods">
 					</select>
 				</div>
-				<div class="col-md-6 form-group"
-					ng-class="{ 'has-error': dumpInvalid }"
-					ng-show="node.nodeType == 'DCATDUMP'">
-					<label for="upload">Profile:</label> <select
-						class="form-control" ng-model="node.dcatProfile"
-						ng-options="option.value as option.text for option in dcatProfiles">
+				<div class="col-md-3 form-group">
+						<label for="name">Country:</label>
+						<country-select class="form-control" ng-model="node.country"></country-select>
+				</div>
+				<div class="col-md-3 form-group">
+					<label for="host">Category:
+					</label> <select
+						class="form-control" ng-model="node.category"
+						ng-options="option.value as option.text for option in ODMSCategories">
 					</select>
+				</div>
+				<div class="col-md-12 form-group"
+					ng-show="node.nodeType == 'WEB' || node.nodeType == 'DCATDUMP' || node.nodeType == 'ORION'">
+					<span ng-show="node.nodeType == 'WEB'"><label for="upload">Upload Sitemap:</label> <input type="file"
+						name="file"
+						onchange="angular.element(this).scope().fileUploadWEB(this)"
+						accept=".json"></span>
+					 <span ng-show="node.nodeType == 'ORION'"><label for="upload">Upload Orion Datasets Dump:</label>	
+						<input type="file"
+						name="file"
+						onchange="angular.element(this).scope().fileUploadORION(this)"
+						accept=".json"></span>
+						<span ng-show="node.nodeType == 'DCATDUMP'"><label for="upload">Upload Dump File:</label>
+						 <input type="file"
+						name="file"
+						onchange="angular.element(this).scope().fileUploadDUMP(this)"
+						accept=".rdf, .xml">
 				</div>
 				<div class="col-md-6 form-group"
 					ng-class="{ 'has-error': dumpInvalid }"
@@ -122,31 +126,58 @@
 						valid dump url</p>
 				</div>
 				<div class="col-md-6 form-group"
-					ng-show="node.nodeType == 'WEB' || node.nodeType == 'DCATDUMP'">
-					<label for="upload">Upload file:</label> <input type="file"
-						ng-show="node.nodeType == 'WEB'" name="file"
-						onchange="angular.element(this).scope().fileUploadWEB(this)"
-						accept=".json"> <input type="file"
-						ng-show="node.nodeType == 'DCATDUMP'" name="file"
-						onchange="angular.element(this).scope().fileUploadDUMP(this)"
-						accept=".rdf, .xml">
+					ng-class="{ 'has-error': dumpInvalid }"
+					ng-show="node.nodeType == 'DCATDUMP'">
+					<label for="upload">Profile:</label> <select
+						class="form-control" ng-model="node.dcatProfile"
+						ng-options="option.value as option.text for option in dcatProfiles">
+					</select>
 				</div>
 				<div class="col-md-6 form-group" ng-show="node.nodeType =='NATIVE'">
-					<!-- 			<div class="col-md-6 form-group" > -->
 					<label for="federationLevel">Federation Level:</label> <select
 						class="form-control" ng-model="node.federationLevel"
 						class="form-control" ng-options="option for option in grades"
 						ng-required>
 					</select>
 				</div>
-				<div class="col-md-6 form-group">
-					<label for="host">Category:
-
-					</label> <select
-						class="form-control" ng-model="node.category"
-						ng-options="option.value as option.text for option in ODMSCategories">
-					</select>
-				</div>
+ 				<div class="col-md-12 form-group" ng-if="node.nodeType=='ORION'">
+					<div class="col-md-3" style="padding-left: 0px;">
+							<md-checkbox ng-model="node.orionConfig.isAuthenticated"> 
+							<label	class="control-label">Authenticated</label></md-checkbox>
+						</div>
+					<span ng-show="node.orionConfig.isAuthenticated">
+						<div class="col-md-12 form-group">
+							<label for="oauth2Endpoint">Oauth2 Endpoint:</label> <input type="text"
+								name="refreshToken" class="form-control" ng-model="node.orionConfig.oauth2Endpoint" />
+<!-- 							<p class="help-block" ng-show="dumpInvalid">Please provide a -->
+<!-- 								valid dump url</p> -->
+						</div> 	
+						<div class="col-md-6 form-group">
+							<label for="accessToken">Access Token:</label> <input type="text"
+								name="accessToken" class="form-control" ng-model="node.orionConfig.authToken" />
+<!-- 							<p class="help-block" ng-show="dumpInvalid">Please provide a -->
+<!-- 								valid dump url</p> -->
+						</div>
+						<div class="col-md-6 form-group">
+							<label for="refreshToken">Refresh Token:</label> <input type="text"
+								name="refreshToken" class="form-control" ng-model="node.orionConfig.refreshToken" />
+<!-- 							<p class="help-block" ng-show="dumpInvalid">Please provide a -->
+<!-- 								valid dump url</p> -->
+						</div>
+						<div class="col-md-6 form-group">
+							<label for="clientID">Client ID:</label> <input type="text"
+								name="clientID" class="form-control" ng-model="node.orionConfig.clientID" />
+<!-- 							<p class="help-block" ng-show="dumpInvalid">Please provide a -->
+<!-- 								valid dump url</p> -->
+						</div>
+						<div class="col-md-6 form-group">
+							<label for="clientSecret">Client Secret:</label> <input type="text"
+								name="clientSecret" class="form-control" ng-model="node.orionConfig.clientSecret" />
+<!-- 							<p class="help-block" ng-show="dumpInvalid">Please provide a -->
+<!-- 								valid dump url</p> -->
+						</div>
+					</span>
+ 				</div> 
 				
 				<div class="col-md-12 form-group">
 					<label for="description">Description:</label>

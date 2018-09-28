@@ -34,8 +34,8 @@ angular.module("IdraPlatform").controller('ViewCataloguesController',["$scope","
 	
 	$rootScope.nodeForResults = angular.copy($scope.nodesForResult);
 	$rootScope.stopSpin();
-	
-	ODMSNodesAPI.getODMSNodesAPI(true).then(function(value){
+	/*
+	  ODMSNodesAPI.getODMSNodesAPI(true).then(function(value){
 		var count=0;
 		for(i=0; i<value.data.length; i++){
 			if(value.data[i].synchLock!='FIRST' && value.data[i].isActive){
@@ -59,6 +59,44 @@ angular.module("IdraPlatform").controller('ViewCataloguesController',["$scope","
 				$scope.nodes.push(node);
 				count++;
 			}
+		}
+		$scope.displayedCollection = [].concat($scope.nodes);
+		$rootScope.nodeForResults = angular.copy($scope.nodesForResult);
+		$rootScope.stopSpin();
+	}, function(){
+
+	});	
+	 * 
+	 * */
+	$scope.rows=10;
+	$scope.offset=0;
+	$scope.orderBy="name";
+	$scope.orderType="asc";
+	$scope.name="";
+	$scope.country="";
+	
+	ODMSNodesAPI.clientCataloguesAPI(true,$scope.rows,$scope.offset,$scope.orderBy,$scope.orderType,$scope.name,$scope.country).then(function(value){
+		var count=0;
+		for(i=0; i<value.data.catalogues.length; i++){
+			var node=value.data.catalogues[i];
+			$scope.nodesForResult.push({id: node.id, name: node.name, federationLevel:node.federationLevel});
+			$scope.nodeNames.push(node.name);
+				
+			node.descriptionIsCollapsible=false;
+			if(node.description.length>250){
+				spaceIndex = node.description.substring(247,node.description.length).indexOf(' ');
+				node.tmpDesc=node.description.substring(0,spaceIndex+247);
+				node.descriptionIsCollapsible=true;
+				node.descCollapse=true;
+			}
+				
+			if(count%2==0){
+				$scope.nodesLeft.push(node);
+			}else{
+				$scope.nodesRight.push(node);
+			}
+			$scope.nodes.push(node);
+			count++;
 		}
 		$scope.displayedCollection = [].concat($scope.nodes);
 		$rootScope.nodeForResults = angular.copy($scope.nodesForResult);
