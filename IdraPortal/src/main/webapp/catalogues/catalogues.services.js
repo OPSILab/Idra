@@ -29,7 +29,17 @@ angular.module("IdraPlatform").factory('ODMSNodesAPI',ODMSNodesAPI);
 		var federatedLevels=[];
 		
 		var services = {
+				/*API*/
 				getODMSNodesAPI:getODMSNodesAPI,
+				addODMSNode:addODMSNode,
+				updateODMSNode:updateODMSNode,
+				deleteODMSNode:deleteODMSNode,
+				activateNode:activateNode,
+				deactivateNode:deactivateNode,
+				clientCataloguesInfoAPI:clientCataloguesInfoAPI,
+				clientCataloguesAPI:clientCataloguesAPI,
+				
+				/*Utility*/
 				getODMSNodesCache: getODMSNodesCache,
 				setODMSNodesCache:setODMSNodesCache,
 				getNodesNames:getNodesNames,
@@ -40,11 +50,7 @@ angular.module("IdraPlatform").factory('ODMSNodesAPI',ODMSNodesAPI);
 				updateCache:updateCache,
 				nameExists:nameExists,
 				hostExists:hostExists,
-				addODMSNode:addODMSNode,
-				updateODMSNode:updateODMSNode,
-				deleteODMSNode:deleteODMSNode,
-				activateNode:activateNode,
-				deactivateNode:deactivateNode
+				
 		};
 		
 		return services;
@@ -79,7 +85,8 @@ angular.module("IdraPlatform").factory('ODMSNodesAPI',ODMSNodesAPI);
 					method: 'GET',
 					url: config.ADMIN_SERVICES_BASE_URL+config.NODES_SERVICE + "?withImage="+withImage,
 					headers: {
-						'Content-Type': 'application/json'
+						'Content-Type': 'application/json',
+						'Authorization': "Bearer "+$rootScope.token
 					}};
 			
 			return $http(req);	
@@ -215,6 +222,31 @@ angular.module("IdraPlatform").factory('ODMSNodesAPI',ODMSNodesAPI);
 			
 			return $http(req);
 		}
+		
+		function clientCataloguesInfoAPI(){
+
+			var req = {
+					method: 'GET',
+					url: config.CLIENT_SERVICES_BASE_URL+config.CLIENT_CATALOGUES_INFO,
+					headers: {
+						'Content-Type': 'application/json'
+					}};
+			
+			return $http(req);	
+		};
+		
+		function clientCataloguesAPI(withImage,rows,offset,orderBy,orderType,name,country){
+
+			var req = {
+					method: 'GET',
+					//TODO: ADD query params
+					url: config.CLIENT_SERVICES_BASE_URL+config.CLIENT_CATALOGUE,
+					headers: {
+						'Content-Type': 'application/json'
+					}};
+			
+			return $http(req);	
+		};
 		
 	};
 
