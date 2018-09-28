@@ -28,7 +28,8 @@ angular.module("IdraPlatform").controller('CataloguesController',["$scope","$htt
 			method: 'GET',
 			url: config.ADMIN_SERVICES_BASE_URL+config.NODES_SERVICE + "?withImage=false",
 			headers: {
-				'Content-Type': 'application/json'
+				'Content-Type': 'application/json',
+				'Authorization': "Bearer " +$rootScope.token
 			}};
 
 
