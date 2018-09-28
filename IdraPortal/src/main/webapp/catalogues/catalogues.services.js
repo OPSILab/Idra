@@ -237,10 +237,19 @@ angular.module("IdraPlatform").factory('ODMSNodesAPI',ODMSNodesAPI);
 		
 		function clientCataloguesAPI(withImage,rows,offset,orderBy,orderType,name,country){
 
+			var strQuery="withImage="+withImage+"&rows="+rows+"&offset="+offset+"&orderBy="+orderBy+"&orderType="+orderType;
+			if(name!=undefined && name!=''){
+				strQuery+="&name="+name;
+			}
+			
+			if(country!=undefined && country!=''){
+				strQuery+="&country="+country;
+			}
+			
 			var req = {
 					method: 'GET',
 					//TODO: ADD query params
-					url: config.CLIENT_SERVICES_BASE_URL+config.CLIENT_CATALOGUE,
+					url: config.CLIENT_SERVICES_BASE_URL+config.CLIENT_CATALOGUES+"?"+strQuery,
 					headers: {
 						'Content-Type': 'application/json'
 					}};
