@@ -716,7 +716,7 @@ public class ClientAPI {
 	@GET
 	@Path("/cataloguesInfo")
 	@Produces("application/json")
-	public Response listNodes(@Context HttpServletRequest httpRequest) {
+	public Response getCataloguesInfo(@Context HttpServletRequest httpRequest) {
 		LocalTime time1 = LocalTime.now();
 		try {
 			JSONArray result = new JSONArray();
