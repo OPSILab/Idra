@@ -18,18 +18,15 @@
 package it.eng.idra.beans.orion;
 
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
-import org.hibernate.annotations.GenericGenerator;
+import it.eng.idra.beans.odms.ODMSCatalogueAdditionalConfiguration;
 
 @Entity
 @Table(name = "odms_orionconfig")
-public class OrionCatalogueConfiguration {
-
-	private String id;
+public class OrionCatalogueConfiguration extends ODMSCatalogueAdditionalConfiguration {
+	
 	private boolean isAuthenticated;
 	private String authToken;
 	private String refreshToken;
@@ -39,7 +36,9 @@ public class OrionCatalogueConfiguration {
 	private String orionDatasetDumpString;
 	private String orionDatasetFilePath;
 	
-	public OrionCatalogueConfiguration() {}
+	public OrionCatalogueConfiguration() {
+		this.setType("ORION");
+	}
 	
 	public OrionCatalogueConfiguration(boolean isAuthenticated, String authToken,String refreshToken,String oauth2Endpoint,String client_id,String client_secret, String datasets) {
 		super();
@@ -50,6 +49,7 @@ public class OrionCatalogueConfiguration {
 		this.clientID=client_id;
 		this.clientSecret=client_secret;
 		this.orionDatasetDumpString = datasets;
+		this.setType("ORION");
 	}
 	
 	public OrionCatalogueConfiguration(boolean isAuthenticated, String authToken,String refreshToken,String oauth2Endpoint,String client_id,String client_secret, String datasets,String dumpPath) {
@@ -57,15 +57,14 @@ public class OrionCatalogueConfiguration {
 		this.orionDatasetFilePath=dumpPath;
 	}
 	
-	@Id
-	@GeneratedValue(generator = "uuid")
-	@GenericGenerator(name = "uuid", strategy = "uuid2")
-	public String getId() {
-		return id;
-	}
-	public void setId(String id) {
-		this.id = id;
-	}
+	
+//	public String getId() {
+//		return id;
+//	}
+//	public void setId(String id) {
+//		this.id = id;
+//	}
+	
 	public boolean isAuthenticated() {
 		return isAuthenticated;
 	}
@@ -133,8 +132,13 @@ public class OrionCatalogueConfiguration {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + ((authToken == null) ? 0 : authToken.hashCode());
-		result = prime * result + ((id == null) ? 0 : id.hashCode());
+		result = prime * result + ((clientID == null) ? 0 : clientID.hashCode());
+		result = prime * result + ((clientSecret == null) ? 0 : clientSecret.hashCode());
 		result = prime * result + (isAuthenticated ? 1231 : 1237);
+		result = prime * result + ((oauth2Endpoint == null) ? 0 : oauth2Endpoint.hashCode());
+		result = prime * result + ((orionDatasetDumpString == null) ? 0 : orionDatasetDumpString.hashCode());
+		result = prime * result + ((orionDatasetFilePath == null) ? 0 : orionDatasetFilePath.hashCode());
+		result = prime * result + ((refreshToken == null) ? 0 : refreshToken.hashCode());
 		return result;
 	}
 
@@ -152,12 +156,37 @@ public class OrionCatalogueConfiguration {
 				return false;
 		} else if (!authToken.equals(other.authToken))
 			return false;
-		if (id == null) {
-			if (other.id != null)
+		if (clientID == null) {
+			if (other.clientID != null)
 				return false;
-		} else if (!id.equals(other.id))
+		} else if (!clientID.equals(other.clientID))
+			return false;
+		if (clientSecret == null) {
+			if (other.clientSecret != null)
+				return false;
+		} else if (!clientSecret.equals(other.clientSecret))
 			return false;
 		if (isAuthenticated != other.isAuthenticated)
+			return false;
+		if (oauth2Endpoint == null) {
+			if (other.oauth2Endpoint != null)
+				return false;
+		} else if (!oauth2Endpoint.equals(other.oauth2Endpoint))
+			return false;
+		if (orionDatasetDumpString == null) {
+			if (other.orionDatasetDumpString != null)
+				return false;
+		} else if (!orionDatasetDumpString.equals(other.orionDatasetDumpString))
+			return false;
+		if (orionDatasetFilePath == null) {
+			if (other.orionDatasetFilePath != null)
+				return false;
+		} else if (!orionDatasetFilePath.equals(other.orionDatasetFilePath))
+			return false;
+		if (refreshToken == null) {
+			if (other.refreshToken != null)
+				return false;
+		} else if (!refreshToken.equals(other.refreshToken))
 			return false;
 		return true;
 	}

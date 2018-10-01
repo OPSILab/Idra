@@ -30,8 +30,8 @@ import it.eng.idra.beans.odms.ODMSCatalogueOfflineException;
 import it.eng.idra.beans.odms.ODMSCatalogueState;
 import it.eng.idra.beans.odms.ODMSCatalogueType;
 import it.eng.idra.beans.odms.ODMSSynchLock;
+import it.eng.idra.beans.orion.OrionCatalogueConfiguration;
 import it.eng.idra.connectors.*;
-import it.eng.idra.connectors.webscraper.WebScraper;
 import it.eng.idra.dcat.dump.DCATAPDeserializer;
 import it.eng.idra.dcat.dump.DCATAPITDeserializer;
 import it.eng.idra.dcat.dump.DCATAPSerializer;
@@ -394,8 +394,10 @@ public class ODMSManager {
 						
 						String orionDumpFilePath=PropertyManager.getProperty(ODFProperty.ORION_FILE_DUMP_PATH);
 						try {
-							CommonUtil.storeFile(orionDumpFilePath,"orionDump_"+assignedNodeID,node.getOrionConfig().getOrionDatasetDumpString());
-							node.getOrionConfig().setOrionDatasetFilePath(orionDumpFilePath+"orionDump_"+assignedNodeID);
+							OrionCatalogueConfiguration orionConfig = (OrionCatalogueConfiguration) node.getAdditionalConfig();
+							CommonUtil.storeFile(orionDumpFilePath,"orionDump_"+assignedNodeID,orionConfig.getOrionDatasetDumpString());
+							orionConfig.setOrionDatasetFilePath(orionDumpFilePath+"orionDump_"+assignedNodeID);
+							node.setAdditionalConfig(orionConfig);
 							updateNode=true;
 						}catch(IOException e) {
 							e.printStackTrace();

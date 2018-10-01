@@ -110,7 +110,7 @@ public class AdministrationAPI {
 			@FormDataParam("file") FormDataContentDisposition cdh, @FormDataParam("node") String nodeString) {
 		ODMSCatalogue node = null;
 		try {
-
+			
 			node = GsonUtil.json2Obj(nodeString, GsonUtil.nodeType);
 
 			// If the node type is DCATDUMP, if the dump URL is blank, try to get the
@@ -135,31 +135,32 @@ public class AdministrationAPI {
 			if (!node.getNodeType().equals(ODMSCatalogueType.WEB))
 				node.setSitemap(null);
 
-			if(!node.getNodeType().equals(ODMSCatalogueType.ORION)) {
-				node.setOrionConfig(null);
-			}else {
-				if(node.getOrionConfig()==null) {
+			if(!node.getNodeType().equals(ODMSCatalogueType.ORION) || node.getNodeType().equals(ODMSCatalogueType.SPARQL)) {
+				node.setAdditionalConfig(null);
+			}else if(node.getNodeType().equals(ODMSCatalogueType.ORION)){
+				if(node.getAdditionalConfig()==null) {
 					ErrorResponse error = new ErrorResponse(String.valueOf(Response.Status.BAD_REQUEST.getStatusCode()),
 							"Orion Catalogue must have its configuration parameters!", "400", "Orion Catalogue must have its configuration parameters!");
 					return Response.status(Response.Status.BAD_REQUEST).entity(error.toJson()).build();
 				}
-				
-				if(node.getOrionConfig().isAuthenticated()) {
-					if(StringUtils.isBlank(node.getOrionConfig().getAuthToken()) || StringUtils.isBlank(node.getOrionConfig().getRefreshToken()) || StringUtils.isBlank(node.getOrionConfig().getOauth2Endpoint())
-							|| StringUtils.isBlank(node.getOrionConfig().getClientID()) || StringUtils.isBlank(node.getOrionConfig().getClientSecret())) {
+				OrionCatalogueConfiguration orionConfig = (OrionCatalogueConfiguration) node.getAdditionalConfig();
+				if(orionConfig.isAuthenticated()) {
+					if(StringUtils.isBlank(orionConfig.getAuthToken()) || StringUtils.isBlank(orionConfig.getRefreshToken()) || StringUtils.isBlank(orionConfig.getOauth2Endpoint())
+							|| StringUtils.isBlank(orionConfig.getClientID()) || StringUtils.isBlank(orionConfig.getClientSecret())) {
 						ErrorResponse error = new ErrorResponse(String.valueOf(Response.Status.BAD_REQUEST.getStatusCode()),
 								"Please provide all of the authentication configuration parameters", "400", "Please provide all of the authentication configuration parameters");
 						return Response.status(Response.Status.BAD_REQUEST).entity(error.toJson()).build();
 					}
 				}
 				
-				if(StringUtils.isBlank(node.getOrionConfig().getOrionDatasetDumpString()) && fileInputStream==null)
+				if(StringUtils.isBlank(orionConfig.getOrionDatasetDumpString()) && fileInputStream==null)
 						throw new IOException("Orion Catalogue must have a dump string or a dump file");
 				
-				if(StringUtils.isBlank(node.getOrionConfig().getOrionDatasetDumpString())) {
+				if(StringUtils.isBlank(orionConfig.getOrionDatasetDumpString())) {
 					String dumpString = IOUtils.toString(fileInputStream, StandardCharsets.UTF_8);
 					if (StringUtils.isNotBlank(dumpString)) {
-						node.getOrionConfig().setOrionDatasetDumpString(dumpString);
+						orionConfig.setOrionDatasetDumpString(dumpString);
+						node.setAdditionalConfig(orionConfig);
 					}
 				}
 			}
@@ -252,11 +253,12 @@ public class AdministrationAPI {
 			}
 			
 			if(node.getNodeType().equals(ODMSCatalogueType.ORION)) {
-				OrionCatalogueConfiguration conf = node.getOrionConfig();
+				OrionCatalogueConfiguration conf = (OrionCatalogueConfiguration) node.getAdditionalConfig();
 				if (StringUtils.isBlank(conf.getOrionDatasetDumpString()) && StringUtils.isNotBlank(conf.getOrionDatasetFilePath())) {
 					// Read the content of the file from the file system
 					String dumpOrion = new String(Files.readAllBytes(Paths.get(conf.getOrionDatasetFilePath())));
-					node.getOrionConfig().setOrionDatasetDumpString(dumpOrion);
+					conf.setOrionDatasetDumpString(dumpOrion);
+					node.setAdditionalConfig(conf);
 				}
 			}
 			

@@ -717,7 +717,7 @@ public class ClientAPI {
 	@Path("/cataloguesInfo")
 	@Produces("application/json")
 	public Response getCataloguesInfo(@Context HttpServletRequest httpRequest) {
-		LocalTime time1 = LocalTime.now();
+		//LocalTime time1 = LocalTime.now();
 		try {
 			JSONArray result = new JSONArray();
 			List<ODMSCatalogue> nodes = FederationCore.getODMSCatalogues()
@@ -732,8 +732,8 @@ public class ClientAPI {
 				tmp.put("federationLevel", n.getFederationLevel());
 				result.put(tmp);
 			}
-			LocalTime time2 = LocalTime.now();
-			logger.info("search_catalogues_list " + Duration.between(time1, time2) + " milliseconds");
+			//LocalTime time2 = LocalTime.now();
+			//logger.info("search_catalogues_list " + Duration.between(time1, time2) + " milliseconds");
 			return Response.ok(result.toString()).build();
 		}catch(Exception e) {
 			return handleErrorResponse500(e);
@@ -1011,7 +1011,7 @@ public class ClientAPI {
 				err = new ErrorResponse(String.valueOf(Response.Status.BAD_REQUEST.getStatusCode()), "Catalogue: "+nodeID+" is not ORION", String.valueOf(Response.Status.BAD_REQUEST.getStatusCode()), "Catalogue: "+nodeID+" is not ORION");
 			}else {
 				
-				OrionCatalogueConfiguration catalogueConfig = catalogue.getOrionConfig();
+				OrionCatalogueConfiguration catalogueConfig = (OrionCatalogueConfiguration) catalogue.getAdditionalConfig();
 				OrionDistributionConfig distributionConfig = MetadataCacheManager.getOrionDistributionConfig(queryID);
 				
 				String compiledUri=catalogue.getHost()+"?"+distributionConfig.getQuery();

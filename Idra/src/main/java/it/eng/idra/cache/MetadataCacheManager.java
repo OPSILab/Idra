@@ -58,6 +58,7 @@ import it.eng.idra.beans.exception.DatasetNotFoundException;
 import it.eng.idra.beans.odms.ODMSCatalogue;
 import it.eng.idra.beans.odms.ODMSCatalogueState;
 import it.eng.idra.beans.odms.ODMSCatalogueType;
+import it.eng.idra.beans.orion.OrionCatalogueConfiguration;
 import it.eng.idra.beans.orion.OrionDistributionConfig;
 import it.eng.idra.beans.search.SearchFacetsList;
 import it.eng.idra.beans.search.SearchResult;
@@ -1436,7 +1437,7 @@ public class MetadataCacheManager {
 		String internalAPI=PropertyManager.getProperty(ODFProperty.ORION_INTERNAL_API);
 		for(DCATDistribution distribution : dataset.getDistributions()) {
 			String url="";
-			if(!node.getOrionConfig().isAuthenticated() && StringUtils.isBlank(distribution.getOrionDistributionConfig().getFiwareService()) && (StringUtils.isBlank(distribution.getOrionDistributionConfig().getFiwareServicePath()) || distribution.getOrionDistributionConfig().getFiwareServicePath().equals("/"))) {
+			if(!((OrionCatalogueConfiguration)node.getAdditionalConfig()).isAuthenticated() && StringUtils.isBlank(distribution.getOrionDistributionConfig().getFiwareService()) && (StringUtils.isBlank(distribution.getOrionDistributionConfig().getFiwareServicePath()) || distribution.getOrionDistributionConfig().getFiwareServicePath().equals("/"))) {
 				url=node.getHost()+"?"+distribution.getOrionDistributionConfig().getQuery();
 			}else {
 				url= internalAPI+"/"+distribution.getOrionDistributionConfig().getId()+"/catalogue/"+node.getId(); //dovrei mettere l'id della query -> dovrebbe già esserci in quanto la persistenza viene fatta con il nodo,
