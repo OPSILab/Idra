@@ -58,9 +58,10 @@ public class OAUTHTokenSynchJob implements Job{
 		
 		try {
 			ODMSCatalogue node = ODMSManager.getODMSCatalogue((int) context.getJobDetail().getJobDataMap().get("nodeID"));
-			
-			String token = retrieveUpdatedToken(node.getOrionConfig());
-			node.getOrionConfig().setAuthToken(token);
+			OrionCatalogueConfiguration orionConfig = (OrionCatalogueConfiguration) node.getAdditionalConfig();
+			String token = retrieveUpdatedToken(orionConfig);
+			orionConfig.setAuthToken(token);
+			node.setAdditionalConfig(orionConfig);
 			ODMSManager.updateODMSCatalogue(node, true);
 			
 		} catch (ODMSCatalogueNotFoundException e) {

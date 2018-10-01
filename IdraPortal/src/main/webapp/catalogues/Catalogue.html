@@ -142,37 +142,37 @@
 				</div>
  				<div class="col-md-12 form-group" ng-if="node.nodeType=='ORION'">
 					<div class="col-md-3" style="padding-left: 0px;">
-							<md-checkbox ng-model="node.orionConfig.isAuthenticated"> 
+							<md-checkbox ng-model="node.additionalConfig.isAuthenticated"> 
 							<label	class="control-label">Authenticated</label></md-checkbox>
 						</div>
-					<span ng-show="node.orionConfig.isAuthenticated">
+					<span ng-show="node.additionalConfig.isAuthenticated">
 						<div class="col-md-12 form-group">
 							<label for="oauth2Endpoint">Oauth2 Endpoint:</label> <input type="text"
-								name="refreshToken" class="form-control" ng-model="node.orionConfig.oauth2Endpoint" />
+								name="refreshToken" class="form-control" ng-model="node.additionalConfig.oauth2Endpoint" />
 <!-- 							<p class="help-block" ng-show="dumpInvalid">Please provide a -->
 <!-- 								valid dump url</p> -->
 						</div> 	
 						<div class="col-md-6 form-group">
 							<label for="accessToken">Access Token:</label> <input type="text"
-								name="accessToken" class="form-control" ng-model="node.orionConfig.authToken" />
+								name="accessToken" class="form-control" ng-model="node.additionalConfig.authToken" />
 <!-- 							<p class="help-block" ng-show="dumpInvalid">Please provide a -->
 <!-- 								valid dump url</p> -->
 						</div>
 						<div class="col-md-6 form-group">
 							<label for="refreshToken">Refresh Token:</label> <input type="text"
-								name="refreshToken" class="form-control" ng-model="node.orionConfig.refreshToken" />
+								name="refreshToken" class="form-control" ng-model="node.additionalConfig.refreshToken" />
 <!-- 							<p class="help-block" ng-show="dumpInvalid">Please provide a -->
 <!-- 								valid dump url</p> -->
 						</div>
 						<div class="col-md-6 form-group">
 							<label for="clientID">Client ID:</label> <input type="text"
-								name="clientID" class="form-control" ng-model="node.orionConfig.clientID" />
+								name="clientID" class="form-control" ng-model="node.additionalConfig.clientID" />
 <!-- 							<p class="help-block" ng-show="dumpInvalid">Please provide a -->
 <!-- 								valid dump url</p> -->
 						</div>
 						<div class="col-md-6 form-group">
 							<label for="clientSecret">Client Secret:</label> <input type="text"
-								name="clientSecret" class="form-control" ng-model="node.orionConfig.clientSecret" />
+								name="clientSecret" class="form-control" ng-model="node.additionalConfig.clientSecret" />
 <!-- 							<p class="help-block" ng-show="dumpInvalid">Please provide a -->
 <!-- 								valid dump url</p> -->
 						</div>

@@ -39,6 +39,7 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.JsonAdapter;
 
 import it.eng.idra.beans.dcat.DCATAPFormat;
 import it.eng.idra.beans.dcat.DCATAPProfile;
@@ -47,6 +48,7 @@ import it.eng.idra.beans.webscraper.WebScraperSitemap;
 import it.eng.idra.odfscheduler.ODFScheduler;
 import it.eng.idra.odfscheduler.SchedulerNotInitialisedException;
 import it.eng.idra.utils.JsonRequired;
+import it.eng.idra.utils.ODMSCatalogueAdditionalConfigurationDeserializer;
 
 // Represents a federated ODMS Node  
 @Entity
@@ -173,8 +175,9 @@ public class ODMSCatalogue {
 	private String category;
 
 	@OneToOne(orphanRemoval = true, cascade = { CascadeType.ALL, CascadeType.REMOVE })
-	@JoinColumn(name = "orion_id")
-	private OrionCatalogueConfiguration orionConfig;
+	@JoinColumn(name = "additionalconfig_id")
+	@JsonAdapter(ODMSCatalogueAdditionalConfigurationDeserializer.class)
+	private ODMSCatalogueAdditionalConfiguration additionalConfig;
 	
 	// @Transient
 	private DCATAPProfile dcatProfile;
@@ -547,12 +550,12 @@ public class ODMSCatalogue {
 		this.category = category;
 	}
 
-	public OrionCatalogueConfiguration getOrionConfig() {
-		return orionConfig;
+	public ODMSCatalogueAdditionalConfiguration getAdditionalConfig() {
+		return additionalConfig;
 	}
 
-	public void setOrionConfig(OrionCatalogueConfiguration orionConfig) {
-		this.orionConfig = orionConfig;
+	public void setAdditionalConfig(ODMSCatalogueAdditionalConfiguration orionConfig) {
+		this.additionalConfig = orionConfig;
 	}
 
 	public boolean isOnline() {
@@ -594,7 +597,8 @@ public class ODMSCatalogue {
 	@PostPersist
 	protected void postCreate() {
 		if(this.nodeType.equals(ODMSCatalogueType.ORION)) {
-			if(this.orionConfig.isAuthenticated()) {
+			OrionCatalogueConfiguration cf = (OrionCatalogueConfiguration) this.additionalConfig;
+			if(cf.isAuthenticated()) {
 				try {
 					ODFScheduler.getSingletonInstance().startOAUTHTokenSynchJob(this);
 				} catch (SchedulerNotInitialisedException e) {
@@ -613,7 +617,8 @@ public class ODMSCatalogue {
 	@PostRemove
 	protected void postDelete() {
 		if(this.nodeType.equals(ODMSCatalogueType.ORION)) {
-			if(this.orionConfig.isAuthenticated()) {
+			OrionCatalogueConfiguration cf = (OrionCatalogueConfiguration) this.additionalConfig;
+			if(cf.isAuthenticated()) {
 				try {
 					ODFScheduler.getSingletonInstance().deleteJob("synchToken_"+Integer.toString(this.id));
 				} catch (SchedulerNotInitialisedException e) {
