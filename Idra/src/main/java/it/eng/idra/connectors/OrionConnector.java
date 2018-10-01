@@ -332,7 +332,7 @@ public class OrionConnector implements IODMSConnector {
 
 	@Override
 	public List<DCATDataset> getAllDatasets() throws Exception {
-		OrionCatalogueConfiguration orionConfig = node.getOrionConfig();
+		OrionCatalogueConfiguration orionConfig = (OrionCatalogueConfiguration) node.getAdditionalConfig();
 		
 		if(StringUtils.isBlank(orionConfig.getOrionDatasetDumpString())){
 			orionConfig.setOrionDatasetDumpString(new String(Files.readAllBytes(Paths.get(orionConfig.getOrionDatasetFilePath()))));
@@ -346,9 +346,10 @@ public class OrionConnector implements IODMSConnector {
 		//if(StringUtils.isBlank(orionConfig.getOrionDatasetFilePath())) {
 			
 		try {
-			CommonUtil.storeFile(orionFilePath,"orionDump_"+nodeID,node.getOrionConfig().getOrionDatasetDumpString());
-			node.getOrionConfig().setOrionDatasetFilePath(orionFilePath+"orionDump_"+nodeID);
-			node.getOrionConfig().setOrionDatasetDumpString(null);
+			CommonUtil.storeFile(orionFilePath,"orionDump_"+nodeID,orionConfig.getOrionDatasetDumpString());
+			orionConfig.setOrionDatasetFilePath(orionFilePath+"orionDump_"+nodeID);
+			orionConfig.setOrionDatasetDumpString(null);
+			node.setAdditionalConfig(orionConfig);
 			ODMSManager.updateODMSCatalogue(node, true);
 		}catch(IOException e) {
 			e.printStackTrace();
