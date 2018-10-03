@@ -26,6 +26,8 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.jena.vocabulary.DCAT;
@@ -50,25 +52,25 @@ import it.eng.idra.beans.dcat.SKOSPrefLabel;
 import it.eng.idra.beans.dcat.VCardOrganization;
 import it.eng.idra.beans.odms.ODMSCatalogue;
 import it.eng.idra.beans.odms.ODMSSynchronizationResult;
-import it.eng.idra.beans.orion.OrionCatalogueConfiguration;
-import it.eng.idra.beans.orion.OrionDistributionConfig;
+import it.eng.idra.beans.sparql.SparqlCatalogueConfiguration;
+import it.eng.idra.beans.sparql.SparqlDistributionConfig;
 import it.eng.idra.management.ODMSManager;
 import it.eng.idra.utils.CommonUtil;
 import it.eng.idra.utils.GsonUtil;
 import it.eng.idra.utils.PropertyManager;
 
-public class OrionConnector implements IODMSConnector {
+public class SparqlConnector implements IODMSConnector {
 
 	private String nodeID;
 	private ODMSCatalogue node;
 	//The internal API used in case the query must be authenticated or if headers has to be set
 	private static String orionFilePath = PropertyManager.getProperty(ODFProperty.ORION_FILE_DUMP_PATH);
-	private static Logger logger = LogManager.getLogger(OrionConnector.class);
+	private static Logger logger = LogManager.getLogger(SparqlConnector.class);
 
-	public OrionConnector() {
+	public SparqlConnector() {
 	}
 
-	public OrionConnector(ODMSCatalogue node) {
+	public SparqlConnector(ODMSCatalogue node) {
 		this.node = node;
 		this.nodeID = String.valueOf(node.getId());
 	}
@@ -251,69 +253,33 @@ public class OrionConnector implements IODMSConnector {
 				throw new Exception("Orion Dataset must contain at least one distribution");
 			}else {
 				for(int i=0; i<tmp_arr.length(); i++) {
+					//TODO: Gestione formati da stringa
 					JSONObject tmp = tmp_arr.getJSONObject(i);
-					DCATDistribution distro = new DCATDistribution();
-					distro.setNodeID(nodeID);
-					//downloadURL e accessURL vengono settati dal metadata cache manager
-					//Formato di default per orion
-					distro.setFormat("fiware-ngsi");
-					
-					distro.setDescription(tmp.optString("description"));
-					distro.setTitle(tmp.optString("title"));
-					if(tmp.has("byteSize"))
-						distro.setByteSize(tmp.optString("byteSize"));
-					if(tmp.has("checksum"))
-						distro.setChecksum(tmp.optString("checksum"));
-					
-					if(tmp.has("rights"))
-						distro.setRights(tmp.optString("rights"));
-					
-					if(tmp.has("mediaType"))
-						distro.setMediaType(tmp.optString("mediaType"));
-						
-					if(tmp.has("releaseDate"))
-						distro.setReleaseDate(tmp.optString("releaseDate"));
-					
-					if(tmp.has("updateDate"))
-						distro.setUpdateDate(tmp.optString("updateDate"));
-					
-					if(tmp.has("language")) 
-						logger.info("Distribution language skipped");
-					if(tmp.has("linkedSchemas")) 
-						logger.info("Distribution linkedSchemas skipped");
-					if(tmp.has("documentation")) 
-						logger.info("Distribution documentation skipped");
-					if(tmp.has("status")) 
-						logger.info("Distribution status skipped");
-					
-					if(tmp.has("license")) {
-						JSONObject l = tmp.getJSONObject("license");
-						if(l.has("name")||l.has("uri")||l.has("type")||l.has("versionInfo")) {
-							distro.setLicense(new DCTLicenseDocument(l.optString("uri"),l.optString("name"), l.optString("type"), l.optString("versionInfo"), nodeID));
-						}
-					}
-					
 					if(tmp.has("distributionAdditionalConfig")) {
 						JSONObject o = tmp.getJSONObject("distributionAdditionalConfig");
 						if(!o.has("query") || StringUtils.isBlank(o.optString("query",null))){
-							throw new Exception("Each distribution must have the orionDistributionConfig with a query");
+							throw new Exception("Each distribution must have the sparqlDistributionConfig with a query");
 						}
-						OrionDistributionConfig conf = new OrionDistributionConfig();
-						conf.setFiwareService(o.optString("fiwareService", null));
-						conf.setFiwareServicePath(o.optString("fiwareServicePath", null));
+						SparqlDistributionConfig conf = new SparqlDistributionConfig();
 						conf.setQuery(o.getString("query"));
 						conf.setNodeID(nodeID);
+						conf.setFormats(o.optString("formats",""));
 						//TODO: add validation for query
-						distro.setDistributionAdditionalConfig(conf);
-					}else {
-						throw new Exception("Each distribution must have the orionDistributionConfig field");
+						List<String> formats = GsonUtil.json2Obj(o.optString("formats",""), GsonUtil.stringListType);
+
+						if(formats==null || formats.size()==0) {
+							distributionList.add(getSparqlDistribution(tmp, "sparql", conf));
+						}else {
+							for(String f: formats) {
+								distributionList.add(getSparqlDistribution(tmp, f, conf));
+							}
+						}											
+
 					}
-					
-					distributionList.add(distro);
 				}
 			}
 		}else {
-			throw new Exception("Orion Dataset must contain at least one distribution");
+			throw new Exception("Sparql Dataset must contain at least one distribution");
 		}
 		
 		return new DCATDataset(nodeID,identifier, title, description, distributionList, themeList, publisher, contactPointList,
@@ -322,6 +288,73 @@ public class OrionConnector implements IODMSConnector {
 				spatialCoverage, temporalCoverage, type, version, versionNotes, rightsHolder, creator, subjectList);
 	}
 
+		
+	public DCATDistribution getSparqlDistribution(JSONObject tmp,String format, SparqlDistributionConfig c) {
+		DCATDistribution distro = new DCATDistribution();
+		distro.setNodeID(nodeID);
+		//downloadURL e accessURL vengono settati dal metadata cache manager
+		distro.setFormat(format);
+		
+		String query="";
+		boolean isFormat = false;
+		if(!format.toLowerCase().equals("sparql")) {
+			isFormat = true;
+			if(c.getQuery().contains("format=")) {
+				Pattern p = Pattern.compile("(format=)([^&]+)(&*)");
+				Matcher m=p.matcher(c.getQuery());
+				query=m.replaceAll("$1"+format+"$3");
+			}else {
+				query=c.getQuery()+"&format="+format;
+			}
+		}else {
+			query=c.getQuery();
+		}
+		
+		String url=node.getHost()+"?"+query;
+		
+		distro.setAccessURL(url);
+		distro.setDownloadURL(url);
+		
+		distro.setDescription(tmp.optString("description"));
+		distro.setTitle(tmp.optString("title"));
+		if(tmp.has("byteSize"))
+			distro.setByteSize(tmp.optString("byteSize"));
+		if(tmp.has("checksum"))
+			distro.setChecksum(tmp.optString("checksum"));
+		if(tmp.has("rights"))
+			distro.setRights(tmp.optString("rights"));
+		if(tmp.has("mediaType"))
+			distro.setMediaType(tmp.optString("mediaType"));
+		
+		if(isFormat)
+			distro.setMediaType(format);
+		
+		if(tmp.has("releaseDate"))
+			distro.setReleaseDate(tmp.optString("releaseDate"));
+		
+		if(tmp.has("updateDate"))
+			distro.setUpdateDate(tmp.optString("updateDate"));
+		
+		if(tmp.has("language")) 
+			logger.info("Distribution language skipped");
+		if(tmp.has("linkedSchemas")) 
+			logger.info("Distribution linkedSchemas skipped");
+		if(tmp.has("documentation")) 
+			logger.info("Distribution documentation skipped");
+		if(tmp.has("status")) 
+			logger.info("Distribution status skipped");
+		
+		if(tmp.has("license")) {
+			JSONObject l = tmp.getJSONObject("license");
+			if(l.has("name")||l.has("uri")||l.has("type")||l.has("versionInfo")) {
+				distro.setLicense(new DCTLicenseDocument(l.optString("uri"),l.optString("name"), l.optString("type"), l.optString("versionInfo"), nodeID));
+			}
+		}
+		
+		distro.setDistributionAdditionalConfig(c);
+		return distro;
+	}
+		
 	@Override
 	public DCATDataset getDataset(String datasetId) throws Exception {
 		return null;
@@ -329,24 +362,24 @@ public class OrionConnector implements IODMSConnector {
 
 	@Override
 	public List<DCATDataset> getAllDatasets() throws Exception {
-		OrionCatalogueConfiguration orionConfig = (OrionCatalogueConfiguration) node.getAdditionalConfig();
+		SparqlCatalogueConfiguration config = (SparqlCatalogueConfiguration) node.getAdditionalConfig();
 		
-		if(StringUtils.isBlank(orionConfig.getOrionDatasetDumpString())){
-			orionConfig.setOrionDatasetDumpString(new String(Files.readAllBytes(Paths.get(orionConfig.getOrionDatasetFilePath()))));
+		if(StringUtils.isBlank(config.getSparqlDatasetDumpString())){
+			config.setSparqlDatasetDumpString(new String(Files.readAllBytes(Paths.get(config.getSparqlDatasetFilePath()))));
 		}
 				
 		List<DCATDataset> result = new ArrayList<DCATDataset>();
-		JSONArray datasets_json=new JSONArray(orionConfig.getOrionDatasetDumpString());
+		JSONArray datasets_json=new JSONArray(config.getSparqlDatasetDumpString());
 		for(int i=0; i<datasets_json.length(); i++)
 			result.add(datasetToDCAT(datasets_json.get(i),node ));
 		
 		//if(StringUtils.isBlank(orionConfig.getOrionDatasetFilePath())) {
 			
 		try {
-			CommonUtil.storeFile(orionFilePath,"orionDump_"+nodeID,orionConfig.getOrionDatasetDumpString());
-			orionConfig.setOrionDatasetFilePath(orionFilePath+"orionDump_"+nodeID);
-			orionConfig.setOrionDatasetDumpString(null);
-			node.setAdditionalConfig(orionConfig);
+			CommonUtil.storeFile(orionFilePath,"sparqlDump_"+nodeID,config.getSparqlDatasetDumpString());
+			config.setSparqlDatasetFilePath(orionFilePath+"sparqlDump_"+nodeID);
+			config.setSparqlDatasetDumpString(null);
+			node.setAdditionalConfig(config);
 			ODMSManager.updateODMSCatalogue(node, true);
 		}catch(IOException e) {
 			e.printStackTrace();

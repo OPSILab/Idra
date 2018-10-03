@@ -18,13 +18,11 @@
 package it.eng.idra.beans.orion;
 
 import javax.persistence.Entity;
-import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import it.eng.idra.beans.odms.ODMSCatalogueAdditionalConfiguration;
 
 @Entity
-@Table(name = "odms_orionconfig")
 public class OrionCatalogueConfiguration extends ODMSCatalogueAdditionalConfiguration {
 	
 	private boolean isAuthenticated;

@@ -15,52 +15,41 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package it.eng.idra.beans.odms;
+package it.eng.idra.beans.sparql;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Inheritance;
-import javax.persistence.InheritanceType;
-import javax.persistence.Table;
+import javax.persistence.Lob;
 
-import org.hibernate.annotations.GenericGenerator;
+import it.eng.idra.beans.DistributionAdditionalConfiguration;
 
 @Entity
-@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-@Table(name = "odms_additional_config")
-public class ODMSCatalogueAdditionalConfiguration {
+public class SparqlDistributionConfig extends DistributionAdditionalConfiguration{
 
-	private String id;
-	private String type;
+	/**
+	 * 
+	 */		
+	//Comma Separated Values
+	private String formats;
+	
+	public SparqlDistributionConfig() {
+		this.setType("SPARQL");
+	}
 
-	public ODMSCatalogueAdditionalConfiguration() {
+	public SparqlDistributionConfig(String query,String formats,String nodeID) {
 		super();
+		this.formats=formats;
+		this.setNodeID(nodeID);
+		this.setType("SPARQL");
+		this.setQuery(query);
 	}
 	
-	public ODMSCatalogueAdditionalConfiguration(String id, String type) {
-		super();
-		this.id = id;
-		this.type = type;
+	public String getFormats() {
+		return formats;
 	}
 
-	@Id
-	@GeneratedValue(generator = "uuid")
-	@GenericGenerator(name = "uuid", strategy = "uuid2")
-	public String getId() {
-		return id;
+	public void setFormats(String formats) {
+		this.formats = formats;
 	}
-
-	public void setId(String id) {
-		this.id = id;
-	}
-
-	public String getType() {
-		return type;
-	}
-
-	public void setType(String type) {
-		this.type = type;
-	}
-
+	
 }

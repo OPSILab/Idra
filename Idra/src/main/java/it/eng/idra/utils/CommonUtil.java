@@ -17,6 +17,7 @@
  ******************************************************************************/
 package it.eng.idra.utils;
 
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.security.MessageDigest;
@@ -331,5 +332,19 @@ public class CommonUtil {
 			Instant tock = Instant.now();
 			logger.info("File writing completed in: " + Duration.between(tick, tock).toString());
 		}
+	}
+	
+	public static void deleteFile(String filePath){
+		logger.info("Deleting file: " + filePath);
+		try{
+    		File file = new File(filePath);
+    		if(file.delete()){
+    			logger.info(file.getName() + " is deleted!");
+    		}else{
+    			logger.info("Delete operation is failed.");
+    		}
+    	}catch(Exception e){
+    		e.printStackTrace();
+    	}
 	}
 }
