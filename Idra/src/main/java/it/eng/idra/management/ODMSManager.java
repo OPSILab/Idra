@@ -85,6 +85,7 @@ public class ODMSManager {
 			ODMSConnectorsList.put(ODMSCatalogueType.DCATDUMP, "it.eng.idra.connectors.DCATDumpConnector");
 			ODMSConnectorsList.put(ODMSCatalogueType.DKAN, "it.eng.idra.connectors.DkanConnector");
 			ODMSConnectorsList.put(ODMSCatalogueType.ORION, "it.eng.idra.connectors.OrionConnector");
+			ODMSConnectorsList.put(ODMSCatalogueType.SPARQL, "it.eng.idra.connectors.SparqlConnector");
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -397,6 +398,18 @@ public class ODMSManager {
 							OrionCatalogueConfiguration orionConfig = (OrionCatalogueConfiguration) node.getAdditionalConfig();
 							CommonUtil.storeFile(orionDumpFilePath,"orionDump_"+assignedNodeID,orionConfig.getOrionDatasetDumpString());
 							orionConfig.setOrionDatasetFilePath(orionDumpFilePath+"orionDump_"+assignedNodeID);
+							node.setAdditionalConfig(orionConfig);
+							updateNode=true;
+						}catch(IOException e) {
+							e.printStackTrace();
+						}
+					}else if(node.getNodeType().equals(ODMSCatalogueType.SPARQL)) {
+						
+						String dumpFilePath=PropertyManager.getProperty(ODFProperty.ORION_FILE_DUMP_PATH);
+						try {
+							OrionCatalogueConfiguration orionConfig = (OrionCatalogueConfiguration) node.getAdditionalConfig();
+							CommonUtil.storeFile(dumpFilePath,"sparqlDump_"+assignedNodeID,orionConfig.getOrionDatasetDumpString());
+							orionConfig.setOrionDatasetFilePath(dumpFilePath+"sparqlDump_"+assignedNodeID);
 							node.setAdditionalConfig(orionConfig);
 							updateNode=true;
 						}catch(IOException e) {

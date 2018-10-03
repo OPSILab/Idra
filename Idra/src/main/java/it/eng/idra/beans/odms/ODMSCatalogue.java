@@ -38,15 +38,19 @@ import javax.persistence.PreUpdate;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import org.apache.commons.lang.StringUtils;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.JsonAdapter;
 
 import it.eng.idra.beans.dcat.DCATAPFormat;
 import it.eng.idra.beans.dcat.DCATAPProfile;
 import it.eng.idra.beans.orion.OrionCatalogueConfiguration;
+import it.eng.idra.beans.sparql.SparqlCatalogueConfiguration;
 import it.eng.idra.beans.webscraper.WebScraperSitemap;
 import it.eng.idra.odfscheduler.ODFScheduler;
 import it.eng.idra.odfscheduler.SchedulerNotInitialisedException;
+import it.eng.idra.utils.CommonUtil;
 import it.eng.idra.utils.JsonRequired;
 import it.eng.idra.utils.ODMSCatalogueAdditionalConfigurationDeserializer;
 
@@ -625,6 +629,20 @@ public class ODMSCatalogue {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
+			}
+			
+			if(StringUtils.isNotBlank(cf.getOrionDatasetFilePath())) {
+				CommonUtil.deleteFile(cf.getOrionDatasetFilePath());
+			}
+			
+		}else if(this.nodeType.equals(ODMSCatalogueType.SPARQL)) {
+			SparqlCatalogueConfiguration cf = (SparqlCatalogueConfiguration) this.additionalConfig;
+			if(StringUtils.isNotBlank(cf.getSparqlDatasetFilePath())) {
+				CommonUtil.deleteFile(cf.getSparqlDatasetFilePath());
+			}
+		}else if(this.nodeType.equals(ODMSCatalogueType.DCATDUMP)) {
+			if(StringUtils.isNotBlank(this.dumpFilePath)) {
+				CommonUtil.deleteFile(this.dumpFilePath);
 			}
 		}
 	}

@@ -57,7 +57,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import it.eng.idra.beans.Datalet;
-import it.eng.idra.beans.orion.OrionDistributionConfig;
+import it.eng.idra.beans.DistributionAdditionalConfiguration;
 import it.eng.idra.cache.CacheContentType;
 import it.eng.idra.utils.CommonUtil;
 import it.eng.idra.utils.GsonUtil;
@@ -121,7 +121,7 @@ public class DCATDistribution implements Serializable {
 
 	// private List<Datalet> datalets;
 	private boolean hasDatalets = false;
-	private OrionDistributionConfig orionDistributionConfig;
+	private DistributionAdditionalConfiguration distributionAdditionalConfig;
 	
 	
 	public DCATDistribution() {
@@ -501,14 +501,14 @@ public class DCATDistribution implements Serializable {
 		this.hasDatalets = hasDatalets;
 	}
 
-	@OneToOne(cascade = CascadeType.ALL)
-	@JoinColumn(name = "orion_id")
-	public OrionDistributionConfig getOrionDistributionConfig() {
-		return orionDistributionConfig;
+	@OneToOne(orphanRemoval = true, cascade = { CascadeType.ALL, CascadeType.REMOVE })
+	@JoinColumn(name = "distribution_additionalconfig_id")
+	public DistributionAdditionalConfiguration getDistributionAdditionalConfig() {
+		return distributionAdditionalConfig;
 	}
 
-	public void setOrionDistributionConfig(OrionDistributionConfig orionDistributionConfig) {
-		this.orionDistributionConfig = orionDistributionConfig;
+	public void setDistributionAdditionalConfig(DistributionAdditionalConfiguration distributionAdditionalConfig) {
+		this.distributionAdditionalConfig = distributionAdditionalConfig;
 	}
 	
 	// @LazyCollection(LazyCollectionOption.FALSE)
