@@ -17,6 +17,8 @@
  ******************************************************************************/
 package it.eng.idra.odfscheduler.job;
 
+import java.util.HashMap;
+
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
@@ -59,8 +61,9 @@ public class OAUTHTokenSynchJob implements Job{
 		try {
 			ODMSCatalogue node = ODMSManager.getODMSCatalogue((int) context.getJobDetail().getJobDataMap().get("nodeID"));
 			OrionCatalogueConfiguration orionConfig = (OrionCatalogueConfiguration) node.getAdditionalConfig();
-			String token = retrieveUpdatedToken(orionConfig);
-			orionConfig.setAuthToken(token);
+			HashMap<String, String> map = retrieveUpdatedToken(orionConfig);
+			orionConfig.setAuthToken(map.get("access_token"));
+			orionConfig.setRefreshToken(map.get("refresh_token"));
 			node.setAdditionalConfig(orionConfig);
 			ODMSManager.updateODMSCatalogue(node, true);
 			
@@ -77,7 +80,7 @@ public class OAUTHTokenSynchJob implements Job{
 
 	}
 
-	private static String retrieveUpdatedToken(OrionCatalogueConfiguration conf) throws Exception {
+	private static HashMap<String,String> retrieveUpdatedToken(OrionCatalogueConfiguration conf) throws Exception {
 		Client client = ClientBuilder.newClient();
 		
 		HttpAuthenticationFeature feature = HttpAuthenticationFeature.basic(conf.getClientID(), conf.getClientSecret());
@@ -94,7 +97,10 @@ public class OAUTHTokenSynchJob implements Job{
 		JSONObject res = new JSONObject(response.readEntity(String.class));
 		
 		if(status.getStatusCode() == 200){
-			return res.getString("access_token");
+			HashMap<String, String> map = new HashMap<String, String>();
+			map.put("access_token", res.getString("access_token"));
+			map.put("refresh_token",res.getString("refresh_token"));
+			return map;
 		}else{
 			throw new Exception("Error while retrieving the authentication token");
 		}	

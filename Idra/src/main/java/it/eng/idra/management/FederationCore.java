@@ -577,6 +577,11 @@ public class FederationCore {
 				}
 
 			}
+			
+			if(newLevel.equals(ODMSCatalogueFederationLevel.LEVEL_4) && rescheduleJob) {
+				MetadataCacheManager.deleteAllDatasetsByODMSCatalogue(node);
+				MetadataCacheManager.loadCacheFromODMSCatalogue(node);
+			}
 
 		} catch (SchedulerNotInitialisedException e) {
 			// TODO Auto-generated catch block

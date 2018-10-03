@@ -19,53 +19,31 @@ package it.eng.idra.beans.orion;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.Lob;
 
-import org.hibernate.annotations.GenericGenerator;
+import it.eng.idra.beans.DistributionAdditionalConfiguration;
 
 @Entity
-@Table(name = "distribution_orion_config")
-public class OrionDistributionConfig{
+//@Table(name = "distribution_orion_config")
+public class OrionDistributionConfig extends DistributionAdditionalConfiguration{
 
 	/**
 	 * 
 	 */	
-	private String id;
-	private String nodeID;
-	private String query; //The query parameter string to be provided to orion
 	private String fiwareService;
 	private String fiwareServicePath;
 	
-	public OrionDistributionConfig() {}
+	public OrionDistributionConfig() {
+		this.setType("ORION");
+	}
 
 	public OrionDistributionConfig(String query, String fiwareService, String fiwareServicePath,String nodeID) {
 		super();
-		this.query = query;
 		this.fiwareService = fiwareService;
 		this.fiwareServicePath = fiwareServicePath;
-		this.nodeID=nodeID;
-	}
-
-	@Id
-	@GeneratedValue(generator = "uuid")
-	@GenericGenerator(name = "uuid", strategy = "uuid2")
-	@Column(name = "orion_id")
-	public String getId() {
-		return id;
-	}
-
-	public void setId(String id) {
-		this.id = id;
-	}
-
-	public String getQuery() {
-		return query;
-	}
-
-	public void setQuery(String query) {
-		this.query = query;
+		this.setNodeID(nodeID);
+		this.setType("ORION");
+		this.setQuery(query);
 	}
 
 	public String getFiwareService() {
@@ -82,14 +60,6 @@ public class OrionDistributionConfig{
 
 	public void setFiwareServicePath(String fiwareServicePath) {
 		this.fiwareServicePath = fiwareServicePath;
-	}
-
-	public String getNodeID() {
-		return nodeID;
-	}
-
-	public void setNodeID(String nodeID) {
-		this.nodeID = nodeID;
 	}
 		
 }

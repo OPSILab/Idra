@@ -32,6 +32,7 @@ import com.google.gson.JsonSerializer;
 
 import it.eng.idra.beans.odms.ODMSCatalogueAdditionalConfiguration;
 import it.eng.idra.beans.orion.OrionCatalogueConfiguration;
+import it.eng.idra.beans.sparql.SparqlCatalogueConfiguration;
 
 public class ODMSCatalogueAdditionalConfigurationDeserializer implements JsonDeserializer<ODMSCatalogueAdditionalConfiguration>,JsonSerializer<ODMSCatalogueAdditionalConfiguration>{
 
@@ -43,6 +44,7 @@ public class ODMSCatalogueAdditionalConfigurationDeserializer implements JsonDes
 		if(j.has("orionDatasetDumpString")) {
 			boolean isAuth=false;
 			String datasets=j.optString("orionDatasetDumpString","");
+			String dumpPath=j.optString("orionDatasetFilePath","");
 			String authToken="",refreshToken="",oauth2Endpoint="",client_id="",client_secret="";
 			try {
 				isAuth=j.getBoolean("isAuthenticated");
@@ -56,8 +58,12 @@ public class ODMSCatalogueAdditionalConfigurationDeserializer implements JsonDes
 				client_id=j.optString("clientID");
 				client_secret=j.optString("clientSecret");
 			}
-			return new OrionCatalogueConfiguration(isAuth, authToken, refreshToken, oauth2Endpoint, client_id, client_secret, datasets);
-		}else
+			return new OrionCatalogueConfiguration(isAuth, authToken, refreshToken, oauth2Endpoint, client_id, client_secret, datasets,dumpPath);
+		}else if(j.has("sparqlDatasetDumpString")) {
+			String datasets=j.optString("sparqlDatasetDumpString","");
+			String dumpPath=j.optString("sparqlDatasetFilePath","");
+			return new SparqlCatalogueConfiguration(datasets,dumpPath);
+		}
 			return null;
 	}
 
@@ -77,6 +83,10 @@ public class ODMSCatalogueAdditionalConfigurationDeserializer implements JsonDes
 			jsonObject.addProperty("oauth2Endpoint", c.getOauth2Endpoint());
 			jsonObject.addProperty("orionDatasetDumpString", c.getOrionDatasetDumpString());
 			jsonObject.addProperty("orionDatasetFilePath", c.getOrionDatasetFilePath());
+		}else if(arg0.getType().toLowerCase().equals("sparql")) {
+			SparqlCatalogueConfiguration c = (SparqlCatalogueConfiguration) arg0;
+			jsonObject.addProperty("sparqlDatasetDumpString", c.getSparqlDatasetDumpString());
+			jsonObject.addProperty("sparqlDatasetFilePath", c.getSparqlDatasetFilePath());
 		}
 		return jsonObject;
 	}
