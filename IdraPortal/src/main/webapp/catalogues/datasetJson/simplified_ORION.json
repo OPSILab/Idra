@@ -1,0 +1,22 @@
+{
+	"title": "",
+	"description": "",
+	"theme": [],
+	"keywords": [],
+	"distributions": [{
+		"title": "",
+		"description": "",
+		"distributionAdditionalConfig": {
+			"query": "",
+			"fiwareService": "",
+			"fiwareServicePath": ""
+		},
+		"mediaType": "",
+		"license": {
+			"uri": "",
+			"name": "",
+			"type": "",
+			"versionInfo": ""
+		}
+	}]
+}

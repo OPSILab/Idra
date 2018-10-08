@@ -74,7 +74,6 @@ angular.module("IdraPlatform").controller('SparqlCtrl',['$scope','$http','config
 
 	$scope.aceChanged = function (e) {
 		var pos = angular.copy($scope.aceEditor.getCursorPosition());
-//		console.log(pos);
 		$scope.aceDocumentValue = $scope.aceSession.getDocument().getValue();
 		$scope.prefixManagement(pos);
 	};
@@ -83,37 +82,6 @@ angular.module("IdraPlatform").controller('SparqlCtrl',['$scope','$http','config
 
 	$scope.prefixManagement = function(pos){
 		var tmp = $scope.aceDocumentValue;	
-
-//		var reg = new RegExp("prefix +([a-z.0-9]*)",'mgi');
-//
-//		var tmp1 = tmp.match(reg);
-//	
-////		console.log($scope.prefixes.keys({}).length);
-//		
-//		if(tmp1 != null && !isEmpty($scope.prefixes)){
-//			for(i=0; i<tmp1.length; i++){
-//				var xstr = tmp1[i].split(' ')[1];
-//				console.log(xstr);
-//				if(!$scope.prefixes.hasOwnProperty(xstr)){
-//					var res="";
-//					var arr = tmp.split('\n'); //-> tutte le linee
-//					for(i=0; i< arr.length; i++){
-//						var t = new RegExp("prefix +"+xstr+":",'gi');
-//						if(!t.test(arr[i])){
-//							if(i!=arr.length-1){
-//								res+=arr[i]+"\n";
-//							}else{
-//								res+=arr[i];
-//							}
-//						}
-//					}
-//					$scope.aceDocumentValue = res;
-//					$scope.aceSession.getDocument().setValue($scope.aceDocumentValue);
-//				}
-//			}
-//		}
-		//console.log($scope.aceSession.getDocument());
-
 		for(key in $scope.prefixes){
 			var withPref = new RegExp("prefix +"+key+":",'gi');
 			var withoutPref = new RegExp("^(?!.*prefix).*"+key+":",'mi');			

@@ -93,8 +93,13 @@
 	font-size:inherit;
 }
 
-.ace_editor {
-	height: 250px;
+.ace_editor { 
+	height: 250px; 
+ }
+
+.btn-ace-toolbar {
+	background-color:#ebebeb;
+	margin:0px 0px 0px 0px;
 }
 
 .md-chips{
@@ -684,6 +689,21 @@ div.m-app-loading p {
 	<button type="button" class="btn btn-primary" ng-click="no()">No</button>
 </div>
 </script>
+<script type="text/ng-template" id="dumpSave_dialog.html">
+<div class="modal-header dialog-header-confirm">
+	<button type="button" class="close" ng-click="no()">&times;</button>
+	<h4 class="modal-title">
+		<span class="{{icon}}"></span>
+		{{header}}
+	</h4>
+</div>
+<div class="modal-body" ng-bind-html="msg"></div>
+<div class="modal-footer">
+	<button type="button" class="btn btn-default" ng-click="discard()">{{opt1}}</button>
+	<button type="button" class="btn btn-default" ng-click="save()">{{opt2}}</button>
+	<button type="button" class="btn btn-primary" ng-click="no()">Cancel</button>
+</div>
+</script>
 	<script type="text/javascript"
 		src="bower_components/jquery/jquery.js"></script>
 
@@ -748,7 +768,6 @@ div.m-app-loading p {
 	<script src="bower_components/underscore/underscore.js"></script>
 	<script src="bower_components/angular-underscore-module/angular-underscore-module.js"></script>
 		
-<!-- 	<script src='bower_components/angular-tag-cloud/src/ng-tag-cloud.js'></script> -->
 <script src="bower_components/d3/d3.min.js"></script>
 <script src="bower_components/d3-cloud/build/d3.layout.cloud.js"></script>
 <script src="bower_components/angular-d3-word-cloud/dist/angular-word-cloud.min.js"></script>
@@ -758,7 +777,11 @@ div.m-app-loading p {
 	<script type="text/javascript" src="catalogues/catalogues.js"></script>
 	<script type="text/javascript" src="catalogues/remote_catalogues.js"></script>
 	<script type="text/javascript" src="catalogues/single_catalogue.js"></script>
+	<script type="text/javascript" src="catalogues/defaultDatasets.services.js"></script>
 	<script type="text/javascript" src="catalogues/view_catalogues.js"></script>
+	
+	<script type="text/javascript" src="catalogues/editDumpCtrl.js"></script>
+	
 	<script type="text/javascript" src="accounts/accounts.js"></script>
 	<script type="text/javascript" src="sparql/sparql.js"></script>
 	<script type="text/javascript" src="js/mode-sparql.js"></script>
