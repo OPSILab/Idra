@@ -37,6 +37,7 @@ import it.eng.idra.beans.Datalet;
 import it.eng.idra.beans.dcat.DCATDataset;
 import it.eng.idra.beans.dcat.DCATDatasetId;
 import it.eng.idra.beans.dcat.DCATDistribution;
+import it.eng.idra.beans.orion.OrionDistributionConfig;
 
 import javax.persistence.EntityExistsException;
 
@@ -613,11 +614,27 @@ public class CachePersistenceManager {
 		q = em.createNativeQuery("DELETE FROM dcat_concept where nodeID= " + nodeID + " and dataset_id is null ");
 		q.executeUpdate();
 		
+		q = em.createQuery("DELETE FROM OrionDistributionConfig where nodeID= " + nodeID);
+		q.executeUpdate();
+		
 		em.getTransaction().commit();
 
 		logger.info("HIBERNATE: Delete Transaction COMMIT");
 	}
 
+	
+	public OrionDistributionConfig jpaGetOrionDistributionConfig(String id) {
+		TypedQuery<OrionDistributionConfig> q = em
+				.createQuery(
+						"SELECT d FROM OrionDistributionConfig d where id='" + id + "'",
+						OrionDistributionConfig.class);
+		if (q.getResultList().isEmpty()) {
+			return null;
+		} else {
+			return q.getResultList().get(0);
+		}
+	}
+	
 	public static void jpaFinalize() {
 		emf.close();
 		emf = null;

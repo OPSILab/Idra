@@ -15,16 +15,27 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package it.eng.idra.beans.odms;
-
-public enum ODMSCatalogueFederationLevel {
-	/*
-	 * LEVEL_0: Catalogue added to the federation, no dataset added, no searches enabled
-	 * LEVEL_1: Catalogue added to the federation, no dataset added, live search enabled
-	 * LEVEL_2: Catalogue added to the federation, dataset added, cache search enabled, synchronization enabled
-	 * LEVEL_3: Catalogue added to the federation, dataset added, live/cache search enabled, synchronization enabled
-	 * LEVEL_4: Catalogue added to the federation, dataset added, cache search enabled, synchronization not enabled
-	 * */
-	LEVEL_0, LEVEL_1, LEVEL_2, LEVEL_3, LEVEL_4
+angular.module("IdraPlatform").factory('DefaultDatasets',DefaultDatasets);
 	
-}
+	DefaultDatasets.$inject = ['$log','$http'];
+
+	function DefaultDatasets($log,$http,config,$rootScope){
+				
+		var services = {
+				getDefaultDatasetDump:getDefaultDatasetDump
+		};
+		
+		return services;
+		
+		function getDefaultDatasetDump(type,isFull){
+			var dump=[];
+			var fileName="catalogues/datasetJson/simplified_"+type.toUpperCase()+".json";
+			if(isFull){
+				fileName="catalogues/datasetJson/full_"+type.toUpperCase()+".json";
+			}
+			
+			return $http.get(fileName);
+		}
+				
+	};
+

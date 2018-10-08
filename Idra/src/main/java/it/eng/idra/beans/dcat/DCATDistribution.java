@@ -57,6 +57,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import it.eng.idra.beans.Datalet;
+import it.eng.idra.beans.DistributionAdditionalConfiguration;
 import it.eng.idra.cache.CacheContentType;
 import it.eng.idra.utils.CommonUtil;
 import it.eng.idra.utils.GsonUtil;
@@ -120,7 +121,9 @@ public class DCATDistribution implements Serializable {
 
 	// private List<Datalet> datalets;
 	private boolean hasDatalets = false;
-
+	private DistributionAdditionalConfiguration distributionAdditionalConfig;
+	
+	
 	public DCATDistribution() {
 	}
 
@@ -498,6 +501,16 @@ public class DCATDistribution implements Serializable {
 		this.hasDatalets = hasDatalets;
 	}
 
+	@OneToOne(orphanRemoval = true, cascade = { CascadeType.ALL, CascadeType.REMOVE })
+	@JoinColumn(name = "distribution_additionalconfig_id")
+	public DistributionAdditionalConfiguration getDistributionAdditionalConfig() {
+		return distributionAdditionalConfig;
+	}
+
+	public void setDistributionAdditionalConfig(DistributionAdditionalConfiguration distributionAdditionalConfig) {
+		this.distributionAdditionalConfig = distributionAdditionalConfig;
+	}
+	
 	// @LazyCollection(LazyCollectionOption.FALSE)
 	// @OneToMany(cascade = { CascadeType.ALL },orphanRemoval=true)
 	// @JoinColumns({@JoinColumn(name = "distribution_id",
@@ -576,8 +589,8 @@ public class DCATDistribution implements Serializable {
 		}
 		// if (license != null)
 		// doc.addChildDocument(license.toDoc(CacheContentType.licenseDocument));
-
-		doc.addField("byteSize", byteSize.getValue());
+		if (byteSize != null)
+			doc.addField("byteSize", byteSize.getValue());
 
 		if (checksum != null) {
 			try {
@@ -621,17 +634,17 @@ public class DCATDistribution implements Serializable {
 		// linkedSchemas.stream().filter(item -> item != null)
 		// .forEach(item ->
 		// doc.addChildDocument(item.toDoc(CacheContentType.linkedSchemas)));
+		if (mediaType != null)
+			doc.addField("mediaType", mediaType.getValue());
 
-		doc.addField("mediaType", mediaType.getValue());
-
-		if (StringUtils.isNotBlank(releaseDate.getValue()))
+		if (releaseDate!=null && StringUtils.isNotBlank(releaseDate.getValue()))
 			doc.addField("releaseDate", releaseDate.getValue());
-		if (StringUtils.isNotBlank(updateDate.getValue()))
+		if (releaseDate!=null && StringUtils.isNotBlank(updateDate.getValue()))
 			doc.addField("updateDate", updateDate.getValue());
-
-		doc.addField("rights", rights.getValue());
-
-		doc.addField("title", title.getValue());
+		if (rights != null)
+			doc.addField("rights", rights.getValue());
+		if(title!=null)
+			doc.addField("title", title.getValue());
 
 		if (status != null) {
 			try {
@@ -727,15 +740,19 @@ public class DCATDistribution implements Serializable {
 		// e.printStackTrace();
 		// }
 		// }
-
+		String byteSize = "";
+		if(doc.getFieldValue("byteSize") !=null) {
+			byteSize=doc.getFieldValue("byteSize").toString();
+		}
+		
 		DCATDistribution distr = new DCATDistribution(doc.getFieldValue("id").toString(),
 				doc.getFieldValue("nodeID").toString(), doc.getFieldValue("accessURL").toString(),
 				doc.getFieldValue("description").toString(), doc.getFieldValue("format").toString(), license,
-				doc.getFieldValue("byteSize").toString(), checksum,
+				byteSize, checksum,
 				(ArrayList<String>) doc.getFieldValue("documentation"), doc.getFieldValue("downloadURL").toString(),
 				(ArrayList<String>) doc.getFieldValue("language"), linkedSchemas,
-				doc.getFieldValue("mediaType").toString(), distrib_issued, distrib_modified,
-				doc.getFieldValue("rights").toString(), status, doc.getFieldValue("title").toString(),
+				(doc.getFieldValue("mediaType")!=null)?doc.getFieldValue("mediaType").toString():"", distrib_issued, distrib_modified,
+				(doc.getFieldValue("rights")!=null)?doc.getFieldValue("rights").toString():"", status, doc.getFieldValue("title").toString(),
 				(Boolean) doc.getFieldValue("hasDatalets"));
 		// datalets);
 		distr.setStoredRDF((Boolean) doc.getFieldValue("storedRDF"));
