@@ -41,64 +41,67 @@ angular.module("IdraPlatform").controller('CatalogueCtrl',['$scope','$http','con
 	
 	/*NEW Upload file methods for new Catalogues type*/
 	
-	$scope.fileUploadORION = function(fileEl){
-		var files = fileEl.files;
-		  var file = files[0];
-		  console.log(file);
-		  if(file.name.endsWith(".json")){
-			  var reader = new FileReader();
-
-			  reader.onloadend = function(evt) {
-				  if (evt.target.readyState === FileReader.DONE) {
-					  $scope.$apply(function () {
-						  //JSON
-						  //$scope.node.additionalConfig.orionDatasetDumpString = JSON.parse(evt.target.result);
-						  //string
-						  $scope.node.additionalConfig.orionDatasetDumpString = evt.target.result;
-					  });
-				  }
-			  };
-
-			  reader.readAsText(file);
-		  }else{
-			  dialogs.error("Wrong file","Please provide a .json file");
-			  return;
-		  }
-	};
+//	$scope.fileUploadORION_SPARQL = function(fileEl){
+//		var files = fileEl.files;
+//		  var file = files[0];
+//		  console.log(file);
+//		  if(file.name.endsWith(".json")){
+//			  var reader = new FileReader();
+//
+//			  reader.onloadend = function(evt) {
+//				  if (evt.target.readyState === FileReader.DONE) {
+//					  $scope.$apply(function () {
+//						  //JSON
+//						  //$scope.node.additionalConfig.orionDatasetDumpString = JSON.parse(evt.target.result);
+//						  //string
+//						  if($scope.node.nodeType.toLowerCase()=='orion')
+//							  $scope.node.additionalConfig.orionDatasetDumpString = evt.target.result;
+//						  else if($scope.node.nodeType.toLowerCase()=='sparql')
+//							  $scope.node.additionalConfig.sparqlDatasetDumpString = evt.target.result;
+//					  });
+//				  }
+//			  };
+//
+//			  reader.readAsText(file);
+//		  }else{
+//			  dialogs.error("Wrong file","Please provide a .json file");
+//			  return;
+//		  }
+//	};
 	
-	$scope.fileUploadWEB = function(fileEl){
-		var files = fileEl.files;
-		  var file = files[0];
-		  console.log(file);
-		  if(file.name.endsWith(".json")){
-			  var reader = new FileReader();
-
-			  reader.onloadend = function(evt) {
-				  if (evt.target.readyState === FileReader.DONE) {
-					  $scope.$apply(function () {
-						  $scope.node.sitemap = JSON.parse(evt.target.result);
-					  });
-				  }
-			  };
-
-			  reader.readAsText(file);
-		  }else{
-			  dialogs.error("Wrong file","Please provide a .json file");
-			  return;
-		  }
-	};
+//	$scope.fileUploadWEB = function(fileEl){
+//		var files = fileEl.files;
+//		  var file = files[0];
+//		  console.log(file);
+//		  if(file.name.endsWith(".json")){
+//			  var reader = new FileReader();
+//
+//			  reader.onloadend = function(evt) {
+//				  if (evt.target.readyState === FileReader.DONE) {
+//					  $scope.$apply(function () {
+//						  $scope.node.sitemap = JSON.parse(evt.target.result);
+//					  });
+//				  }
+//			  };
+//
+//			  reader.readAsText(file);
+//		  }else{
+//			  dialogs.error("Wrong file","Please provide a .json file");
+//			  return;
+//		  }
+//	};
 	
-	$scope.fileUploadDUMP = function(fileEl){
-		var files = fileEl.files;
-		var file = files[0];
-		console.log(file);
-		if(file.name.endsWith(".rdf") || file.name.endsWith(".xml")){
-				$scope.dump=file;
-		}else{
-			dialogs.error("Wrong file","Please provide an .xml or .rdf file");
-			return;
-		}
-	};
+//	$scope.fileUploadDUMP = function(fileEl){
+//		var files = fileEl.files;
+//		var file = files[0];
+//		console.log(file);
+//		if(file.name.endsWith(".rdf") || file.name.endsWith(".xml")){
+//				$scope.dump=file;
+//		}else{
+//			dialogs.error("Wrong file","Please provide an .xml or .rdf file");
+//			return;
+//		}
+//	};
 	
 	/*END*/
 	
@@ -180,11 +183,28 @@ angular.module("IdraPlatform").controller('CatalogueCtrl',['$scope','$http','con
 				console.log('error');
 			})
 	};
-	
-	
+		
 	if($rootScope.mode == "create" ){
 		$scope.pageTitle='Add Catalogue';
 
+		$scope.$watch('node.nodeType',function(newVal,old){
+			if(newVal.toLowerCase()=='orion'){
+				$scope.node.additionalConfig={
+					isAuthenticated:false,
+					authToken:"",
+					refreshToken:"",
+					clientID:"",
+					clientSecret:"",
+					oauth2Endpoint:"",
+					orionDatasetDumpString:""
+				}
+			}else if(newVal.toLowerCase()=='sparql'){
+				$scope.node.additionalConfig={
+						sparqlDatasetDumpString:""
+					}
+			}
+		});
+		
 		$scope.node={
 				id:null,
 				name:'',
@@ -207,18 +227,11 @@ angular.module("IdraPlatform").controller('CatalogueCtrl',['$scope','$http','con
 				sitemap:{},
 				dumpURL:'',
 				dumpFilePath:null,
+				dumpString:"",
 				country:'',
 				category:'',
 				isActive:true,
-				additionalConfig:{
-					isAuthenticated:false,
-					authToken:"",
-					refreshToken:"",
-					clientID:"",
-					clientSecret:"",
-					oauth2Endpoint:"",
-					orionDatasetDumpString:""
-				}
+				additionalConfig:{}
 				};
 
 		
@@ -287,18 +300,11 @@ angular.module("IdraPlatform").controller('CatalogueCtrl',['$scope','$http','con
 					sitemap:{},
 					dumpURL:'',
 					dumpFilePath:null,
+					dumpString:"",
 					country:'',
 					category:'',
 					isActive:true,
-					additionalConfig:{
-						isAuthenticated:false,
-						authToken:"",
-						refreshToken:"",
-						clientID:"",
-						clientSecret:"",
-						oauth2Endpoint:"",
-						orionDatasetDumpString:""
-					}
+					additionalConfig:{}
 			};
 			
 		}else{
@@ -374,8 +380,19 @@ angular.module("IdraPlatform").controller('CatalogueCtrl',['$scope','$http','con
 		else if(node1.country != node2.country) return false;
 		else if( (node1.nodeType == node2.nodeType && node1.nodeType == "DCATDUMP") && node1.dumpURL != node2.dumpURL) return false;
 		else if( (node1.nodeType == node2.nodeType && node1.nodeType == "DCATDUMP") && node1.dcatProfile != node2.dcatProfile) return false;
+		else if( (node1.nodeType == node2.nodeType && node1.nodeType == "DCATDUMP") && node1.dumpString != node2.dumpString) return false;
 		else if( (node1.nodeType == node2.nodeType && node1.nodeType == "WEB") && node1.sitemap != node2.sitemap) return false;
-		
+		else if( (node1.nodeType == node2.nodeType && node1.nodeType == "SPARQL") && node1.additionalConfig.sparqlDatasetDumpString != node2.additionalConfig.sparqlDatasetDumpString) return false;
+		else if(node1.nodeType == node2.nodeType && node1.nodeType == "ORION"){
+			if(node1.additionalConfig.orionDatasetDumpString!=node2.additionalConfig.orionDatasetDumpString) return false;
+			if(node1.additionalConfig.isAuthenticated!=node2.additionalConfig.isAuthenticated) return false;
+			if(node1.additionalConfig.authToken!=node2.additionalConfig.authToken) return false;
+			if(node1.additionalConfig.refreshToken!=node2.additionalConfig.refreshToken) return false;
+			if(node1.additionalConfig.refreshToken!=node2.additionalConfig.refreshToken) return false;
+			if(node1.additionalConfig.clientID!=node2.additionalConfig.clientID) return false;
+			if(node1.additionalConfig.clientSecret!=node2.additionalConfig.clientSecret) return false;
+			if(node1.additionalConfig.oauth2Endpoint!=node2.additionalConfig.oauth2Endpoint) return false;
+		}
 		else return true;		
 	}
 	
@@ -473,6 +490,9 @@ angular.module("IdraPlatform").controller('CatalogueCtrl',['$scope','$http','con
 			case 'ORION':
 				node.federationLevel='LEVEL_4';
 				break;
+			case 'SPARQL':
+				node.federationLevel='LEVEL_4';
+				break;
 			default:
 				break;
 			}
@@ -507,7 +527,7 @@ angular.module("IdraPlatform").controller('CatalogueCtrl',['$scope','$http','con
 			var fd = new FormData();   
 
 			if(node.nodeType == 'DCATDUMP'){
-				if($scope.dump==null && node.dumpURL==''){
+				if($scope.dump==null && node.dumpURL=='' && node.dumpString==''){
 					dialogs.error("Dump mandatory","Please upload the dump file or a dump url");
 					return;
 				}else{
@@ -515,12 +535,16 @@ angular.module("IdraPlatform").controller('CatalogueCtrl',['$scope','$http','con
 					if(node.dumpURL !='' && !validateUrl(node.dumpURL)){
 						$scope.dumpInvalid=true;
 						return;
-					}else if(node.dumpURL=='' && $scope.dump!=''){
+					}else if(node.dumpURL=='' && ($scope.dump!='' || node.dumpString!='')){
 						node.dumpURL=null;
 					}
 
 //					node.dumpURL = $scope.dumpURL;
-					fd.append("dump",$scope.dump);
+					if(node.dumpString==''){
+						fd.append("dump",$scope.dump);
+					}else{
+						fd.append("dump",'');
+					}
 				}
 			}else{
 				fd.append("dump",'');
@@ -590,14 +614,44 @@ angular.module("IdraPlatform").controller('CatalogueCtrl',['$scope','$http','con
 		}
 	}
 	
-//	$scope.country='ar';
-//	$scope.flagImg='flag-icon-'+$scope.country.toLowerCase();
-	
-//	$scope.$watch('node.country',function(newVal,old){
-//		console.log(old);
-//		console.log(newVal);
-//		$scope.flagImg='flag-icon-'+newVal.toLowerCase();
-//	})
+ $scope.openDumpModal = function(){
+	var modalInstance = $modal.open({
+		animation: true,
+		templateUrl: 'DumpEditor.html',
+		controller: 'DumpCtrl',
+		size: 'lg',
+		resolve: {
+			dump: function(){
+				if($scope.node.nodeType.toLowerCase()=='orion')
+					return $scope.node.additionalConfig.orionDatasetDumpString;
+				if($scope.node.nodeType.toLowerCase()=='sparql')
+					return $scope.node.additionalConfig.sparqlDatasetDumpString;
+				if($scope.node.nodeType.toLowerCase()=='web'){
+					if($scope.node.sitemap!='')
+						return JSON.stringify($scope.node.sitemap);
+					else
+						return '';
+					}
+				if($scope.node.nodeType.toLowerCase()=='dcatdump')
+					return $scope.node.dumpString;
+
+			},
+			type:function(){return $scope.node.nodeType;}
+		}
+	});
+
+	modalInstance.result.then(function (updatedDump) {
+		if($scope.node.nodeType.toLowerCase()=='orion')
+			$scope.node.additionalConfig.orionDatasetDumpString = updatedDump;
+		if($scope.node.nodeType.toLowerCase()=='sparql')
+			return $scope.node.additionalConfig.sparqlDatasetDumpString = updatedDump;
+		if($scope.node.nodeType.toLowerCase()=='web')
+			return $scope.node.sitemap=JSON.parse(updatedDump);
+		if($scope.node.nodeType.toLowerCase()=='dcatdump')
+			return $scope.node.dumpString = updatedDump;
+
+	});
+}
 	
 }]);
 

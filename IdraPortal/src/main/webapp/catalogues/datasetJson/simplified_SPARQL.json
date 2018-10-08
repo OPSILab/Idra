@@ -1,0 +1,20 @@
+{
+	"title": "",
+	"description": "",
+	"theme": [],
+	"keywords": [],
+	"distributions": [{
+		"title": "",
+		"description": "",
+		"distributionAdditionalConfig": {
+			"query": "",
+			"formats": []
+		},
+		"license": {
+			"uri": "",
+			"name": "",
+			"type": "",
+			"versionInfo": ""
+		}
+	}]
+}

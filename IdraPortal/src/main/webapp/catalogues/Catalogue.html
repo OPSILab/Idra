@@ -100,22 +100,35 @@
 						ng-options="option.value as option.text for option in ODMSCategories">
 					</select>
 				</div>
-				<div class="col-md-12 form-group"
-					ng-show="node.nodeType == 'WEB' || node.nodeType == 'DCATDUMP' || node.nodeType == 'ORION'">
-					<span ng-show="node.nodeType == 'WEB'"><label for="upload">Upload Sitemap:</label> <input type="file"
-						name="file"
-						onchange="angular.element(this).scope().fileUploadWEB(this)"
-						accept=".json"></span>
-					 <span ng-show="node.nodeType == 'ORION'"><label for="upload">Upload Orion Datasets Dump:</label>	
-						<input type="file"
-						name="file"
-						onchange="angular.element(this).scope().fileUploadORION(this)"
-						accept=".json"></span>
-						<span ng-show="node.nodeType == 'DCATDUMP'"><label for="upload">Upload Dump File:</label>
-						 <input type="file"
-						name="file"
-						onchange="angular.element(this).scope().fileUploadDUMP(this)"
-						accept=".rdf, .xml">
+				<div class="col-md-12 form-group "
+				ng-show="node.nodeType == 'WEB' || node.nodeType == 'DCATDUMP' || node.nodeType == 'ORION' || node.nodeType == 'SPARQL'">
+<!-- 				<div class="col-md-2" ng-if="node.nodeType == 'SPARQL' || node.nodeType == 'ORION'"></div> -->
+				<div class="col-md-4"></div>
+<!-- 				<div class="col-md-4"> -->
+<!-- 					<span ng-if="node.nodeType == 'WEB'" -->
+<!-- 						class="btn btn-md btn-primary btn-file btn-material-deep-orange"> -->
+<!-- 						Upload Sitemap <input type="file" name="file" -->
+<!-- 						onchange="angular.element(this).scope().fileUploadWEB(this)" -->
+<!-- 						accept=".json"> -->
+<!-- 					</span> -->
+<!-- 					<span ng-if="node.nodeType == 'DCATDUMP'" -->
+<!-- 						class="btn btn-md btn-primary btn-file btn-material-deep-orange"> -->
+<!-- 						Upload Dump <input type="file" name="file" -->
+<!-- 						onchange="angular.element(this).scope().fileUploadDUMP(this)" -->
+<!-- 						accept=".rdf, .xml"> -->
+<!-- 					</span> -->
+<!-- 					<span ng-if="node.nodeType == 'SPARQL' || node.nodeType == 'ORION'" -->
+<!-- 						class="btn btn-md btn-primary btn-file btn-material-deep-orange"> -->
+<!-- 						Upload Datasets <input type="file" name="file" -->
+<!-- 						onchange="angular.element(this).scope().fileUploadORION_SPARQL(this)" -->
+<!-- 						accept=".json"> -->
+<!-- 					</span> -->
+<!-- 					</div> -->
+					<div class="col-md-4">	
+					<button type="button"
+						class="btn btn-md btn-primary btn-file btn-material-deep-orange" style="margin: 0px"
+						ng-click="openDumpModal()">Add/Edit File</button>
+						</div>
 				</div>
 				<div class="col-md-6 form-group"
 					ng-class="{ 'has-error': dumpInvalid }"
@@ -227,6 +240,74 @@
 		<label>Preview</label>
   				<div sytle="margin: 0 auto;"><img  ng-src="{{myCroppedImage}}" /></div>			
 	</div>
+</div>
+
+<div class="modal-footer">
+    <button class="btn btn-default" type="button" ng-click="cancel()">Cancel</button>
+	<button class="btn btn-primary" type="button" ng-click="ok()">OK</button>
+</div>
+</script>
+
+<script type="text/ng-template" id="DumpEditor.html">
+<div class="modal-header">
+	<button type="button" class="close" aria-hidden="true" ng-click="cancel()">x</button>
+    <h3 class="modal-title">Dump Editor</h3>
+</div>
+<div class="modal-body row">
+	<div class="toolbar">
+	<a href="javascript:void(0)" class="btn btn-xs btn-file"
+		style="background-color: #ebebeb; margin: 0px 0px 0px 0px;"> <i
+		class="mdi-file-folder-open">
+	<input ng-if="nodeType=='ORION' || nodeType=='SPARQL' || nodeType=='WEB'" type="file" name="file"
+			onchange="angular.element(this).scope().fileUploadJSON(this)"
+			accept=".json">
+	<input ng-if="nodeType=='DCATDUMP'" type="file" name="file"
+			onchange="angular.element(this).scope().fileUploadDUMP(this)"
+			accept=".rdf, .xml">
+ 	</i>
+	<md-tooltip>Upload File</md-tooltip></a>
+	
+	<span>
+	<a href="javascript:void(0)" ng-click="save()" a-disabled="disableSave==true" class="btn btn-xs btn-file"
+		style="background-color: #ebebeb; margin: 0px 0px 0px 0px;"> <i
+		class="mdi-content-save"></i>
+	</a><md-tooltip>Save</md-tooltip>
+	</span>
+	
+	<span>
+	<a href="javascript:void(0)" ng-click="undo()" a-disabled="disableUndo==true" class="btn btn-xs btn-file"
+		style="background-color: #ebebeb; margin: 0px 0px 0px 0px;"> <i
+		class="mdi-content-undo"></i>
+	</a><md-tooltip>Undo</md-tooltip>
+	</span>
+	
+	<span>
+	<a href="javascript:void(0)" ng-click="redo()" a-disabled="disableRedo==true" class="btn btn-xs btn-file"
+		style="background-color: #ebebeb; margin: 0px 0px 0px 0px;"> <i
+		class="mdi-content-redo"></i>
+	</a><md-tooltip>Redo</md-tooltip>
+	</span>
+	
+	<a ng-if="nodeType=='ORION' || nodeType=='SPARQL'" href="javascript:void(0)" ng-click="addNewDataset(false)" class="btn btn-xs btn-file"
+		style="background-color: #ebebeb; margin: 0px 0px 0px 0px;"> <i
+		class="mdi-content-add"></i>
+	<md-tooltip>Add Empty Dataset</md-tooltip></a>
+	
+</div>
+<div style="height: 450px" ng-model="aceDocumentValue"
+	ui-ace="{
+					  		useWrapMode : true, 
+					 		showPrintMargin: false, 
+ 					   		showGutter: true, 
+ 					  		theme:'chrome', 
+ 					  		firstLineNumber: 1, 
+ 					  		onLoad: aceLoaded, 
+ 					  		onChange: aceChanged, 
+ 					  		rendererOptions: { 
+ 					     		 maxLinks: Infinity 
+ 					  		} 
+ 						}">
+</div>
 </div>
 
 <div class="modal-footer">
