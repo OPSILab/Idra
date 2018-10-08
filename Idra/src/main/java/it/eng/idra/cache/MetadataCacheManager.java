@@ -58,9 +58,10 @@ import it.eng.idra.beans.exception.DatasetNotFoundException;
 import it.eng.idra.beans.odms.ODMSCatalogue;
 import it.eng.idra.beans.odms.ODMSCatalogueState;
 import it.eng.idra.beans.odms.ODMSCatalogueType;
+import it.eng.idra.beans.orion.OrionCatalogueConfiguration;
+import it.eng.idra.beans.orion.OrionDistributionConfig;
 import it.eng.idra.beans.search.SearchFacetsList;
 import it.eng.idra.beans.search.SearchResult;
-import it.eng.idra.dcat.dump.DCATAPDumpManager;
 import it.eng.idra.management.ODMSManager;
 import it.eng.idra.management.StatisticsManager;
 import it.eng.idra.search.EuroVocTranslator;
@@ -1198,6 +1199,12 @@ public class MetadataCacheManager {
 							dataset=handleRDFDistributions(dataset);
 
 						cachePersistence.jpaPersistDataset(dataset);
+						
+						//Se è orion setting sulle downloadURL e accessURL delle distribution
+						if(node.getNodeType().equals(ODMSCatalogueType.ORION)) {
+							handleORIONDistribution(cachePersistence,node,dataset);
+						}
+						
 						server.add(dataset.toDoc());
 						
 					} catch (EntityExistsException e) {
@@ -1256,6 +1263,10 @@ public class MetadataCacheManager {
 								dataset=handleRDFDistributions(dataset);
 						
 							cachePersistence.jpaPersistOrMergeAndCommitDataset(dataset);
+							//Se è orion setting sulle downloadURL e accessURL delle distribution
+							if(node.getNodeType().equals(ODMSCatalogueType.ORION)) {
+								handleORIONDistribution(cachePersistence,node,dataset);
+							}
 							server.add(dataset.toDoc());
 							server.commit();
 
@@ -1418,6 +1429,49 @@ public class MetadataCacheManager {
 
 	}
 
+	private static void handleORIONDistribution(CachePersistenceManager cachePersistence,ODMSCatalogue node,DCATDataset dataset) {
+		String internalAPI=PropertyManager.getProperty(ODFProperty.ORION_INTERNAL_API);
+		OrionCatalogueConfiguration nodeConf=(OrionCatalogueConfiguration)node.getAdditionalConfig();
+		for(DCATDistribution distribution : dataset.getDistributions()) {
+			String url="";
+			OrionDistributionConfig distroConf = (OrionDistributionConfig) distribution.getDistributionAdditionalConfig();
+			if(!nodeConf.isAuthenticated() && StringUtils.isBlank(distroConf.getFiwareService()) && (StringUtils.isBlank(distroConf.getFiwareServicePath()) || distroConf.getFiwareServicePath().equals("/"))) {
+				url=node.getHost()+"?"+distroConf.getQuery();
+			}else {
+				url= internalAPI+"/"+distroConf.getId()+"/catalogue/"+node.getId(); //dovrei mettere l'id della query -> dovrebbe già esserci in quanto la persistenza viene fatta con il nodo,
+			}
+			distribution.setDownloadURL(url);
+			distribution.setAccessURL(url);
+			cachePersistence.jpaUpdateDistribution(distribution,false);
+		}
+	}
+	
+//	private static void handleSparqlDistribution(CachePersistenceManager cachePersistence,ODMSCatalogue node,DCATDataset dataset) {
+//		String internalAPI=PropertyManager.getProperty(ODFProperty.ORION_INTERNAL_API);
+//		SparqlCatalogueConfiguration nodeConf= (SparqlCatalogueConfiguration) node.getAdditionalConfig();
+//		for(DCATDistribution distribution : dataset.getDistributions()) {
+//			String url="";
+//			SparqlDistributionConfig distroConf = (SparqlDistributionConfig) distribution.getDistributionAdditionalConfig();
+//			if(StringUtils.isBlank(distroConf.getFiwareService()) && (StringUtils.isBlank(distroConf.getFiwareServicePath()) || distroConf.getFiwareServicePath().equals("/"))) {
+//				url=node.getHost()+"?"+distroConf.getQuery();
+//			}else {
+//				url= internalAPI+"/"+distroConf.getId()+"/catalogue/"+node.getId(); //dovrei mettere l'id della query -> dovrebbe già esserci in quanto la persistenza viene fatta con il nodo,
+//			}
+//			distribution.setDownloadURL(url);
+//			distribution.setAccessURL(url);
+//			cachePersistence.jpaUpdateDistribution(distribution,false);
+//		}
+//	}
+	
+	public static OrionDistributionConfig getOrionDistributionConfig(String orionDistrbutionConfig){
+		CachePersistenceManager jpaInstance;
+		jpaInstance = new CachePersistenceManager();
+		OrionDistributionConfig res = jpaInstance.jpaGetOrionDistributionConfig(orionDistrbutionConfig);
+		jpaInstance.jpaClose();
+		jpaInstance = null;
+		return res;
+	}
+	
 	public static void onFinalize() {
 		try {
 			server.close();

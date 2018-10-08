@@ -15,49 +15,51 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package it.eng.idra.beans.odms;
+package it.eng.idra.beans.orion;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.Lob;
 
-import com.google.gson.annotations.Expose;
+import it.eng.idra.beans.DistributionAdditionalConfiguration;
 
 @Entity
-@Table(name = "odms_image")
-public class ODMSCatalogueImage {
+//@Table(name = "distribution_orion_config")
+public class OrionDistributionConfig extends DistributionAdditionalConfiguration{
 
-	@Id
-	@Column(name = "image_id")
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Expose
-	private int imageId;
-	@Column(columnDefinition = "LONGTEXT")
-	@Expose
-	private String imageData;
-
-	public ODMSCatalogueImage(){}
-	public ODMSCatalogueImage(String imageData){
-		this.imageData=imageData;
-	}
-
-	public int getImageId() {
-		return imageId;
-	}
-
-	public void setImageId(int imageId) {
-		this.imageId = imageId;
-	}
+	/**
+	 * 
+	 */	
+	private String fiwareService;
+	private String fiwareServicePath;
 	
-	public String getImageData() {
-		return imageData;
+	public OrionDistributionConfig() {
+		this.setType("ORION");
 	}
 
-	public void setImageData(String imageData) {
-		this.imageData = imageData;
+	public OrionDistributionConfig(String query, String fiwareService, String fiwareServicePath,String nodeID) {
+		super();
+		this.fiwareService = fiwareService;
+		this.fiwareServicePath = fiwareServicePath;
+		this.setNodeID(nodeID);
+		this.setType("ORION");
+		this.setQuery(query);
 	}
-	
+
+	public String getFiwareService() {
+		return fiwareService;
+	}
+
+	public void setFiwareService(String fiwareService) {
+		this.fiwareService = fiwareService;
+	}
+
+	public String getFiwareServicePath() {
+		return fiwareServicePath;
+	}
+
+	public void setFiwareServicePath(String fiwareServicePath) {
+		this.fiwareServicePath = fiwareServicePath;
+	}
+		
 }

@@ -30,11 +30,12 @@ import it.eng.idra.beans.odms.ODMSCatalogueOfflineException;
 import it.eng.idra.beans.odms.ODMSCatalogueState;
 import it.eng.idra.beans.odms.ODMSCatalogueType;
 import it.eng.idra.beans.odms.ODMSSynchLock;
+import it.eng.idra.beans.orion.OrionCatalogueConfiguration;
 import it.eng.idra.connectors.*;
-import it.eng.idra.connectors.webscraper.WebScraper;
 import it.eng.idra.dcat.dump.DCATAPDeserializer;
 import it.eng.idra.dcat.dump.DCATAPITDeserializer;
 import it.eng.idra.dcat.dump.DCATAPSerializer;
+import it.eng.idra.utils.CommonUtil;
 import it.eng.idra.utils.PropertyManager;
 
 import java.io.IOException;
@@ -83,6 +84,8 @@ public class ODMSManager {
 			ODMSConnectorsList.put(ODMSCatalogueType.WEB, "it.eng.idra.connectors.WebConnector");
 			ODMSConnectorsList.put(ODMSCatalogueType.DCATDUMP, "it.eng.idra.connectors.DCATDumpConnector");
 			ODMSConnectorsList.put(ODMSCatalogueType.DKAN, "it.eng.idra.connectors.DkanConnector");
+			ODMSConnectorsList.put(ODMSCatalogueType.ORION, "it.eng.idra.connectors.OrionConnector");
+			ODMSConnectorsList.put(ODMSCatalogueType.SPARQL, "it.eng.idra.connectors.SparqlConnector");
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -361,7 +364,7 @@ public class ODMSManager {
 					node.setDatasetCount(0);
 
 					assignedNodeID = jpa.jpaInsertODMSCatalogue(node);
-
+					boolean updateNode=false;
 					if (node.getNodeType().equals(ODMSCatalogueType.DCATDUMP)) {
 						if (StringUtils.isNotBlank(node.getDumpString())) {
 							Model m = null;
@@ -387,9 +390,34 @@ public class ODMSManager {
 							}
 
 						}
-						updateInactiveODMSCatalogue(node);
+						updateNode=true;
+					}else if(node.getNodeType().equals(ODMSCatalogueType.ORION)) {
+						
+						String orionDumpFilePath=PropertyManager.getProperty(ODFProperty.ORION_FILE_DUMP_PATH);
+						try {
+							OrionCatalogueConfiguration orionConfig = (OrionCatalogueConfiguration) node.getAdditionalConfig();
+							CommonUtil.storeFile(orionDumpFilePath,"orionDump_"+assignedNodeID,orionConfig.getOrionDatasetDumpString());
+							orionConfig.setOrionDatasetFilePath(orionDumpFilePath+"orionDump_"+assignedNodeID);
+							node.setAdditionalConfig(orionConfig);
+							updateNode=true;
+						}catch(IOException e) {
+							e.printStackTrace();
+						}
+					}else if(node.getNodeType().equals(ODMSCatalogueType.SPARQL)) {
+						
+						String dumpFilePath=PropertyManager.getProperty(ODFProperty.ORION_FILE_DUMP_PATH);
+						try {
+							OrionCatalogueConfiguration orionConfig = (OrionCatalogueConfiguration) node.getAdditionalConfig();
+							CommonUtil.storeFile(dumpFilePath,"sparqlDump_"+assignedNodeID,orionConfig.getOrionDatasetDumpString());
+							orionConfig.setOrionDatasetFilePath(dumpFilePath+"sparqlDump_"+assignedNodeID);
+							node.setAdditionalConfig(orionConfig);
+							updateNode=true;
+						}catch(IOException e) {
+							e.printStackTrace();
+						}
 					}
-
+					if(updateNode)
+						updateInactiveODMSCatalogue(node);
 					getNodesLock = false;
 					federatedNodes.add(node);
 

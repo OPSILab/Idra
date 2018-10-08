@@ -19,5 +19,5 @@ package it.eng.idra.beans.odms;
 
 
 public enum ODMSCatalogueType {
-	CKAN, SOCRATA, NATIVE, WEB, DCATDUMP,DKAN
+	CKAN, SOCRATA, NATIVE, WEB, DCATDUMP, DKAN, ORION, SPARQL
 }

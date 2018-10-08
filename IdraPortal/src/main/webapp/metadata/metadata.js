@@ -309,7 +309,7 @@ angular.module("IdraPlatform").controller('MetadataCtrl',['$scope','$http','conf
 		if($scope.live){
 			
 			for(i=0; i<$scope.selectedNodeID.length; i++){
-				if($scope.federatedLevels[$scope.selectedNodeID[i]]=="LEVEL_2"){
+				if($scope.federatedLevels[$scope.selectedNodeID[i]]=="LEVEL_2" || $scope.federatedLevels[$scope.selectedNodeID[i]]=="LEVEL_4"){
 					discardedNodes.push($scope.selectedNodeName[i]);
 					idTmp.push($scope.selectedNodeID[i]);
 				}
@@ -502,14 +502,6 @@ angular.module("IdraPlatform").controller('MetadataCtrl',['$scope','$http','conf
 		previouslySelected = $rootScope.previousContext.selectedNodeID;
 	}
 	
-	var req = {
-			method: 'GET',
-			url: config.ADMIN_SERVICES_BASE_URL+config.NODES_SERVICE,
-			headers: {
-				'Content-Type': 'application/json'
-			}
-	};
-
 	$scope.nodes=[];
 	$scope.selectedNodeID=[];
 	$scope.selectedNodeName=[];
@@ -517,8 +509,10 @@ angular.module("IdraPlatform").controller('MetadataCtrl',['$scope','$http','conf
 	var allNodesIDs=[];
 
 	$rootScope.startSpin();
-	ODMSNodesAPI.getODMSNodesAPI(false).then(function(value){
+	
+	ODMSNodesAPI.clientCataloguesInfoAPI().then(function(value){
 
+		//console.log(value.data);
 		manageNodes(value.data);
 		$rootScope.stopSpin();
 
@@ -534,7 +528,7 @@ angular.module("IdraPlatform").controller('MetadataCtrl',['$scope','$http','conf
 	function enableLiveSearch(){
 		var tmpLive=true;
 		for(i=0; i<$scope.selectedNodeID.length;i++){
-			if($scope.federatedLevels[$scope.selectedNodeID[i]] == 'LEVEL_0' || $scope.federatedLevels[$scope.selectedNodeID[i]] == 'LEVEL_2'){
+			if($scope.federatedLevels[$scope.selectedNodeID[i]] == 'LEVEL_0' || $scope.federatedLevels[$scope.selectedNodeID[i]] == 'LEVEL_2' || $scope.federatedLevels[$scope.selectedNodeID[i]] == 'LEVEL_4'){
 				tmpLive=false;
 				$scope.live=$scope.searchOn[0].value;
 				break;
@@ -545,9 +539,11 @@ angular.module("IdraPlatform").controller('MetadataCtrl',['$scope','$http','conf
 	
 	
 	function manageNodes(nodes){
+		$scope.nodes = nodes;
 		for(i=0; i<nodes.length; i++){
-			if(nodes[i].synchLock != 'FIRST' && nodes[i].federationLevel!="LEVEL_0" && nodes[i].isActive!=false){
-				$scope.nodes.push({id: nodes[i].id, name: nodes[i].name, federationLevel:nodes[i].federationLevel});
+			//Non serve più perché vengono filtrati dal server
+			//if(nodes[i].synchLock != 'FIRST' && nodes[i].federationLevel!="LEVEL_0" && nodes[i].isActive!=false){
+				//$scope.nodes.push({id: nodes[i].id, name: nodes[i].name, federationLevel:nodes[i].federationLevel});
 				$scope.federatedLevels[nodes[i].id]= nodes[i].federationLevel;
 				allNodesIDs.push(nodes[i].id);
 				$scope.numberOfCatalogues=allNodesIDs.length;
@@ -561,7 +557,7 @@ angular.module("IdraPlatform").controller('MetadataCtrl',['$scope','$http','conf
 					$scope.selectedNodeName.push(nodes[i].name);
 				}
 			}
-		}
+		//}
 
 		searchService.storeNodeIDs(allNodesIDs);
 		

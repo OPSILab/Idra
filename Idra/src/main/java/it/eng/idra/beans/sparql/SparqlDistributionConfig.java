@@ -15,16 +15,41 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package it.eng.idra.beans.odms;
+package it.eng.idra.beans.sparql;
 
-public enum ODMSCatalogueFederationLevel {
-	/*
-	 * LEVEL_0: Catalogue added to the federation, no dataset added, no searches enabled
-	 * LEVEL_1: Catalogue added to the federation, no dataset added, live search enabled
-	 * LEVEL_2: Catalogue added to the federation, dataset added, cache search enabled, synchronization enabled
-	 * LEVEL_3: Catalogue added to the federation, dataset added, live/cache search enabled, synchronization enabled
-	 * LEVEL_4: Catalogue added to the federation, dataset added, cache search enabled, synchronization not enabled
-	 * */
-	LEVEL_0, LEVEL_1, LEVEL_2, LEVEL_3, LEVEL_4
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Lob;
+
+import it.eng.idra.beans.DistributionAdditionalConfiguration;
+
+@Entity
+public class SparqlDistributionConfig extends DistributionAdditionalConfiguration{
+
+	/**
+	 * 
+	 */		
+	//Comma Separated Values
+	private String formats;
+	
+	public SparqlDistributionConfig() {
+		this.setType("SPARQL");
+	}
+
+	public SparqlDistributionConfig(String query,String formats,String nodeID) {
+		super();
+		this.formats=formats;
+		this.setNodeID(nodeID);
+		this.setType("SPARQL");
+		this.setQuery(query);
+	}
+	
+	public String getFormats() {
+		return formats;
+	}
+
+	public void setFormats(String formats) {
+		this.formats = formats;
+	}
 	
 }
