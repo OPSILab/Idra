@@ -118,7 +118,7 @@ public class AdministrationAPI {
 			// If the node type is DCATDUMP, if the dump URL is blank, try to get the
 			// dump from the uploaded file
 			if (node.getNodeType().equals(ODMSCatalogueType.DCATDUMP)) {
-				if (StringUtils.isBlank(node.getDumpURL())) {
+				if (StringUtils.isBlank(node.getDumpURL()) && StringUtils.isBlank(node.getDumpString())) {
 					if (fileInputStream == null)
 						throw new IOException("The dump part of the request is empty");
 
@@ -128,6 +128,8 @@ public class AdministrationAPI {
 					else
 						throw new IOException(
 								"The node must have either the dumpURL or dump file in the \" dump \" part of the multipart request");
+				}else if(StringUtils.isBlank(node.getDumpURL()) && StringUtils.isNotBlank(node.getDumpString())) {
+					logger.info("Dump catalogue with dumpString");
 				}
 			} else {
 				node.setDumpURL(null);
@@ -358,6 +360,15 @@ public class AdministrationAPI {
 		try {
 
 			ODMSCatalogue node = FederationCore.getODMSCatalogue(Integer.parseInt(nodeId), withImage);
+			
+			if(node.getNodeType().equals(ODMSCatalogueType.DCATDUMP)) {
+				if (StringUtils.isBlank(node.getDumpString())) {
+					// Read the content of the file from the file system
+					String dump = new String(Files.readAllBytes(Paths.get(node.getDumpFilePath())));
+					node.setDumpString(dump);
+				}
+			}
+			
 			if(node.getNodeType().equals(ODMSCatalogueType.ORION)) {
 				OrionCatalogueConfiguration conf = (OrionCatalogueConfiguration) node.getAdditionalConfig();
 				if (StringUtils.isBlank(conf.getOrionDatasetDumpString()) && StringUtils.isNotBlank(conf.getOrionDatasetFilePath())) {
@@ -420,6 +431,7 @@ public class AdministrationAPI {
 				throw new ODMSCatalogueChangeActiveStateException("Update Active State for node " +currentNode.getHost()+ " is not allowed");
 			}
 
+			//TODO: Manage update of DCATDUMP catalogue dumpstring
 			if (requestNode.getNodeType().equals(ODMSCatalogueType.DCATDUMP)) {
 				if ((StringUtils.isBlank(currentNode.getDumpURL()) && StringUtils.isNotBlank(requestNode.getDumpURL()))
 						&& (!requestNode.getDumpURL().equals(currentNode.getDumpURL()))) {
