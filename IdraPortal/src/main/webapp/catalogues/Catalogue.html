@@ -127,7 +127,9 @@
 					<div class="col-md-4">	
 					<button type="button"
 						class="btn btn-md btn-primary btn-file btn-material-deep-orange" style="margin: 0px"
-						ng-click="openDumpModal()">Add/Edit File</button>
+						ng-click="openDumpModal()">
+						<span ng-if="mode=='create'">Add</span> <span ng-if="mode=='update'">Update</span> File
+						</button>
 						</div>
 				</div>
 				<div class="col-md-6 form-group"
@@ -255,7 +257,7 @@
 </div>
 <div class="modal-body row">
 	<div class="toolbar">
-	<a href="javascript:void(0)" class="btn btn-xs btn-file"
+	<button class="btn btn-xs btn-file"
 		style="background-color: #ebebeb; margin: 0px 0px 0px 0px;"> <i
 		class="mdi-file-folder-open">
 	<input ng-if="nodeType=='ORION' || nodeType=='SPARQL' || nodeType=='WEB'" type="file" name="file"
@@ -265,33 +267,33 @@
 			onchange="angular.element(this).scope().fileUploadDUMP(this)"
 			accept=".rdf, .xml">
  	</i>
-	<md-tooltip>Upload File</md-tooltip></a>
+	<md-tooltip>Upload File</md-tooltip></button>
 	
 	<span>
-	<a href="javascript:void(0)" ng-click="save()" a-disabled="disableSave==true" class="btn btn-xs btn-file"
+	<button ng-click="save()" a-disabled="disableSave==true" class="btn btn-xs btn-file"
 		style="background-color: #ebebeb; margin: 0px 0px 0px 0px;"> <i
 		class="mdi-content-save"></i>
-	</a><md-tooltip>Save</md-tooltip>
+	</button><md-tooltip>Save</md-tooltip>
 	</span>
 	
 	<span>
-	<a href="javascript:void(0)" ng-click="undo()" a-disabled="disableUndo==true" class="btn btn-xs btn-file"
+	<button ng-click="undo()" a-disabled="disableUndo==true" class="btn btn-xs btn-file"
 		style="background-color: #ebebeb; margin: 0px 0px 0px 0px;"> <i
 		class="mdi-content-undo"></i>
-	</a><md-tooltip>Undo</md-tooltip>
+	</button><md-tooltip>Undo</md-tooltip>
 	</span>
 	
 	<span>
-	<a href="javascript:void(0)" ng-click="redo()" a-disabled="disableRedo==true" class="btn btn-xs btn-file"
+	<button ng-click="redo()" a-disabled="disableRedo==true" class="btn btn-xs btn-file"
 		style="background-color: #ebebeb; margin: 0px 0px 0px 0px;"> <i
 		class="mdi-content-redo"></i>
-	</a><md-tooltip>Redo</md-tooltip>
+	</button><md-tooltip>Redo</md-tooltip>
 	</span>
 	
-	<a ng-if="nodeType=='ORION' || nodeType=='SPARQL'" href="javascript:void(0)" ng-click="addNewDataset(false)" class="btn btn-xs btn-file"
+	<button ng-if="nodeType=='ORION' || nodeType=='SPARQL'" ng-click="addNewDataset(false)" class="btn btn-xs btn-file"
 		style="background-color: #ebebeb; margin: 0px 0px 0px 0px;"> <i
 		class="mdi-content-add"></i>
-	<md-tooltip>Add Empty Dataset</md-tooltip></a>
+	<md-tooltip>Add Empty Dataset</md-tooltip></button>
 	
 </div>
 <div style="height: 450px" ng-model="aceDocumentValue"
