@@ -53,7 +53,9 @@ public enum ODFProperty {
 	SESAME_ENDPOINT("idra.lod.server.uri.query"),
 	WEB_CONNECTOR_DEFAULT_STOP_VALUES("idra.scraper.defaultStopValues"),
 	ENABLE_STATISTICS("idra.statistics.enable"),
-	AUTHENTICATION_METHOD("idra.authentication.method");
+	AUTHENTICATION_METHOD("idra.authentication.method"),
+	ORION_FILE_DUMP_PATH("idra.orion.orionDumpFilePath"),
+	ORION_INTERNAL_API("idra.orion.orionInternalAPI");
 	
 	
 	private final String text;

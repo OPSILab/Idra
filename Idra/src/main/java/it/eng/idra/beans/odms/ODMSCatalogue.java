@@ -19,10 +19,6 @@ package it.eng.idra.beans.odms;
 
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
-import java.util.TimeZone;
-
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -33,19 +29,30 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.JoinColumns;
 import javax.persistence.OneToOne;
+import javax.persistence.PostPersist;
+import javax.persistence.PostRemove;
+import javax.persistence.PostUpdate;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
 import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 import javax.persistence.Transient;
+
+import org.apache.commons.lang.StringUtils;
+
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.JsonAdapter;
 
 import it.eng.idra.beans.dcat.DCATAPFormat;
 import it.eng.idra.beans.dcat.DCATAPProfile;
+import it.eng.idra.beans.orion.OrionCatalogueConfiguration;
+import it.eng.idra.beans.sparql.SparqlCatalogueConfiguration;
 import it.eng.idra.beans.webscraper.WebScraperSitemap;
+import it.eng.idra.odfscheduler.ODFScheduler;
+import it.eng.idra.odfscheduler.SchedulerNotInitialisedException;
+import it.eng.idra.utils.CommonUtil;
 import it.eng.idra.utils.JsonRequired;
+import it.eng.idra.utils.ODMSCatalogueAdditionalConfigurationDeserializer;
 
 // Represents a federated ODMS Node  
 @Entity
@@ -55,14 +62,17 @@ public class ODMSCatalogue {
 	@Id
 	@Column(name = "id")
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Expose
 	private int id;
 
 	@JsonRequired
-	@Column(name = "name", unique = true, nullable = false)
+	@Column(name = "name", unique = true, nullable = false) //TODO: levare unique + mettere url-api
+	@Expose
 	private String name;
 
 	@JsonRequired
 	@Column(name = "host", unique = true, nullable = false)
+	@Expose
 	private String host;
 
 	@Column(name = "api_key", unique = false, nullable = true)
@@ -71,6 +81,7 @@ public class ODMSCatalogue {
 	@JsonRequired
 	@Column(name = "type", unique = false, nullable = false)
 	@Enumerated(EnumType.STRING)
+	@Expose
 	private ODMSCatalogueType nodeType;
 
 	@JsonRequired
@@ -80,27 +91,31 @@ public class ODMSCatalogue {
 
 	@JsonRequired
 	@Column(name = "publisher_name", unique = false, nullable = false)
+	@Expose
 	private String publisherName;
 
 	@Column(name = "publisher_url", unique = false, nullable = true)
+	@Expose
 	private String publisherUrl;
 
 	@Column(name = "publisher_email", unique = false, nullable = true)
+	@Expose
 	private String publisherEmail;
 
 	@Column(name = "dataset_count")
+	@Expose
 	private int datasetCount;
 
 	@Column(name = "state", unique = false, nullable = false)
 	@Enumerated(EnumType.STRING)
+	@Expose
 	private ODMSCatalogueState nodeState;
 
 	@Column(name = "register_date", updatable = true)
-	// @Temporal(TemporalType.TIMESTAMP)
 	private ZonedDateTime registerDate;
 
 	@Column(name = "last_update_date")
-	// @Temporal(TemporalType.TIMESTAMP)
+	@Expose
 	private ZonedDateTime lastUpdateDate;
 
 	@JsonRequired
@@ -108,12 +123,14 @@ public class ODMSCatalogue {
 	private int refreshPeriod;
 
 	@Column(name = "description", columnDefinition = "TEXT")
+	@Expose
 	private String description;
 
 	// @Column(name = "image", columnDefinition = "LONGTEXT")
 
 	@OneToOne(fetch = FetchType.LAZY, cascade = { CascadeType.ALL })
 	@JoinColumn(name = "image_id")
+	@Expose
 	private ODMSCatalogueImage image;
 
 	@Transient
@@ -126,9 +143,11 @@ public class ODMSCatalogue {
 	private int datasetStart;
 
 	@Column(name = "location", columnDefinition = "LONGTEXT")
+	@Expose
 	private String location;
 
 	@Column(name = "locationDescription", columnDefinition = "MEDIUMTEXT")
+	@Expose
 	private String locationDescription;
 
 	@Transient
@@ -148,14 +167,22 @@ public class ODMSCatalogue {
 	private String dumpURL;
 
 	@Column(name = "isActive", nullable = true)
+	@Expose
 	private Boolean isActive;
 
 	@Column(name = "country", nullable = true)
+	@Expose
 	private String country;
 
 	@Column(name = "category", nullable = true)
+	@Expose
 	private String category;
 
+	@OneToOne(orphanRemoval = true, cascade = { CascadeType.ALL, CascadeType.REMOVE })
+	@JoinColumn(name = "additionalconfig_id")
+	@JsonAdapter(ODMSCatalogueAdditionalConfigurationDeserializer.class)
+	private ODMSCatalogueAdditionalConfiguration additionalConfig;
+	
 	// @Transient
 	private DCATAPProfile dcatProfile;
 
@@ -527,6 +554,14 @@ public class ODMSCatalogue {
 		this.category = category;
 	}
 
+	public ODMSCatalogueAdditionalConfiguration getAdditionalConfig() {
+		return additionalConfig;
+	}
+
+	public void setAdditionalConfig(ODMSCatalogueAdditionalConfiguration orionConfig) {
+		this.additionalConfig = orionConfig;
+	}
+
 	public boolean isOnline() {
 		return this.getNodeState().equals(ODMSCatalogueState.ONLINE);
 	}
@@ -549,7 +584,8 @@ public class ODMSCatalogue {
 
 	public boolean isCacheable() {
 		return federationLevel.equals(ODMSCatalogueFederationLevel.LEVEL_2)
-				|| federationLevel.equals(ODMSCatalogueFederationLevel.LEVEL_3);
+				|| federationLevel.equals(ODMSCatalogueFederationLevel.LEVEL_3) 
+				|| federationLevel.equals(ODMSCatalogueFederationLevel.LEVEL_4);
 	}
 
 	@PrePersist
@@ -562,6 +598,55 @@ public class ODMSCatalogue {
 		lastUpdateDate = ZonedDateTime.now(ZoneOffset.UTC);
 	}
 
+	@PostPersist
+	protected void postCreate() {
+		if(this.nodeType.equals(ODMSCatalogueType.ORION)) {
+			OrionCatalogueConfiguration cf = (OrionCatalogueConfiguration) this.additionalConfig;
+			if(cf.isAuthenticated()) {
+				try {
+					ODFScheduler.getSingletonInstance().startOAUTHTokenSynchJob(this);
+				} catch (SchedulerNotInitialisedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		}
+	}
+
+	@PostUpdate
+	protected void postUpdate() {
+		
+	}
+	
+	@PostRemove
+	protected void postDelete() {
+		if(this.nodeType.equals(ODMSCatalogueType.ORION)) {
+			OrionCatalogueConfiguration cf = (OrionCatalogueConfiguration) this.additionalConfig;
+			if(cf.isAuthenticated()) {
+				try {
+					ODFScheduler.getSingletonInstance().deleteJob("synchToken_"+Integer.toString(this.id));
+				} catch (SchedulerNotInitialisedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+			
+			if(StringUtils.isNotBlank(cf.getOrionDatasetFilePath())) {
+				CommonUtil.deleteFile(cf.getOrionDatasetFilePath());
+			}
+			
+		}else if(this.nodeType.equals(ODMSCatalogueType.SPARQL)) {
+			SparqlCatalogueConfiguration cf = (SparqlCatalogueConfiguration) this.additionalConfig;
+			if(StringUtils.isNotBlank(cf.getSparqlDatasetFilePath())) {
+				CommonUtil.deleteFile(cf.getSparqlDatasetFilePath());
+			}
+		}else if(this.nodeType.equals(ODMSCatalogueType.DCATDUMP)) {
+			if(StringUtils.isNotBlank(this.dumpFilePath)) {
+				CommonUtil.deleteFile(this.dumpFilePath);
+			}
+		}
+	}
+	
 	@Override
 	public String toString() {
 		return "ODMSCatalogue [id=" + id + ", name=" + name + ", synchLock=" + synchLock + ", host=" + host + ", nodeType="

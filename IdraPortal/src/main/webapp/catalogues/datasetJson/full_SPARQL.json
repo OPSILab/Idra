@@ -1,0 +1,87 @@
+{
+	"title": "",
+	"description": "",
+	"accessRights": "",
+	"type": "",
+	"version": "",
+	"frequency": "",
+	"theme": [],
+	"keywords": [],
+	"subject": [],
+	"publisher": {
+		"name": "",
+		"mbox": "",
+		"homepage": "",
+		"type": "",
+		"identifier": "",
+		"propertyUri": ""
+	},
+	"creator": {
+		"name": "",
+		"mbox": "",
+		"homepage": "",
+		"type": "",
+		"identifier": "",
+		"propertyUri": ""
+	},
+	"rightsHolder": {
+		"name": "",
+		"mbox": "",
+		"homepage": "",
+		"type": "",
+		"identifier": "",
+		"propertyUri": ""
+	},
+	"contactPoint": [{
+		"resourceUri": "",
+		"fn": "",
+		"hasEmail": "",
+		"hasUrl": "",
+		"hasTelephoneValue": "",
+		"hasTelephoneType": ""
+	}],
+	"conformsTo": [{
+		"title": "",
+		"description": "",
+		"identifier": "",
+		"referenceDocumentation": ""
+	}],
+	"documentation": [],
+	"hasVersion": [],
+	"isVersionOf": [],
+	"language": [],
+	"provenance": [],
+	"sample": [],
+	"source": [],
+	"versionNotes": [],
+	"releaseDate": "",
+	"updateDate": "",
+	"spatialCoverage": {
+		"geographicalIdentifier": "",
+		"spatialCoverage": "",
+		"geographicalName": "",
+		"geometry": ""
+	},
+	"distributions": [{
+		"title": "",
+		"description": "",
+		"distributionAdditionalConfig": {
+			"query": "",
+			"formats":[]
+		},
+		"byteSize": "",
+		"checksum": "",
+		"releaseDate": "",
+		"updateDate": "",
+		"mediaType": "",
+		"language": [],
+		"linkedSchema": [],
+		"documentation": "",
+		"license": {
+			"uri": "",
+			"name": "",
+			"type": "",
+			"versionInfo": ""
+		}
+	}]
+}

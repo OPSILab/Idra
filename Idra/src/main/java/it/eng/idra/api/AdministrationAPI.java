@@ -36,8 +36,11 @@ import it.eng.idra.beans.User;
 import it.eng.idra.beans.dcat.DCATDataset;
 import it.eng.idra.beans.odms.ODMSAlreadyPresentException;
 import it.eng.idra.beans.odms.ODMSManagerException;
+import it.eng.idra.beans.orion.OrionCatalogueConfiguration;
+import it.eng.idra.beans.sparql.SparqlCatalogueConfiguration;
 import it.eng.idra.beans.odms.ODMSCatalogue;
 import it.eng.idra.beans.odms.ODMSCatalogueChangeActiveStateException;
+import it.eng.idra.beans.odms.ODMSCatalogueFederationLevel;
 import it.eng.idra.beans.odms.ODMSCatalogueForbiddenException;
 import it.eng.idra.beans.odms.ODMSCatalogueMessage;
 import it.eng.idra.beans.odms.ODMSCatalogueNotFoundException;
@@ -128,7 +131,7 @@ public class AdministrationAPI {
 			// If the node type is DCATDUMP, if the dump URL is blank, try to get the
 			// dump from the uploaded file
 			if (node.getNodeType().equals(ODMSCatalogueType.DCATDUMP)) {
-				if ((StringUtils.isBlank(node.getDumpURL()))) {
+				if (StringUtils.isBlank(node.getDumpURL()) && StringUtils.isBlank(node.getDumpString())) {
 					if (fileInputStream == null)
 						throw new IOException("The dump part of the request is empty");
 
@@ -138,6 +141,8 @@ public class AdministrationAPI {
 					else
 						throw new IOException(
 								"The node must have either the dumpURL or dump file in the \" dump \" part of the multipart request");
+				}else if(StringUtils.isBlank(node.getDumpURL()) && StringUtils.isNotBlank(node.getDumpString())) {
+					logger.info("Dump catalogue with dumpString");
 				}
 			} else {
 
@@ -148,10 +153,73 @@ public class AdministrationAPI {
 			if (!node.getNodeType().equals(ODMSCatalogueType.WEB))
 				node.setSitemap(null);
 
+			
+			
+			if(!node.getNodeType().equals(ODMSCatalogueType.ORION) && !node.getNodeType().equals(ODMSCatalogueType.SPARQL)) {
+				node.setAdditionalConfig(null);
+			}else if(node.getNodeType().equals(ODMSCatalogueType.ORION)){
+				
+				if(!node.getFederationLevel().equals(ODMSCatalogueFederationLevel.LEVEL_4)) {
+					ErrorResponse error = new ErrorResponse(String.valueOf(Response.Status.BAD_REQUEST.getStatusCode()),
+							"Orion Catalogue cannot synchronize its datasets, please set Federation Level 4!", "400", "Orion Catalogue cannot synchronize its datasets, please set Federation Level 4!");
+					return Response.status(Response.Status.BAD_REQUEST).entity(error.toJson()).build();
+				}
+				
+				if(node.getAdditionalConfig()==null) {
+					ErrorResponse error = new ErrorResponse(String.valueOf(Response.Status.BAD_REQUEST.getStatusCode()),
+							"Orion Catalogue must have its configuration parameters!", "400", "Orion Catalogue must have its configuration parameters!");
+					return Response.status(Response.Status.BAD_REQUEST).entity(error.toJson()).build();
+				}
+				OrionCatalogueConfiguration orionConfig = (OrionCatalogueConfiguration) node.getAdditionalConfig();
+				if(orionConfig.isAuthenticated()) {
+					if(StringUtils.isBlank(orionConfig.getAuthToken()) || StringUtils.isBlank(orionConfig.getRefreshToken()) || StringUtils.isBlank(orionConfig.getOauth2Endpoint())
+							|| StringUtils.isBlank(orionConfig.getClientID()) || StringUtils.isBlank(orionConfig.getClientSecret())) {
+						ErrorResponse error = new ErrorResponse(String.valueOf(Response.Status.BAD_REQUEST.getStatusCode()),
+								"Please provide all of the authentication configuration parameters", "400", "Please provide all of the authentication configuration parameters");
+						return Response.status(Response.Status.BAD_REQUEST).entity(error.toJson()).build();
+					}
+				}
+				
+				if(StringUtils.isBlank(orionConfig.getOrionDatasetDumpString()) && fileInputStream==null)
+						throw new IOException("Orion Catalogue must have a dump string or a dump file");
+				
+				if(StringUtils.isBlank(orionConfig.getOrionDatasetDumpString())) {
+					String dumpString = IOUtils.toString(fileInputStream, StandardCharsets.UTF_8);
+					if (StringUtils.isNotBlank(dumpString)) {
+						orionConfig.setOrionDatasetDumpString(dumpString);
+						node.setAdditionalConfig(orionConfig);
+					}
+				}
+			}else if(node.getNodeType().equals(ODMSCatalogueType.SPARQL)) {
+
+				if(!node.getFederationLevel().equals(ODMSCatalogueFederationLevel.LEVEL_4)) {
+					ErrorResponse error = new ErrorResponse(String.valueOf(Response.Status.BAD_REQUEST.getStatusCode()),
+							"Sparql Catalogue cannot synchronize its datasets, please set Federation Level 4!", "400", "Sparql Catalogue cannot synchronize its datasets, please set Federation Level 4!");
+					return Response.status(Response.Status.BAD_REQUEST).entity(error.toJson()).build();
+				}
+				
+				SparqlCatalogueConfiguration sparqlConfig = (SparqlCatalogueConfiguration) node.getAdditionalConfig();
+				
+				if(sparqlConfig==null && fileInputStream==null)
+						throw new IOException("Sparql Catalogue must have a dump string or a dump file");
+				
+				if(sparqlConfig==null) {
+					sparqlConfig=new SparqlCatalogueConfiguration();
+				}
+				
+				if(StringUtils.isBlank(sparqlConfig.getSparqlDatasetDumpString())) {
+					String dumpString = IOUtils.toString(fileInputStream, StandardCharsets.UTF_8);
+					if (StringUtils.isNotBlank(dumpString)) {
+						sparqlConfig.setSparqlDatasetDumpString(dumpString);
+						node.setAdditionalConfig(sparqlConfig);
+					}
+				}		
+			}
+			
 			if (node.isActive() == null) {
 				node.setActive(false);
 			}
-
+			
 			if (node.isActive()) {
 				FederationCore.registerODMSCatalogue(node);
 			} else {
@@ -183,6 +251,7 @@ public class AdministrationAPI {
 	}
 
 	@GET
+	@Secured
 	@Path("/catalogues")
 	@Produces("application/json")
 	public Response getODMSCatalogues(@QueryParam("withImage") boolean withImage) {
@@ -234,6 +303,27 @@ public class AdministrationAPI {
 				}
 			}
 
+			if(node.getNodeType().equals(ODMSCatalogueType.ORION)) {
+				OrionCatalogueConfiguration conf = (OrionCatalogueConfiguration) node.getAdditionalConfig();
+				if (StringUtils.isBlank(conf.getOrionDatasetDumpString()) && StringUtils.isNotBlank(conf.getOrionDatasetFilePath())) {
+					// Read the content of the file from the file system
+					String dumpOrion = new String(Files.readAllBytes(Paths.get(conf.getOrionDatasetFilePath())));
+					conf.setOrionDatasetDumpString(dumpOrion);
+					node.setAdditionalConfig(conf);
+				}
+			}
+			
+			if(node.getNodeType().equals(ODMSCatalogueType.SPARQL)) {
+				SparqlCatalogueConfiguration conf = (SparqlCatalogueConfiguration) node.getAdditionalConfig();
+				if (StringUtils.isBlank(conf.getSparqlDatasetDumpString()) && StringUtils.isNotBlank(conf.getSparqlDatasetFilePath())) {
+					// Read the content of the file from the file system
+					String dumpOrion = new String(Files.readAllBytes(Paths.get(conf.getSparqlDatasetFilePath())));
+					conf.setSparqlDatasetDumpString(dumpOrion);
+					node.setAdditionalConfig(conf);
+				}
+			}
+			
+			
 			FederationCore.activateODMSCatalogue(node);
 
 			return Response.status(Response.Status.OK).build();
@@ -284,6 +374,34 @@ public class AdministrationAPI {
 		try {
 
 			ODMSCatalogue node = FederationCore.getODMSCatalogue(Integer.parseInt(nodeId), withImage);
+			
+			if(node.getNodeType().equals(ODMSCatalogueType.DCATDUMP)) {
+				if (StringUtils.isBlank(node.getDumpString())) {
+					// Read the content of the file from the file system
+					String dump = new String(Files.readAllBytes(Paths.get(node.getDumpFilePath())));
+					node.setDumpString(dump);
+				}
+			}
+			
+			if(node.getNodeType().equals(ODMSCatalogueType.ORION)) {
+				OrionCatalogueConfiguration conf = (OrionCatalogueConfiguration) node.getAdditionalConfig();
+				if (StringUtils.isBlank(conf.getOrionDatasetDumpString()) && StringUtils.isNotBlank(conf.getOrionDatasetFilePath())) {
+					// Read the content of the file from the file system
+					String dumpOrion = new String(Files.readAllBytes(Paths.get(conf.getOrionDatasetFilePath())));
+					conf.setOrionDatasetDumpString(dumpOrion);
+					node.setAdditionalConfig(conf);
+				}
+			}
+			
+			if(node.getNodeType().equals(ODMSCatalogueType.SPARQL)) {
+				SparqlCatalogueConfiguration conf = (SparqlCatalogueConfiguration) node.getAdditionalConfig();
+				if (StringUtils.isBlank(conf.getSparqlDatasetDumpString()) && StringUtils.isNotBlank(conf.getSparqlDatasetFilePath())) {
+					// Read the content of the file from the file system
+					String dumpOrion = new String(Files.readAllBytes(Paths.get(conf.getSparqlDatasetFilePath())));
+					conf.setSparqlDatasetDumpString(dumpOrion);
+					node.setAdditionalConfig(conf);
+				}
+			}
 
 			return Response.status(Response.Status.OK).entity(GsonUtil.obj2Json(node, GsonUtil.nodeType).toString())
 					.build();
@@ -328,6 +446,7 @@ public class AdministrationAPI {
 						"Update Active State for node " + currentNode.getHost() + " is not allowed");
 			}
 
+			//TODO: Manage update of DCATDUMP catalogue dumpstring
 			if (requestNode.getNodeType().equals(ODMSCatalogueType.DCATDUMP)) {
 				if ((StringUtils.isBlank(currentNode.getDumpURL()) && StringUtils.isNotBlank(requestNode.getDumpURL()))
 						&& (!requestNode.getDumpURL().equals(currentNode.getDumpURL()))) {
@@ -355,6 +474,28 @@ public class AdministrationAPI {
 			}
 
 			boolean rescheduleJob = false;
+			if(requestNode.getNodeType().equals(ODMSCatalogueType.ORION)) {
+				OrionCatalogueConfiguration c = (OrionCatalogueConfiguration) requestNode.getAdditionalConfig();
+				String oldDump = new String(Files.readAllBytes(Paths.get(c.getOrionDatasetFilePath())));
+				if(StringUtils.isBlank(c.getOrionDatasetDumpString())) {
+					c.setOrionDatasetDumpString(oldDump);
+					requestNode.setAdditionalConfig(c);
+				}else {
+					rescheduleJob=true;
+				}
+			}
+			
+			if(requestNode.getNodeType().equals(ODMSCatalogueType.SPARQL)) {
+				SparqlCatalogueConfiguration c = (SparqlCatalogueConfiguration) requestNode.getAdditionalConfig();
+				String oldDump = new String(Files.readAllBytes(Paths.get(c.getSparqlDatasetFilePath())));
+				if(StringUtils.isBlank(c.getSparqlDatasetDumpString())) {
+					c.setSparqlDatasetDumpString(oldDump);
+					requestNode.setAdditionalConfig(c);
+				}else {
+					rescheduleJob=true;
+				}
+			}
+			
 			if (requestNode.getRefreshPeriod() != currentNode.getRefreshPeriod()) {
 				rescheduleJob = true;
 			}

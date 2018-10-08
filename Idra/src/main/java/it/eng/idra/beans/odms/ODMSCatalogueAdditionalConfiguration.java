@@ -17,14 +17,50 @@
  ******************************************************************************/
 package it.eng.idra.beans.odms;
 
-public enum ODMSCatalogueFederationLevel {
-	/*
-	 * LEVEL_0: Catalogue added to the federation, no dataset added, no searches enabled
-	 * LEVEL_1: Catalogue added to the federation, no dataset added, live search enabled
-	 * LEVEL_2: Catalogue added to the federation, dataset added, cache search enabled, synchronization enabled
-	 * LEVEL_3: Catalogue added to the federation, dataset added, live/cache search enabled, synchronization enabled
-	 * LEVEL_4: Catalogue added to the federation, dataset added, cache search enabled, synchronization not enabled
-	 * */
-	LEVEL_0, LEVEL_1, LEVEL_2, LEVEL_3, LEVEL_4
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
+import javax.persistence.Table;
+
+import org.hibernate.annotations.GenericGenerator;
+
+@Entity
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@Table(name = "odms_additional_config")
+public class ODMSCatalogueAdditionalConfiguration {
+
+	private String id;
+	private String type;
+
+	public ODMSCatalogueAdditionalConfiguration() {
+		super();
+	}
 	
+	public ODMSCatalogueAdditionalConfiguration(String id, String type) {
+		super();
+		this.id = id;
+		this.type = type;
+	}
+
+	@Id
+	@GeneratedValue(generator = "uuid")
+	@GenericGenerator(name = "uuid", strategy = "uuid2")
+	public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
+	}
+
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
+	}
+
 }

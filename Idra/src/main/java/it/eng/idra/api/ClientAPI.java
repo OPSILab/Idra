@@ -31,7 +31,11 @@ import it.eng.idra.beans.exception.DatasetNotFoundException;
 import it.eng.idra.beans.exception.EuroVocTranslationNotFoundException;
 import it.eng.idra.beans.odms.ODMSCatalogue;
 import it.eng.idra.beans.odms.ODMSCatalogueNotFoundException;
+import it.eng.idra.beans.odms.ODMSCatalogueType;
+import it.eng.idra.beans.odms.ODMSManagerException;
 import it.eng.idra.beans.odms.ODMSSynchLock;
+import it.eng.idra.beans.orion.OrionCatalogueConfiguration;
+import it.eng.idra.beans.orion.OrionDistributionConfig;
 import it.eng.idra.beans.search.SearchDateFilter;
 import it.eng.idra.beans.search.SearchEuroVocFilter;
 import it.eng.idra.beans.search.SearchFilter;
@@ -78,6 +82,7 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.client.Invocation;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
@@ -708,13 +713,11 @@ public class ClientAPI {
 
 	}
 	
-	//NEW APIs
-	/*
 	@GET
-	@Path("/search_catalogues_list")
+	@Path("/cataloguesInfo")
 	@Produces("application/json")
-	public Response listNodes(@Context HttpServletRequest httpRequest) {
-		LocalTime time1 = LocalTime.now();
+	public Response getCataloguesInfo(@Context HttpServletRequest httpRequest) {
+		//LocalTime time1 = LocalTime.now();
 		try {
 			JSONArray result = new JSONArray();
 			List<ODMSCatalogue> nodes = FederationCore.getODMSCatalogues()
@@ -729,8 +732,8 @@ public class ClientAPI {
 				tmp.put("federationLevel", n.getFederationLevel());
 				result.put(tmp);
 			}
-			LocalTime time2 = LocalTime.now();
-			logger.info("search_catalogues_list " + Duration.between(time1, time2) + " milliseconds");
+			//LocalTime time2 = LocalTime.now();
+			//logger.info("search_catalogues_list " + Duration.between(time1, time2) + " milliseconds");
 			return Response.ok(result.toString()).build();
 		}catch(Exception e) {
 			return handleErrorResponse500(e);
@@ -812,6 +815,8 @@ public class ClientAPI {
 				break;
 			}
 
+			//TODO: enable pagination
+			/* 
 			int row=CommonUtil.ROWSDEFAULT;
 			int off=CommonUtil.OFFSETDEFAULT;
 			
@@ -833,8 +838,8 @@ public class ClientAPI {
 				}
 				nodes = nodes.subList(off, row);
 			}
-			
-			JSONArray array = new JSONArray(GsonUtil.obj2Json(nodes, GsonUtil.nodeListType));
+			*/
+			JSONArray array = new JSONArray(GsonUtil.obj2JsonWithExclude(nodes, GsonUtil.nodeListType));
 			JSONObject result = new JSONObject();
 			result.put("count", count);
 			result.put("catalogues", array);
@@ -854,12 +859,12 @@ public class ClientAPI {
 	@Path("/catalogues/{nodeID}")
 	@Consumes({ MediaType.APPLICATION_JSON })
 	@Produces("application/json")
-	public Response getSingleCatalogue(@Context HttpServletRequest httpRequest,@PathParam("nodeID") String nodeID) {
+	public Response getSingleCatalogue(@Context HttpServletRequest httpRequest,@PathParam("nodeID") String nodeID,@QueryParam("withImage") @DefaultValue("true") boolean withImage) {
 
 		try {
-			ODMSCatalogue result = FederationCore.getODMSCatalogue(Integer.parseInt(nodeID));
+			ODMSCatalogue result = FederationCore.getODMSCatalogue(Integer.parseInt(nodeID), withImage);
 			if(result.isActive())
-				return Response.status(Response.Status.OK).entity(GsonUtil.obj2Json(result, GsonUtil.nodeType)).build();
+				return Response.status(Response.Status.OK).entity(GsonUtil.obj2JsonWithExclude(result, GsonUtil.nodeType)).build();
 			else {
 				ErrorResponse err = new ErrorResponse(String.valueOf(Response.Status.NOT_FOUND.getStatusCode()), "Catalogues with id: "+nodeID+" not found", String.valueOf(Response.Status.NOT_FOUND.getStatusCode()), "Catalogues with id: "+nodeID+" not found");
 				return Response.status(Response.Status.NOT_FOUND).entity(GsonUtil.obj2Json(err, GsonUtil.errorResponseSetType)).build();
@@ -874,9 +879,13 @@ public class ClientAPI {
 		} catch (ODMSCatalogueNotFoundException e) {
 			// TODO Auto-generated catch block
 			return handleBadRequestErrorResponse(e);
+		} catch (ODMSManagerException e) {
+			// TODO Auto-generated catch block
+			return handleBadRequestErrorResponse(e);
 		}
 	}
 	
+	/*
 	@GET
 	@Path("/catalogues/{nodeID}/datasets")
 	@Consumes({ MediaType.APPLICATION_JSON })
@@ -925,7 +934,7 @@ public class ClientAPI {
 			
 			ODMSCatalogue cat= FederationCore.getODMSCatalogue(Integer.parseInt(nodeID));
 			if(cat.isActive()) {
-				DCATDataset result = MetadataCacheManager.getDataset(Integer.parseInt(nodeID), datasetID);
+				DCATDataset result = MetadataCacheManager.getDatasetByID(datasetID);
 				return Response.status(Response.Status.OK).entity(GsonUtil.obj2Json(result, GsonUtil.datasetType)).build();
 			}else {
 				ErrorResponse err = new ErrorResponse(String.valueOf(Response.Status.NOT_FOUND.getStatusCode()), "Catalogues with id: "+nodeID+" not found", String.valueOf(Response.Status.NOT_FOUND.getStatusCode()), "Catalogues with id: "+nodeID+" not found");
@@ -951,8 +960,8 @@ public class ClientAPI {
 			// TODO Auto-generated catch block
 			return handleBadRequestErrorResponse(e);
 		}
-	}
-	*/
+	}*/
+	
 	@GET
 	@Path("/datasets/{id}")
 	@Consumes({ MediaType.APPLICATION_JSON })
@@ -980,6 +989,93 @@ public class ClientAPI {
 			return handleErrorResponse500(e);
 		}
 	}
+	
+	@GET
+	@Path("executeOrionQuery/{cbQueryID}/catalogue/{catalogueID}")
+	@Consumes({ MediaType.APPLICATION_JSON })
+	@Produces("application/json")
+	public Response executeOrionQuery(@Context HttpServletRequest httpRequest,
+			@PathParam("catalogueID") String nodeID,@PathParam("cbQueryID") String queryID) {
+		ErrorResponse err=null;
+		if(StringUtils.isBlank(nodeID)) {
+			err = new ErrorResponse(String.valueOf(Response.Status.BAD_REQUEST.getStatusCode()), "Missing mandatory query parameter: catalogue", String.valueOf(Response.Status.BAD_REQUEST.getStatusCode()), "Missing mandatory query parameter: catalogue");
+		}
+
+		if(StringUtils.isBlank(queryID)) {
+			err = new ErrorResponse(String.valueOf(Response.Status.BAD_REQUEST.getStatusCode()), "Missing mandatory query parameter: cbQueryID", String.valueOf(Response.Status.BAD_REQUEST.getStatusCode()), "Missing mandatory query parameter: cbQueryID");	
+		}
+		
+		try {
+			ODMSCatalogue catalogue = FederationCore.getODMSCatalogue(Integer.parseInt(nodeID), false);
+			if(!catalogue.getNodeType().equals(ODMSCatalogueType.ORION)) {
+				err = new ErrorResponse(String.valueOf(Response.Status.BAD_REQUEST.getStatusCode()), "Catalogue: "+nodeID+" is not ORION", String.valueOf(Response.Status.BAD_REQUEST.getStatusCode()), "Catalogue: "+nodeID+" is not ORION");
+			}else {
+				
+				OrionCatalogueConfiguration catalogueConfig = (OrionCatalogueConfiguration) catalogue.getAdditionalConfig();
+				OrionDistributionConfig distributionConfig = MetadataCacheManager.getOrionDistributionConfig(queryID);
+				
+				String compiledUri=catalogue.getHost()+"?"+distributionConfig.getQuery();
+				
+				client = ClientBuilder.newClient();
+
+				WebTarget webTarget = client.target(compiledUri);
+				Invocation.Builder builder = webTarget.request();
+				if(StringUtils.isNotBlank(distributionConfig.getFiwareService())) {
+					builder = builder.header("Fiware-Service",distributionConfig.getFiwareService());
+				}
+				
+				if(StringUtils.isNotBlank(distributionConfig.getFiwareServicePath())) {
+					builder = builder.header("Fiware-ServicePath",distributionConfig.getFiwareServicePath());
+				}
+				
+				if(catalogueConfig.isAuthenticated())
+					builder = builder.header("X-Auth-Token",catalogueConfig.getAuthToken());
+				
+				Response request = builder.get();
+				ResponseBuilder responseBuilder = Response.status(request.getStatus());
+				final InputStream responseStream = (InputStream) request.getEntity();
+				StreamingOutput output = new StreamingOutput() {
+					@Override
+					public void write(OutputStream out) throws IOException, WebApplicationException {
+						int length;
+						byte[] buffer = new byte[1024];
+						while ((length = responseStream.read(buffer)) != -1) {
+							out.write(buffer, 0, length);
+						}
+						out.flush();
+						responseStream.close();
+					}
+				};
+
+				responseBuilder.entity(output);
+				
+				MultivaluedMap<String, Object> headers = request.getHeaders();
+				Set<String> keys = headers.keySet();
+				//logger.info("Status: " + request.getStatus());
+				
+
+				for (String k : keys) {
+					if (!k.toLowerCase().equals("access-control-allow-origin"))
+						responseBuilder.header(k, headers.get(k).get(0));
+				}
+				
+				return responseBuilder.build();
+				
+			}
+			
+			return Response.status(Response.Status.OK).build();
+		} catch(ODMSCatalogueNotFoundException e) {
+			err = new ErrorResponse(String.valueOf(Response.Status.NOT_FOUND.getStatusCode()), "Catalogues with id: "+nodeID+" not found", String.valueOf(Response.Status.NOT_FOUND.getStatusCode()), "Catalogues with id: "+nodeID+" not found");
+			return Response.status(Response.Status.NOT_FOUND).build();	
+		} catch (NumberFormatException | ODMSManagerException e) {
+			// TODO Auto-generated catch block
+			//e.printStackTrace();
+			return handleErrorResponse500(e);
+		}
+		
+				
+	}
+	
 	 
 	private static Response handleErrorResponse500(Exception e) {
 

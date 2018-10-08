@@ -90,6 +90,11 @@
 	height: 250px;
 }
 
+.btn-ace-toolbar {
+	background-color:#ebebeb;
+	margin:0px 0px 0px 0px;
+}
+
 .md-chips {
 	box-shadow: 0 0px !important;
 }
@@ -695,6 +700,20 @@ a.disabled {
 	<button type="button" class="btn btn-primary" ng-click="no()">No</button>
 </div>
 </script>
+<script type="text/ng-template" id="dumpSave_dialog.html">
+<div class="modal-header dialog-header-confirm">
+	<button type="button" class="close" ng-click="no()">&times;</button>
+	<h4 class="modal-title">
+		<span class="{{icon}}"></span>
+		{{header}}
+	</h4>
+</div>
+<div class="modal-body" ng-bind-html="msg"></div>
+<div class="modal-footer">
+	<button type="button" class="btn btn-default" ng-click="discard()">{{opt1}}</button>
+	<button type="button" class="btn btn-default" ng-click="save()">{{opt2}}</button>
+	<button type="button" class="btn btn-primary" ng-click="no()">Cancel</button>
+</div>
 
 	<script type="text/javascript" src="bower_components/jquery/jquery.js"></script>
 	<script type="text/javascript" src="bower_components/angular/angular.js"></script>
@@ -739,6 +758,10 @@ a.disabled {
 	<script type="text/javascript" src="catalogues/remote_catalogues.js"></script>
 	<script type="text/javascript" src="catalogues/single_catalogue.js"></script>
 	<script type="text/javascript" src="catalogues/view_catalogues.js"></script>
+	
+	<script type="text/javascript" src="catalogues/defaultDatasets.services.js"></script>
+	<script type="text/javascript" src="catalogues/editDumpCtrl.js"></script>
+	
 	<script type="text/javascript" src="accounts/accounts.js"></script>
 	<script type="text/javascript" src="sparql/sparql.js"></script>
 	<script type="text/javascript" src="js/mode-sparql.js"></script>
