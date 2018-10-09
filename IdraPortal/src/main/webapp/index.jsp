@@ -37,23 +37,32 @@
 <link rel="stylesheet" href="css/footer.css">
 <link rel="stylesheet" href="css/gridlist.css">
 
-<link rel="stylesheet" href="bower_components/angular-xeditable/dist/css/xeditable.css">
-<link rel="stylesheet" href="bower_components/ng-tags-input/ng-tags-input.min.css">
-<link rel="stylesheet" href="bower_components/ng-tags-input/ng-tags-input.bootstrap.min.css">
-<link rel="stylesheet" href="bower_components/angular-dialog-service/dist/dialogs.min.css">
+<link rel="stylesheet"
+	href="bower_components/angular-xeditable/dist/css/xeditable.css">
+<link rel="stylesheet"
+	href="bower_components/ng-tags-input/ng-tags-input.min.css">
+<link rel="stylesheet"
+	href="bower_components/ng-tags-input/ng-tags-input.bootstrap.min.css">
+<link rel="stylesheet"
+	href="bower_components/angular-dialog-service/dist/dialogs.min.css">
 <!--    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css" rel="stylesheet"> -->
 <!--    Include roboto.css to use the Roboto web font, material.css to include the theme and ripples.css to style the ripple effect -->
 <!--    Non presenti in bower quindi li lascio per ora -->
 
-<link rel="stylesheet" href="bower_components/angular-material/angular-material.min.css">
+<link rel="stylesheet"
+	href="bower_components/angular-material/angular-material.min.css">
 
 <link rel="stylesheet" href="material-bootstrap/css/roboto.min.css">
-<link rel="stylesheet" href="material-bootstrap/css/material-fullpalette.css">
+<link rel="stylesheet"
+	href="material-bootstrap/css/material-fullpalette.css">
 <link rel="stylesheet" href="material-bootstrap/css/ripples.min.css">
 
-<link rel="stylesheet" href="bower_components/ng-img-crop/compile/minified/ng-img-crop.css">
-<link rel="stylesheet" href="bower_components/flag-icon-css/css/flag-icon.min.css">
-<link rel="stylesheet" href="bower_components/angular-ui-switch/angular-ui-switch.css">
+<link rel="stylesheet"
+	href="bower_components/ng-img-crop/compile/minified/ng-img-crop.css">
+<link rel="stylesheet"
+	href="bower_components/flag-icon-css/css/flag-icon.min.css">
+<link rel="stylesheet"
+	href="bower_components/angular-ui-switch/angular-ui-switch.css">
 
 <link rel="stylesheet" href="css/flag.css">
 <link rel="stylesheet" href="css/main.css">
@@ -91,8 +100,8 @@
 }
 
 .btn-ace-toolbar {
-	background-color:#ebebeb;
-	margin:0px 0px 0px 0px;
+	background-color: #ebebeb;
+	margin: 0px 0px 0px 0px;
 }
 
 .md-chips {
@@ -201,62 +210,63 @@ a.disabled {
 </style>
 
 <style type="text/css">
-	div.m-app-loading {
-		position: fixed;
-	}
-	
-	div.m-app-loading div.animated-container {
-		background-color: #FFFFFF;
-		bottom: 0px;
-		left: 0px;
-		opacity: 1.0;
-		position: fixed;
-		right: 0px;
-		top: 0px;
-		z-index: 999999;
-	}
-	
-	div.m-app-loading div.animated-container.ng-leave {
-		opacity: 1.0;
-		transition: all linear 200ms;
-		-webkit-transition: all linear 200ms;
-	}
-	
-	div.m-app-loading div.animated-container.ng-leave-active {
-		opacity: 0;
-	}
-	
-	div.m-app-loading div.messaging {
-		color: #333333;
-		font-family: monospace;
-		left: 0px;
-		position: absolute;
-		right: 0px;
-		text-align: center;
-		top: 30%;
-	}
-	
-	div.m-app-loading h1 {
-		font-size: 26px;
-		line-height: 35px;
-		margin: 0px 0px 20px 0px;
-	}
-	
-	div.m-app-loading p {
-		font-size: 18px;
-		line-height: 14px;
-		margin: 0px 0px 0px 0px;
-	}
+div.m-app-loading {
+	position: fixed;
+}
+
+div.m-app-loading div.animated-container {
+	background-color: #FFFFFF;
+	bottom: 0px;
+	left: 0px;
+	opacity: 1.0;
+	position: fixed;
+	right: 0px;
+	top: 0px;
+	z-index: 999999;
+}
+
+div.m-app-loading div.animated-container.ng-leave {
+	opacity: 1.0;
+	transition: all linear 200ms;
+	-webkit-transition: all linear 200ms;
+}
+
+div.m-app-loading div.animated-container.ng-leave-active {
+	opacity: 0;
+}
+
+div.m-app-loading div.messaging {
+	color: #333333;
+	font-family: monospace;
+	left: 0px;
+	position: absolute;
+	right: 0px;
+	text-align: center;
+	top: 30%;
+}
+
+div.m-app-loading h1 {
+	font-size: 26px;
+	line-height: 35px;
+	margin: 0px 0px 20px 0px;
+}
+
+div.m-app-loading p {
+	font-size: 18px;
+	line-height: 14px;
+	margin: 0px 0px 0px 0px;
+}
 </style>
 
 </head>
 <body>
 
 	<div class="m-app-loading">
-	<!--         BEGIN: Actual animated container. -->
+		<!--         BEGIN: Actual animated container. -->
 		<div class="animated-container">
 			<div class="messaging">
-				<img class="img-responsive " src="images/spinner.gif" style="margin: 0 auto; max-width: 5%;">
+				<img class="img-responsive " src="images/spinner.gif"
+					style="margin: 0 auto; max-width: 5%;">
 				<p style="margin-top: 1.2em; font-size: 28px;">Loading Idra -
 					Open Data Federation Platform</p>
 			</div>
@@ -264,16 +274,17 @@ a.disabled {
 		</div>
 	</div>
 	<!--     END: App-Loading Screen. -->
-	
-	
+
+
 	<div class="wrapper" style="background-color: #FFFFFF;">
-<!-- HEADER -->			
+		<!-- HEADER -->
 		<div id="header" ng-controller="HeaderController" ng-cloak="">
 			<div class="us-spinner-wrapper" ng-show="spinneractive">
-				<div us-spinner="{radius:50, width:15, length: 25,color:'#44313f'}" spinner-key="spinner-1"></div>
+				<div us-spinner="{radius:50, width:15, length: 25,color:'#44313f'}"
+					spinner-key="spinner-1"></div>
 			</div>
-			
-<!-- NAVBAR -->			
+
+			<!-- NAVBAR -->
 			<div class="navbar navbar-default">
 				<div class="container-fluid" style="margin: 10px 0px 0px 0px;">
 					<div class="navbar-header">
@@ -301,70 +312,75 @@ a.disabled {
 								href="#/viewCatalogues"><strong>Federated
 										Catalogues</strong></a></li>
 
-							<li ng-if="token!=undefined" ng-class="{ active: isActive('/catalogues') || isActive('/node') || isActive('/configuration') || isActive('/logs') || isActive('/statistics') || isActive('/dataletsManagement')}" dropdown>
-								<a href class="dropdown-toggle" dropdown-toggle><strong>Administration</strong><b class="caret"></b></a>
+							<li ng-if="token!=undefined"
+								ng-class="{ active: isActive('/catalogues') || isActive('/node') || isActive('/configuration') || isActive('/logs') || isActive('/statistics') || isActive('/dataletsManagement')}"
+								dropdown><a href class="dropdown-toggle" dropdown-toggle><strong>Administration</strong><b
+									class="caret"></b></a>
 								<ul class="dropdown-menu">
-									<li ng-class="{ active: isActive('/catalogues') || isActive('/addNode') }">
+									<li
+										ng-class="{ active: isActive('/catalogues') || isActive('/addNode') }">
 										<a href="#/catalogues"><strong>Manage Catalogues</strong></a>
 									</li>
 									<!-- 								<li -->
 									<!-- 									ng-class="{ active: isActive('/federableNodes') }"><a -->
 									<!-- 									href="#federableNodes">Manage Federable Catalogues</a></li> -->
-									<li ng-class="{ active: isActive('/configuration')}">
-										<a href="#/configuration"><strong>Manage
-												Configurations</strong></a>
-									</li>
-									<li ng-show="dataletEnabled" ng-class="{ active: isActive('/dataletsManagement')}">
-										<a href="#/dataletsManagement"><strong>Manage
-												Datalets</strong></a>
-									</li>
-									<li ng-class="{ active: isActive('/logs')}">
-										<a href="#logs"><strong>View Logs</strong></a>
-									</li>
-								</ul>
-							</li>
-							
+									<li ng-class="{ active: isActive('/configuration')}"><a
+										href="#/configuration"><strong>Manage
+												Configurations</strong></a></li>
+									<li ng-show="dataletEnabled"
+										ng-class="{ active: isActive('/dataletsManagement')}"><a
+										href="#/dataletsManagement"><strong>Manage
+												Datalets</strong></a></li>
+									<li ng-class="{ active: isActive('/logs')}"><a
+										href="#logs"><strong>View Logs</strong></a></li>
+								</ul></li>
+
 							<li class="loginBtns">
 								<form ng-if="token==undefined" class="navbar-form"
 									ng-controller="LoginCtrl">
-									<button type="button" class="btn btn-default" ng-click="signIn()">
-										Login
-									</button>
+									<button type="button" class="btn btn-default"
+										ng-click="signIn()">Login</button>
 								</form>
-								
+
 								<form ng-if="token!=undefined" class="navbar-form"
 									ng-controller="LogoutCtrl">
 									<button type="button" class="btn btn-default"
 										ng-click="logout()">Logout</button>
 								</form>
-								
+
 							</li>
 						</ul>
 					</div>
-					<form id="loginform" method="GET" ng-if="token==undefined" class="navbar-form" action="<%=PropertyManager.getProperty(IDMProperty.IDM_PROTOCOL)+ "://" + PropertyManager.getProperty(IDMProperty.IDM_HOST) + "/oauth2/authorize"%>">
+					<form id="loginform" method="GET" ng-if="token==undefined"
+						class="navbar-form"
+						action="<%=PropertyManager.getProperty(IDMProperty.IDM_PROTOCOL) + "://"
+					+ PropertyManager.getProperty(IDMProperty.IDM_HOST) + "/oauth2/authorize"%>">
 						<input type="hidden" name="response_type" value="code" /> <input
-						type="hidden" name="client_id"
-						value="<%=PropertyManager.getProperty(IDMProperty.IDM_CLIENT_ID) %>" /> <input
-						type="hidden" id="loginstate" name="state" value="" /> <input
-						type="hidden" name="redirect_uri"
-						value="<%=PropertyManager.getProperty(IDMProperty.IDM_REDIRECT_URI) %>" />
+							type="hidden" name="client_id"
+							value="<%=PropertyManager.getProperty(IDMProperty.IDM_CLIENT_ID)%>" />
+						<input type="hidden" id="loginstate" name="state" value="" /> <input
+							type="hidden" name="redirect_uri"
+							value="<%=PropertyManager.getProperty(IDMProperty.IDM_REDIRECT_URI)%>" />
 					</form>
-					
+
 				</div>
 			</div>
-<!-- END NAVBAR -->	
-		
-		</div>
-<!-- END HEADER -->	
+			<!-- END NAVBAR -->
 
-		<div id="content" class="container-fluid" ng-cloak="" ng-controller="ContentCTRL">
-			
+		</div>
+		<!-- END HEADER -->
+
+		<div id="content" class="container-fluid" ng-cloak=""
+			ng-controller="ContentCTRL">
+
 			<div class="us-spinner-wrapper" ng-show="spinneractive">
-				<div us-spinner="{radius:50, width:15, length: 25,color:'#44313f'}" spinner-key="spinner-1"></div>
+				<div us-spinner="{radius:50, width:15, length: 25,color:'#44313f'}"
+					spinner-key="spinner-1"></div>
 			</div>
 			<div class="col-md-10 col-md-offset-1" ng-controller="AlertCtrl">
 				<div class="col-md-6 col-md-offset-3">
-					<alert type='{{alertType}}' style="text-align:center" ng-show="alert" close="closeAlert()" dismiss-on-timeout="3000">
+					<alert type='{{alertType}}' style="text-align:center"
+						ng-show="alert" close="closeAlert()" dismiss-on-timeout="3000">
 					{{textAlert}} </alert>
 				</div>
 			</div>
@@ -376,8 +392,8 @@ a.disabled {
 		<div class="push"></div>
 
 	</div>
-<!--  END WRAPPER -->
-<!-- FOOTER -->
+	<!--  END WRAPPER -->
+	<!-- FOOTER -->
 	<div class="footer" style="display: none">
 		<div class="col-md-12 col-lg-12 col-sm-12">
 			<div class="col-md-4 col-lg-4 col-sm-4"></div>
@@ -398,7 +414,7 @@ a.disabled {
 			</div>
 		</div>
 	</div>
-<!-- END FOOTER -->
+	<!-- END FOOTER -->
 
 
 	<script type="text/ng-template" id="ModalContent.html">
@@ -700,7 +716,7 @@ a.disabled {
 	<button type="button" class="btn btn-primary" ng-click="no()">No</button>
 </div>
 </script>
-<script type="text/ng-template" id="dumpSave_dialog.html">
+	<script type="text/ng-template" id="dumpSave_dialog.html">
 <div class="modal-header dialog-header-confirm">
 	<button type="button" class="close" ng-click="no()">&times;</button>
 	<h4 class="modal-title">
@@ -714,60 +730,93 @@ a.disabled {
 	<button type="button" class="btn btn-default" ng-click="save()">{{opt2}}</button>
 	<button type="button" class="btn btn-primary" ng-click="no()">Cancel</button>
 </div>
-
+</script>
 	<script type="text/javascript" src="bower_components/jquery/jquery.js"></script>
-	<script type="text/javascript" src="bower_components/angular/angular.js"></script>
-	<script type="text/javascript" src="bower_components/angular-aria/angular-aria.js"></script>
-	<script type="text/javascript" src="bower_components/angular-material/angular-material.js"></script>
-	<script type="text/javascript" src="bower_components/angular-animate/angular-animate.js"></script>
-	<script type="text/javascript" src="bower_components/angular-route/angular-route.js"></script>
-	<script type="text/javascript" src="bower_components/angular-cookies/angular-cookies.js"></script>
-	<script type="text/javascript" src="bower_components/angular-sanitize/angular-sanitize.js"></script>
-	<script type="text/javascript" src="bower_components/ace-builds/src-noconflict/ace.js"></script>
-	<script type="text/javascript" src="bower_components/angular-ui-ace/ui-ace.js"></script>
-	<script type="text/javascript" src="bower_components/angular-bootstrap/ui-bootstrap.js"></script>
-	<script type="text/javascript" src="bower_components/ace-builds/src-noconflict/ext-language_tools.js"></script>
-	<script type="text/javascript" src="bower_components/angular-bootstrap/ui-bootstrap-tpls.js"></script>
-	<script type="text/javascript" src="bower_components/angular-smart-table/dist/smart-table.js"></script>
-	<script type="text/javascript" src="bower_components/angular-xeditable/dist/js/xeditable.js"></script>
+	<script type="text/javascript"
+		src="bower_components/angular/angular.js"></script>
+	<script type="text/javascript"
+		src="bower_components/angular-aria/angular-aria.js"></script>
+	<script type="text/javascript"
+		src="bower_components/angular-material/angular-material.js"></script>
+	<script type="text/javascript"
+		src="bower_components/angular-animate/angular-animate.js"></script>
+	<script type="text/javascript"
+		src="bower_components/angular-route/angular-route.js"></script>
+	<script type="text/javascript"
+		src="bower_components/angular-cookies/angular-cookies.js"></script>
+	<script type="text/javascript"
+		src="bower_components/angular-sanitize/angular-sanitize.js"></script>
+	<script type="text/javascript"
+		src="bower_components/ace-builds/src-noconflict/ace.js"></script>
+	<script type="text/javascript"
+		src="bower_components/angular-ui-ace/ui-ace.js"></script>
+	<script type="text/javascript"
+		src="bower_components/angular-bootstrap/ui-bootstrap.js"></script>
+	<script type="text/javascript"
+		src="bower_components/ace-builds/src-noconflict/ext-language_tools.js"></script>
+	<script type="text/javascript"
+		src="bower_components/angular-bootstrap/ui-bootstrap-tpls.js"></script>
+	<script type="text/javascript"
+		src="bower_components/angular-smart-table/dist/smart-table.js"></script>
+	<script type="text/javascript"
+		src="bower_components/angular-xeditable/dist/js/xeditable.js"></script>
 	<script type="text/javascript" src="bower_components/spin.js/spin.js"></script>
-	<script type="text/javascript" src="bower_components/angular-spinner/angular-spinner.js"></script>
-	<script type="text/javascript" src="bower_components/angular-dialog-service/dist/dialogs.js"></script>
-	<script type="text/javascript" src="bower_components/angular-md5/angular-md5.js"></script>
-	<script type="text/javascript" src="bower_components/zeroclipboard/dist/ZeroClipboard.js"></script>
-	<script type="text/javascript" src="bower_components/angular-zeroclipboard/dist/angular-zeroclipboard.min.js"></script>
-	<script type="text/javascript" src="bower_components/ng-tags-input/ng-tags-input.js"></script>
-	<script type="text/javascript" src="bower_components/ng-img-crop/compile/minified/ng-img-crop.js"></script>
-	<script type="text/javascript" src="bower_components/angular-utils-pagination/dirPagination.js"></script>
-	<script type="text/javascript" src="bower_components/marked/lib/marked.js"></script>
-	<script type="text/javascript" src="bower_components/angular-marked/dist/angular-marked.js"></script>
-	<script type="text/javascript" src="bower_components/angular-file-saver/dist/angular-file-saver.bundle.js"></script>
-	<script type="text/javascript" src="bower_components/ng-country-select/dist/ng-country-select.js"></script>
-	<script type="text/javascript" src="bower_components/angular-ui-switch/angular-ui-switch.min.js"></script>
-	<script type="text/javascript" src="bower_components/underscore/underscore.js"></script>
-	<script type="text/javascript" src="bower_components/angular-underscore-module/angular-underscore-module.js"></script>
-		
+	<script type="text/javascript"
+		src="bower_components/angular-spinner/angular-spinner.js"></script>
+	<script type="text/javascript"
+		src="bower_components/angular-dialog-service/dist/dialogs.js"></script>
+	<script type="text/javascript"
+		src="bower_components/angular-md5/angular-md5.js"></script>
+	<script type="text/javascript"
+		src="bower_components/zeroclipboard/dist/ZeroClipboard.js"></script>
+	<script type="text/javascript"
+		src="bower_components/angular-zeroclipboard/dist/angular-zeroclipboard.min.js"></script>
+	<script type="text/javascript"
+		src="bower_components/ng-tags-input/ng-tags-input.js"></script>
+	<script type="text/javascript"
+		src="bower_components/ng-img-crop/compile/minified/ng-img-crop.js"></script>
+	<script type="text/javascript"
+		src="bower_components/angular-utils-pagination/dirPagination.js"></script>
+	<script type="text/javascript"
+		src="bower_components/marked/lib/marked.js"></script>
+	<script type="text/javascript"
+		src="bower_components/angular-marked/dist/angular-marked.js"></script>
+	<script type="text/javascript"
+		src="bower_components/angular-file-saver/dist/angular-file-saver.bundle.js"></script>
+	<script type="text/javascript"
+		src="bower_components/ng-country-select/dist/ng-country-select.js"></script>
+	<script type="text/javascript"
+		src="bower_components/angular-ui-switch/angular-ui-switch.min.js"></script>
+	<script type="text/javascript"
+		src="bower_components/underscore/underscore.js"></script>
+	<script type="text/javascript"
+		src="bower_components/angular-underscore-module/angular-underscore-module.js"></script>
+
 	<!-- 	<script src='bower_components/angular-tag-cloud/src/ng-tag-cloud.js'></script> -->
 	<script type="text/javascript" src="bower_components/d3/d3.min.js"></script>
-	<script type="text/javascript" src="bower_components/d3-cloud/build/d3.layout.cloud.js"></script>
-	<script type="text/javascript" src="bower_components/angular-d3-word-cloud/dist/angular-word-cloud.min.js"></script>
-	
+	<script type="text/javascript"
+		src="bower_components/d3-cloud/build/d3.layout.cloud.js"></script>
+	<script type="text/javascript"
+		src="bower_components/angular-d3-word-cloud/dist/angular-word-cloud.min.js"></script>
+
 	<script type="text/javascript" src="app.js"></script>
 	<script type="text/javascript" src="catalogues/catalogues.services.js"></script>
 	<script type="text/javascript" src="catalogues/catalogues.js"></script>
 	<script type="text/javascript" src="catalogues/remote_catalogues.js"></script>
 	<script type="text/javascript" src="catalogues/single_catalogue.js"></script>
 	<script type="text/javascript" src="catalogues/view_catalogues.js"></script>
-	
-	<script type="text/javascript" src="catalogues/defaultDatasets.services.js"></script>
+
+	<script type="text/javascript"
+		src="catalogues/defaultDatasets.services.js"></script>
 	<script type="text/javascript" src="catalogues/editDumpCtrl.js"></script>
-	
+
 	<script type="text/javascript" src="accounts/accounts.js"></script>
 	<script type="text/javascript" src="sparql/sparql.js"></script>
 	<script type="text/javascript" src="js/mode-sparql.js"></script>
 	<script type="text/javascript" src="configuration/configuration.js"></script>
 
-	<script type="text/javascript" src="metadata/defaultparameter.services.js"></script>
+	<script type="text/javascript"
+		src="metadata/defaultparameter.services.js"></script>
 	<script type="text/javascript" src="metadata/metadata.services.js"></script>
 	<script type="text/javascript" src="metadata/metadata.js"></script>
 	<script type="text/javascript" src="metadata/datasetResults.js"></script>
@@ -780,11 +829,14 @@ a.disabled {
 	<script type="text/javascript" src="logPage/logging.js"></script>
 	<script type="text/javascript" src="credits/credits.js"></script>
 
-	<script type="text/javascript" src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
-	<script type="text/javascript" src="material-bootstrap/js/material.min.js"></script>
-	<script type="text/javascript" src="material-bootstrap/js/ripples.min.js"></script>
-	
-<!-- INIT -->
+	<script type="text/javascript"
+		src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+	<script type="text/javascript"
+		src="material-bootstrap/js/material.min.js"></script>
+	<script type="text/javascript"
+		src="material-bootstrap/js/ripples.min.js"></script>
+
+	<!-- INIT -->
 	<script>
 	
 		$(document).ready(function() {
@@ -815,7 +867,7 @@ a.disabled {
 			console.log((window.location.href).split('http://').pop().split('.').shift())
 		});
 	</script>
-<!-- END INIT -->
+	<!-- END INIT -->
 
 </body>
 </html>
