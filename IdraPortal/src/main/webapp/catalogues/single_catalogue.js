@@ -131,7 +131,10 @@ angular.module("IdraPlatform").controller('CatalogueCtrl',['$scope','$http','con
 				size: 'lg',
 				resolve: {
 					image: function(){
-						return $scope.imageRead;
+						if($scope.imageRead!='')
+							return $scope.imageRead;
+						else if($scope.node.image.imageData!='')
+							return $scope.node.image.imageData;
 					}
 				}
 			});
