@@ -56,8 +56,6 @@ import it.eng.idra.utils.GsonUtilException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.time.Duration;
-import java.time.LocalTime;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
@@ -554,7 +552,8 @@ public class ClientAPI {
 		try {
 
 			logger.info("Download file API: "+downloadFile);
-			String compiledUri = java.net.URLDecoder.decode(url, "UTF-8");
+			//String compiledUri = java.net.URLDecoder.decode(url, "UTF-8");
+			String compiledUri = url;
 			logger.info("File uri: " + compiledUri);
 			logger.info("File format: " + format);
 			client = ClientBuilder.newClient();
