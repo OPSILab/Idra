@@ -265,8 +265,10 @@ div.m-app-loading p {
 		<!--         BEGIN: Actual animated container. -->
 		<div class="animated-container">
 			<div class="messaging">
-				<img class="img-responsive " src="images/spinner.gif"
-					style="margin: 0 auto; max-width: 5%;">
+				<img class="img-responsive " src="images/idra_logo.png"
+					style="margin: 0 auto; max-width: 20%;">
+<!-- 				<img class="img-responsive " src="images/spinner.gif" -->
+<!-- 					style="margin: 0 auto; max-width: 3%;"> -->
 				<p style="margin-top: 1.2em; font-size: 28px;">Loading Idra -
 					Open Data Federation Platform</p>
 			</div>
@@ -351,7 +353,7 @@ div.m-app-loading p {
 							</li>
 						</ul>
 					</div>
-					<form id="loginform" method="GET" ng-if="token==undefined"
+					<form style="display:none" id="loginform" method="GET" ng-if="token==undefined"
 						class="navbar-form"
 						action="<%=PropertyManager.getProperty(IDMProperty.IDM_PROTOCOL) + "://"
 					+ PropertyManager.getProperty(IDMProperty.IDM_HOST) + "/oauth2/authorize"%>">
@@ -407,7 +409,7 @@ div.m-app-loading p {
 		<div class="col-md-12 col-lg-12 col-sm-12 text-center copyright">
 			<div class="col-md-4 col-lg-4 col-sm-4"></div>
 			<div class="col-md-4 col-lg-4 col-sm-4">
-				<p>Copyright &copy;Engineering 2018.</p>
+				<p>Copyright &copy;Engineering 2018. - Idra version {{idraVersion}}</p>
 			</div>
 			<div class="col-md-4 col-lg-4 col-sm-4">
 				<a class="pull-right" href="#/credits">Credits</a>
