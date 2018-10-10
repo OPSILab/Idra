@@ -36,7 +36,8 @@
 						onchange="angular.element(this).scope().imageUpload(this)"
 						accept=".jpg, .png, .jpeg, .gif, .bmp, .tif, .tiff|images/*">
 					</span>
-					<button ng-disabled="imageRead==''" type="button"
+					<button ng-disabled="imageRead=='' && node.image.imageData==''
+					" type="button"
 						class="btn btn-primary btn-xs" style="margin: 0px"
 						ng-click="openCropModal()">Crop</button>
 				</div>
@@ -253,7 +254,7 @@
 <script type="text/ng-template" id="DumpEditor.html">
 <div class="modal-header">
 	<button type="button" class="close" aria-hidden="true" ng-click="cancel()">x</button>
-    <h3 class="modal-title">Dump Editor</h3>
+    <h3 class="modal-title">File Editor</h3>
 </div>
 <div class="modal-body row">
 	<div class="toolbar">
