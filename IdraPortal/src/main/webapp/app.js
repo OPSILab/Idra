@@ -360,6 +360,19 @@
 			$scope.status.isopen = !$scope.status.isopen;
 		};
 
+		$rootScope.idraVersion="";
+		$http({
+			method: 'GET',
+			url: config.ADMIN_SERVICES_BASE_URL+config.VERSION,
+			headers: {
+				'Content-Type': 'application/json'	
+			}
+		}).then(function(value){
+			$rootScope.idraVersion=value.data.idra_version;
+			//return true;
+		}, function(value){
+		});
+		
 	}]);
 
 	app.controller('ContentCTRL',['$scope','$rootScope','usSpinnerService',function($scope,$rootScope,usSpinnerService){
@@ -428,8 +441,10 @@
 
 	app.controller('LoginCtrl',['$scope','$rootScope','$http','md5','config','$cookies','$window',function($scope,$rootScope,$http,md5,config,$cookies,$window){
 
+		$scope.loginType=config["idm.authentication.method"];
+		
 		$scope.signIn = function(){
-			if (config["idm.authentication.method"] === "FIWARE")
+			if ($scope.loginType === "FIWARE")
 				$('#loginform').submit();
 			else
 				$window.location.assign('#/login');
