@@ -40,8 +40,8 @@
 							<tr>
 								<th st-sort="getters.isActive" style="width: 1%">Active</th>
 								<th st-sort="getters.name" st-sort-default="true"
-									style="width: 14%">Name</th>
-								<th st-sort="getters.host" style="width: 10%">Host</th>
+									style="width: 24%">Name</th>
+<!-- 								<th st-sort="getters.host" style="width: 10%">Host</th> -->
 								<th st-sort="getters.type" style="width: 8%">Type</th>
 								<th st-sort="getters.federationLevel" style="width: 5%">Level</th>
 								<th st-sort="getters.status" style="width: 8%">Status</th>
@@ -69,13 +69,13 @@
 								<switch id="active" name="active" ng-model="node.isActive" ng-change="changed(node)" disabled="node.synchLock!='NONE'" class="small"></switch>
 								</td>
 								<td>
-									{{node.name | limitTo:28}}{{node.name.length > 28 ? '...' : ''}}
-									<md-tooltip ng-show="node.name.length > 28">{{node.name}}</md-tooltip>
+									{{node.name | limitTo:40}}{{node.name.length > 40 ? '...' : ''}}
+									<md-tooltip ng-show="node.name.length > 40">{{node.name}}</md-tooltip>
 								</td>
-								<td>
-									{{node.host | limitTo:28}}{{node.host.length > 28 ? '...' : ''}}
-									<md-tooltip ng-show="node.host.length > 28">{{node.host}}</md-tooltip>
-								</td>
+<!-- 								<td> -->
+<!-- 									{{node.host | limitTo:28}}{{node.host.length > 28 ? '...' : ''}} -->
+<!-- 									<md-tooltip ng-show="node.host.length > 28">{{node.host}}</md-tooltip> -->
+<!-- 								</td> -->
 								<td>{{node.nodeType}}</td>
 								<td>{{node.federationLevel.split("_")[1]}}</td>
 								<td><span
@@ -131,7 +131,7 @@
 						<tfoot>
 							<tr>
 <!-- 								<td></td> -->
-								<td colspan="5" class="text-center">
+								<td colspan="4" class="text-center">
 									<div st-pagination="" st-items-by-page="itemsByPage"
 										st-displayed-pages="7"></div>
 										</td>

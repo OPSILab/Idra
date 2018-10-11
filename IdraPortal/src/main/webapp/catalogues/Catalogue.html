@@ -45,24 +45,47 @@
 		</div>
 		<div class="col-md-8">
 			<form class="form-signin" name="userForm">
-				<div class="col-md-6 form-group"
+				<div class="col-md-12 form-group"
 					ng-class="{ 'has-error': node.nameInvalid || checkNodeName()}">
 					<label for="name">Name:</label> <input type="text" name="name"
 						class="form-control" ng-model="node.name" ng-required />
 					<p class="help-block" ng-if="node.nameInvalid">{{messageName}}</p>
 					<p class="help-block" ng-if="checkNodeName()">Catalogue name exists</p>
 				</div>
-				<div class="col-md-6 form-group"
+				<div class="col-md-12 form-group"
 					ng-class="{ 'has-error': node.pubNameInvalid }">
 					<label for="publisherName">Publisher Name:</label> <input
 						type="text" name="publisherName" class="form-control"
 						ng-model="node.publisherName" ng-required />
-					<p class="help-block" ng-if="node.pubNameInvalid">{{messageName}}</p>
-					<!-- 					<p class="help-block" ng-if="checkNodeName()">Publisher Name exists</p> -->
+					<p class="help-block" ng-if="node.pubNameInvalid">{{messagePublisher}}</p>
 				</div>
-				<div class="col-md-6 form-group"
+				<div class="col-md-6 form-group">
+						<label for="name">Country:</label>
+						<country-select class="form-control" ng-model="node.country"></country-select>
+				</div>
+				<div class="col-md-6 form-group">
+					<label for="host">Category:
+					</label> <select
+						class="form-control" ng-model="node.category"
+						ng-options="option.value as option.text for option in ODMSCategories">
+					</select>
+				</div>
+				<div class="col-md-12 form-group">
+					<label for="description">Description:</label>
+					<textarea class="form-control" rows="2" ng-model="node.description"></textarea>
+				</div>
+				
+				<div class="col-md-12 form-group"
+					ng-class="{ 'has-error': node.homepageInvalid }">
+					<label for="host">Homepage:</label> <input type="url" name="host"
+						class="form-control" ng-model="node.homepage" ng-required />
+					<p class="help-block" ng-if="node.homepageInvalid">{{messageHomepage}}</p>
+<!-- 					<p class="help-block" ng-if="checkNodeHomepage() && mode=='create'">Catalogue -->
+<!-- 						host exists</p> -->
+				</div>
+				<div class="col-md-12 form-group"
 					ng-class="{ 'has-error': node.hostInvalid || checkNodeHost() }">
-					<label for="host">Host:</label> <input type="url" name="host"
+					<label for="host">API Endpoint:</label> <input type="url" name="host"
 						ng-disabled=" mode=='update'" class="form-control"
 						ng-model="node.host" ng-required />
 					<p class="help-block" ng-if="node.hostInvalid">{{messageUrl}}</p>
@@ -84,54 +107,23 @@
 					</select>
 				</div>
 				<div class="col-md-3 form-group">
-					<label for="refreshPeriod">Refresh Period:</label> <select
+					<label for="refreshPeriod">Refresh:</label> <select
 						class="form-control" ng-model="node.refreshPeriod"
 						class="form-control"
 						ng-options="option.value as option.text for option in updatePeriods">
 					</select>
 				</div>
-				<div class="col-md-3 form-group">
-						<label for="name">Country:</label>
-						<country-select class="form-control" ng-model="node.country"></country-select>
-				</div>
-				<div class="col-md-3 form-group">
-					<label for="host">Category:
-					</label> <select
-						class="form-control" ng-model="node.category"
-						ng-options="option.value as option.text for option in ODMSCategories">
-					</select>
-				</div>
+				
 				<div class="col-md-12 form-group "
 				ng-show="node.nodeType == 'WEB' || node.nodeType == 'DCATDUMP' || node.nodeType == 'ORION' || node.nodeType == 'SPARQL'">
-<!-- 				<div class="col-md-2" ng-if="node.nodeType == 'SPARQL' || node.nodeType == 'ORION'"></div> -->
-				<div class="col-md-4"></div>
-<!-- 				<div class="col-md-4"> -->
-<!-- 					<span ng-if="node.nodeType == 'WEB'" -->
-<!-- 						class="btn btn-md btn-primary btn-file btn-material-deep-orange"> -->
-<!-- 						Upload Sitemap <input type="file" name="file" -->
-<!-- 						onchange="angular.element(this).scope().fileUploadWEB(this)" -->
-<!-- 						accept=".json"> -->
-<!-- 					</span> -->
-<!-- 					<span ng-if="node.nodeType == 'DCATDUMP'" -->
-<!-- 						class="btn btn-md btn-primary btn-file btn-material-deep-orange"> -->
-<!-- 						Upload Dump <input type="file" name="file" -->
-<!-- 						onchange="angular.element(this).scope().fileUploadDUMP(this)" -->
-<!-- 						accept=".rdf, .xml"> -->
-<!-- 					</span> -->
-<!-- 					<span ng-if="node.nodeType == 'SPARQL' || node.nodeType == 'ORION'" -->
-<!-- 						class="btn btn-md btn-primary btn-file btn-material-deep-orange"> -->
-<!-- 						Upload Datasets <input type="file" name="file" -->
-<!-- 						onchange="angular.element(this).scope().fileUploadORION_SPARQL(this)" -->
-<!-- 						accept=".json"> -->
-<!-- 					</span> -->
-<!-- 					</div> -->
-					<div class="col-md-4">	
+<!-- 				<div class="col-md-4"></div> -->
+<!-- 					<div class="col-md-4">	 -->
 					<button type="button"
 						class="btn btn-md btn-primary btn-file btn-material-deep-orange" style="margin: 0px"
 						ng-click="openDumpModal()">
 						<span ng-if="mode=='create'">Add</span> <span ng-if="mode=='update'">Update</span> File
 						</button>
-						</div>
+<!-- 						</div> -->
 				</div>
 				<div class="col-md-6 form-group"
 					ng-class="{ 'has-error': dumpInvalid }"
@@ -195,10 +187,7 @@
 					</span>
  				</div> 
 				
-				<div class="col-md-12 form-group">
-					<label for="description">Description:</label>
-					<textarea class="form-control" rows="4" ng-model="node.description"></textarea>
-				</div>
+				
 				<!-- 			<div class="col-md-6 form-group"> -->
 				<!-- 				<label for="description">Location Description:</label> -->
 				<!-- 				<input type="text" name="locationArea" -->
