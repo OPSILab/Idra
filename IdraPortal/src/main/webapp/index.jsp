@@ -289,9 +289,9 @@ div.m-app-loading p {
 			<div class="navbar navbar-default">
 				<div class="container-fluid" >
 					<div class="navbar-header">
-						<a class="navbar-left" href="#/metadata"
-							style="margin-left: 0px">
-							<img class="img-responsive" style="height:60px" src="./images/idra_white.png">
+						<a class="navbar-brand" href="#/metadata"
+							style="margin-left: 5px;">
+<!-- 							<img class="img-responsive" style="height:60px" src="./images/idra_white.png"> -->
 <!-- 							<p class="navbar-text" -->
 <!-- 								style="margin-top: -4px; margin-bottom: 0px;"> - Open -->
 <!-- 								Data Federation Platform</p> -->
