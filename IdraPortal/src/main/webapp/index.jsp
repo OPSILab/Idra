@@ -25,7 +25,6 @@
 <html lang="en">
 <head>
 
-
 <title>Idra - Open Data Federation Platform</title>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -267,10 +266,10 @@ div.m-app-loading p {
 			<div class="messaging">
 				<img class="img-responsive " src="images/idra_logo.png"
 					style="margin: 0 auto; max-width: 20%;">
-<!-- 				<img class="img-responsive " src="images/spinner.gif" -->
-<!-- 					style="margin: 0 auto; max-width: 3%;"> -->
-				<p style="margin-top: 1.2em; font-size: 28px;">Loading Idra -
-					Open Data Federation Platform</p>
+				<img class="img-responsive " src="images/spinner.gif"
+					style="margin: 0 auto; max-width: 2%;">
+<!-- 				<p style="margin-top: 1.2em; font-size: 28px;">Loading Idra - -->
+<!-- 					Open Data Federation Platform</p> -->
 			</div>
 			<!--         END: Actual animated container. -->
 		</div>
@@ -288,13 +287,14 @@ div.m-app-loading p {
 
 			<!-- NAVBAR -->
 			<div class="navbar navbar-default">
-				<div class="container-fluid" style="margin: 10px 0px 0px 0px;">
+				<div class="container-fluid" >
 					<div class="navbar-header">
-						<a class="navbar-brand text-center" href="#/metadata"
+						<a class="navbar-left" href="#/metadata"
 							style="margin-left: 0px">
-							<p class="navbar-text"
-								style="margin-top: -4px; margin-bottom: 0px;">Idra - Open
-								Data Federation Platform</p>
+							<img class="img-responsive" style="height:60px" src="./images/idra_white.png">
+<!-- 							<p class="navbar-text" -->
+<!-- 								style="margin-top: -4px; margin-bottom: 0px;"> - Open -->
+<!-- 								Data Federation Platform</p> -->
 						</a>
 						<button type="button" class="navbar-toggle" data-toggle="collapse"
 							data-target=".navbar-responsive-collapse">

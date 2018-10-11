@@ -214,7 +214,8 @@ angular.module("IdraPlatform").controller('CatalogueCtrl',['$scope','$http','con
 				publisherName: '',
 				nameInvalid:false,
 				pubNameInvalid:false,
-				nodeType:$scope.types[0],
+//				nodeType:$scope.types[0],
+				nodeType:"",
 				federationLevel:$scope.grades[0],
 				host:'',
 				hostInvalid:false,
@@ -253,7 +254,7 @@ angular.module("IdraPlatform").controller('CatalogueCtrl',['$scope','$http','con
 		$http(req).then(function(value){
 
 			$scope.refreshPeriod = value.data.refresh_period;
-			$scope.node.refreshPeriod = angular.copy($scope.refreshPeriod);
+			//$scope.node.refreshPeriod = angular.copy($scope.refreshPeriod);
 			
 			$rootScope.stopSpin();		
 			
@@ -285,13 +286,14 @@ angular.module("IdraPlatform").controller('CatalogueCtrl',['$scope','$http','con
 			$scope.node={
 					id:null,
 					name:'',
-					nodeType:$scope.types[0],
+					//nodeType:$scope.types[0],
+					nodeType:"",
 					nameInvalid:false,
 					pubNameInvalid:false,
 					federationLevel:$scope.grades[0],
 					host:'',
 					hostInvalid:false,
-					refreshPeriod:$scope.refreshPeriod,
+					refreshPeriod:"",
 					description:"",
 					location:"",
 					dcatProfile:'',
@@ -488,7 +490,10 @@ angular.module("IdraPlatform").controller('CatalogueCtrl',['$scope','$http','con
 				node.federationLevel='LEVEL_2';
 				break;
 			case 'DCATDUMP':
-				node.federationLevel='LEVEL_2';
+				if(node.dumpURL!='')
+					node.federationLevel='LEVEL_2';
+				else
+					node.federationLevel='LEVEL_4';
 				break;
 			case 'ORION':
 				node.federationLevel='LEVEL_4';
@@ -500,6 +505,10 @@ angular.module("IdraPlatform").controller('CatalogueCtrl',['$scope','$http','con
 				break;
 			}
 
+			if((node.federationLevel=='LEVEL_3' || node.federationLevel=='LEVEL_2') && node.refreshPeriod==''){
+				node.refreshPeriod=$scope.refreshPeriod;
+			}
+			
 			if(node.nodeType == 'WEB'){
 				if(angular.equals({}, node.sitemap)){
 					dialogs.error("File mandatory","Please upload the sitemap file");
