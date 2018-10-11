@@ -217,7 +217,7 @@
 						class="btn btn-primary btn-raised"
 						ng-click="updateNode($data,node)"
 						ng-disabled="isEqual(node,nodeToUpdate)">Update</button>
-					<button ng-if="mode == 'create'" type="button"
+					<button ng-if="mode == 'create'" ng-disabled='node.nodeType==""' type="button"
 						class="btn btn-primary btn-raised"
 						ng-click="createNode($data,node)">Create</button>
 				</div>
