@@ -74,6 +74,11 @@ public class ODMSCatalogue {
 	@Column(name = "host", unique = true, nullable = false)
 	@Expose
 	private String host;
+	
+	@JsonRequired
+	@Column(name = "homepage", unique = false, nullable = false)
+	@Expose
+	private String homepage;
 
 	@Column(name = "api_key", unique = false, nullable = true)
 	private String APIKey;
@@ -197,13 +202,14 @@ public class ODMSCatalogue {
 	}
 
 	// Throws exception if the type of new object is not allowed
-	public ODMSCatalogue(String name, String host, String APIKey, ODMSCatalogueType nodeType,
+	public ODMSCatalogue(String name, String host,String homepage, String APIKey, ODMSCatalogueType nodeType,
 			ODMSCatalogueFederationLevel federationLevel, int datasetCount, ODMSCatalogueState nodeState,
 			ZonedDateTime registerDate, ZonedDateTime lastUpdateDate, int refreshPeriod, String description,
 			String image, int rdfCount, String location, String locationDescription) {
 
 		this.setName(name);
 		this.setHost(host);
+		this.setHomepage(homepage);
 		this.setAPIKey(APIKey);
 		this.setNodeType(nodeType);
 		this.setFederationLevel(federationLevel);
@@ -222,7 +228,7 @@ public class ODMSCatalogue {
 	}
 
 	// Throws exception if the type of new object is not allowed
-	public ODMSCatalogue(int id, String name, String host, String APIKey, ODMSCatalogueType nodeType,
+	public ODMSCatalogue(int id, String name, String host,String homepage, String APIKey, ODMSCatalogueType nodeType,
 			ODMSCatalogueFederationLevel integrationLevel, int datasetCount, ODMSCatalogueState nodeState,
 			ZonedDateTime registerDate, ZonedDateTime lastUpdateDate, int refresh_period, String description,
 			String image, int rdfCount, String location, String locationDescription) {
@@ -230,6 +236,7 @@ public class ODMSCatalogue {
 		this.setId(id);
 		this.setName(name);
 		this.setHost(host);
+		this.setHomepage(homepage);
 		this.setAPIKey(APIKey);
 		this.setNodeType(nodeType);
 		this.setFederationLevel(integrationLevel);
@@ -247,7 +254,7 @@ public class ODMSCatalogue {
 		this.setLocationDescription(locationDescription);
 	}
 
-	public ODMSCatalogue(int id, String name, String host, String APIKey, ODMSCatalogueType nodeType,
+	public ODMSCatalogue(int id, String name, String host,String homepage, String APIKey, ODMSCatalogueType nodeType,
 			ODMSCatalogueFederationLevel integrationLevel, int datasetCount, ODMSCatalogueState nodeState,
 			ZonedDateTime registerDate, ZonedDateTime lastUpdateDate, int refresh_period, String description,
 			String image, int rdfCount, int startDataset, String location, String locationDescription) {
@@ -255,6 +262,7 @@ public class ODMSCatalogue {
 		this.setId(id);
 		this.setName(name);
 		this.setHost(host);
+		this.setHomepage(homepage);
 		this.setAPIKey(APIKey);
 		this.setNodeType(nodeType);
 		this.setFederationLevel(integrationLevel);
@@ -298,6 +306,14 @@ public class ODMSCatalogue {
 
 	public void setHost(String host) {
 		this.host = host;
+	}
+	
+	public String getHomepage() {
+		return homepage;
+	}
+
+	public void setHomepage(String homepage) {
+		this.homepage = homepage;
 	}
 
 	public String getAPIKey() {

@@ -185,7 +185,7 @@ angular.module("IdraPlatform").controller('CataloguesController',["$scope","$htt
 	}
 	
 	
-	$scope.itemsByPage=10;
+	$scope.itemsByPage=8;
 
 	$scope.selectedPredicate = $scope.predicates[0];
 

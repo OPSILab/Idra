@@ -219,6 +219,8 @@ angular.module("IdraPlatform").controller('CatalogueCtrl',['$scope','$http','con
 				federationLevel:$scope.grades[0],
 				host:'',
 				hostInvalid:false,
+				homepage:'',
+				homepageInvalid:false,
 				refreshPeriod:"",
 				description:"",
 				APIKey: 'prova-api-key',
@@ -292,7 +294,9 @@ angular.module("IdraPlatform").controller('CatalogueCtrl',['$scope','$http','con
 					pubNameInvalid:false,
 					federationLevel:$scope.grades[0],
 					host:'',
+					homepage:'',
 					hostInvalid:false,
+					homepageInvalid:false,
 					refreshPeriod:"",
 					description:"",
 					location:"",
@@ -318,6 +322,7 @@ angular.module("IdraPlatform").controller('CatalogueCtrl',['$scope','$http','con
 			$scope.node.nameInvalid=false;
 			$scope.node.pubNameInvalid=false;
 			$scope.node.hostInvalid=false;
+			$scope.node.homepageInvalid=false;
 			$scope.node.refreshPeriod = $rootScope.nodeToUpdate.refreshPeriod.toString();
 			if($rootScope.nodeToUpdate.nodeType=='DCATDUMP')
 				$scope.node.dcatProfile = $rootScope.nodeToUpdate.dcatProfile.toString();
@@ -330,17 +335,23 @@ angular.module("IdraPlatform").controller('CatalogueCtrl',['$scope','$http','con
 		
 		if(node.name==''){
 			$scope.node.nameInvalid=true;
-			$scope.messageName="Node name required";
+			$scope.messageName="Catalogue name required";
 		} else if (node.publisherName=='') {
 			$scope.node.pubNameInvalid=true;
-			$scope.messageName="Publisher name required";
-		}else {
+			$scope.messagePublisher="Publisher name required";
+		}else if(!validateUrl(node.homepage)){
+			$scope.node.homepageInvalid=true;
+			$scope.messageHomepage="Please insert a valid url";
+		}else{
+			$scope.node.homepageInvalid=false;
 			$scope.node.nameInvalid=false;
 			$scope.node.pubNameInvalid=false;
 			$scope.messageName="";
+			$scope.messagePublisher="";
+			$scope.messageHomepage="";
 		}
 		
-		if($scope.node.nameInvalid || $scope.node.pubNameInvalid) return;
+		if($scope.node.nameInvalid || $scope.node.pubNameInvalid || $scope.node.homepageInvalid) return;
 		
 		if($scope.imageRead!=''){
 			node.image.imageData = $scope.imageRead;
@@ -379,6 +390,7 @@ angular.module("IdraPlatform").controller('CatalogueCtrl',['$scope','$http','con
 		else if(node1.refreshPeriod != node2.refreshPeriod) return false;
 		else if($scope.imageRead!='') return false;
 		else if(node1.location != node2.location) return false;
+		else if(node1.homepage != node2.homepage) return false;
 		else if(node1.publisherName != node2.publisherName) return false;
 		else if(node1.locationDescription != node2.locationDescription) return false;
 		else if(node1.category != node2.category) return false;
@@ -454,27 +466,42 @@ angular.module("IdraPlatform").controller('CatalogueCtrl',['$scope','$http','con
 		
 		if(node.name==''){
 			$scope.node.nameInvalid=true;
-			$scope.messageName="Node name required";
+			$scope.messageName="Catalogue name required";
 		} else if (node.publisherName=='') {
 			$scope.node.pubNameInvalid=true;
-			$scope.messageName="Publisher name required";
+			$scope.messagePublisher="Publisher name required";
 		}else {
 			$scope.node.nameInvalid=false;
 			$scope.node.pubNameInvalid=false;
 			$scope.messageName="";
+			$scope.messagePublisher="";
 		}
 
 		if(node.host == ''){
 			$scope.node.hostInvalid=true;
-			$scope.messageUrl="Node url required";
+			$scope.messageUrl="Catalogue url required";
 		}else{
 			$scope.node.hostInvalid=false;
 			$scope.messageUrl="";
 		}
+		
+		if(node.homepage == ''){
+			$scope.node.homepageInvalid=true;
+			$scope.messageHomepage="Catalogue homepage required";
+		}else{
+			$scope.node.homepageInvalid=false;
+			$scope.messageHomepage="";
+		}
 
 		if($scope.node.nameInvalid || $scope.node.pubNameInvalid || $scope.node.hostInvalid) return;
 
-		if(validateUrlForm(node)){
+		if(!validateUrl(node.homepage)){
+			$scope.node.homepageInvalid=true;
+			$scope.showMessageUrl = true;
+			$scope.messageHomepage ="Please insert a valid url";
+		}
+		
+		if(validateUrl(node.host)){
 
 			switch(node.nodeType){
 			case 'CKAN':
@@ -603,21 +630,8 @@ angular.module("IdraPlatform").controller('CatalogueCtrl',['$scope','$http','con
 	$scope.back = function(){
 			$window.location.assign('#/catalogues');
 	}
-
-	function validateUrlForm(node){
-
-		//var reg = _^(?:(?:https?|ftp)://)(?:\S+(?::\S*)?@)?(?:(?!10(?:\.\d{1,3}){3})(?!127(?:\.\d{1,3}){3})(?!169\.254(?:\.\d{1,3}){2})(?!192\.168(?:\.\d{1,3}){2})(?!172\.(?:1[6-9]|2\d|3[0-1])(?:\.\d{1,3}){2})(?:[1-9]\d?|1\d\d|2[01]\d|22[0-3])(?:\.(?:1?\d{1,2}|2[0-4]\d|25[0-5])){2}(?:\.(?:[1-9]\d?|1\d\d|2[0-4]\d|25[0-4]))|(?:(?:[a-z\x{00a1}-\x{ffff}0-9]+-?)*[a-z\x{00a1}-\x{ffff}0-9]+)(?:\.(?:[a-z\x{00a1}-\x{ffff}0-9]+-?)*[a-z\x{00a1}-\x{ffff}0-9]+)*(?:\.(?:[a-z\x{00a1}-\x{ffff}]{2,})))(?::\d{2,5})?(?:/[^\s]*)?$_iuS;
-		var reg = /^(http|https):\/\/[^ "]+$/;
-		if(reg.test(node.host)){
-			return true;
-		}else{
-			return false;
-		}
-	}
 	
 	function validateUrl(url){
-
-		//var reg = _^(?:(?:https?|ftp)://)(?:\S+(?::\S*)?@)?(?:(?!10(?:\.\d{1,3}){3})(?!127(?:\.\d{1,3}){3})(?!169\.254(?:\.\d{1,3}){2})(?!192\.168(?:\.\d{1,3}){2})(?!172\.(?:1[6-9]|2\d|3[0-1])(?:\.\d{1,3}){2})(?:[1-9]\d?|1\d\d|2[01]\d|22[0-3])(?:\.(?:1?\d{1,2}|2[0-4]\d|25[0-5])){2}(?:\.(?:[1-9]\d?|1\d\d|2[0-4]\d|25[0-4]))|(?:(?:[a-z\x{00a1}-\x{ffff}0-9]+-?)*[a-z\x{00a1}-\x{ffff}0-9]+)(?:\.(?:[a-z\x{00a1}-\x{ffff}0-9]+-?)*[a-z\x{00a1}-\x{ffff}0-9]+)*(?:\.(?:[a-z\x{00a1}-\x{ffff}]{2,})))(?::\d{2,5})?(?:/[^\s]*)?$_iuS;
 		var reg = /^(http|https):\/\/[^ "]+$/;
 		if(reg.test(url)){
 			return true;

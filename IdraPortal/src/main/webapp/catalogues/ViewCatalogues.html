@@ -38,7 +38,7 @@
 							<tr>
 								<th st-sort="name">Name</th>
 								<th st-sort="country">Country</th>
-								<th st-sort="host">Host</th>
+								<th st-sort="homepage">Homepage</th>
 								<th st-sort="category">Category</th>
 								<th st-sort="datasetCount">Datasets</th>
 								<th st-sort="lastUpdate">Last Update</th>
@@ -54,8 +54,8 @@
 									<span ng-show="node.country!=''">{{node.country}}</span>
 									<span ng-show="!node.country">-</span>
 								</td>
-								<td><a	href="{{node.host}}" target="_blank">
-									{{node.host}}
+								<td><a	href="{{node.homepage}}" target="_blank">
+									{{node.homepage}}
 									</a>
 									<md-tooltip >Homepage</md-tooltip>
 								</td>
@@ -89,7 +89,7 @@
             <span class="md-headline"><span ng-show="node.country!='' && node.country!=undefined" 
             style="border-style: solid;border-width: 1px;border-color: rgba(0,0,0,0.1)" class="flag-icon " 
             ng-class="'flag-icon-'+node.country.toLowerCase()"></span>  
-            <a href="{{node.host}}" target="_blank">{{node.name}}</a>
+            <a href="{{node.homepage}}" target="_blank">{{node.name}}</a>
             <a href="javascript:void(0)" class="btn-flat mdi-material-deep-orange"
 			ng-click="showDatasets(node)"><i class="mdi-action-search"></i>
 			<md-tooltip>Show Datasets</md-tooltip></a>  

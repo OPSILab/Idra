@@ -18,14 +18,14 @@
 
 /*No FESTIVAL */
 #header div.navbar.navbar-default .navbar-header .navbar-brand {
-/* 	background-image: url("../images/logo-small.png"); */
-/* 	background-repeat: no-repeat; */
-/* 	background-size: auto 50px; */
+	background-image: url("../images/idra_white.png");
+	background-repeat: no-repeat;
+	background-size: auto 60px;
   	color: #fefefe;
 	display: block;
 	font-size: 24px;
 	font-weight: 900;
-	height: 50px;
+	height: 60px;
 	width: 445px;
 	text-transform: capitalize;
 }
