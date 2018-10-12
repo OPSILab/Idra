@@ -756,7 +756,7 @@ public class AdministrationAPI {
 					// session.setAttribute("loggedin", token);
 					// session.setAttribute("refresh_token", refresh_token);
 					// session.setAttribute("username", info.getDisplayName());
-					return Response.seeOther(URI.create("/IdraPortal"))
+					return Response.seeOther(URI.create(PropertyManager.getProperty(ODFProperty.IDRA_CATALOGUE_BASEPATH)))
 							.cookie(new NewCookie("loggedin", (String) token, "/", "", "comment", 100, false))
 							.cookie(new NewCookie("refresh_token", refresh_token, "/", "", "comment", 100, false))
 							.cookie(new NewCookie("username", info.getDisplayName(), "/", "", "comment", 100, false))
@@ -814,7 +814,7 @@ public class AdministrationAPI {
 					session.setAttribute("username", info.getDisplayName());
 				}
 
-				return Response.temporaryRedirect(URI.create(httpRequest.getContextPath() + "/IdraPortal")).build();
+				return Response.temporaryRedirect(URI.create(httpRequest.getContextPath() + PropertyManager.getProperty(ODFProperty.IDRA_CATALOGUE_BASEPATH))).build();
 
 			default:
 				String input = IOUtils.toString(httpRequest.getInputStream(), Charset.defaultCharset());
