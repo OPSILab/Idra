@@ -172,8 +172,7 @@ public class AdministrationAPI {
 				}
 				OrionCatalogueConfiguration orionConfig = (OrionCatalogueConfiguration) node.getAdditionalConfig();
 				if(orionConfig.isAuthenticated()) {
-					if(StringUtils.isBlank(orionConfig.getAuthToken()) || StringUtils.isBlank(orionConfig.getRefreshToken()) || StringUtils.isBlank(orionConfig.getOauth2Endpoint())
-							|| StringUtils.isBlank(orionConfig.getClientID()) || StringUtils.isBlank(orionConfig.getClientSecret())) {
+					if(StringUtils.isBlank(orionConfig.getOauth2Endpoint())	|| StringUtils.isBlank(orionConfig.getClientID()) || StringUtils.isBlank(orionConfig.getClientSecret())) {
 						ErrorResponse error = new ErrorResponse(String.valueOf(Response.Status.BAD_REQUEST.getStatusCode()),
 								"Please provide all of the authentication configuration parameters", "400", "Please provide all of the authentication configuration parameters");
 						return Response.status(Response.Status.BAD_REQUEST).entity(error.toJson()).build();
