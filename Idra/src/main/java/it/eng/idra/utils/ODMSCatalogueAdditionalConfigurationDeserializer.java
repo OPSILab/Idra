@@ -45,7 +45,7 @@ public class ODMSCatalogueAdditionalConfigurationDeserializer implements JsonDes
 			boolean isAuth=false;
 			String datasets=j.optString("orionDatasetDumpString","");
 			String dumpPath=j.optString("orionDatasetFilePath","");
-			String authToken="",refreshToken="",oauth2Endpoint="",client_id="",client_secret="";
+			String authToken="",oauth2Endpoint="",client_id="",client_secret="";
 			try {
 				isAuth=j.getBoolean("isAuthenticated");
 			}catch(JSONException e) {
@@ -53,12 +53,13 @@ public class ODMSCatalogueAdditionalConfigurationDeserializer implements JsonDes
 			}
 			if(isAuth) {
 				authToken=j.optString("authToken");
-				refreshToken=j.optString("refreshToken");
+				//refreshToken=j.optString("refreshToken");
 				oauth2Endpoint=j.optString("oauth2Endpoint");
 				client_id=j.optString("clientID");
 				client_secret=j.optString("clientSecret");
 			}
-			return new OrionCatalogueConfiguration(isAuth, authToken, refreshToken, oauth2Endpoint, client_id, client_secret, datasets,dumpPath);
+			//return new OrionCatalogueConfiguration(isAuth, authToken, refreshToken, oauth2Endpoint, client_id, client_secret, datasets,dumpPath);
+			return new OrionCatalogueConfiguration(isAuth, authToken, oauth2Endpoint, client_id, client_secret, datasets,dumpPath);
 		}else if(j.has("sparqlDatasetDumpString")) {
 			String datasets=j.optString("sparqlDatasetDumpString","");
 			String dumpPath=j.optString("sparqlDatasetFilePath","");
@@ -77,7 +78,7 @@ public class ODMSCatalogueAdditionalConfigurationDeserializer implements JsonDes
 			OrionCatalogueConfiguration c = (OrionCatalogueConfiguration) arg0;
 			jsonObject.addProperty("isAuthenticated", c.isAuthenticated());
 			jsonObject.addProperty("authToken", c.getAuthToken());
-			jsonObject.addProperty("refreshToken", c.getRefreshToken());
+			//jsonObject.addProperty("refreshToken", c.getRefreshToken());
 			jsonObject.addProperty("clientID", c.getClientID());
 			jsonObject.addProperty("clientSecret", c.getClientSecret());
 			jsonObject.addProperty("oauth2Endpoint", c.getOauth2Endpoint());
