@@ -292,6 +292,7 @@ public class ODFScheduler {
     						.withIntervalInSeconds(3000) //Ogni 55 min fa il check
     						.withMisfireHandlingInstructionNowWithRemainingCount() //Per casomai aggiornarlo subito quando il server riparte
     						)
+    				.startNow()
     				.build();
 
     		scheduler.scheduleJob(job, trigger);
