@@ -18,8 +18,12 @@
 package it.eng.idra.utils;
 
 import java.io.IOException;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Optional;
 import java.util.Properties;
+
 
 import it.eng.idra.authentication.fiware.configuration.IDMProperty;
 import it.eng.idra.beans.ODFProperty;
@@ -35,7 +39,13 @@ public class PropertyManager {
 			props.load(PropertyManager.class.getClassLoader().getResourceAsStream("configuration.properties"));
 
 		} catch (IOException e) {
-			e.printStackTrace();
+			try {
+				props = new Properties();
+				System.out.println("Prop MAnager: " + System.getenv("CONF_FOLDER"));
+				props.load(Files.newBufferedReader(Paths.get(System.getenv("CONF_FOLDER")),Charset.forName("UTF-8")));
+			} catch (IOException e1) {
+				e1.printStackTrace();
+			}
 		}
 	}
 
