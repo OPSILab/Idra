@@ -1,0 +1,65 @@
+#
+# Idra - Open Data Federation Platform
+# Copyright (C) 2018 Engineering Ingegneria Informatica S.p.A.
+# 
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Affero General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Affero General Public License for more details.
+# 
+# You should have received a copy of the GNU Affero General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+version: '3'
+services :
+    mysql:
+            image: mysql:latest
+            restart: always
+            ports:
+                - 3306:3306
+            volumes:
+                - ./opt/idra/mysql-data:/var/lib/mysql
+                - ./idra_db.sql:/docker-entrypoint-initdb.d/idra_db.sql
+            networks:
+                idra_main:
+            environment:
+                - MYSQL_ROOT_PASSWORD=root
+                - MYSQL_DATABASE=idra_db
+            command: --default-authentication-plugin=mysql_native_password
+    rdf4j:
+            image: yyz1989/rdf4j
+            ports:
+                - 8081:8080
+            volumes:
+                - ./opt/idra/rdf4j-data:/opt/rdf4j/data
+            environment:
+                - RDF4J_DATA=/opt/rdf4j/data
+            networks:
+                idra_main:  
+    idra:
+            image: idra
+            ports:
+                - 8080:8080
+            depends_on: 
+                - mysql
+                - rdf4j
+            environment:
+                - IDRA_CONF_FOLDER=/opt/conf/Idra
+                - IDRA_PORTAL_CONF_FOLDER=/opt/conf/IdraPortal
+            volumes:
+                - ./Idra/src/main/resources/configuration.properties:/opt/conf/Idra/configuration.properties
+                - ./IdraPortal/src/main/resources/configuration.properties:/opt/conf/IdraPortal/WEB-INF/classes
+                - ./Idra/src/main/resources/quartz.properties:/opt/conf/Idra/quartz.properties
+                - ./Idra/src/main/resources/hibernate.properties:/opt/conf/Idra/hibernate.properties
+                - ./opt/dump:/opt/dump
+            networks:
+                idra_main:
+                
+networks:
+    idra_main:
+          external: true

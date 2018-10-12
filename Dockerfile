@@ -1,0 +1,117 @@
+#
+# Idra - Open Data Federation Platform
+# Copyright (C) 2018 Engineering Ingegneria Informatica S.p.A.
+# 
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Affero General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Affero General Public License for more details.
+# 
+# You should have received a copy of the GNU Affero General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+################################################
+#
+# This dockerFile builds the Docker Image from which can be created the related container.
+# This container will install a Tomcat instance where will be deployed the WARs built from the official Idra repository
+
+
+# The base image from which the image build starts
+
+
+FROM        maven:3.5-jdk-8-alpine as build
+MAINTAINER Engineering Ingegneria Informatica S.p.A.
+
+WORKDIR /
+
+# Set all needed environment variables
+ENV http_proxy='http://giuciull:Alk4l1$k@proxy.eng.it:3128' \ 
+    https_proxy='http://giuciull:Alk4l1$k@proxy.eng.it:3128' \
+	proxy_host="proxy.eng.it" \
+	proxy_port="3128" \
+	proxy_username="giuciull" \
+	proxy_password='Alk4l1$k' \
+	proxy_enable="true"
+    
+RUN export http_proxy && export https_proxy    	
+
+# Update the environment and install various utilities used for installation
+RUN         apk update && \
+            apk add git curl
+
+# Install NodeJS 		
+RUN 		apk add --update nodejs nodejs-npm
+
+
+#Install Bower
+RUN			npm install -g bower
+
+#Install Maven
+# preserve Java 8  from the maven install.
+# RUN mv /etc/alternatives/java /etc/alternatives/java8
+# RUN apk update && apk add maven
+
+# # Restore Java 8
+# RUN mv -f /etc/alternatives/java8 /etc/alternatives/java
+# RUN ls -l /usr/bin/java && java -version
+
+# Set proxy settings
+RUN git config --global http.proxy $http_proxy &&\
+			git config --global https.proxy $https_proxy &&\
+			npm config set proxy $http_proxy &&\
+			npm config set https-proxy $https_proxy
+
+RUN a='{"registry":"https://registry.bower.io","proxy":"' &&\
+b='","https-proxy" : "' &&\
+c='"}' && \
+echo $a$http_proxy$b$https_proxy$c | tee .bowerrc
+
+### Clone the official Idra GitHub repository ###
+RUN			git clone https://github.com/OPSILab/Idra.git	\
+	&& mv .bowerrc ./Idra/IdraPortal/src/main/webapp
+
+RUN a='<settings xmlns="http://maven.apache.org/SETTINGS/1.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0 http://maven.apache.org/xsd/settings-1.0.0.xsd"><localRepository>a/.m2/repository</localRepository><proxies><proxy><id>myproxy</id><active>' && \
+b='</active><protocol>http</protocol><host>' && \	  
+c='</host><port>' && \
+d='</port><username>' && \
+e='</username><password>' && \
+f='</password><nonProxyHosts>*.google.com|ibiblio.org</nonProxyHosts></proxy><proxy><id>myproxy1</id><active>' && \
+g='</active><protocol>https</protocol><host>' && \
+h='</password><nonProxyHosts>*.google.com|ibiblio.org</nonProxyHosts></proxy></proxies></settings>' && \
+echo $a$proxy_enable$b$proxy_host$c$proxy_port$d$proxy_username$e$proxy_password$f$proxy_enable$g$proxy_host$c$proxy_port$d$proxy_username$e$proxy_password$h | tee settings.xml && \		
+mkdir /root/.m2 && cp settings.xml /root/.m2
+
+
+### Build Idra War package
+RUN cd Idra/Idra && mvn package
+
+### Build IdraPortal War package
+RUN cd Idra/IdraPortal/src/main/webapp && bower install --allow-root
+RUN cd /Idra/IdraPortal && mvn package
+
+#### Pass built Idra.war and IdraPortal.war to the next build stage in /usr/local/tomcat/webapps container's folder
+FROM        tomcat:9-jre8-alpine as deploy
+
+WORKDIR /
+COPY --from=build /Idra/Idra/target/Idra.war /
+COPY --from=build /Idra/IdraPortal/target/IdraPortal.war /
+
+RUN mv IdraPortal.war /usr/local/tomcat/webapps && mv Idra.war /usr/local/tomcat/webapps
+
+
+
+# Set the port to expose. WARNING The "docker run" command, used to run a container from the image built from this DockerFile,
+# MUST define the mapping with the host ports.
+# (e.g. -p 8080:8080 option of "docker run" command maps the 8080 port of the container (exposed through the following EXPOSE directive) to the host's 8080 port )
+EXPOSE 8080
+
+# Set the working directory from which run the following commands
+WORKDIR     /
+
+# Start the Apache Tomcat server
+CMD ["catalina.sh", "run"]

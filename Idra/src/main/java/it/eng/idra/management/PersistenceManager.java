@@ -17,12 +17,17 @@
  ******************************************************************************/
 package it.eng.idra.management;
 
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Properties;
 import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
@@ -67,8 +72,22 @@ public class PersistenceManager {
 
 	static {
 		// logger.info("Hibernate EntityManagerFactory init");
+		
 		try {
-			emf = Persistence.createEntityManagerFactory("org.hibernate.jpa.beans");
+			Path confPath = Paths.get(System.getenv("IDRA_CONF_FOLDER") + "/hibernate.properties");
+			System.out.println(System.getenv("IDRA_CONF_FOLDER"));
+			if (Files.exists(confPath)) {
+
+				Properties props = new Properties();
+				props.load(Files.newBufferedReader(confPath));
+				Map<String, Object> mapOfProperties = props.entrySet().stream().collect(
+						Collectors.toMap(e -> String.valueOf(e.getKey()), e -> (Object) String.valueOf(e.getValue())));
+
+				emf = Persistence.createEntityManagerFactory("org.hibernate.jpa.beans", mapOfProperties);
+
+			} else {
+				emf = Persistence.createEntityManagerFactory("org.hibernate.jpa.beans");
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -130,9 +149,11 @@ public class PersistenceManager {
 
 	public List<ODMSCatalogue> jpaGetODMSCatalogues(boolean withImage) {
 
-//		TypedQuery<ODMSCatalogue> q = em.createQuery("SELECT d FROM ODMSCatalogue d " + (withImage ? "JOIN FETCH d.image i" : "")+" where d.isActive=true or d.isActive is null",
-		TypedQuery<ODMSCatalogue> q = em.createQuery("SELECT d FROM ODMSCatalogue d " + (withImage ? "JOIN FETCH d.image i" : ""),
-				ODMSCatalogue.class);
+		// TypedQuery<ODMSCatalogue> q = em.createQuery("SELECT d FROM ODMSCatalogue d "
+		// + (withImage ? "JOIN FETCH d.image i" : "")+" where d.isActive=true or
+		// d.isActive is null",
+		TypedQuery<ODMSCatalogue> q = em.createQuery(
+				"SELECT d FROM ODMSCatalogue d " + (withImage ? "JOIN FETCH d.image i" : ""), ODMSCatalogue.class);
 		return q.getResultList();
 	}
 
@@ -150,31 +171,34 @@ public class PersistenceManager {
 	}
 
 	public ODMSCatalogue jpaGetODMSCatalogue(int id) {
-		TypedQuery<ODMSCatalogue> q = em.createQuery("SELECT d FROM ODMSCatalogue d where id=" + id, ODMSCatalogue.class);
+		TypedQuery<ODMSCatalogue> q = em.createQuery("SELECT d FROM ODMSCatalogue d where id=" + id,
+				ODMSCatalogue.class);
 		return q.getResultList().get(0);
 	}
 
 	public ODMSCatalogue jpaGetODMSCatalogue(int id, boolean withImage) {
-//		TypedQuery<ODMSCatalogue> q = em.createQuery("SELECT d FROM ODMSCatalogue d" + (withImage ? " JOIN FETCH d.image i" : "") + " where id=" + id +" and (d.isActive=true or d.isActive is null)",
-		TypedQuery<ODMSCatalogue> q = em.createQuery("SELECT d FROM ODMSCatalogue d" + (withImage ? " JOIN FETCH d.image i" : "") + " where id=" + id,
+		// TypedQuery<ODMSCatalogue> q = em.createQuery("SELECT d FROM ODMSCatalogue d"
+		// + (withImage ? " JOIN FETCH d.image i" : "") + " where id=" + id +" and
+		// (d.isActive=true or d.isActive is null)",
+		TypedQuery<ODMSCatalogue> q = em.createQuery(
+				"SELECT d FROM ODMSCatalogue d" + (withImage ? " JOIN FETCH d.image i" : "") + " where id=" + id,
 				ODMSCatalogue.class);
 		return q.getResultList().get(0);
 	}
 
 	public ODMSCatalogue jpaGetInactiveODMSCatalogue(int id, boolean withImage) {
-		TypedQuery<ODMSCatalogue> q = em.createQuery(
-				"SELECT d FROM ODMSCatalogue d" + (withImage ? " JOIN FETCH d.image i" : "") + " where id=" + id +" and d.isActive=false",
+		TypedQuery<ODMSCatalogue> q = em.createQuery("SELECT d FROM ODMSCatalogue d"
+				+ (withImage ? " JOIN FETCH d.image i" : "") + " where id=" + id + " and d.isActive=false",
 				ODMSCatalogue.class);
 		return q.getResultList().get(0);
 	}
-	
+
 	public List<ODMSCatalogue> jpaGetAllInactiveODMSCatalogue(boolean withImage) {
-		TypedQuery<ODMSCatalogue> q = em.createQuery(
-				"SELECT d FROM ODMSCatalogue d" + (withImage ? " JOIN FETCH d.image i" : "") + " where d.isActive=false",
-				ODMSCatalogue.class);
+		TypedQuery<ODMSCatalogue> q = em.createQuery("SELECT d FROM ODMSCatalogue d"
+				+ (withImage ? " JOIN FETCH d.image i" : "") + " where d.isActive=false", ODMSCatalogue.class);
 		return q.getResultList();
 	}
-	
+
 	public void jpaUpdateODMSCatalogue(ODMSCatalogue node) {
 		if (!em.getTransaction().isActive())
 			em.getTransaction().begin();
@@ -206,7 +230,8 @@ public class PersistenceManager {
 
 	public ODMSCatalogueMessage jpaGetODMSMessage(int id, int nodeID) {
 		TypedQuery<ODMSCatalogueMessage> q = em.createQuery(
-				"SELECT d FROM ODMSCatalogueMessage d where d.nodeID=" + nodeID + "and d.id=" + id, ODMSCatalogueMessage.class);
+				"SELECT d FROM ODMSCatalogueMessage d where d.nodeID=" + nodeID + "and d.id=" + id,
+				ODMSCatalogueMessage.class);
 		return q.getSingleResult();
 	}
 
@@ -337,10 +362,10 @@ public class PersistenceManager {
 
 	public List<DCATThemes> getDCATThems() {
 		String query = "FROM DCATThemes";
-		TypedQuery<DCATThemes> q = em.createQuery(query,DCATThemes.class);
+		TypedQuery<DCATThemes> q = em.createQuery(query, DCATThemes.class);
 		return q.getResultList();
 	}
-	
+
 	public List<ConfigurationParameter> getConfigurationList() {
 		TypedQuery<ConfigurationParameter> q = em.createQuery("SELECT d FROM ConfigurationParameter d ",
 				ConfigurationParameter.class);
@@ -410,9 +435,10 @@ public class PersistenceManager {
 	}
 
 	public void deleteLogs(ZonedDateTime now) {
-		//System.out.println(now.toEpochSecond());
+		// System.out.println(now.toEpochSecond());
 		em.getTransaction().begin();
-		em.createNativeQuery("delete from logs where UNIX_TIMESTAMP(dated) < "+now.toEpochSecond()+"").executeUpdate();
+		em.createNativeQuery("delete from logs where UNIX_TIMESTAMP(dated) < " + now.toEpochSecond() + "")
+				.executeUpdate();
 		em.getTransaction().commit();
 	}
 	/* END Logs */
