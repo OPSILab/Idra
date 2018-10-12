@@ -289,8 +289,9 @@ public class ODFScheduler {
     				.newTrigger()
     				.withIdentity("synchToken_"+Integer.toString(node.getId()), "triggers")
     				.withSchedule(simpleSchedule().repeatForever()
-    						.withIntervalInSeconds(3600) //Ogni ora fa il check 
-    						.withMisfireHandlingInstructionNextWithExistingCount())
+    						.withIntervalInSeconds(3000) //Ogni 55 min fa il check
+    						.withMisfireHandlingInstructionNowWithRemainingCount() //Per casomai aggiornarlo subito quando il server riparte
+    						)
     				.build();
 
     		scheduler.scheduleJob(job, trigger);

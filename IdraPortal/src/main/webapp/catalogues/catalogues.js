@@ -184,9 +184,9 @@ angular.module("IdraPlatform").controller('CataloguesController',["$scope","$htt
 		
 	}
 	
-	
-	$scope.itemsByPage=8;
 
+	$scope.itemsByPage=20;
+	
 	$scope.selectedPredicate = $scope.predicates[0];
 
 	$scope.getHours = function(millisecond){

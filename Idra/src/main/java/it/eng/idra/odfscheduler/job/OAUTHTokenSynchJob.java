@@ -59,11 +59,13 @@ public class OAUTHTokenSynchJob implements Job{
 		// TODO Auto-generated method stub
 		
 		try {
+			logger.info("Requesting token for catalogue: "+context.getJobDetail().getJobDataMap().get("nodeID"));
 			ODMSCatalogue node = ODMSManager.getODMSCatalogue((int) context.getJobDetail().getJobDataMap().get("nodeID"));
 			OrionCatalogueConfiguration orionConfig = (OrionCatalogueConfiguration) node.getAdditionalConfig();
 			HashMap<String, String> map = retrieveUpdatedToken(orionConfig);
 			orionConfig.setAuthToken(map.get("access_token"));
-			orionConfig.setRefreshToken(map.get("refresh_token"));
+			logger.info("New Token: "+orionConfig.getAuthToken());
+			//orionConfig.setRefreshToken(map.get("refresh_token"));
 			node.setAdditionalConfig(orionConfig);
 			ODMSManager.updateODMSCatalogue(node, true);
 			
@@ -89,8 +91,10 @@ public class OAUTHTokenSynchJob implements Job{
 		WebTarget webTarget = client.target(conf.getOauth2Endpoint());
 		Invocation.Builder invocationBuilder =  webTarget.request(MediaType.APPLICATION_FORM_URLENCODED);
 		MultivaluedMap<String, String> formData = new MultivaluedHashMap<String, String>();
-	    formData.add("grant_type", "refresh_token");
-	    formData.add("refresh_token", conf.getRefreshToken());
+	    //formData.add("grant_type", "refresh_token");
+	    //formData.add("refresh_token", conf.getRefreshToken());
+	    formData.add("grant_type", "client_credentials");
+	    
 		Response response = invocationBuilder.post(Entity.form(formData));
 		
 		StatusType status = response.getStatusInfo();
@@ -99,7 +103,7 @@ public class OAUTHTokenSynchJob implements Job{
 		if(status.getStatusCode() == 200){
 			HashMap<String, String> map = new HashMap<String, String>();
 			map.put("access_token", res.getString("access_token"));
-			map.put("refresh_token",res.getString("refresh_token"));
+			//map.put("refresh_token",res.getString("refresh_token"));
 			return map;
 		}else{
 			throw new Exception("Error while retrieving the authentication token");
