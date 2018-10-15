@@ -17,17 +17,12 @@
  ******************************************************************************/
 package it.eng.idra.management;
 
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Properties;
 import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
@@ -74,20 +69,7 @@ public class PersistenceManager {
 		// logger.info("Hibernate EntityManagerFactory init");
 		
 		try {
-			Path confPath = Paths.get(System.getenv("IDRA_CONF_FOLDER") + "/hibernate.properties");
-			System.out.println(System.getenv("IDRA_CONF_FOLDER"));
-			if (Files.exists(confPath)) {
-
-				Properties props = new Properties();
-				props.load(Files.newBufferedReader(confPath));
-				Map<String, Object> mapOfProperties = props.entrySet().stream().collect(
-						Collectors.toMap(e -> String.valueOf(e.getKey()), e -> (Object) String.valueOf(e.getValue())));
-
-				emf = Persistence.createEntityManagerFactory("org.hibernate.jpa.beans", mapOfProperties);
-
-			} else {
-				emf = Persistence.createEntityManagerFactory("org.hibernate.jpa.beans");
-			}
+			emf = Persistence.createEntityManagerFactory("org.hibernate.jpa.beans");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

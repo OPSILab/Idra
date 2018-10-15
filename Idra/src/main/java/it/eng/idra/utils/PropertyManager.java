@@ -39,22 +39,18 @@ public class PropertyManager {
 			props.load(PropertyManager.class.getClassLoader().getResourceAsStream("configuration.properties"));
 
 		} catch (IOException e) {
-			try {
-				props = new Properties();
-				System.out.println("Prop MAnager: " + System.getenv("CONF_FOLDER"));
-				props.load(Files.newBufferedReader(Paths.get(System.getenv("CONF_FOLDER")),Charset.forName("UTF-8")));
-			} catch (IOException e1) {
-				e1.printStackTrace();
-			}
+			e.printStackTrace();
 		}
 	}
 
 	public static String getProperty(ODFProperty propName) {
-		return props.getProperty(propName.toString());
+		Optional<String> prop = Optional.ofNullable(System.getenv(propName.toString()));
+		return prop.orElse(props.getProperty(propName.toString()));
 	}
 
 	public static String getProperty(IDMProperty propName) {
-		return props.getProperty(propName.toString());
+		Optional<String> prop = Optional.ofNullable(System.getenv(propName.toString()));
+		return prop.orElse(props.getProperty(propName.toString()));
 	}
 
 	public static String getProperty(RestProperty propName) {

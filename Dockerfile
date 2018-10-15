@@ -30,15 +30,15 @@ MAINTAINER Engineering Ingegneria Informatica S.p.A.
 WORKDIR /
 
 # Set all needed environment variables
-ENV http_proxy='http://giuciull:Alk4l1$k@proxy.eng.it:3128' \ 
-    https_proxy='http://giuciull:Alk4l1$k@proxy.eng.it:3128' \
-	proxy_host="proxy.eng.it" \
-	proxy_port="3128" \
-	proxy_username="giuciull" \
-	proxy_password='Alk4l1$k' \
-	proxy_enable="true"
+# ENV http_proxy='' \ 
+    # https_proxy='' \
+	# proxy_host='' \
+	# proxy_port='' \
+	# proxy_username='' \
+	# proxy_password='' \
+	# proxy_enable="f"
     
-RUN export http_proxy && export https_proxy    	
+# RUN export http_proxy && export https_proxy    	
 
 # Update the environment and install various utilities used for installation
 RUN         apk update && \
@@ -61,30 +61,30 @@ RUN			npm install -g bower
 # RUN ls -l /usr/bin/java && java -version
 
 # Set proxy settings
-RUN git config --global http.proxy $http_proxy &&\
-			git config --global https.proxy $https_proxy &&\
-			npm config set proxy $http_proxy &&\
-			npm config set https-proxy $https_proxy
+# RUN git config --global http.proxy $http_proxy &&\
+			# git config --global https.proxy $https_proxy &&\
+			# npm config set proxy $http_proxy &&\
+			# npm config set https-proxy $https_proxy
 
-RUN a='{"registry":"https://registry.bower.io","proxy":"' &&\
-b='","https-proxy" : "' &&\
-c='"}' && \
-echo $a$http_proxy$b$https_proxy$c | tee .bowerrc
+# RUN a='{"registry":"https://registry.bower.io","proxy":"' &&\
+# b='","https-proxy" : "' &&\
+# c='"}' && \
+# echo $a$http_proxy$b$https_proxy$c | tee .bowerrc
 
 ### Clone the official Idra GitHub repository ###
-RUN			git clone https://github.com/OPSILab/Idra.git	\
-	&& mv .bowerrc ./Idra/IdraPortal/src/main/webapp
+RUN			git clone https://github.com/OPSILab/Idra.git
+	#&& mv .bowerrc ./Idra/IdraPortal/src/main/webapp
 
-RUN a='<settings xmlns="http://maven.apache.org/SETTINGS/1.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0 http://maven.apache.org/xsd/settings-1.0.0.xsd"><localRepository>a/.m2/repository</localRepository><proxies><proxy><id>myproxy</id><active>' && \
-b='</active><protocol>http</protocol><host>' && \	  
-c='</host><port>' && \
-d='</port><username>' && \
-e='</username><password>' && \
-f='</password><nonProxyHosts>*.google.com|ibiblio.org</nonProxyHosts></proxy><proxy><id>myproxy1</id><active>' && \
-g='</active><protocol>https</protocol><host>' && \
-h='</password><nonProxyHosts>*.google.com|ibiblio.org</nonProxyHosts></proxy></proxies></settings>' && \
-echo $a$proxy_enable$b$proxy_host$c$proxy_port$d$proxy_username$e$proxy_password$f$proxy_enable$g$proxy_host$c$proxy_port$d$proxy_username$e$proxy_password$h | tee settings.xml && \		
-mkdir /root/.m2 && cp settings.xml /root/.m2
+# RUN a='<settings xmlns="http://maven.apache.org/SETTINGS/1.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0 http://maven.apache.org/xsd/settings-1.0.0.xsd"><localRepository>a/.m2/repository</localRepository><proxies><proxy><id>myproxy</id><active>' && \
+# b='</active><protocol>http</protocol><host>' && \	  
+# c='</host><port>' && \
+# d='</port><username>' && \
+# e='</username><password>' && \
+# f='</password><nonProxyHosts>*.google.com|ibiblio.org</nonProxyHosts></proxy><proxy><id>myproxy1</id><active>' && \
+# g='</active><protocol>https</protocol><host>' && \
+# h='</password><nonProxyHosts>*.google.com|ibiblio.org</nonProxyHosts></proxy></proxies></settings>' && \
+# echo $a$proxy_enable$b$proxy_host$c$proxy_port$d$proxy_username$e$proxy_password$f$proxy_enable$g$proxy_host$c$proxy_port$d$proxy_username$e$proxy_password$h | tee settings.xml && \		
+# mkdir /root/.m2 && cp settings.xml /root/.m2
 
 
 ### Build Idra War package
