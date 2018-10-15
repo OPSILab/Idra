@@ -55,7 +55,8 @@ public enum ODFProperty {
 	ENABLE_STATISTICS("idra.statistics.enable"),
 	AUTHENTICATION_METHOD("idra.authentication.method"),
 	ORION_FILE_DUMP_PATH("idra.orion.orionDumpFilePath"),
-	ORION_INTERNAL_API("idra.orion.orionInternalAPI");
+	ORION_INTERNAL_API("idra.orion.orionInternalAPI"),
+	IDRA_CATALOGUE_BASEPATH("idra.catalogue.basepath");
 	
 	
 	private final String text;

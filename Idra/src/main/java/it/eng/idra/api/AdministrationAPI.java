@@ -172,8 +172,7 @@ public class AdministrationAPI {
 				}
 				OrionCatalogueConfiguration orionConfig = (OrionCatalogueConfiguration) node.getAdditionalConfig();
 				if(orionConfig.isAuthenticated()) {
-					if(StringUtils.isBlank(orionConfig.getAuthToken()) || StringUtils.isBlank(orionConfig.getRefreshToken()) || StringUtils.isBlank(orionConfig.getOauth2Endpoint())
-							|| StringUtils.isBlank(orionConfig.getClientID()) || StringUtils.isBlank(orionConfig.getClientSecret())) {
+					if(StringUtils.isBlank(orionConfig.getOauth2Endpoint())	|| StringUtils.isBlank(orionConfig.getClientID()) || StringUtils.isBlank(orionConfig.getClientSecret())) {
 						ErrorResponse error = new ErrorResponse(String.valueOf(Response.Status.BAD_REQUEST.getStatusCode()),
 								"Please provide all of the authentication configuration parameters", "400", "Please provide all of the authentication configuration parameters");
 						return Response.status(Response.Status.BAD_REQUEST).entity(error.toJson()).build();
@@ -756,7 +755,7 @@ public class AdministrationAPI {
 					// session.setAttribute("loggedin", token);
 					// session.setAttribute("refresh_token", refresh_token);
 					// session.setAttribute("username", info.getDisplayName());
-					return Response.seeOther(URI.create("/IdraPortal"))
+					return Response.seeOther(URI.create(PropertyManager.getProperty(ODFProperty.IDRA_CATALOGUE_BASEPATH)))
 							.cookie(new NewCookie("loggedin", (String) token, "/", "", "comment", 100, false))
 							.cookie(new NewCookie("refresh_token", refresh_token, "/", "", "comment", 100, false))
 							.cookie(new NewCookie("username", info.getDisplayName(), "/", "", "comment", 100, false))
@@ -814,7 +813,7 @@ public class AdministrationAPI {
 					session.setAttribute("username", info.getDisplayName());
 				}
 
-				return Response.temporaryRedirect(URI.create(httpRequest.getContextPath() + "/IdraPortal")).build();
+				return Response.temporaryRedirect(URI.create(httpRequest.getContextPath() + PropertyManager.getProperty(ODFProperty.IDRA_CATALOGUE_BASEPATH))).build();
 
 			default:
 				String input = IOUtils.toString(httpRequest.getInputStream(), Charset.defaultCharset());
