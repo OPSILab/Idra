@@ -58,14 +58,14 @@ public class DBConnectionManager {
 		// }
 
 		HikariConfig config = new HikariConfig();
-		config.setJdbcUrl(PropertyManager.getProperty(ODFProperty.DB_HOST_MIN));
+		config.setJdbcUrl(PropertyManager.getProperty(ODFProperty.DB_HOST));
 		config.setUsername(PropertyManager.getProperty(ODFProperty.DB_USERNAME));
 		config.setPassword(PropertyManager.getProperty(ODFProperty.DB_PASSWORD));
 		config.setDataSourceClassName("com.mysql.jdbc.jdbc2.optional.MysqlDataSource");
 		config.setIdleTimeout(30000);
 		config.setMinimumIdle(5);
 		config.setMaximumPoolSize(10);
-		config.addDataSourceProperty("databaseName", PropertyManager.getProperty(ODFProperty.DB_NAME));
+//		config.addDataSourceProperty("databaseName", PropertyManager.getProperty(ODFProperty.DB_NAME));
 		config.addDataSourceProperty("cachePrepStmts", "true");
 		config.addDataSourceProperty("prepStmtCacheSize", "250");
 		config.addDataSourceProperty("prepStmtCacheSqlLimit", "2048");
