@@ -24,7 +24,7 @@ angular.module("IdraPlatform").controller('CatalogueCtrl',['$scope','$http','con
 	
 	$scope.types=config.NODE_TYPES.split(',');
 	$scope.grades=config.FEDERATION_LEVEL.split(',');
-	$scope.updatePeriods=[{text:'1 hour',value:'3600'},{text:'1 day',value:'86400'},{text:'1 week',value:'604800'}];
+	$scope.updatePeriods=[{text:'-',value:'0'},{text:'1 hour',value:'3600'},{text:'1 day',value:'86400'},{text:'1 week',value:'604800'}];
 
 	$scope.dcatProfiles = [{text:'DCATAP',value:'DCATAP'},{text:'DCATAP_IT',value:'DCATAP_IT'}];
 	$scope.ODMSCategories = [{text:'Municipality',value:'Municipality'},{text:'Province',value:'Province'},{text:'Private Institution',value:'Private Institution'},{text:'Public Body',value:'Public Body'},{text:'Region',value:'Region'}];
@@ -532,8 +532,12 @@ angular.module("IdraPlatform").controller('CatalogueCtrl',['$scope','$http','con
 				break;
 			}
 
-			if((node.federationLevel=='LEVEL_3' || node.federationLevel=='LEVEL_2') && node.refreshPeriod==''){
-				node.refreshPeriod=$scope.refreshPeriod;
+			if(node.refreshPeriod==''){
+				if((node.federationLevel=='LEVEL_3' || node.federationLevel=='LEVEL_2')){
+					node.refreshPeriod=$scope.refreshPeriod;
+				}else{
+					node.refreshPeriod="0";
+				}
 			}
 			
 			if(node.nodeType == 'WEB'){

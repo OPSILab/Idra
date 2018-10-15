@@ -27,7 +27,7 @@ public class OrionCatalogueConfiguration extends ODMSCatalogueAdditionalConfigur
 	
 	private boolean isAuthenticated;
 	private String authToken;
-	private String refreshToken;
+	//private String refreshToken;
 	private String oauth2Endpoint;
 	private String clientID;
 	private String clientSecret;
@@ -38,11 +38,11 @@ public class OrionCatalogueConfiguration extends ODMSCatalogueAdditionalConfigur
 		this.setType("ORION");
 	}
 	
-	public OrionCatalogueConfiguration(boolean isAuthenticated, String authToken,String refreshToken,String oauth2Endpoint,String client_id,String client_secret, String datasets) {
+	public OrionCatalogueConfiguration(boolean isAuthenticated, String authToken,String oauth2Endpoint,String client_id,String client_secret, String datasets) {
 		super();
 		this.isAuthenticated = isAuthenticated;
 		this.authToken = authToken;
-		this.refreshToken=refreshToken;
+//		this.refreshToken=refreshToken;
 		this.oauth2Endpoint=oauth2Endpoint;
 		this.clientID=client_id;
 		this.clientSecret=client_secret;
@@ -50,8 +50,8 @@ public class OrionCatalogueConfiguration extends ODMSCatalogueAdditionalConfigur
 		this.setType("ORION");
 	}
 	
-	public OrionCatalogueConfiguration(boolean isAuthenticated, String authToken,String refreshToken,String oauth2Endpoint,String client_id,String client_secret, String datasets,String dumpPath) {
-		this(isAuthenticated, authToken, refreshToken,oauth2Endpoint,client_id,client_secret,datasets);
+	public OrionCatalogueConfiguration(boolean isAuthenticated, String authToken,String oauth2Endpoint,String client_id,String client_secret, String datasets,String dumpPath) {
+		this(isAuthenticated, authToken, oauth2Endpoint,client_id,client_secret,datasets);
 		this.orionDatasetFilePath=dumpPath;
 	}
 	
@@ -93,13 +93,13 @@ public class OrionCatalogueConfiguration extends ODMSCatalogueAdditionalConfigur
 		this.orionDatasetFilePath = orionDatasetFilePath;
 	}
 	
-	public String getRefreshToken() {
-		return refreshToken;
-	}
-
-	public void setRefreshToken(String refreshToken) {
-		this.refreshToken = refreshToken;
-	}
+//	public String getRefreshToken() {
+//		return refreshToken;
+//	}
+//
+//	public void setRefreshToken(String refreshToken) {
+//		this.refreshToken = refreshToken;
+//	}
 
 	public String getOauth2Endpoint() {
 		return oauth2Endpoint;
@@ -136,7 +136,7 @@ public class OrionCatalogueConfiguration extends ODMSCatalogueAdditionalConfigur
 		result = prime * result + ((oauth2Endpoint == null) ? 0 : oauth2Endpoint.hashCode());
 		result = prime * result + ((orionDatasetDumpString == null) ? 0 : orionDatasetDumpString.hashCode());
 		result = prime * result + ((orionDatasetFilePath == null) ? 0 : orionDatasetFilePath.hashCode());
-		result = prime * result + ((refreshToken == null) ? 0 : refreshToken.hashCode());
+		//result = prime * result + ((refreshToken == null) ? 0 : refreshToken.hashCode());
 		return result;
 	}
 
@@ -181,11 +181,11 @@ public class OrionCatalogueConfiguration extends ODMSCatalogueAdditionalConfigur
 				return false;
 		} else if (!orionDatasetFilePath.equals(other.orionDatasetFilePath))
 			return false;
-		if (refreshToken == null) {
-			if (other.refreshToken != null)
-				return false;
-		} else if (!refreshToken.equals(other.refreshToken))
-			return false;
+//		if (refreshToken == null) {
+//			if (other.refreshToken != null)
+//				return false;
+//		} else if (!refreshToken.equals(other.refreshToken))
+//			return false;
 		return true;
 	}
 		

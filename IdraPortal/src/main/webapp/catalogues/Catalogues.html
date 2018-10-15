@@ -20,13 +20,15 @@
 		<li class="breadcrumb-item"><a href="#metadata">Home</a></li>
 		<li class="breadcrumb-item active">Federated Catalogues</li>
 	</ul>
-	<div class="col-md-3 tabbable" style="padding-left:0px">
-		<ul class="nav nav-tabs" ng-init="main.active.tab = 'local'">
-			<li ng-class="{active: main.active.tab == 'local'}"><a
-				ng-click="main.active.tab = 'local'">Local</a></li>
-			<li ng-class="{active: main.active.tab == 'remote'}"><a
-				ng-click="main.active.tab = 'remote'">Remote</a></li>
-		</ul>
+	<div class="col-12-md">
+		<div class="col-md-3 tabbable" style="padding-left:0px">
+			<ul class="nav nav-tabs" ng-init="main.active.tab = 'local'">
+				<li ng-class="{active: main.active.tab == 'local'}"><a
+					ng-click="main.active.tab = 'local'">Local</a></li>
+				<li ng-class="{active: main.active.tab == 'remote'}"><a
+					ng-click="main.active.tab = 'remote'">Remote</a></li>
+			</ul>
+		</div>
 	</div>
 
 	<div class="tab-content">

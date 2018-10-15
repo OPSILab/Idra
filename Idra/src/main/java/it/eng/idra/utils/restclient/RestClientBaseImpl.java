@@ -19,38 +19,30 @@ package it.eng.idra.utils.restclient;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.security.KeyManagementException;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
 import java.util.Map;
 import java.util.logging.Logger;
 
 import javax.ws.rs.core.MediaType;
-
-import it.eng.idra.utils.PropertyManager;
 
 import it.eng.idra.utils.restclient.builders.HttpDeleteBuilder;
 import it.eng.idra.utils.restclient.builders.HttpGetBuilder;
 import it.eng.idra.utils.restclient.builders.HttpHeadBuilder;
 import it.eng.idra.utils.restclient.builders.HttpPostBuilder;
 import it.eng.idra.utils.restclient.builders.HttpPutBuilder;
-import it.eng.idra.utils.restclient.configuration.RestProperty;
-
-import org.apache.commons.lang3.StringUtils;
-import org.apache.http.HttpHost;
 import org.apache.http.HttpResponse;
-import org.apache.http.auth.AuthScope;
-import org.apache.http.auth.Credentials;
-import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpRequestBase;
-import org.apache.http.conn.params.ConnRoutePNames;
-import org.apache.http.impl.client.AbstractHttpClient;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.params.BasicHttpParams;
-import org.apache.http.params.HttpConnectionParams;
-import org.apache.http.params.HttpParams;
+import org.apache.http.conn.ssl.NoopHostnameVerifier;
+import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
+import org.apache.http.conn.ssl.TrustSelfSignedStrategy;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.ssl.SSLContextBuilder;
 
 import com.sun.research.ws.wadl.HTTPMethods;
 
-@SuppressWarnings("deprecation")
 public abstract class RestClientBaseImpl {
 	
 	protected static final Logger logger = Logger.getLogger(RestClient.class.getName());
@@ -58,34 +50,26 @@ public abstract class RestClientBaseImpl {
 	
 	protected HttpClient buildClient(){
 		
-		final HttpParams httpParams = new BasicHttpParams();
-		HttpConnectionParams.setConnectionTimeout(httpParams, 300000);
-		HttpConnectionParams.setSoTimeout(httpParams, 900000);
+		SSLContextBuilder sshbuilder = new SSLContextBuilder();
+		try {
+			sshbuilder.loadTrustMaterial(null, new TrustSelfSignedStrategy());
+			SSLConnectionSocketFactory sslsf = new SSLConnectionSocketFactory(sshbuilder.build());
 
-		httpclient = new DefaultHttpClient(httpParams);
-
-		/* Set an HTTP proxy if it is specified in system properties.
-		 * 
-		 * http://docs.oracle.com/javase/6/docs/technotes/guides/net/proxies.html
-		 * http://hc.apache.org/httpcomponents-client-ga/httpclient/examples/org/apache/http/examples/client/ClientExecuteProxy.java
-		 */
-		if (Boolean.parseBoolean(PropertyManager.getProperty(RestProperty.HTTP_PROXY_ENABLED).trim())
-				&& StringUtils.isNotBlank(PropertyManager.getProperty(RestProperty.HTTP_PROXY_HOST).trim())) {
-
-			int port = 80;
-			if (isSet(PropertyManager.getProperty(RestProperty.HTTP_PROXY_PORT))) {
-				port = Integer.parseInt(PropertyManager.getProperty(RestProperty.HTTP_PROXY_PORT));
-			}
-			HttpHost proxy = new HttpHost(PropertyManager.getProperty(RestProperty.HTTP_PROXY_HOST), port, "http");
-			httpclient.getParams().setParameter(ConnRoutePNames.DEFAULT_PROXY, proxy);
-			if (isSet(PropertyManager.getProperty(RestProperty.HTTP_PROXY_USER))) {
-				((AbstractHttpClient) httpclient).getCredentialsProvider().setCredentials(
-						new AuthScope(PropertyManager.getProperty(RestProperty.HTTP_PROXY_HOST), port),
-						(Credentials) new UsernamePasswordCredentials(
-								PropertyManager.getProperty(RestProperty.HTTP_PROXY_USER),
-								PropertyManager.getProperty(RestProperty.HTTP_PROXY_PASSWORD)));
-			}
+			httpclient = HttpClients.custom()
+				.setSSLHostnameVerifier(new NoopHostnameVerifier())
+			    .setSSLSocketFactory(sslsf)
+			    .build();
+		} catch (NoSuchAlgorithmException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (KeyStoreException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (KeyManagementException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
+		
 		
 		return httpclient;
 	}
