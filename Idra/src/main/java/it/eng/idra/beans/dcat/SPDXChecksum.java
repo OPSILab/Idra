@@ -117,7 +117,8 @@ public class SPDXChecksum {
 
 	public SolrInputDocument toDoc(CacheContentType contentType) {
 		SolrInputDocument doc = new SolrInputDocument();
-		doc.addField("id", UUID.randomUUID().toString());
+		doc.addField("id", this.id);
+		doc.addField("nodeID", this.nodeID);
 		doc.addField("content_type", contentType.toString());
 		doc.addField("algorithm", this.algorithm != null ? this.algorithm.getValue() : "");
 		doc.addField("checksumValue", this.checksumValue != null ? this.checksumValue.getValue() : "");

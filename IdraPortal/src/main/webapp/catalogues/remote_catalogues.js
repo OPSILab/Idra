@@ -74,6 +74,10 @@ angular.module("IdraPlatform").controller('RemoteCataloguesController',["$scope"
 				delete node.sitemap.navigationParameter.id;
 			}
 			
+			if(!node.hasOwnProperty("homepage")){
+				node.homepage=node.host;
+			}
+			
 			var fd = new FormData();  
 			fd.append("node",JSON.stringify(node));
 			fd.append("dump",'');

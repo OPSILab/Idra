@@ -1065,6 +1065,7 @@ public class MetadataCacheManager {
 			try {
 				// Clean previous index data
 				server.deleteByQuery("*:*");
+				server.commit();
 
 				/*
 				 *
