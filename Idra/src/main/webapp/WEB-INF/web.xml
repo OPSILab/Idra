@@ -34,7 +34,7 @@
 		<listener-class>it.eng.idra.management.InitServletListener</listener-class>
 	</listener>
 	<listener>
-		<listener-class>it.eng.rspa.odf.odfscheduler.CustomQuartzInitializer</listener-class>
+		<listener-class>it.eng.idra.odfscheduler.CustomQuartzInitializer</listener-class>
 	</listener>
 	<listener>
 		<listener-class>it.eng.idra.odfscheduler.ODFSchedulerListener</listener-class>
