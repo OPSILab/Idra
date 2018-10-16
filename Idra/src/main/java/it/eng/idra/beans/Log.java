@@ -18,30 +18,12 @@
 package it.eng.idra.beans;
 
 import java.time.ZonedDateTime;
-import java.util.Date;
-import java.util.Map;
-
 import javax.persistence.Column;
-import javax.persistence.Convert;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import javax.persistence.Transient;
-
-import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.Marker;
-import org.apache.logging.log4j.ThreadContext.ContextStack;
-import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.core.appender.db.jpa.AbstractLogEventWrapperEntity;
-import org.apache.logging.log4j.core.appender.db.jpa.BasicLogEventEntity;
-import org.apache.logging.log4j.core.appender.db.jpa.converter.ContextMapJsonAttributeConverter;
-import org.apache.logging.log4j.core.impl.ThrowableProxy;
-import org.apache.logging.log4j.message.Message;
-import org.hibernate.annotations.Type;
 
 @Entity
 @Table(name = "logs")

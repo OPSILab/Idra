@@ -33,14 +33,14 @@ public class getDatasetPage implements Runnable {
 	}
 
 	
-	public static void main (String[] a){
-		ExecutorService executor = Executors.newSingleThreadExecutor();
-		executor.submit(() -> {
-		    String threadName = Thread.currentThread().getName();
-		    System.out.println("Hello " + threadName);
-		});
-		executor.shutdown();
-	
-	}
+//	public static void main (String[] a){
+//		ExecutorService executor = Executors.newSingleThreadExecutor();
+//		executor.submit(() -> {
+//		    String threadName = Thread.currentThread().getName();
+//		    System.out.println("Hello " + threadName);
+//		});
+//		executor.shutdown();
+//	
+//	}
 	
 }
