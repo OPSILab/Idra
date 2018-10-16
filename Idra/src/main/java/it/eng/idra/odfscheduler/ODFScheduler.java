@@ -160,7 +160,7 @@ public class ODFScheduler {
 				Trigger newTrigger = TriggerBuilder
 	                    .newTrigger()
 	                    .withIdentity(Integer.toString(node.getId()), "triggers")
-	                    .startAt(Date.from(node.getRegisterDate().toInstant()))
+	                    .startAt(Date.from(node.getRegisterDate().toInstant().plusSeconds(node.getRefreshPeriod())))
 	                    .withSchedule(simpleSchedule().repeatForever()
 	                    		.withIntervalInSeconds(node.getRefreshPeriod())
 	                    		.withMisfireHandlingInstructionNextWithExistingCount())
@@ -247,7 +247,8 @@ public class ODFScheduler {
     					.withIdentity(Integer.toString(node.getId()), "jobs").usingJobData("nodeID",node.getId()).
     					build();
 
-    			Date d = Date.from(node.getRegisterDate().toInstant());
+    			
+    			Date d = Date.from(node.getRegisterDate().toInstant().plusSeconds(node.getRefreshPeriod()));
 
     			Trigger trigger = TriggerBuilder
     					.newTrigger()

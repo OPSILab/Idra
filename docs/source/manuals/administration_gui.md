@@ -21,17 +21,40 @@ The following pictures depicts the functionalities linked to every button or ico
 
 <span style="display:block;text-align:center">![alt tag](buttons.png "Administrator buttons")</span>
 
-### Add/Edit/Delete a Catalogue
+### Add a Catalogue
 
-By clicking on the **ADD** button the following the Catalogue form is presented to the administrator.
+By clicking on the **ADD** button the following Catalogue form is presented to the administrator.
 
 ![alt tag](addNode.png "Add Catalogues")
 
-Here the administrator has to insert all of the information related to the catalogue and then click on the **CREATE** button.
+Here the administrator has to insert the metadata of the catalogue and then click on the **CREATE** button.
+The default metadata related to a catalogue are:
+- Name: The name of the catalogue.
+- Publisher Name: The publisher name of the catalogue.
+- Country: The country of the catalogue, if any.
+- Category: The category of the catalogue (e.g. Municipality, Private institution).
+- Description: A description of the catalogue.
+- Homepage: The homepage of the catalogue.
+- API Endpoint: The endpoint of its REST APIs, if any.
+- Type: The type of the catalogue.
+- Active: Through this field, if true the metadata of the datasets are retrieved from the catalogue; if false, the catalogue is federated but its datasets' metadata are not retrieved.
+- Refresh: This parameter is used to set the synchronization period of the catalogue.
 
-By clicking on the *edit* icon on the Catalogue table, the user can edit most of the Catalogue's information. He/she cannot modify the *host* and *type* attributes. 
+By selecting the type of a catalogue, the administrator may have to insert additional configuration parameters in order to federate it.
+The available catalogues types that an administrator can create are:
+- **CKAN**: this type of catalogue does not require any additional configuration parameters; 
+- **DCATDUMP**: in order to federate this type of catalogue, the administrator has to provide a dump file or a dumpURL together with the specific DCAT Profile (e.g. DCAT-AP or DCAT-AP_IT); 
+- **DKAN**: this type of catalogue does not require any additional configuration parameters;
+- **ORION**: in order to federate the Fiware ORION Context Broker, additional configuration parameters are mandatory. If the ORION CB API endpoint requires authentication, the administrator has to insert the *client_id*, *client_secret* and the *oauth2Endpoint* in order to manage the OAUTH2 authentication and authorization flow. Moreover, the administrator has to upload a file with the datasets' metadata definition. Every distribution of each dataset must contain a valid ORION CB query and, optionally, the *Fiware-Service* and *Fiware-ServicePath* headers. 
+- **SOCRATA**: this type of catalogue does not require any additional configuration parameters;
+- **SPARQL**: in order to federate this type of catalogue, the administrator has to upload a file with the datasets' metadata definition. Every distribution of each dataset must contain a valid SPARLQ query and, optionally, an array of formats (e.g. csv,json,xml,etc...). 
+- **WEB**: this type of catalogue retrieves the datasets' metadata by scraping a website. For this reason, it is required that the administrator adds a so called *sitemap* that contains the navigation parameters of the website and the mapping with DCAT-AP fields.
+ 
+### Edit/Delete a Catalogue
 
-By clicking on the *delete* icon on the Catalogue table, the user deletes the Catalogue and its datasets from the federation. This operation cannot be reverted.
+By clicking on the **edit** icon on the Catalogue table, the user can edit most of the Catalogue's information. He/she cannot modify the *host* and *type* attributes. 
+
+By clicking on the **delete** icon on the Catalogue table, the user deletes the Catalogue and its datasets from the federation. This operation cannot be reverted.
 
 ### Remote Catalogues
 

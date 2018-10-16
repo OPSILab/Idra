@@ -124,7 +124,8 @@ public class DCTPeriodOfTime {
 
 	public SolrInputDocument toDoc(CacheContentType contentType) {
 		SolrInputDocument doc = new SolrInputDocument();
-		doc.addField("id", UUID.randomUUID().toString());
+		doc.addField("id", this.id);
+		doc.addField("nodeID", this.nodeID);
 		doc.addField("content_type", contentType.toString());
 		doc.addField("startDate", this.startDate != null ? this.startDate.getValue() : "");
 		doc.addField("endDate", this.endDate != null ? this.endDate.getValue() : "");

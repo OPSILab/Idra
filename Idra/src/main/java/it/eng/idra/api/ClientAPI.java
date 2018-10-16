@@ -744,7 +744,7 @@ public class ClientAPI {
 	@Produces("application/json")
 	public Response getODMSCatalogues(
 			@QueryParam("withImage") @DefaultValue("true") boolean withImage,
-			@QueryParam("orderType") @DefaultValue("name") String orderType,
+			@QueryParam("orderType") @DefaultValue("asc") String orderType,
 			@QueryParam("orderBy") @DefaultValue("id") String orderBy,
 			@QueryParam("rows") @DefaultValue("10") String rows,
 			@QueryParam("offset") @DefaultValue("0") String offset,
@@ -968,13 +968,15 @@ public class ClientAPI {
 	public Response getDatasetByID(@Context HttpServletRequest httpRequest,@PathParam("id") String id) {
 
 		try {
-			DCATDataset result = MetadataCacheManager.getDatasetByID(id);
-			return Response.status(Response.Status.OK).entity(GsonUtil.obj2Json(result, GsonUtil.datasetType)).build();
-
+			try {
+				DCATDataset result = MetadataCacheManager.getDatasetByID(id);
+				return Response.status(Response.Status.OK).entity(GsonUtil.obj2Json(result, GsonUtil.datasetType)).build();
+			}catch (DatasetNotFoundException e) {
+				// TODO Auto-generated catch block
+				ErrorResponse err = new ErrorResponse(String.valueOf(Response.Status.NOT_FOUND.getStatusCode()), "Dataset with id: "+id+" not found", String.valueOf(Response.Status.NOT_FOUND.getStatusCode()), "Dataset with id: "+id+" not found");
+				return Response.status(Response.Status.NOT_FOUND).entity(GsonUtil.obj2Json(err, GsonUtil.errorResponseSetType)).build();
+			} 
 		} catch (NumberFormatException e) {
-			// TODO Auto-generated catch block
-			return handleErrorResponse500(e);
-		} catch (DatasetNotFoundException e) {
 			// TODO Auto-generated catch block
 			return handleErrorResponse500(e);
 		} catch (IOException e) {
