@@ -35,10 +35,12 @@ import java.sql.SQLException;
  */
 public class DBConnectionManager {
 
-	private static Logger logger = LogManager.getLogger(DBConnectionManager.class);
+//	private static Logger logger = LogManager.getLogger(DBConnectionManager.class);
 
-	private static interface Singleton {
-		final DBConnectionManager INSTANCE = new DBConnectionManager();
+//	private static interface Singleton {
+	private static DBConnectionManager INSTANCE;
+	static {
+		INSTANCE = new DBConnectionManager();
 	}
 
 	private final HikariDataSource cpds;
@@ -58,14 +60,22 @@ public class DBConnectionManager {
 		// }
 
 		HikariConfig config = new HikariConfig();
-		config.setJdbcUrl(PropertyManager.getProperty(ODFProperty.DB_HOST));
+		System.out.println("\naDB_HOST " + PropertyManager.getProperty(ODFProperty.DB_HOST_MIN) + "\n\n");
+		config.setJdbcUrl(PropertyManager.getProperty(ODFProperty.DB_HOST_MIN));
+		
+		System.out.println("\nDB_USERNAME " + PropertyManager.getProperty(ODFProperty.DB_USERNAME) + "\n\n");
+		
 		config.setUsername(PropertyManager.getProperty(ODFProperty.DB_USERNAME));
+		System.out.println("\nDB_PASSWORD" + PropertyManager.getProperty(ODFProperty.DB_PASSWORD) + "\n\n");
+		
 		config.setPassword(PropertyManager.getProperty(ODFProperty.DB_PASSWORD));
 		config.setDataSourceClassName("com.mysql.jdbc.jdbc2.optional.MysqlDataSource");
 		config.setIdleTimeout(30000);
 		config.setMinimumIdle(5);
 		config.setMaximumPoolSize(10);
-//		config.addDataSourceProperty("databaseName", PropertyManager.getProperty(ODFProperty.DB_NAME));
+		System.out.println("\nDB_NAME" + PropertyManager.getProperty(ODFProperty.DB_NAME) + "\n\n");
+		
+		config.addDataSourceProperty("databaseName", PropertyManager.getProperty(ODFProperty.DB_NAME));
 		config.addDataSourceProperty("cachePrepStmts", "true");
 		config.addDataSourceProperty("prepStmtCacheSize", "250");
 		config.addDataSourceProperty("prepStmtCacheSqlLimit", "2048");
@@ -104,12 +114,12 @@ public class DBConnectionManager {
 	}
 
 	public static Connection getDbConnection() throws SQLException {
-//		System.out.println(Singleton.INSTANCE.cpds.getJdbcUrl());
-		return Singleton.INSTANCE.cpds.getConnection();
+		System.out.println("\n JDBC URL " + INSTANCE.cpds.getJdbcUrl());
+		return INSTANCE.cpds.getConnection();
 	}
 
 	public static void closeDbConnection() throws SQLException {
-//		System.out.println(Singleton.INSTANCE.cpds.getJdbcUrl());
-		Singleton.INSTANCE.cpds.close();
+		System.out.println(INSTANCE.cpds.getJdbcUrl());
+		INSTANCE.cpds.close();
 	}
 }
