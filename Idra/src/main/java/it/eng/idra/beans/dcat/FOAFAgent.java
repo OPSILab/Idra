@@ -209,7 +209,8 @@ public class FOAFAgent {
 	public SolrInputDocument toDoc(CacheContentType contentType) {
 
 		SolrInputDocument doc = new SolrInputDocument();
-		doc.addField("id", UUID.randomUUID().toString());
+		doc.addField("id", this.id);
+		doc.addField("nodeID", this.nodeID);
 		doc.addField("content_type", contentType.toString());
 		doc.addField("resourceUri", this.resourceUri);
 		doc.addField("identifier", this.getIdentifier().getValue());
@@ -217,6 +218,7 @@ public class FOAFAgent {
 		doc.addField("mbox", this.getMbox().getValue());
 		doc.addField("homepage", this.getHomepage().getValue());
 		doc.addField("type", this.getType().getValue());
+		
 		return doc;
 	}
 

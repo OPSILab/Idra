@@ -17,7 +17,7 @@ tags:
     description: 'Technical specification of Idra End User APIs. These APIs provide functionalities for searching among federated datasets metadata, execute sparql queries and create Datalets from distribution.'
   - name: Federation Api
     description: 'Technical specification of the APIs that an ODMS catalogue should implement, in order to be federated by the Idra.'
-host: opendatafederation.eng.it
+host: idra-sandbox.opsilab.it
 basePath: /Idra/
 paths:
   /api/v1/administration/version:
@@ -50,12 +50,14 @@ paths:
     x-summary: Catalogues Resources
     x-description: ''
     get:
-      description: Returns all the federated ODMS catalogues.
+      description: Returns all the federated ODMS catalogues details.
       operationId: getODMSCatalogues
       tags:
         - Administration Api
       produces:
         - application/json
+      security:
+        - Bearer: []
       parameters:
         - name: withImage
           in: query
@@ -120,6 +122,8 @@ paths:
         - Administration Api
       produces:
         - application/json
+      security:
+        - Bearer: []
       parameters:
         - in: path
           name: nodeId
@@ -756,9 +760,9 @@ paths:
             $ref: '#/definitions/ErrorResponse'
   /api/v1/administration/login:
     x-summary: Login
-    x-description: Performs the user login against the input credentials
+    x-description: Performs the user login against the input credentials or through oauth2 authorization flow
     post:
-      operationId: login
+      operationId: loginPost
       tags:
         - Administration Api
       consumes:
@@ -1326,6 +1330,139 @@ paths:
             Code 500 Internal Server Error is returned.
           schema:
             $ref: '#/definitions/ErrorResponse'
+  /api/v1/client/catalogues:
+    x-summary: End User Catalogues Resources
+    x-description: 'This api returns the paginated list of the **active** ODMS Catalogues. It also hides, to end users, the internal additional configuration parameters of an ODMSCatalogue.'
+    get:
+      description: Returns the end user usefull metadata of the federated ODMS catalogues. The list of the ODMSCatalogues is filtered in order to retrieve only the **active** ones.
+      operationId: getODMSCataloguesClient
+      tags:
+        - End User Api
+      produces:
+        - application/json
+      parameters:
+        - name: withImage
+          in: query
+          description: If true, returns the list of Catalogues with associated images. If false, returns the list of Catalogues without images.
+          type: boolean
+          default: false
+        - name: orderBy
+          in: query
+          description: the field used to sort the list
+          type: string
+          default: 'id'
+          enum:
+            - id
+            - name
+            - host
+            - nodetype
+            - federationlevel
+            - datasetcount
+            - nodestate
+            - registerdate
+            - lastupdatedate
+            - refreshperiod
+        - name: orderType
+          in: query
+          type: string
+          default: 'asc'
+          enum:
+            - asc
+            - desc
+        - name: rows
+          in: query
+          description: The maximum number of ODMSCatalogues to be returned.
+          type: integer
+          format: int32
+          default: 10
+        - name: offset
+          in: query
+          description: The offset in result list from which to start.
+          type: integer
+          format: int32
+          default: 0
+        - name: name
+          in: query
+          description: If provided, this query parameter is used to filter the list by name.
+          type: string
+          default: ""
+        - name: country
+          in: query
+          description: If provided, this query parameter is used to filter the list by country.
+          type: string
+          default: ""
+      responses:
+        '200':
+          description: It returns the list of federated ODMS catalogues.
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/ODMSCatalogue'
+        '500':
+          description: >-
+            If an error occurs during the execution of the request, HTTP 500
+            Internal Server Error status code is returned.  
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+  /api/v1/client/catalogues/{nodeId}:
+    x-summary: Single Catalogue APIs
+    get:
+      description: Returns a specific federated ODMS catalogue by its nodeId, providing to end user only the usefull information.
+      operationId: getODMSCatalogueClient
+      tags:
+        - End User Api
+      produces:
+        - application/json
+      parameters:
+        - in: path
+          name: nodeId
+          description: The unique identifier of the ODMS catalogue.
+          required: true
+          type: string
+        - name: withImage
+          in: query
+          description: If true, returns the Catalogues with the associated image. If false, returns the Catalogues without the associated image.
+          type: boolean
+          default: false
+      responses:
+        '200':
+          description: It returns the specific federated ODMS catalogue
+          schema:
+            $ref: '#/definitions/ODMSCatalogue'
+        '404':
+          description: >-
+            If the ODMS catalogue does not exist, HTTP Status Code 404 Not Found is
+            returned.
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        '500':
+          description: >-
+            If an error occurs during the execution of the request, HTTP Status
+            Code 500 Internal Server Error is returned.
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+  /api/v1/client/cataloguesInfo:
+    x-summary: Catalogues Info
+    x-description: Returns a subset of the catalogues metadata, specifically the id, the federation level and the name. ODMS Catalogue are filtered in order to retrieve only the ones that allows the search operation. 
+    get:
+      operationId: getODMSCataloguesInfo
+      tags:
+        - End User Api
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: The successfull response consists in an array with the summary details of the searchable catalogues.
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/ODMSCatalogueInfo'
+        '500':
+          description: >-
+            If an error occurs during the execution of the request, HTTP Status
+            Code 500 Internal Server Error is returned.
+          schema:
+            $ref: '#/definitions/ErrorResponse'                    
   /api/v1/client/search:
     x-summary: Metadata Search
     x-description: It performs the federated search on all the dataset metadata belonging
@@ -1486,44 +1623,37 @@ paths:
             Internal Server Error status code is returned.
           schema:
             $ref: '#/definitions/ErrorResponse'
-  /api/v1/client/downloadFromUri:
-    x-summary: Download File
-    x-description: This API is used in order to avoid CORS problems during the creation of
-        a Datalet. It is in charge of the download of the file from the url
-        passed as input.
+  /api/v1/client/dataset/{id}:
+    x-summary: Dataset Detail
+    x-description: This api returns the dataset identified by the parameter *id*.
     get:
-      operationId: downloadFromUri
+      operationId: getDatasetByID
       tags:
         - End User Api
+      produces:
+        - application/json
       parameters:
-        - name: url
-          in: query
-          description: >-
-            this parameter is the url of the file that will be used for the
-            Datalet
+        - name: id
+          in: path
+          description: the identifier of the dataset
           type: string
-        - name: format
-          in: query
-          description: the format of the file
-          type: string
-        - name: downloadFile
-          in: query
-          description: >-
-            when true, the file is properly downloaded; when false, this api
-            checks if the if the url responds with http status 200
-          type: boolean
-          default: true
+          required: true
       responses:
         '200':
-          description: If the file exists and the url does not responds with errors
+          description: The dataset object
           schema:
-            type: string
+            $ref: '#/definitions/DCATDataset'
+        '404':
+          description: The dataset is not found
+          schema:
+            $ref: '#/definitions/ErrorResponse'
         '500':
           description: >-
             If an error occurs during the execution of the request, HTTP 500
             Internal Server Error status code is returned.
           schema:
             $ref: '#/definitions/ErrorResponse'
+    
   /api/v1/client/catalogues/{nodeID}/dataset/{datasetID}/distribution/{distributionID}/createDatalet:
     x-summary: Create Datalet
     x-description: 
@@ -1944,14 +2074,88 @@ definitions:
       sitemap:
         description: If the ODMSCatalogueType is different than **WEB** this field will be null.
         $ref: '#/definitions/WebScraperSitemap'
+      additionalConfig:
+        description: The additional configuration that must be provided if the ODMSCatalogueType is **ORION** or **SPARQL**.
+        $ref: '#/definitions/ODMSCatalogueAdditionalConfiguration'
     required:
       - name
       - host
       - nodeType
       - federationLevel
       - refreshPeriod
-    title: Node
+    title: Catalogue
     type: object
+  ODMSCatalogueInfo:
+    properties:
+      id:
+        title: id
+        type: string
+        description: >-
+          The unique identifier of the ODMS catalogue. When adding a new catalogue, this
+          field is ignored.
+      name:
+        title: name
+        description: Descriptive name of the ODMS catalogue.
+        type: string
+      federationLevel:
+        $ref: '#/definitions/ODMSCatalogueFederationLevel'
+  ODMSCatalogueAdditionalConfiguration:
+    description: The Catalogue's additional configuration parameters. This object is used when the Catalogue's type is **ORION** or **SPARQL**.
+    discriminator: type
+    required:
+      - type
+    properties:
+      id:
+        type: string
+        description: the identifier of the entity.
+      type:
+        type: string
+        enum:
+          - ORION
+          - SPARQL
+  OrionCatalogueConfiguration:
+    allOf:
+      - $ref: '#/definitions/ODMSCatalogueAdditionalConfiguration'
+      - properties:
+          isAuthenticated:
+            type: boolean
+            default: false
+          authToken:
+            type: string
+            default: ''
+            description: If isAuthenticated is true, the authentication token used to perform query against the federated Orion CB
+          clientID:
+            type: string
+            default: ''
+            description: If isAuthenticated is true, the client_id of the application registered in the idm
+          clientSecret:
+            type: string
+            default: ''
+            description: If isAuthenticated is true, the client_secret of the application registered in the idm
+          oauth2Endpoint:
+            type: string
+            default: ''
+            description: If isAuthenticated is true, endpoint of the oauth2 REST API used to retrieve the authentication token
+          orionDatasetDumpString:
+            type: string
+            default: ''
+            description: The dataset dump string for the catalogue
+          orionDatasetFilePath:
+            type: string
+            default: ''
+            description: The internal path of the dataset dump file for the catalogue
+  SparqlCatalogueConfiguration:
+    allOf:
+      - $ref: '#/definitions/ODMSCatalogueAdditionalConfiguration'
+      - properties:
+          sparqlDatasetDumpString:
+            type: string
+            default: ''
+            description: The dataset dump string for the catalogue
+          sparqlDatasetFilePath:
+            type: string
+            default: ''
+            description: The internal path of the dataset dump file for the catalogue
   DCATAPProfile:
     type: string
     description: The DCAT-AP profile of the ODMS catalogue.
@@ -1973,6 +2177,7 @@ definitions:
       - LEVEL_1
       - LEVEL_2
       - LEVEL_3
+      - LEVEL_4
   ODMSCatalogueType:
     type: string
     description: 'The ODMS catalogue type, based on the type of technology and exposed APIs.'
@@ -1983,6 +2188,8 @@ definitions:
       - WEB
       - DCATDUMP
       - DKAN
+      - ORION
+      - SPARQL
   ODMSCatalogueState:
     type: string
     description: The current network status of the ODMS catalogue.
