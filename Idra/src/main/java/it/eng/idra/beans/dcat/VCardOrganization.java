@@ -181,6 +181,7 @@ public class VCardOrganization {
 	public SolrInputDocument toDoc(CacheContentType contentType) {
 		SolrInputDocument doc = new SolrInputDocument();
 		doc.addField("id", this.id);
+		doc.addField("nodeID", this.nodeID);
 		doc.addField("content_type", contentType.toString());
 		doc.addField("resourceUri", this.resourceUri);
 		doc.addField("fn", this.getFn().getValue());
