@@ -39,11 +39,13 @@ public class PropertyManager {
 	}
 
 	public static String getProperty(String propName) {
-		return props.getProperty(propName);
+		Optional<String> prop = Optional.ofNullable(System.getenv(propName));
+		return prop.orElse(props.getProperty(propName));
 	}
 
 	public static String getProperty(IDMProperty propName) {
-		return props.getProperty(propName.toString());
+		Optional<String> prop = Optional.ofNullable(System.getenv(propName.toString()));
+		return prop.orElse(props.getProperty(propName.toString()));
 	}
 
 	public static String getProperty(RestProperty propName) {
