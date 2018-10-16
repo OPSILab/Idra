@@ -41,24 +41,15 @@ WORKDIR /
 # RUN export http_proxy && export https_proxy    	
 
 # Update the environment and install various utilities used for installation
-# RUN         apk update && \
-            # apk add git curl
+RUN         apk update && \
+            apk add git curl
 
 # Install NodeJS 		
-# RUN 		apk add --update nodejs nodejs-npm
+RUN 		apk add --update nodejs nodejs-npm
 
 
 #Install Bower
-# RUN			npm install -g bower
-
-#Install Maven
-# preserve Java 8  from the maven install.
-# RUN mv /etc/alternatives/java /etc/alternatives/java8
-# RUN apk update && apk add maven
-
-# # Restore Java 8
-# RUN mv -f /etc/alternatives/java8 /etc/alternatives/java
-# RUN ls -l /usr/bin/java && java -version
+RUN			npm install -g bower
 
 # Set proxy settings
 # RUN git config --global http.proxy $http_proxy &&\
@@ -72,12 +63,13 @@ WORKDIR /
 # echo $a$http_proxy$b$https_proxy$c | tee .bowerrc
 
 ### Clone the official Idra GitHub repository ###
-# RUN			git clone https://github.com/OPSILab/Idra.git
-	# #&& mv .bowerrc ./Idra/IdraPortal/src/main/webapp
-# RUN cd Idra && git checkout docker
+RUN			git clone https://github.com/OPSILab/Idra.git
+	#&& mv .bowerrc ./Idra/IdraPortal/src/main/webapp
+    
+RUN cd Idra && git checkout docker
 # RUN mkdir /Idra
-ADD Idra /Idra/Idra
-ADD IdraPortal /Idra/IdraPortal
+#ADD Idra /Idra/Idra
+#ADD IdraPortal /Idra/IdraPortal
 # RUN a='<settings xmlns="http://maven.apache.org/SETTINGS/1.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0 http://maven.apache.org/xsd/settings-1.0.0.xsd"><localRepository>a/.m2/repository</localRepository><proxies><proxy><id>myproxy</id><active>' && \
 # b='</active><protocol>http</protocol><host>' && \	  
 # c='</host><port>' && \
@@ -91,11 +83,11 @@ ADD IdraPortal /Idra/IdraPortal
 
 
 ### Build Idra War package
-# RUN cd Idra/Idra && mvn package
+RUN cd Idra/Idra && mvn package
 
 ### Build IdraPortal War package
-# RUN cd Idra/IdraPortal/src/main/webapp && bower install --allow-root
-# RUN cd /Idra/IdraPortal && mvn package
+RUN cd Idra/IdraPortal/src/main/webapp && bower install --allow-root
+RUN cd /Idra/IdraPortal && mvn package
 
 #### Pass built Idra.war and IdraPortal.war to the next build stage in /usr/local/tomcat/webapps container's folder
 FROM        tomcat:8.0.50-jre8-alpine as deploy
