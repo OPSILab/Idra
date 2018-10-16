@@ -60,20 +60,14 @@ public class DBConnectionManager {
 		// }
 
 		HikariConfig config = new HikariConfig();
-		System.out.println("\naDB_HOST " + PropertyManager.getProperty(ODFProperty.DB_HOST_MIN) + "\n\n");
 		config.setJdbcUrl(PropertyManager.getProperty(ODFProperty.DB_HOST_MIN));
 		
-		System.out.println("\nDB_USERNAME " + PropertyManager.getProperty(ODFProperty.DB_USERNAME) + "\n\n");
-		
 		config.setUsername(PropertyManager.getProperty(ODFProperty.DB_USERNAME));
-		System.out.println("\nDB_PASSWORD" + PropertyManager.getProperty(ODFProperty.DB_PASSWORD) + "\n\n");
-		
 		config.setPassword(PropertyManager.getProperty(ODFProperty.DB_PASSWORD));
 		config.setDataSourceClassName("com.mysql.jdbc.jdbc2.optional.MysqlDataSource");
 		config.setIdleTimeout(30000);
 		config.setMinimumIdle(5);
 		config.setMaximumPoolSize(10);
-		System.out.println("\nDB_NAME" + PropertyManager.getProperty(ODFProperty.DB_NAME) + "\n\n");
 		
 		config.addDataSourceProperty("databaseName", PropertyManager.getProperty(ODFProperty.DB_NAME));
 		config.addDataSourceProperty("cachePrepStmts", "true");
@@ -114,12 +108,10 @@ public class DBConnectionManager {
 	}
 
 	public static Connection getDbConnection() throws SQLException {
-		System.out.println("\n JDBC URL " + INSTANCE.cpds.getJdbcUrl());
 		return INSTANCE.cpds.getConnection();
 	}
 
 	public static void closeDbConnection() throws SQLException {
-		System.out.println(INSTANCE.cpds.getJdbcUrl());
 		INSTANCE.cpds.close();
 	}
 }

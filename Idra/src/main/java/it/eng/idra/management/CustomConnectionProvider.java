@@ -39,7 +39,6 @@ public class CustomConnectionProvider extends HikariCPConnectionProvider {
 		if(Optional.ofNullable(System.getenv(ODFProperty.DB_PASSWORD.toString())).isPresent())
 			conf.put("hibernate.hikari.dataSource.password", System.getenv(ODFProperty.DB_PASSWORD.toString()));
 		
-		System.out.println("DB_HOST" + System.getenv(ODFProperty.DB_HOST.toString()));
 		if(Optional.ofNullable(System.getenv(ODFProperty.DB_HOST.toString())).isPresent())
 			conf.put("hibernate.hikari.dataSource.url", System.getenv(ODFProperty.DB_HOST.toString()));
 	

@@ -21,7 +21,12 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Map.Entry;
 import java.util.Properties;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -38,12 +43,12 @@ import org.json.JSONObject;
 public class LoadConfigs extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
-    /**
-     * Default constructor. 
-     */
-    public LoadConfigs() {
+	/**
+	 * Default constructor.
+	 */
+	public LoadConfigs() {
 
-    }
+	}
 
 	/**
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
@@ -75,17 +80,33 @@ public class LoadConfigs extends HttpServlet {
 			json.put("message", "Exception");
 			out.write(json.toString());
 		}
-		 
-		json=new JSONObject(prop);
+		
+		// Override file properties if the ones (if any) set through Environment Variable
+		Stream<Entry<Object, Object>> stream = prop.entrySet().stream();
+	    Map<String, String> mapOfProperties = stream.collect(Collectors.toMap(
+	            e -> String.valueOf(e.getKey()),
+	            e -> checkIfEnvProperties(e)));
+		
+		json=new JSONObject(mapOfProperties);
 		
 		out.write(json.toString());
 		
 	}
 
+	private static String checkIfEnvProperties(Entry<Object, Object> entry) {
+
+		String originalValue = entry.getValue().toString();
+
+		return Optional.ofNullable(System.getenv(entry.getKey().toString())).orElse(originalValue);
+
+	}
+
 	/**
-	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
+	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
+	 *      response)
 	 */
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	protected void doPost(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
 
 	}
 
