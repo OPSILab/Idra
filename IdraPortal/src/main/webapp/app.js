@@ -441,7 +441,7 @@
 
 	app.controller('LoginCtrl',['$scope','$rootScope','$http','md5','config','$cookies','$window',function($scope,$rootScope,$http,md5,config,$cookies,$window){
 
-		$scope.loginType=config["idm.authentication.method"];
+		$scope.loginType=config["idra.authentication.method"];
 		
 		$scope.signIn = function(){
 			if ($scope.loginType === "FIWARE")

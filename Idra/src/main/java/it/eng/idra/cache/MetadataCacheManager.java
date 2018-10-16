@@ -440,7 +440,6 @@ public class MetadataCacheManager {
 		// server.deleteByQuery("_root_:" + "\"" + dataset.getId() + "\"" + "
 		// AND nodeID:" + dataset.getNodeID());
 		server.deleteByQuery("_root_:" + "\"" + dataset.getId() + "\"");// + " AND nodeID:" + dataset.getNodeID());
-		// System.out.println(asd.getStatus());
 		server.add(dataset.toDoc());
 		server.commit();
 
@@ -482,7 +481,7 @@ public class MetadataCacheManager {
 		long num = rsp.getResults().getNumFound();
 		logger.info("-- Search-- Matched Datasets in cache: " + num);
 		rsp = null;
-		// //System.out.println();
+
 		return (int) num;
 
 	}

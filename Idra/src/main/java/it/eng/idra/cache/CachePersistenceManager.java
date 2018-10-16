@@ -17,16 +17,9 @@
  ******************************************************************************/
 package it.eng.idra.cache;
 
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-import java.util.stream.Collectors;
-
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
@@ -37,8 +30,6 @@ import javax.persistence.RollbackException;
 import javax.persistence.TypedQuery;
 
 import org.apache.logging.log4j.*;
-import org.apache.logging.log4j.core.impl.ThrowableFormatOptions;
-
 import it.eng.idra.beans.Datalet;
 import it.eng.idra.beans.dcat.DCATDataset;
 import it.eng.idra.beans.dcat.DCATDatasetId;
@@ -57,20 +48,7 @@ public class CachePersistenceManager {
 	static {
 		// logger.info("Hibernate EntityManagerFactory init");
 		try {
-			Path confPath = Paths.get(System.getenv("IDRA_CONF_FOLDER") + "/hibernate.properties");
-			System.out.println(System.getenv("IDRA_CONF_FOLDER"));
-			if (Files.exists(confPath)) {
-
-				Properties props = new Properties();
-				props.load(Files.newBufferedReader(confPath));
-				Map<String, Object> mapOfProperties = props.entrySet().stream().collect(
-						Collectors.toMap(e -> String.valueOf(e.getKey()), e -> (Object) String.valueOf(e.getValue())));
-
-				emf = Persistence.createEntityManagerFactory("org.hibernate.jpa", mapOfProperties);
-
-			} else {
-				emf = Persistence.createEntityManagerFactory("org.hibernate.jpa");
-			}
+			emf = Persistence.createEntityManagerFactory("org.hibernate.jpa");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

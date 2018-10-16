@@ -66,17 +66,17 @@ services :
                 - idra.lod.repo.name=Idra
                 - idra.lod.server.uri=http://localhost:8080/rdf4j-server/repositories/
                 - idra.lod.server.uri.query=http://localhost:8080/rdf4j-workbench/repositories/Idra/query
-                - idra.orion.orionDumpFilePath=/home/ubuntu/orionDumpPath/
-                - idra.orion.orionInternalAPI=http://10.0.75.1:8080/Idra/api/v1/client/executeOrionQuery
-                - idra.authentication.method=BASIC
-                - idm.fiware.version=7
+                - idra.orion.orionDumpFilePath=/opt/idra/dump/
+                - idra.orion.orionInternalAPI=http://localhost:8080/Idra/api/v1/client/executeOrionQuery
+                - idra.authentication.method=FIWARE
+                - idm.fiware.version=6
                 - idm.protocol=https
-                - idm.host=
+                - idm.host=services.synchronicity-iot.eu
                 - idm.path.base=
-                - idm.client.id=
-                - idm.client.secret=
-                - idm.redirecturi=http://IDRA_HOST/Idra/api/v1/administration/login
-                - idm.logout.callback=http://IDRA_PORTAL_HOST/IdraPortal
+                - idm.client.id=22c5b9801a0c441d900f8adb1a42e968
+                - idm.client.secret=7319050e22194effb9b50167835697f5
+                - idm.redirecturi=http://localhost:8080/Idra/api/v1/administration/login
+                - idm.logout.callback=http://localhost:8080/IdraPortal
                 - idm.admin.role.name=Admin
                 - JAVA_OPTS=-Xms1024m -Xmx3g -XX:PermSize=1024m -XX:MaxPermSize=2048m
             volumes:
