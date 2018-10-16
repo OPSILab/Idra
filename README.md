@@ -1,78 +1,10 @@
 # Idra - Open Data Federation Platform
 
-Idra is a web application able to federate
-existing Open Data Management Systems (ODMS) based on different
-technologies; in this way Idra provides a unique access point to search
-and discover open data sets coming from the different federated ODMS.
-Idra uniforms representation of collected Open Data Set, thanks to the
-adoption of international standards (DCAT-AP) and provides a set of APIs to
-develop third party applications. Idra supports natively ODMS based on
-CKAN, DKAN and Socrata and provides a set of APIs to federate ODMSs not
-natively supported; these ODMSs have to implement and expose them.
-In addition, it is possible to federate a generic Web Portal, either by using the Web Scraping functionality or by uploading a dump of the datasets in DCAT-AP format.
-Moreover Idra provides a SPARQL endpoint in order to perform queries on 5
-stars RDF linked open data collected from federated ODMSs.
-
-**Idra main logic components**
-
--   User Interface
-
-    -   Idra Portal
-
--   APIs
-
-    -   Client Application API
-
-    -   Administration API
-
--   Security
-
-    -   Authentication
-
-    -   Credential DB
-
--   Core
-
-    -   Federation Core
-
-    -   Configuration DB
-
--   Search
-
-    -   OD/LOD Federated Search
-
-    -   SPARQL Federated Search
-
--   Open Data Cache
-
-    -   OD/LOD Metadata Cache Manager
-
-        -   *Indexed Cache Server*
-
-        -   *Cache Persistence manager*
-
-    -   Metadata Cache Repository
-
--   Linked Open Data Cache
-
-    -   LOD Cache Manager
-
-        -   *Triple Store Connector*
-
-    -   LOD Repository
-
-**Extension components**
-
--   ODMS Connectors
-
-    -   SocrataConnector
-    -   CKANConnector
-    -   DKANConnector
-    -   OpenDataFederationNativeConnector
-    -   WebConnector
-    -   DCATAPDumpConnector
-    
-![alt tag](IdraArchitecture.png "Idra Architecture")
+Idra is a web application able to federate existing Open Data Management Systems (ODMS) based on different technologies providing a unique access point to search and discover open datasets coming from heterogeneous sources. Idra uniforms representation of collected open datasets, thanks to the adoption of international standards (DCAT-AP) and provides a set of RESTful APIs to be used by third party applications. 
+ 
+Idra supports natively ODMS based on CKAN, DKAN, Socrata, Orion Context Broker and many other technologies: Idra provides also a set of APIs to federate ODMS not natively supported. In addition, it is possible to federate generic open data portals, that don't expose API, using the web scraping functionality or providing a dump file of the datasets in DCAT-AP format. Moreover Idra provides a SPARQL endpoint in order to perform queries on 5 stars RDF linked open data collected from federated ODMS and allows to easily create charts based on federated open datasets (through [DatalEt-Ecosystem Provider (DEEP)](https://github.com/routetopa/deep-components))
+ 
+Idra is an open source software developed by [Engineering Ingegneria Informatica SpA](http://www.eng.it) inside the EU founded project [FESTIVAL](http://www.festival-project.eu/)
 
 
 ## Requirements
@@ -399,11 +331,6 @@ When the home page is showed, perform the following steps:
 ## Idra Sandbox
 A demo instance of Idra - Open Data Federation Platform is available at the following link: 
 https://idra-sandbox.opsilab.it
-
-In order to test Idra's administration functionalities the login credentials are:
-
- - username: **admin**
- - password: **admin** 
 
 ## Support / Contact / Contribution
 
