@@ -117,7 +117,8 @@ following commands (*username* and *password* are your credential,
     following the example provided in the same file (please refer to
     Maven guide https://maven.apache.org/guides/mini/guide-proxies.html)
 
-## Create WAR packages
+## Installation with WAR packages
+The Idra platform can be installed by building WARs packages and deploying them to an JEE Application Server, such us Apache Tomcat (recommended).
 
 Open a command prompt and execute the following command to clone the
 repository:
@@ -308,6 +309,27 @@ Modify the following configuration files, located in the deployed folders of Tom
         - **`idm.admin.role.name`**: Role name that User must have in the IDM to be authenticated as Idra Administrator. (default: **ADMIN**).
 
 **Note**. Replace **`IDRA_PORTAL_HOST`** and **`IDRA_HOST`** with the actual values, namely the **Base URL** where Idra Platform is deployed.
+### Installation with Docker
+This repository provides the DockerFile, in order to build your Docker image and to start Idra as a Docker conatiner. However, the recommended way is to use Docker Compose, which allows you to start an Idra container, based to the public Docker Hub image. In addition it links the Idra container to the Mysql and RDF4j containers. This method requires that you install [Docker Compose](https://docs.docker.com/compose/).
+
+### Configuration through environment variables
+The configuration through properties, as done in the previous section, can be overridden by changing the corresponding environment settings, in the environment section of the provided `docker-compose.yml` file.
+For instance, the `idra.db.username` property can be set, with the same name, as:
+`idra.db.user=root`
+
+### Create the docker network 
+The Idra and its related containers (MySQL and RDF4K) will run in the same network, that MUST be created before running the platform. The containers will be attached to this network and each one will have its own assigned IP and hostname, internal to the network. In particular, the container hostname will be equal to the name given in the “services” section of docker-compose file. Thus, each container can look up the hostname of the others;
+In order to create the *idra_main* network, type the following command:
+```
+docker network create idra_main
+```
+
+### Run Idra container with Docker Compose
+Put in the repository root folder and type:
+```
+docker-compose up
+```
+As a result of this command, there is Idra listening on port 8080 (default in ports section of docker-compose.yml) on localhost. 
 
 ### Sanity Checks
 In order to apply the previous changes, restart the Tomcat server. The Sanity Checks are the steps that the Administrator will take to verify that the installation is ready to be used and tested.
