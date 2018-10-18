@@ -26,9 +26,9 @@ copyright = '2018, Engineering Ingegneria Informatica S.p.A.'
 author = 'Engineering Ingegneria Informatica S.p.A.'
 
 # The short X.Y version
-version = '0.1'
+version = '1.1'
 # The full version, including alpha/beta/rc tags
-release = '0.0.1'
+release = '1.1.0'
 
 
 # -- General configuration ---------------------------------------------------
