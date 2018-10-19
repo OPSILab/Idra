@@ -1,0 +1,22 @@
+site_name: Idra
+site_url: https://idra.readthedocs.org
+repo_url: https://github.com/OPSILab/Idra.git
+site_description: Idra - Open Data Federation platform Documentation
+docs_dir: docs/manuals
+site_dir: html
+markdown_extensions: [toc,fenced_code]
+use_directory_urls: false
+theme: readthedocs
+pages:
+  - 'Home': 'index.md' 
+  - 'Architecture Overview': 'architecture/architecture.md'
+  - 'Installation & Administration Manual':
+      - 'Introduction': 'admin/index.md'
+      - 'Installation overview': 'admin/installation.md'
+      - 'Install with WARs packages': 'admin/install_war.md'
+      - 'Install with Docker': 'admin/install_docker.md'
+      - 'Sanity Checks': 'admin/sanitychecks.md'
+      - 'Platform Management': 'admin/administration_gui.md'
+  - 'User Guide':
+      - 'Introduction': 'user/index.md'
+      - 'How to use Idra': 'user/enduser.md'
