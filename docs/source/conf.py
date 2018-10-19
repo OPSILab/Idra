@@ -136,7 +136,7 @@ latex_elements = {
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
     (master_doc, 'IdraDocs.tex', 'Idra Docs Documentation',
-     'Giuseppe Ciulla', 'manual'),
+     [author], 'manual'),
 ]
 
 
