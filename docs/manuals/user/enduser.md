@@ -1,14 +1,9 @@
-# End User Manual
-
-This section provides the description of the End User Functionalities. Through the Idra Portal a user can:
--	Search datasets filtering by their metadata;
--	Create graphical representation of dataset resources called *Datalet*;
--	Execute SPARQL queries on RDF resources;
--	View the federated ODMS in the platform.
-
 ## Metadata Search
 
-Each user can perform a dataset. Two types of search are provided by the GUI: a simple search or an advanced search.
+Each user can perform a dataset. Two types of search are provided by the GUI:
+
+ - Simple search
+ - Advanced search.
 
 ### Simple search
 
