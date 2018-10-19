@@ -1,4 +1,4 @@
-# Architecture Overview
+** Architecture Overview **
 
 Idra provides access to resources of federated ODMSs from a single-entry point through a set of APIs and is able to retrieve, search and visualize datasets from different ODMSs. The
 platform is responsible for collecting metadata of Open Data from federated ODMS catalogues and then for translating them into a common and uniform format. In addition, it manages Linked Open Data
