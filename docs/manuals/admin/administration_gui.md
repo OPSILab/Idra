@@ -1,14 +1,16 @@
-# Platform Management
+**Introduction**
 
 This section provides the description of the Administration Functionalities. Through the Idra Portal a logged administrator can:
+
 -	Manage ODMS Catalogues;
 -	Manage configuration parameters;
 -	Manage datalets;
 -	View platform logs.
 
-## Catalogues Managements
+## Catalogues Management
 
 In this page the administrator manages the Catalogues. In particular, he/she is able to:
+
 - Add/Edit/Delete a Catalogue
 - Add from a Remote Catalogues
 - Activate/Deactivate a Catalogue;
@@ -29,6 +31,7 @@ By clicking on the **ADD** button the following Catalogue form is presented to t
 
 Here the administrator has to insert the metadata of the catalogue and then click on the **CREATE** button.
 The default metadata related to a catalogue are:
+
 - Name: The name of the catalogue.
 - Publisher Name: The publisher name of the catalogue.
 - Country: The country of the catalogue, if any.
@@ -42,6 +45,7 @@ The default metadata related to a catalogue are:
 
 By selecting the type of a catalogue, the administrator may have to insert additional configuration parameters in order to federate it.
 The available catalogues types that an administrator can create are:
+
 - **CKAN**: this type of catalogue does not require any additional configuration parameters; 
 - **DCATDUMP**: in order to federate this type of catalogue, the administrator has to provide a dump file or a dumpURL together with the specific DCAT Profile (e.g. DCAT-AP or DCAT-AP_IT); 
 - **DKAN**: this type of catalogue does not require any additional configuration parameters;
@@ -77,6 +81,7 @@ The administrator can download a DCAT-AP dump the Federated Open Data Catalogue.
 ## Configuration Parameters Management
 
 An administrator can modify some of the configuration parameters that control the loading of the RDF files into the LOD repository. In particular, he/she can:
+
     - Enable RDF controls: if **false** all RDFs will be loaded into the LOD repository, if **true** only the RDFs which pass the controls will be loaded, the others will be discarded;
     - Enable RDF max size check: this configuration parameter if **true** will enable the controls on RDFs size;
     - RDF max dimension: if the previous configuration parameter is **true**, this parameter will represent the size limit of an RDF in order to be loaded into the repository. RDFs whose dimension exceeded will be discarded.
