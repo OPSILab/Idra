@@ -25,6 +25,7 @@
 <html lang="en">
 <head>
 
+<link rel="shortcut icon" type="image/png" href="images/icons/favicon-32x32.png"/>
 <title>Idra - Open Data Federation Platform</title>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
