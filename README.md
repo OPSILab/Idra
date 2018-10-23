@@ -10,7 +10,7 @@
 * [Copying and License](#copying-and-license)
     
 ## Introduction
-This is the repository code of **Idra - Open Data Federation** platform.
+This is the repository code of **Idra - Open Data Federation Platform** .
 
 Any feedback on this documentation is highly welcome, including bugs, typos and suggestions. You can use github [issues](https://github.com/OPSILab/Idra/issues) to provide feedback.
 
