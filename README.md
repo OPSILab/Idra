@@ -5,6 +5,10 @@
 <br/>
 [![Read the Docs](https://img.shields.io/readthedocs/idra.svg)](https://idra.readthedocs.io/en/latest/)
 
+<p align="center">
+<img width="200" height="200" src="https://www.gravatar.com/avatar/78a3bb96d2bdda688ff42cd070a5e06d?s=200">
+</p>
+
 * [Introduction](#introduction)
 * [Overall description](#overall-description)
 * [Installation and Administration](#installation-and-administration)
