@@ -1,5 +1,10 @@
 # <a name="top"></a> Idra - Open Data Federation Platform
 
+[![License badge](https://img.shields.io/badge/license-AGPL--3.0-orange.svg)](https://opensource.org/licenses/AGPL-3.0)
+![Docker Pulls](https://img.shields.io/docker/pulls/idraopendata/idra.svg)
+<br/>
+![Read the Docs](https://img.shields.io/readthedocs/idra.svg)
+
 * [Introduction](#introduction)
 * [Overall description](#overall-description)
 * [Installation and Administration](#installation-and-administration)
