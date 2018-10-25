@@ -15,9 +15,28 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package it.eng.idra.beans.odms;
+package it.eng.idra.beans.spod;
 
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.List;
 
-public enum ODMSCatalogueType {
-	CKAN, SOCRATA, NATIVE, WEB, DCATDUMP, DKAN, ORION, SPARQL, SPOD
+import org.ckan.Extra;
+
+import com.google.gson.JsonDeserializationContext;
+import com.google.gson.JsonDeserializer;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParseException;
+
+public class SPODExtraDeserializer implements JsonDeserializer<List<Extra>>{
+
+	@Override
+	public List<Extra> deserialize(JsonElement arg0, Type arg1, JsonDeserializationContext arg2)
+			throws JsonParseException {
+		// TODO Auto-generated method stub
+			if(!arg0.toString().equals("{}"))
+				System.out.println(arg0.toString());
+			List<Extra> t = new ArrayList<Extra>();
+			return t;
+	}
 }

@@ -15,9 +15,25 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package it.eng.idra.beans.odms;
+package it.eng.idra.beans.spod;
 
+import java.lang.reflect.Type;
 
-public enum ODMSCatalogueType {
-	CKAN, SOCRATA, NATIVE, WEB, DCATDUMP, DKAN, ORION, SPARQL, SPOD
+import org.ckan.Group;
+
+import com.google.gson.JsonDeserializationContext;
+import com.google.gson.JsonDeserializer;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParseException;
+
+public class SPODGroupDeserializer implements JsonDeserializer<Group>{
+
+	@Override
+	public Group deserialize(JsonElement arg0, Type arg1, JsonDeserializationContext arg2)
+			throws JsonParseException {
+		// TODO Auto-generated method stub
+			Group t = new Group();
+			t.setName(arg0.getAsString());
+			return t;
+	}
 }

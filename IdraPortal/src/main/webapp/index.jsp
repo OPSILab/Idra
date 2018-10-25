@@ -30,6 +30,7 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 
+<!--<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">-->
 <link rel="stylesheet" href="css/bootstrap-custom.min.css">
 <link rel="stylesheet" href="css/label.min.css">
 <link rel="stylesheet" href="css/table.css">
@@ -37,35 +38,27 @@
 <link rel="stylesheet" href="css/footer.css">
 <link rel="stylesheet" href="css/gridlist.css">
 
-<link rel="stylesheet"
-	href="bower_components/angular-xeditable/dist/css/xeditable.css">
-<link rel="stylesheet"
-	href="bower_components/ng-tags-input/ng-tags-input.min.css">
-<link rel="stylesheet"
-	href="bower_components/ng-tags-input/ng-tags-input.bootstrap.min.css">
-<link rel="stylesheet"
-	href="bower_components/angular-dialog-service/dist/dialogs.min.css">
+<link rel="stylesheet" href="bower_components/angular-xeditable/dist/css/xeditable.css">
+<link rel="stylesheet" href="bower_components/ng-tags-input/ng-tags-input.min.css">
+<link rel="stylesheet" href="bower_components/ng-tags-input/ng-tags-input.bootstrap.min.css">
+<link rel="stylesheet" href="bower_components/angular-dialog-service/dist/dialogs.min.css">
 <!--    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css" rel="stylesheet"> -->
 <!--    Include roboto.css to use the Roboto web font, material.css to include the theme and ripples.css to style the ripple effect -->
 <!--    Non presenti in bower quindi li lascio per ora -->
 
-<link rel="stylesheet"
-	href="bower_components/angular-material/angular-material.min.css">
+<link rel="stylesheet" href="bower_components/angular-material/angular-material.min.css">
 
 <link rel="stylesheet" href="material-bootstrap/css/roboto.min.css">
-<link rel="stylesheet"
-	href="material-bootstrap/css/material-fullpalette.css">
+<link rel="stylesheet" href="material-bootstrap/css/material-fullpalette.css">
 <link rel="stylesheet" href="material-bootstrap/css/ripples.min.css">
 
-<link rel="stylesheet"
-	href="bower_components/ng-img-crop/compile/minified/ng-img-crop.css">
-<link rel="stylesheet"
-	href="bower_components/flag-icon-css/css/flag-icon.min.css">
-<link rel="stylesheet"
-	href="bower_components/angular-ui-switch/angular-ui-switch.css">
+<link rel="stylesheet" href="bower_components/ng-img-crop/compile/minified/ng-img-crop.css">
+<link rel="stylesheet" href="bower_components/flag-icon-css/css/flag-icon.min.css">
+<link rel="stylesheet" href="bower_components/angular-ui-switch/angular-ui-switch.css">
 
 <link rel="stylesheet" href="css/flag.css">
 <link rel="stylesheet" href="css/main.css">
+<!--<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">-->
 <link rel="stylesheet" href="css/navbar.css">
 
 
@@ -269,8 +262,6 @@ div.m-app-loading p {
 					style="margin: 0 auto; max-width: 20%;">
 				<img class="img-responsive " src="images/spinner.gif"
 					style="margin: 0 auto; max-width: 2%;">
-<!-- 				<p style="margin-top: 1.2em; font-size: 28px;">Loading Idra - -->
-<!-- 					Open Data Federation Platform</p> -->
 			</div>
 			<!--         END: Actual animated container. -->
 		</div>
@@ -389,7 +380,7 @@ div.m-app-loading p {
 			</div>
 
 			<div class="col-md-10 col-md-offset-1">
-				<div ng-view></div>
+				<div ng-view autoscroll="true"></div>
 			</div>
 		</div>
 		<div class="push"></div>
