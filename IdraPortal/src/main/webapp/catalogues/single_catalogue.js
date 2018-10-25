@@ -513,6 +513,9 @@ angular.module("IdraPlatform").controller('CatalogueCtrl',['$scope','$http','con
 			case 'SOCRATA':
 				node.federationLevel='LEVEL_2';
 				break;
+			case 'SPOD':
+				node.federationLevel='LEVEL_2';
+				break;
 			case 'WEB':
 				node.federationLevel='LEVEL_2';
 				break;

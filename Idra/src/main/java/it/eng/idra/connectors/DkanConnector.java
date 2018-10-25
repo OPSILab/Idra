@@ -498,17 +498,17 @@ public class DkanConnector implements IODMSConnector {
 		oldDate.setLenient(false);
 		GregorianCalendar newDate = new GregorianCalendar(TimeZone.getTimeZone("UTC"));
 		oldDate.setLenient(false);
-		SimpleDateFormat DKANDateF = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+		SimpleDateFormat ISO = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
 
-		SimpleDateFormat DCATDateF = new SimpleDateFormat("EEE MMM dd HH:mm:ss zzz yyyy", Locale.US);
+		//SimpleDateFormat DCATDateF = new SimpleDateFormat("EEE MMM dd HH:mm:ss zzz yyyy", Locale.US);
 
 		int exception = 0;
 		for (DCATDataset d : intersection) {
 			try {
 				int oldIndex = oldDatasets.indexOf(d);
 				int newIndex = newDatasets.indexOf(d);
-				oldDate.setTime(DCATDateF.parse(oldDatasets.get(oldIndex).getUpdateDate().getValue()));
-				newDate.setTime(DKANDateF.parse(newDatasets.get(newIndex).getUpdateDate().getValue()));
+				oldDate.setTime(ISO.parse(oldDatasets.get(oldIndex).getUpdateDate().getValue()));
+				newDate.setTime(ISO.parse(newDatasets.get(newIndex).getUpdateDate().getValue()));
 
 				if (newDate.after(oldDate)) {
 					syncrhoResult.addToChangedList(d);
