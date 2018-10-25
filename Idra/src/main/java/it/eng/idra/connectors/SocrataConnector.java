@@ -443,10 +443,6 @@ public class SocrataConnector implements IODMSConnector {
 			ODMSCatalogueNotFoundException, IOException {
 
 		ArrayList<DCATDataset> newDatasets = (ArrayList<DCATDataset>) getAllDatasets();
-		// ArrayList<DCATDataset> newDatasets = new ArrayList<DCATDataset>();
-		// newDatasets.add(new
-		// DCATDataset(node,"","",null,"1","","2015-25-11T00:00:00Z","2015-25-11T00:00:00Z","","","","","","","","",null,null,null));
-		// newDatasets.add(new
 
 		ODMSSynchronizationResult syncrhoResult = new ODMSSynchronizationResult();
 
@@ -482,9 +478,7 @@ public class SocrataConnector implements IODMSConnector {
 		oldDate.setLenient(false);
 		GregorianCalendar newDate = new GregorianCalendar(TimeZone.getTimeZone("UTC"));
 		oldDate.setLenient(false);
-		SimpleDateFormat socrataDateF = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
-
-		SimpleDateFormat DCATDateF = new SimpleDateFormat("EEE MMM dd HH:mm:ss zzz yyyy", Locale.US);
+		SimpleDateFormat ISO = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
 
 		int exception = 0;
 		for (DCATDataset d : intersection) {
@@ -495,8 +489,8 @@ public class SocrataConnector implements IODMSConnector {
 				// System.out.println(oldDatasets.get(oldIndex).getDcat_modified().getValue());
 				// System.out.println(newDatasets.get(newIndex).getDcat_modified().getValue());
 				// System.out.println("-----------------------\n\n");
-				oldDate.setTime(DCATDateF.parse(oldDatasets.get(oldIndex).getUpdateDate().getValue()));
-				newDate.setTime(socrataDateF.parse(newDatasets.get(newIndex).getUpdateDate().getValue()));
+				oldDate.setTime(ISO.parse(oldDatasets.get(oldIndex).getUpdateDate().getValue()));
+				newDate.setTime(ISO.parse(newDatasets.get(newIndex).getUpdateDate().getValue()));
 				// oldDate.setTime(sdf.parse(oldDatasets.get(oldIndex).getDcat_modified().getValue()));
 				// oldDate.setTimeInMillis(sdf.parse(parseDate(oldDatasets.get(oldIndex).getDcat_modified().getValue())).getTime());
 				//
