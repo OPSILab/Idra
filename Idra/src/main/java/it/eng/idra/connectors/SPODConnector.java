@@ -35,6 +35,7 @@ import it.eng.idra.beans.odms.ODMSCatalogueForbiddenException;
 import it.eng.idra.beans.odms.ODMSCatalogueNotFoundException;
 import it.eng.idra.beans.odms.ODMSCatalogueOfflineException;
 import it.eng.idra.beans.odms.ODMSSynchronizationResult;
+import it.eng.idra.beans.spod.SPODDataset;
 import it.eng.idra.utils.CommonUtil;
 import it.eng.idra.utils.GsonUtil;
 import it.eng.idra.utils.GsonUtilException;
@@ -292,12 +293,12 @@ public class SPODConnector implements IODMSConnector {
 	 * This method will return the dataset /SpodCkanApi/api/2/rest/dataset/{id}
 	 * */
 	
-	private Dataset getCKANDataset(String id) throws Exception{
+	private SPODDataset getCKANDataset(String id) throws Exception{
 		RestClient client = new RestClientImpl();
 		HttpResponse response = client.sendGetRequest(node.getHost()+(node.getHost().endsWith("/")?"":"/")+"SpodCkanApi/api/2/rest/dataset/"+id, new HashMap<String,String>());
 		int status = client.getStatus(response);		
 		if(status==200)
-			return GsonUtil.json2Obj(client.getHttpResponseBody(response), GsonUtil.ckanDatasetType);
+			return GsonUtil.json2Obj(client.getHttpResponseBody(response), GsonUtil.spodDatasetType);
 		else
 			return null;
 	}
@@ -305,12 +306,13 @@ public class SPODConnector implements IODMSConnector {
 	
 	public DCATDataset datasetToDCAT(Object dataset, ODMSCatalogue node) {
 
-		Dataset d = (Dataset) dataset;
+		SPODDataset d = (SPODDataset) dataset;
 		DCATDataset mapped;
 		// Properties to be mapped among different CKAN fallback fields
 
 		if(!d.isIsopen()) {
 			System.out.println(d.getName() +" Is not open");
+			return null;
 		}
 		
 		String title = null, description = null, accessRights = null, frequency = null, landingPage = null,
@@ -337,7 +339,7 @@ public class SPODConnector implements IODMSConnector {
 				hasVersion = new ArrayList<String>(), isVersionOf = new ArrayList<String>(),
 				language = new ArrayList<String>(), provenance = new ArrayList<String>(),
 				otherIdentifier = new ArrayList<String>(), sample = new ArrayList<String>(),
-				source = new ArrayList<String>(), versionNotes = new ArrayList<String>();
+				source = new ArrayList<String>(), versionNotes = new ArrayList<String>(), relatedResource = new ArrayList<String>();
 
 		List<DCATDistribution> distributionList = new ArrayList<DCATDistribution>();
 
@@ -566,11 +568,14 @@ public class SPODConnector implements IODMSConnector {
 					distributionList.add(resourceToDCAT(r, landingPage, license));
 				}
 		}
+		
+		if(d.getRelations() !=null)
+			relatedResource = d.getRelations().stream().map(x -> x.getUrl()).collect(Collectors.toList());
 
 		mapped = new DCATDataset(nodeID,identifier, title, description, distributionList, themeList, publisher, contactPointList,
 				keywords, accessRights, conformsTo, documentation, frequency, hasVersion, isVersionOf, landingPage,
 				language, provenance, releaseDate, updateDate, otherIdentifier, sample, source,
-				spatialCoverage, temporalCoverage, type, version, versionNotes, rightsHolder, creator, subjectList);
+				spatialCoverage, temporalCoverage, type, version, versionNotes, rightsHolder, creator, subjectList,relatedResource);
 
 		distributionList = null;
 		publisher = null;

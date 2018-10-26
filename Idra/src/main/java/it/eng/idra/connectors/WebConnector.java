@@ -149,7 +149,7 @@ public class WebConnector implements IODMSConnector {
 				language = new ArrayList<String>(), provenance = new ArrayList<String>(),
 				otherIdentifier = new ArrayList<String>(), sample = new ArrayList<String>(),
 				source = new ArrayList<String>(), versionNotes = new ArrayList<String>(),
-				subject = new ArrayList<String>();
+				subject = new ArrayList<String>(), relatedResource = new ArrayList<String>();
 		List<DCATDistribution> distributionList = new ArrayList<DCATDistribution>();
 
 		Document doc = (Document) dataset;
@@ -419,7 +419,7 @@ public class WebConnector implements IODMSConnector {
 		mapped = new DCATDataset(nodeID,identifier, title, description, distributionList, themeList, publisher, contactPointList,
 				keywords, accessRights, conformsTo, documentation, frequency, hasVersion, isVersionOf, landingPage,
 				language, provenance, releaseDate, updateDate, otherIdentifier, sample, source,
-				spatialCoverage, temporalCoverage, type, version, versionNotes, rightsHolder, creator, subjectList);
+				spatialCoverage, temporalCoverage, type, version, versionNotes, rightsHolder, creator, subjectList,relatedResource);
 
 		distributionList = null;
 		publisher = null;

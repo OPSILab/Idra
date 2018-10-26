@@ -117,6 +117,8 @@
 		required="false" multiValued="false" />
 	<field name="documentation" type="string" indexed="true" stored="true"
 		required="false" multiValued="true" />
+	<field name="relatedResource" type="string" indexed="true" stored="true"
+		required="false" multiValued="true" />
 	<field name="frequency" type="string" indexed="true" stored="true"
 		required="false" multiValued="false" />
 	<field name="hasVersion" type="string" indexed="true" stored="true"
