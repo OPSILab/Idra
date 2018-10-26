@@ -28,6 +28,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 
+import org.ckan.Dataset;
+
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonDeserializationContext;
@@ -58,6 +60,9 @@ import it.eng.idra.beans.search.SearchFilter;
 import it.eng.idra.beans.search.SearchRequest;
 import it.eng.idra.beans.search.SearchResult;
 import it.eng.idra.beans.search.SparqlSearchRequest;
+import it.eng.idra.beans.spod.SPODExtraDeserializer;
+import it.eng.idra.beans.spod.SPODGroupDeserializer;
+import it.eng.idra.beans.spod.SPODTagDeserializer;
 import it.eng.idra.beans.statistics.KeywordStatistics;
 import it.eng.idra.beans.statistics.KeywordStatisticsResult;
 import it.eng.idra.beans.statistics.StatisticsRequest;
@@ -144,6 +149,9 @@ public final class GsonUtil {
 	public static Type datasetType = new TypeToken<DCATDataset>() {
 	}.getType();
 	
+	public static Type ckanDatasetType = new TypeToken<Dataset>() {
+	}.getType();
+	
 	public static Type datasetListType = new TypeToken<List<DCATDataset>>() {
 	}.getType();
 	
@@ -183,6 +191,9 @@ public final class GsonUtil {
 	public static Type prefLabelType = new TypeToken<SKOSPrefLabel>() {
 	}.getType();
 	
+	public static Type extraListType = new TypeToken<List<org.ckan.Extra>>() {
+	}.getType();
+	
 	private static GsonBuilder gsonBuilder = new GsonBuilder()
 			.registerTypeAdapter(ZonedDateTime.class, new JsonDeserializer<ZonedDateTime>() {
 				public ZonedDateTime deserialize(JsonElement jsonElement, Type type,
@@ -214,7 +225,11 @@ public final class GsonUtil {
 			.registerTypeAdapter(SearchFilter.class, new AnnotatedDeserializer<LogsRequest>())
 			.registerTypeAdapter(ErrorResponse.class, new AnnotatedDeserializer<ErrorResponse>())
 			.registerTypeHierarchyAdapter(GregorianCalendar.class, new CalendarAdapter())
-			.registerTypeAdapter(ODMSCatalogueImage.class, new ImageSerializer());
+			.registerTypeAdapter(ODMSCatalogueImage.class, new ImageSerializer())
+			
+			.registerTypeAdapter(org.ckan.Tag.class, new SPODTagDeserializer())
+			.registerTypeAdapter(org.ckan.Group.class, new SPODGroupDeserializer())
+			.registerTypeAdapter(extraListType , new SPODExtraDeserializer());
 	
 	private static Gson gson = gsonBuilder.create();
 	private static Gson gsonExcludeFields = gsonBuilder.excludeFieldsWithoutExposeAnnotation().create();

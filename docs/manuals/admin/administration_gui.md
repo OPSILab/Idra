@@ -52,6 +52,7 @@ The available catalogues types that an administrator can create are:
 - **ORION**: in order to federate the Fiware ORION Context Broker, additional configuration parameters are mandatory. If the ORION CB API endpoint requires authentication, the administrator has to insert the *client_id*, *client_secret* and the *oauth2Endpoint* in order to manage the OAUTH2 authentication and authorization flow. Moreover, the administrator has to upload a file with the datasets' metadata definition. Every distribution of each dataset must contain a valid ORION CB query and, optionally, the *Fiware-Service* and *Fiware-ServicePath* headers. 
 - **SOCRATA**: this type of catalogue does not require any additional configuration parameters;
 - **SPARQL**: in order to federate this type of catalogue, the administrator has to upload a file with the datasets' metadata definition. Every distribution of each dataset must contain a valid SPARLQ query and, optionally, an array of formats (e.g. csv,json,xml,etc...). 
+- **SPOD**: this type of catalogue does not require any additional configuration parameters;
 - **WEB**: this type of catalogue retrieves the datasets' metadata by scraping a website. For this reason, it is required that the administrator adds a so called *sitemap* that contains the navigation parameters of the website and the mapping with DCAT-AP fields.
  
 ### Edit/Delete a Catalogue
