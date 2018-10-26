@@ -106,6 +106,11 @@ public class DCATAPITSerializer extends DCATAPSerializer {
 
 		serializeConcept(dataset.getSubject(), model, datasetResource);
 
+		List<DCATProperty> relatedResourceList = dataset.getRelatedResource();
+		if (relatedResourceList != null)
+			relatedResourceList.stream().filter(item -> StringUtils.isNotBlank(item.getValue()))
+					.forEach(item -> datasetResource.addProperty(item.getProperty(), item.getValue()));
+		
 		List<DCATDistribution> distributions = dataset.getDistributions();
 		for (DCATDistribution distribution : distributions) {
 			addDistributionToModel(model, datasetResource, distribution);

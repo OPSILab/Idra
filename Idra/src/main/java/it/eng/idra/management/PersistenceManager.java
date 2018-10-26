@@ -135,7 +135,7 @@ public class PersistenceManager {
 		// + (withImage ? "JOIN FETCH d.image i" : "")+" where d.isActive=true or
 		// d.isActive is null",
 		TypedQuery<ODMSCatalogue> q = em.createQuery(
-				"SELECT d FROM ODMSCatalogue d " + (withImage ? "JOIN FETCH d.image i" : ""), ODMSCatalogue.class);
+				"SELECT d FROM ODMSCatalogue d " + (withImage ? "JOIN FETCH d.image i" : "")+" where d.id not in (74,90,92,93,95,97,100,101,102,106,107,108,109,114,115,116,117,118,119,120,121,122,123,124,125,126,127,129,130,131,132,133,136,208,210,211,214,215)", ODMSCatalogue.class);
 		return q.getResultList();
 	}
 

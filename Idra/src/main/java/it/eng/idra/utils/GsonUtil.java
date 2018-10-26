@@ -60,6 +60,7 @@ import it.eng.idra.beans.search.SearchFilter;
 import it.eng.idra.beans.search.SearchRequest;
 import it.eng.idra.beans.search.SearchResult;
 import it.eng.idra.beans.search.SparqlSearchRequest;
+import it.eng.idra.beans.spod.SPODDataset;
 import it.eng.idra.beans.spod.SPODExtraDeserializer;
 import it.eng.idra.beans.spod.SPODGroupDeserializer;
 import it.eng.idra.beans.spod.SPODTagDeserializer;
@@ -149,7 +150,7 @@ public final class GsonUtil {
 	public static Type datasetType = new TypeToken<DCATDataset>() {
 	}.getType();
 	
-	public static Type ckanDatasetType = new TypeToken<Dataset>() {
+	public static Type spodDatasetType = new TypeToken<SPODDataset>() {
 	}.getType();
 	
 	public static Type datasetListType = new TypeToken<List<DCATDataset>>() {

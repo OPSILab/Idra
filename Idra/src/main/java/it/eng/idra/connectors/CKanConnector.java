@@ -263,7 +263,7 @@ public class CKanConnector implements IODMSConnector {
 				hasVersion = new ArrayList<String>(), isVersionOf = new ArrayList<String>(),
 				language = new ArrayList<String>(), provenance = new ArrayList<String>(),
 				otherIdentifier = new ArrayList<String>(), sample = new ArrayList<String>(),
-				source = new ArrayList<String>(), versionNotes = new ArrayList<String>();
+				source = new ArrayList<String>(), versionNotes = new ArrayList<String>(), relatedResource = new ArrayList<String>();
 
 		List<DCATDistribution> distributionList = new ArrayList<DCATDistribution>();
 
@@ -500,7 +500,7 @@ public class CKanConnector implements IODMSConnector {
 		mapped = new DCATDataset(nodeID,identifier, title, description, distributionList, themeList, publisher, contactPointList,
 				keywords, accessRights, conformsTo, documentation, frequency, hasVersion, isVersionOf, landingPage,
 				language, provenance, releaseDate, updateDate, otherIdentifier, sample, source,
-				spatialCoverage, temporalCoverage, type, version, versionNotes, rightsHolder, creator, subjectList);
+				spatialCoverage, temporalCoverage, type, version, versionNotes, rightsHolder, creator, subjectList,relatedResource);
 
 		distributionList = null;
 		publisher = null;
