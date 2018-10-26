@@ -105,7 +105,7 @@ public class DCATDataset implements Serializable {
 	private DCATProperty landingPage;
 	private List<DCATProperty> language;
 	private List<DCATProperty> provenance;
-	// private DCATProperty relatedResource ?
+	private List<DCATProperty> relatedResource;
 	private DCATProperty releaseDate;
 	private DCATProperty updateDate;
 	private DCATProperty identifier;
@@ -139,7 +139,7 @@ public class DCATDataset implements Serializable {
 			List<String> provenance, String releaseDate, String updateDate, 
 			List<String> otherIdentifier, List<String> sample, List<String> source, DCTLocation spatialCoverage,
 			DCTPeriodOfTime temporalCoverage, String type, String version, List<String> versionNotes,
-			FOAFAgent rightsHolder, FOAFAgent creator, List<SKOSConceptSubject> subject) {
+			FOAFAgent rightsHolder, FOAFAgent creator, List<SKOSConceptSubject> subject, List<String> relatedResource) {
 
 		super();
 		setId(CommonUtil.extractSeoIdentifier(title, UUID.randomUUID().toString(),nodeID));
@@ -150,30 +150,23 @@ public class DCATDataset implements Serializable {
 		setDistributions(distributions);
 		setTitle(new DCATProperty(DCTerms.title, RDFS.Literal.getURI(), title));
 		setDescription(new DCATProperty(DCTerms.description, RDFS.Literal.getURI(), description));
-		// setTheme(theme != null ? theme
-		// : Arrays.asList(new SKOSConcept(DCAT.theme.getURI(), SKOS.Concept.getURI(),
-		// new ArrayList<SKOSPrefLabel>(), nodeID)));
 		setTheme(theme);
-		// setPublisher(publisher != null ? publisher
-		// : new FOAFAgent(DCTerms.publisher.getURI(), "", "", "", "", "", "",
-		// nodeID));
 		setPublisher(publisher);
-		// setContactPoint(contactPoint != null ? contactPoint
-		// : Arrays.asList(new VCardOrganization(DCAT.contactPoint.getURI(), "",
-		// "", "", "", "", nodeID)));
 		setContactPoint(contactPoint);
 		setKeywords(keywords != null && keywords.size() != 0 ? keywords : new ArrayList<String>());
 		setAccessRights(new DCATProperty(DCTerms.accessRights, DCTerms.RightsStatement.getURI(), accessRights));
-
-		// setConformsTo(conformsTo != null ? conformsTo
-		// : Arrays.asList(new DCTStandard(DCTerms.conformsTo.getURI(), "", "",
-		// "", "", nodeID)));
 		setConformsTo(conformsTo);
 		setDocumentation(
 				documentation != null
 						? documentation.stream().map(item -> new DCATProperty(FOAF.page, FOAF.Document.getURI(), item))
 								.collect(Collectors.toList())
 						: Arrays.asList(new DCATProperty(FOAF.page, FOAF.Document.getURI(), "")));
+		
+		setRelatedResource(
+				relatedResource != null
+						? relatedResource.stream().map(item -> new DCATProperty(DCTerms.relation, RDFS.Resource.getURI(), item))
+								.collect(Collectors.toList())
+						: Arrays.asList(new DCATProperty(DCTerms.relation, RDFS.Resource.getURI(), "")));
 
 		setFrequency(new DCATProperty(DCTerms.accrualPeriodicity, DCTerms.Frequency.getURI(), frequency));
 		setHasVersion(hasVersion != null
@@ -277,12 +270,12 @@ public class DCATDataset implements Serializable {
 			List<String> provenance, String releaseDate, String updateDate, 
 			List<String> otherIdentifier, List<String> sample, List<String> source, DCTLocation spatialCoverage,
 			DCTPeriodOfTime temporalCoverage, String type, String version, List<String> versionNotes,
-			FOAFAgent rightsHolder, FOAFAgent creator, List<SKOSConceptSubject> subject,boolean hasStoredRDF) {
+			FOAFAgent rightsHolder, FOAFAgent creator, List<SKOSConceptSubject> subject, List<String> relatedResource,boolean hasStoredRDF) {
 		
 		this(nodeID,identifier, title, description, distributions, theme, publisher, contactPoint, keywords, accessRights,
 				conformsTo, documentation, frequency, hasVersion, isVersionOf, landingPage, language, provenance,
 				releaseDate, updateDate, otherIdentifier, sample, source, spatialCoverage, temporalCoverage,
-				type, version, versionNotes, rightsHolder, creator, subject);
+				type, version, versionNotes, rightsHolder, creator, subject,relatedResource);
 		
 		this.setId(id);
 		this.setHasStoredRDF(hasStoredRDF);
@@ -670,6 +663,19 @@ public class DCATDataset implements Serializable {
 
 	@LazyCollection(LazyCollectionOption.FALSE)
 	@ElementCollection
+	@CollectionTable(name = "dcat_relatedResource", joinColumns = { @JoinColumn(name = "dataset_id",referencedColumnName="dataset_id"),	@JoinColumn(name = "nodeID",referencedColumnName="nodeID") })
+	@AttributeOverrides({
+			@AttributeOverride(name = "value", column = @Column(name = "relatedResource", columnDefinition = "LONGTEXT")) })
+	public List<DCATProperty> getRelatedResource() {
+		return relatedResource;
+	}
+
+	public void setRelatedResource(List<DCATProperty> relatedResource) {
+		this.relatedResource = relatedResource;
+	}
+
+	@LazyCollection(LazyCollectionOption.FALSE)
+	@ElementCollection
 	@CollectionTable(name = "dcat_hasVersion", joinColumns = { @JoinColumn(name = "dataset_id",referencedColumnName="dataset_id"),	@JoinColumn(name = "nodeID",referencedColumnName="nodeID") })
 	@AttributeOverrides({
 			@AttributeOverride(name = "value", column = @Column(name = "hasVersion", columnDefinition = "LONGTEXT")) })
@@ -828,16 +834,6 @@ public class DCATDataset implements Serializable {
 		doc.addField("content_type", CacheContentType.dataset.toString());
 		doc.addField("nodeID", nodeID);
 		doc.addField("hasStoredRDF", hasStoredRDF);
-
-//		try {
-//			doc.addField("legacyIdentifier",
-//					(StringUtils.isNotBlank(legacyIdentifier) ? legacyIdentifier
-//							: StringUtils.isNotBlank(otherIdentifier.get(0).getValue().toString())
-//									? otherIdentifier.get(0).getValue().toString()
-//									: ""));
-//		} catch (Exception e) {
-//			doc.addField("legacyIdentifier", "");
-//		}
 		
 		String desc_tmp = description.getValue();
 		try {
@@ -881,6 +877,10 @@ public class DCATDataset implements Serializable {
 
 		if (documentation != null && !documentation.isEmpty())
 			doc.addField("documentation", documentation.stream().filter(item -> item != null)
+					.map(item -> item.getValue()).collect(Collectors.toList()));
+		
+		if (relatedResource != null && !relatedResource.isEmpty())
+			doc.addField("relatedResource", relatedResource.stream().filter(item -> item != null)
 					.map(item -> item.getValue()).collect(Collectors.toList()));
 
 		if (isVersionOf != null && !isVersionOf.isEmpty())
@@ -1063,20 +1063,6 @@ public class DCATDataset implements Serializable {
 		String dataset_modified = doc.getOrDefault("updateDate", "").toString();
 		if (StringUtils.isNotBlank(dataset_modified))
 			dataset_modified = CommonUtil.toUtcDate(doc.getFieldValue("updateDate").toString());
-
-		/*DCATDataset d= new DCATDataset(nodeID, doc.getFieldValue("title").toString(),
-				doc.getFieldValue("description").toString(), distrList, themeList, publisher, contactPointList,
-				(ArrayList<String>) doc.getFieldValue("keywords"), doc.getFieldValue("accessRights").toString(),
-				conformsToList, (ArrayList<String>) doc.getFieldValue("documentation"),
-				doc.getFieldValue("frequency").toString(), (ArrayList<String>) doc.getFieldValue("hasVersion"),
-				(ArrayList<String>) doc.getFieldValue("isVersionOf"), doc.getFieldValue("landingPage").toString(),
-				(ArrayList<String>) doc.getFieldValue("language"), (ArrayList<String>) doc.getFieldValue("provenance"),
-				dataset_issued, dataset_modified, doc.getFieldValue("identifier").toString(),
-				(ArrayList<String>) doc.getFieldValue("otherIdentifier"),
-				(ArrayList<String>) doc.getFieldValue("sample"), (ArrayList<String>) doc.getFieldValue("source"),
-				spatialCoverage, temporalCoverage, doc.getFieldValue("type").toString(),
-				doc.getFieldValue("version").toString(), (ArrayList<String>) doc.getFieldValue("versionNotes"),
-				rightsHolder, creator, subjectList, doc.getFieldValue("legacyIdentifier").toString(),doc.getFieldValue("seoIdentifier").toString());*/
 	
 		DCATDataset d= new DCATDataset(doc.getFieldValue("id").toString(),nodeID, doc.getFieldValue("identifier").toString(), doc.getFieldValue("title").toString(),
 				doc.getFieldValue("description").toString(), distrList, themeList, publisher, contactPointList,
@@ -1090,7 +1076,7 @@ public class DCATDataset implements Serializable {
 				(ArrayList<String>) doc.getFieldValue("sample"), (ArrayList<String>) doc.getFieldValue("source"),
 				spatialCoverage, temporalCoverage, doc.getFieldValue("type").toString(),
 				doc.getFieldValue("version").toString(), (ArrayList<String>) doc.getFieldValue("versionNotes"),
-				rightsHolder, creator, subjectList,(Boolean) doc.getFieldValue("hasStoredRDF"));
+				rightsHolder, creator, subjectList,(ArrayList<String>) doc.getFieldValue("relatedResource"),(Boolean) doc.getFieldValue("hasStoredRDF"));
 		
 		return d;
 

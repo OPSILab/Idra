@@ -390,6 +390,19 @@
 							</ul>
 						</td>
 					</tr>
+					<tr
+						ng-show="dataset.relatedResource.length>1 || (dataset.relatedResource.length==1 && dataset.relatedResource[0]!='' )">
+						<td><span style="font-weight: bold;">Related Resource:</span></td>
+						<td>
+							<ul class="list-group list" style="margin: 0px 0px 0px 0px;">
+								<li class='list-group-item'
+									ng-repeat="tmp in dataset.relatedResource track by $index" style="padding-left: 0px;">
+										<a href='{{tmp}}' target='_blank'>{{tmp}}</a>
+								</li>
+							</ul>
+
+						</td>
+					</tr>
 					<tr ng-show="dataset.contactPoint.length>1 || 
 					(dataset.contactPoint.length==1 &&
 					 (dataset.contactPoint[0].fn!='' ||

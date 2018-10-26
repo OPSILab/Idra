@@ -208,6 +208,11 @@ public class DCATAPSerializer {
 		if (documentationList != null)
 			documentationList.stream().filter(item -> StringUtils.isNotBlank(item.getValue()))
 					.forEach(item -> datasetResource.addProperty(item.getProperty(), item.getValue()));
+		
+		List<DCATProperty> relatedResourceList = dataset.getRelatedResource();
+		if (relatedResourceList != null)
+			relatedResourceList.stream().filter(item -> StringUtils.isNotBlank(item.getValue()))
+					.forEach(item -> datasetResource.addProperty(item.getProperty(), item.getValue()));
 
 		serializeFrequency(dataset.getFrequency(), model, datasetResource);
 
