@@ -1,1 +1,13 @@
 Changelog (since 1.0):
+
+v1.1.0:
+- Fix: Feature request: add link in images categories (#1)
+- Fix: DUMP federation/synchronization bugs for TURTLE format 
+- Fix: Theme/Subject deserialization when prefLabel is not present.
+- New Feature: add a different permalink for every dataset (#2).
+- Fix: RDF's insertion during federation bug fixed.
+- Fix: The list of federated catalogues, shown on the portal, is wrong. (#6).
+- New Feature: Integration of the Keyrock Fiware IdM as authentication method (#5)
+- New Feature: Support for ORION Context Broker (#4) and for SPARQL endpoints.
+- Fix: Solr deletion of FOAFAgent entities fixed.
+- New Feature: Support for Docker installation (DockerFile and Docker Compose).

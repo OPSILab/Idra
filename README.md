@@ -1,5 +1,14 @@
 # <a name="top"></a> Idra - Open Data Federation Platform
 
+[![License badge](https://img.shields.io/badge/license-AGPL--3.0-orange.svg)](https://opensource.org/licenses/AGPL-3.0)
+[![Docker Pulls](https://img.shields.io/docker/pulls/idraopendata/idra.svg)](https://hub.docker.com/r/idraopendata/idra/)
+<br/>
+[![Read the Docs](https://img.shields.io/readthedocs/idra.svg)](https://idra.readthedocs.io/en/latest/)
+
+<p align="center">
+<img width="200" height="200" src="https://www.gravatar.com/avatar/78a3bb96d2bdda688ff42cd070a5e06d?s=200">
+</p>
+
 * [Introduction](#introduction)
 * [Overall description](#overall-description)
 * [Installation and Administration](#installation-and-administration)
@@ -10,7 +19,7 @@
 * [Copying and License](#copying-and-license)
     
 ## Introduction
-This is the repository code of **Idra - Open Data Federation** platform.
+This is the repository code of **Idra - Open Data Federation Platform** .
 
 Any feedback on this documentation is highly welcome, including bugs, typos and suggestions. You can use github [issues](https://github.com/OPSILab/Idra/issues) to provide feedback.
 
