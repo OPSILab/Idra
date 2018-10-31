@@ -16,12 +16,14 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <div>
-<div class="row  text-center" id="top" style="margin:0 0 0 0">
-			<h3 style="display: inline;">
-				Search over <strong>{{numberOfDatasets}}</strong> dataset from <strong>{{numberOfCatalogues}}</strong> catalogues!
-			</h3>
-</div>
-	<form class="form" ng-submit="executeQuery()" ng-keyup="hitEnter($event)" novalidate>
+	<div class="row  text-center" id="top" style="margin: 0 0 0 0">
+		<h3 style="display: inline;">
+			Search over <strong>{{numberOfDatasets}}</strong> dataset from <strong>{{numberOfCatalogues}}</strong>
+			catalogues!
+		</h3>
+	</div>
+	<form class="form" ng-submit="executeQuery()"
+		ng-keyup="hitEnter($event)" novalidate>
 		<fieldset>
 			<div class="collapse" collapse="advancedSearch">
 				<div class="row form-inline">
@@ -37,274 +39,239 @@
 								addOnEnter="true" addOnSpace="false"
 								on-tag-added="tagAdded($tag,items[0])"
 								on-tag-removed="tagRemoved($tag,items[0])"></tags-input>
-							<span class="input-group-addon">
-							 <a alt="Search"
+							<span class="input-group-addon"> <a alt="Search"
 								href="javascript:void(0)"
-								class="btn-flat mdi-material-deep-orange"
+								class="btn-flat "
 								ng-click="executeQuery()" a-disabled="nodes.length ==0"> <i
 									class="mdi-action-search"></i>
-							</a> 
-							<a href="javascript:void(0)" alt="Advanced Search"
-								class="btn-flat mdi-material-deep-orange"
-								ng-click="advancedSearch=!advancedSearch"> 
-								<i ng-show="!advancedSearch"
-									class="mdi-navigation-expand-more"></i>
+							</a> <a href="javascript:void(0)" alt="Advanced Search"
+								class="btn-flat "
+								ng-click="advancedSearch=!advancedSearch"> <i
+									ng-show="!advancedSearch" class="mdi-navigation-expand-more"></i>
 							</a>
 							</span>
 						</div>
 					</div>
 				</div>
 			</div>
-			<div class="collapse form-inline" collapse="!advancedSearch">
+			<div class="row collapse form-inline" collapse="!advancedSearch">
 				<div class="panel">
 					<div class="panel-body">
-					<div class="col-md-12 col-lg-12 col-sm-12">
-						<div class="pull-right">
-						<a href="javascript:void(0)" alt="Advanced Search"
-								class="btn-flat mdi-material-deep-orange"
-								ng-click="advancedSearch=!advancedSearch"> 
-									<i ng-show="advancedSearch"
+						<div class="col-md-12 col-lg-12 col-sm-12">
+							<div class="pull-right">
+								<a href="javascript:void(0)" alt="Advanced Search"
+									class="btn-flat "
+									ng-click="advancedSearch=!advancedSearch"> <i
+									ng-show="advancedSearch" 
 									class="mdi-navigation-expand-less"></i>
-							</a>
-						</div>
-					</div>
-					<div class="col-md-12 col-lg-12 col-sm-12"
-						ng-repeat="item in items track by $index" 
-						style="margin: 5px 0 5px 0; display: inline-block;">
-						<div class="col-md-3 col-lg-3 col-sm-3 ">
-							<label class="control-label">Filter {{$index+1}}</label> <select
-								name="mySelect" class="form-control"
-								ng-options="option.value as option.text for option in item.options"
-								ng-model="item.selectedOption" ng-disabled="!item.last">
-							</select>
-						</div>
-						<div class="col-md-9 col-lg-9 col-sm-9">
-							<div class="input-group"
-								ng-class="{ 'has-error': item.text=='' && item.selectedOption!='ALL' }"
-								style="display: block; margin-top: 10px;">
-								<!-- 						<input ng-show="item.selectedOption != 'tags'" type="text" class="form-control" name="input_param" -->
-								<!-- 							placeholder="Insert keyword" ng-required="option.req"  autofocus -->
-								<!-- 							ng-model="item.text">  -->
-								<!-- 						<tags-input ng-show="item.selectedOption === 'tags'" placeholder="Insert comma separated keywords" class="form-control" ng-required="option.req" -->
-								<!-- 									 replace-spaces-with-dashes="false" ng-model="item.tags"></tags-input> -->
-
-								<tags-input type="text" autofocus="true" class="form-control"
-									placeholder="Insert comma separated keywords" min-length="1"
-									ng-required="option.req" replace-spaces-with-dashes="false"
-									ng-model="item.tags" addOnBlur="true" addOnComma="true"
-									addOnEnter="true" addOnSpace="false"
-									on-tag-added="tagAdded($tag,item)"
-									on-tag-removed="tagRemoved($tag,item)"></tags-input>
-								<span class="input-group-addon"> <a
-									href="javascript:void(0)"
-									class="btn-flat mdi-material-deep-orange"
-									ng-click="removeFilter($index)" ng-show="items.length>1"> <i
-										class="mdi-content-remove-circle-outline"></i>
-								</a> <a href="javascript:void(0)"
-									class="btn-flat mdi-material-deep-orange"
-									ng-click="addFilter()" ng-show="item.last && showButton"> <i
-										class="mdi-content-add-circle-outline"></i>
 								</a>
-<!-- 								<a ng-show="$index==0" href="javascript:void(0)"  -->
-<!-- 								class="btn-flat mdi-material-deep-orange" -->
-<!-- 								ng-click="advancedSearch=!advancedSearch"> <i -->
-<!-- 								class="mdi-navigation-expand-less"></i> -->
-<!--  								</a> -->
-								</span> <label class="help-block"
-									style="margin: 0px; padding: 0px; font-size: small;"
-									ng-if="item.text=='' && item.selectedOption!='ALL' ">{{messageError}}</label>
 							</div>
 						</div>
-					</div>
-					<div class="col-md-12 col-lg-12 col-sm-12"
-						ng-controller="IssuedCtrl" style="margin: 5px 0 5px 0;">
-						<div class="col-md-3">
-							<label class="control-label">Release Date</label>
+						<div class="col-md-12 col-lg-12 col-sm-12"
+							ng-repeat="item in items track by $index"
+							style="margin: 5px 0 5px 0; display: inline-block;">
+							<div class="col-md-3 col-lg-3 col-sm-3 ">
+								<label class="control-label">Filter {{$index+1}}</label> <select
+									name="mySelect" class="form-control"
+									ng-options="option.value as option.text for option in item.options"
+									ng-model="item.selectedOption" ng-disabled="!item.last">
+								</select>
+							</div>
+							<div class="col-md-9 col-lg-9 col-sm-9">
+								<div class="input-group"
+									ng-class="{ 'has-error': item.text=='' && item.selectedOption!='ALL' }"
+									style="display: block; margin-top: 10px;">
+									<tags-input type="text" autofocus="true" class="form-control"
+										placeholder="Insert comma separated keywords" min-length="1"
+										ng-required="option.req" replace-spaces-with-dashes="false"
+										ng-model="item.tags" addOnBlur="true" addOnComma="true"
+										addOnEnter="true" addOnSpace="false"
+										on-tag-added="tagAdded($tag,item)"
+										on-tag-removed="tagRemoved($tag,item)"></tags-input>
+									<span class="input-group-addon"> <a
+										href="javascript:void(0)"
+										class="btn-flat "
+										ng-click="removeFilter($index)" ng-show="items.length>1">
+											<i class="mdi-content-remove-circle-outline"></i>
+									</a> <a href="javascript:void(0)"
+										class="btn-flat "
+										ng-click="addFilter()" ng-show="item.last && showButton">
+											<i class="mdi-content-add-circle-outline"></i>
+									</a>
+									</span> <label class="help-block"
+										style="margin: 0px; padding: 0px; font-size: small;"
+										ng-if="item.text=='' && item.selectedOption!='ALL' ">{{messageError}}</label>
+								</div>
+							</div>
 						</div>
-						<div class="col-md-4">
-							<div class="input-group datepicker">
-								<input type="text" class="form-control" ng-click="open1($event)"
-									ng-readonly="true" datepicker-popup="{{format}}"
-									ng-model="issuedStartDate" is-open="status1.opened"
-									min-date="minDate1" max-date="maxDate1"
-									datepicker-options="dateOptions" ng-required="true"
-									close-text="Close" placeholder="From" style="cursor: pointer;" />
-								<span class="input-group-btn"> <a
-									ng-click="open1($event)" href
-									class="btn-flat mdi-material-deep-orange"><i
-										class="mdi-action-today" style="vertical-align: middle;"></i></a>
-								</span>
+						<div class="col-md-12 col-lg-12 col-sm-12"
+							ng-controller="IssuedCtrl" style="margin: 5px 0 5px 0;">
+							<div class="col-md-3">
+								<label class="control-label">Release Date</label>
+							</div>
+							<div class="col-md-4">
+								<div class="input-group datepicker">
+									<input type="text" class="form-control"
+										ng-click="open1($event)" ng-readonly="true"
+										datepicker-popup="{{format}}" ng-model="issuedStartDate"
+										is-open="status1.opened" min-date="minDate1"
+										max-date="maxDate1" datepicker-options="dateOptions"
+										ng-required="true" close-text="Close" placeholder="From"
+										style="cursor: pointer;" /> <span class="input-group-btn">
+										<a ng-click="open1($event)" href
+										class="btn-flat "><i
+											class="mdi-action-today" style="vertical-align: middle;"></i></a>
+									</span>
+								</div>
+							</div>
+
+							<div class="col-md-4 col-md-offset-1">
+								<div class="input-group  datepicker">
+									<input type="text" class="form-control"
+										ng-click="open2($event)" ng-readonly="true"
+										datepicker-popup="{{format}}" ng-model="issuedEndDate"
+										is-open="status2.opened" min-date="minDate2"
+										max-date="maxDate2" datepicker-options="dateOptions"
+										ng-required="true" close-text="Close" placeholder="To"
+										style="cursor: pointer;" /> <span class="input-group-btn">
+										<a href class="btn-flat "
+										a-disabled="issuedStartDate==null" ng-click="open2($event)"><i
+											class="mdi-action-today" style="vertical-align: middle;"></i></a>
+									</span>
+								</div>
 							</div>
 						</div>
 
-						<div class="col-md-4 col-md-offset-1">
-							<div class="input-group  datepicker">
-								<input type="text" class="form-control" ng-click="open2($event)"
-									ng-readonly="true" datepicker-popup="{{format}}"
-									ng-model="issuedEndDate" is-open="status2.opened"
-									min-date="minDate2" max-date="maxDate2"
-									datepicker-options="dateOptions" ng-required="true"
-									close-text="Close" placeholder="To" style="cursor: pointer;" />
-								<span class="input-group-btn"> <a href
-									class="btn-flat mdi-material-deep-orange"
-									a-disabled="issuedStartDate==null" ng-click="open2($event)"><i
-										class="mdi-action-today" style="vertical-align: middle;"></i></a>
-								</span>
+						<div class="col-md-12 col-lg-12 col-sm-12"
+							ng-controller="ModifiedCtrl" style="margin: 5px 0 5px 0;">
+							<div class="col-md-3">
+								<label class="control-label">Update Date</label>
+							</div>
+							<div class="col-md-4">
+								<div class="input-group  datepicker">
+									<input type="text" class="form-control"
+										ng-click="open1($event)" ng-readonly="true"
+										datepicker-popup="{{format}}" ng-model="modifiedStartDate"
+										is-open="status1.opened" min-date="minDate1"
+										max-date="maxDate1" datepicker-options="dateOptions"
+										ng-required="true" close-text="Close" placeholder="From"
+										style="cursor: pointer;" /> <span class="input-group-btn">
+										<a href="javascript:void(0)"
+										class="btn-flat "
+										ng-click="open1($event)"><i class="mdi-action-today"
+											style="vertical-align: middle;"></i></a>
+									</span>
+								</div>
+							</div>
+
+							<div class="col-md-4 col-md-offset-1">
+								<div class="input-group  datepicker">
+									<input type="text" class="form-control"
+										ng-click="open2($event)" ng-readonly="true"
+										datepicker-popup="{{format}}" ng-model="modifiedEndDate"
+										is-open="status2.opened" min-date="minDate2"
+										max-date="maxDate2" datepicker-options="dateOptions"
+										ng-required="true" close-text="Close" placeholder="To"
+										style="cursor: pointer;" /> <span class="input-group-btn">
+										<a href="javascript:void(0)"
+										class="btn-flat "
+										a-disabled="modifiedStartDate==null" ng-click="open2($event)"><i
+											class="mdi-action-today" style="vertical-align: middle;"></i></a>
+									</span>
+								</div>
 							</div>
 						</div>
-					</div>
-
-					<div class="col-md-12 col-lg-12 col-sm-12"
-						ng-controller="ModifiedCtrl" style="margin: 5px 0 5px 0;">
-						<div class="col-md-3">
-							<label class="control-label">Update Date</label>
+						<div class="col-md-12 col-lg-12 col-sm-12"
+							style="margin: 5px 0 5px 0;">
+							<div class="col-md-3">
+								<div class="input-group">
+									<label class="control-label">Catalogues
+										({{selectedNodeName.length}}/{{nodes.length}}) </label> <a
+										href="javascript:void(0)"
+										class="btn-flat " ng-click="open()"><i
+										class="mdi-action-open-in-new" style="vertical-align: middle;"></i></a>
+								</div>
+							</div>
+							<!-- 						<div class="col-md-2" ng-show="liveSearchEnabled"> -->
+							<div class="col-md-4" ng-show="liveSearchEnabled">
+								<label class="control-label">Search On</label> <select
+									name="ordMd" class="form-control"
+									ng-options="option.value as option.text for option in searchOn"
+									ng-model="live">
+								</select>
+							</div>
 						</div>
-						<div class="col-md-4">
-							<div class="input-group  datepicker">
-								<input type="text" class="form-control" ng-click="open1($event)"
-									ng-readonly="true" datepicker-popup="{{format}}"
-									ng-model="modifiedStartDate" is-open="status1.opened"
-									min-date="minDate1" max-date="maxDate1"
-									datepicker-options="dateOptions" ng-required="true"
-									close-text="Close" placeholder="From" style="cursor: pointer;" />
-								<span class="input-group-btn"> <a
-									href="javascript:void(0)"
-									class="btn-flat mdi-material-deep-orange"
-									ng-click="open1($event)"><i class="mdi-action-today"
-										style="vertical-align: middle;"></i></a>
-								</span>
+						<div class="col-md-12 col-lg-12 col-sm-12"
+							style="margin: 5px 0 5px 0;">
+
+							<div class="col-md-3">
+								<!-- 						a<md-input-container>  -->
+								<md-checkbox ng-model="euroVocEnabled" class="blue"> <label
+									class="control-label">Multi Language</label></md-checkbox>
+							</div>
+							<div class="col-md-3" ng-show="euroVocEnabled">
+								<label class="control-label">Source</label>
+								<md-select ng-model="selSourceLanguage"> <md-option>
+								<em>None</em></md-option> <md-option ng-repeat="option in sourceLanguages"
+									ng-value="option.value"> {{option.text}} </md-option> </md-select>
+							</div>
+							<div class="col-md-6" ng-show="euroVocEnabled">
+								<label class="control-label">Targets</label>
+								<md-select ng-model="selTargetLanguages" multiple> <md-option
+									ng-repeat="option in targetLanguages" ng-value="option.value">{{option.text}}</md-option>
+								</md-select>
+							</div>
+						</div>
+						<div class="col-md-12 col-lg-12 col-sm-12"
+							style="margin: 5px 0 5px 0;">
+							<div class="col-md-5">
+								<label class="control-label">Sort By</label> <select
+									name="ordBy" class="form-control"
+									ng-options="option.value as option.text for option in orderParameter"
+									ng-model="orderBy">
+								</select>
+								<!-- 			<label class="control-label" >Order Mode</label> -->
+								<select name="ordMd" class="form-control"
+									ng-options="option.value as option.text for option in orderType"
+									ng-model="orderMode"></select> <span
+									ng-class="{ 'has-warning': live }"><p class="help-block"
+										style="margin: 0 auto;" ng-show="live">Live search: Inner
+										sort by node</p></span>
+							</div>
+							<!-- 			<div class="col-md-1"></div> -->
+							<div class="col-md-3">
+								<label class="control-label">Max results per page</label> <select
+									name="rows" class="form-control"
+									ng-options="option.value as option.text for option in numberOfResults"
+									ng-model="rows"></select>
 							</div>
 						</div>
 
-						<div class="col-md-4 col-md-offset-1">
-							<div class="input-group  datepicker">
-								<input type="text" class="form-control" ng-click="open2($event)"
-									ng-readonly="true" datepicker-popup="{{format}}"
-									ng-model="modifiedEndDate" is-open="status2.opened"
-									min-date="minDate2" max-date="maxDate2"
-									datepicker-options="dateOptions" ng-required="true"
-									close-text="Close" placeholder="To" style="cursor: pointer;" />
-								<span class="input-group-btn"> <a
-									href="javascript:void(0)"
-									class="btn-flat mdi-material-deep-orange"
-									a-disabled="modifiedStartDate==null" ng-click="open2($event)"><i
-										class="mdi-action-today" style="vertical-align: middle;"></i></a>
-								</span>
-							</div>
+						<hr>
+						<div class="pull-right form-inline">
+
+							<button type="button" class="btn btn-default btn-raised"
+								ng-click="resetForm()">Reset</button>
+							<button type="submit" class="btn btn-primary btn-raised btn-icon"
+								ng-disabled="nodes.length ==0">
+								<i class="mdi-action-search"></i>Search
+							</button>
+
 						</div>
 					</div>
-					<div class="col-md-12 col-lg-12 col-sm-12" style="margin: 5px 0 5px 0;">
-						<div class="col-md-3">
-							<div class="input-group">
-								<label class="control-label">Catalogues
-									({{selectedNodeName.length}}/{{nodes.length}}) </label> <a
-									href="javascript:void(0)"
-									class="btn-flat mdi-material-deep-orange" ng-click="open()"><i
-									class="mdi-action-open-in-new" style="vertical-align: middle;"></i></a>
-							</div>
-						</div>
-<!-- 						<div class="col-md-2" ng-show="liveSearchEnabled"> -->
-						<div class="col-md-4" ng-show="liveSearchEnabled">
-							<label class="control-label">Search On</label> <select
-								name="ordMd" class="form-control"
-								ng-options="option.value as option.text for option in searchOn"
-								ng-model="live">
-							</select>
-						</div>
-					</div>
-					<div class="col-md-12 col-lg-12 col-sm-12" style="margin: 5px 0 5px 0;">
-
-						<div class="col-md-3">
-<!-- 						<md-input-container>  -->
-							<md-checkbox ng-model="euroVocEnabled"> <label
-								class="control-label">Multi Language</label></md-checkbox>
-<!-- 								</md-input-container> -->
-							<!-- 							<label class="control-label">Multilanguage</label> <input -->
-							<!-- 								type="checkbox" ng-model="euroVocEnabled"> -->
-						</div>
-<!-- 						<div  > -->
-<!-- 						<md-card-content> -->
-						<div class="col-md-3" ng-show="euroVocEnabled">
-						<label	class="control-label">Source</label>
-<!-- 							<md-input-container>  -->
-<!-- 							<label -->
-<!-- 								class="control-label">Source Language</label>  -->
-								<md-select
-								ng-model="selSourceLanguage"> <md-option>
-							<em>None</em></md-option> <md-option ng-repeat="option in sourceLanguages"
-								ng-value="option.value" >
-							{{option.text}} </md-option> </md-select> 
-<!-- 							</md-input-container> -->
-						</div>
-						<div class="col-md-6" ng-show="euroVocEnabled">
-						<label
-								class="control-label">Targets</label>
-<!-- 							<md-input-container>  -->
-<!-- 							<label -->
-<!-- 								class="control-label">Target Languages</label>  -->
-								<md-select
-								ng-model="selTargetLanguages" multiple> <md-option
-								ng-repeat="option in targetLanguages" ng-value="option.value">{{option.text}}</md-option>
-							</md-select> 
-<!-- 							</md-input-container> -->
-						</div>
-<!-- 						</md-card-content>  -->
-<!-- 						</div> -->
-					</div>
-					<div class="col-md-12 col-lg-12 col-sm-12" style="margin: 5px 0 5px 0;">
-						<div class="col-md-5">
-							<label class="control-label">Sort By</label> <select name="ordBy"
-								class="form-control"
-								ng-options="option.value as option.text for option in orderParameter"
-								ng-model="orderBy">
-							</select>
-							<!-- 			<label class="control-label" >Order Mode</label> -->
-							<select name="ordMd" class="form-control"
-								ng-options="option.value as option.text for option in orderType"
-								ng-model="orderMode"></select> <span
-								ng-class="{ 'has-warning': live }"><p class="help-block"
-									style="margin: 0 auto;" ng-show="live">Live search: Inner
-									sort by node</p></span>
-						</div>
-						<!-- 			<div class="col-md-1"></div> -->
-						<div class="col-md-3">
-							<label class="control-label">Max results per page</label> <select
-								name="rows" class="form-control"
-								ng-options="option.value as option.text for option in numberOfResults"
-								ng-model="rows"></select>
-						</div>
-
-<!-- 						<div class="col-md-1"> -->
-<!-- 							<a href="javascript:void(0)" -->
-<!-- 								class="btn-flat mdi-material-deep-orange" -->
-<!-- 								ng-click="showAdvancedParameter(false)"> <i -->
-<!-- 								class="mdi-navigation-expand-less"></i> -->
-<!-- 							</a> -->
-<!-- 						</div> -->
-
-					</div>
-
-					<hr>
-					<div class="pull-right form-inline">
-
-						<button type="button" class="btn btn-default btn-raised"
-							ng-click="resetForm()">Reset</button>
-						<button type="submit" class="btn btn-primary btn-raised btn-icon"
-							ng-disabled="nodes.length ==0">
-							<i class="mdi-action-search"></i>Search
-						</button>
-
-					</div>
-				</div>
 				</div>
 			</div>
 		</fieldset>
 	</form>
-	<div class="row text-center" ng-show="!advancedSearch">
-		<div class="row" style="margin:0 0 0 0">
+	<div class="row text-center" ng-show="!advancedSearch" style="margin: 0 0 0 0">
+
+		<div class="row" style="margin: 0 0 0 0">
 			<div class="col-md-2 col-lg-2 col-sm-2"></div>
-			<div class="col-md-8 col-lg-8 col-sm-8">
-<!-- 			<legend>Tags</legend> -->
+			<div class="col-md-8 col-lg-8 col-sm-8 text-center">
+				<md-tabs md-dynamic-height md-border-bottom md-center-tabs> <md-tab>
+				<md-tab-label>
+				<h4>Tags</h4>
+				</md-tab-label> <md-tab-body>
 				<div ng-controller="TagCloudCTRL as appCtrl">
 					<div id="wordsCloud">
 						<word-cloud rotate="0.5" words="appCtrl.words"
@@ -312,47 +279,40 @@
 							on-click="appCtrl.wordClicked"></word-cloud>
 					</div>
 				</div>
+				</md-tab-body> </md-tab> 
+				<md-tab>
+				<md-tab-label>
+				<h4>Categories</h4>
+				</md-tab-label> <md-tab-body> 			
+				
+				<md-list flex>
+        	<md-list-item class="col-lg-4 col-md-4 col-lg-offset-1 col-md-offset-1 md-1-line" ng-repeat="theme in dcatThemes track by $index" ng-click="searchByCategory(theme)">
+          	<img ng-src="images/dcat_themes_icon/{{theme.value}}.svg" class="md-avatar" alt="{{theme.text}}" />
+          	<div class=" md-list-item-text" >
+            	<h4>{{ theme.text }}</h4>
+          		</div>
+        	</md-list-item>
+				
+<!-- 				<md-grid-list -->
+<!-- 					class="gridListdemoDynamicTiles" md-cols="3" md-cols-sm="2" -->
+<!-- 					md-cols-xs="2" md-cols-md="5" md-cols-gt-md="7" -->
+<!-- 					md-row-height-gt-md="1:2" md-row-height="4:3" md-gutter="8px" -->
+<!-- 					md-gutter-gt-sm="4px"> <md-grid-tile -->
+<!-- 					ng-class="getCssClass(theme)" ng-click="searchByCategory(theme)" -->
+<!-- 					ng-repeat="theme in dcatThemes track by $index" md-colspan-sm="1" -->
+<!-- 					md-colspan-xs="1" md-colspan-md="1" style="cursor:pointer"> -->
+<!-- 				<img ng-src="images/dcat_themes_icon/{{theme.value}}.svg" -->
+<!-- 					style="max-height: 30%"> <md-grid-tile-footer -->
+<!-- 					style="overflow:unset;background-color:#ffffff"> -->
+<!-- 				<h3> -->
+<!-- 					<a class="text-center" href="javascript:void(0)">{{theme.text}}</a> -->
+<!-- 				</h3> -->
+<!-- 				</md-grid-tile-footer> </md-grid-tile> </md-grid-list> -->
+				
+				 </md-tab-body> </md-tab> </md-tabs>
 			</div>
 			<div class="col-md-2 col-lg-2 col-sm-2"></div>
 		</div>
-<!-- 		<div class="col-md-12 col-lg-12 col-sm-12 col-xs-12"> -->
-<!-- 			<div class="col-md-2 col-lg-2 col-sm-2 col-xs-2  pull-right"> -->
-<!-- 				<a href="javascript:void(0)" -->
-<!-- 					class="btn-flat mdi-material-deep-orange" target="_blank"> <i -->
-<!-- 					ng-show="!isCategories" ng-click="scrollTo('categories')" -->
-<!-- 					class="mdi-navigation-expand-more"><md-tooltip>Categories</md-tooltip></i> -->
-<!-- 					</a> <i ng-show="isCategories" ng-click="scrollTo('top')" -->
-<!-- 					class="mdi-navigation-expand-less"><md-tooltip>Top</md-tooltip></i></a> -->
-<!-- 			</div> -->
-<!-- 		</div> -->
-		<div class="row" style="margin:0 0 0 0">
-			<div class="col-md-2 col-lg-2 col-sm-2"></div>
-			<div class="col-md-8 col-lg-8 col-sm-8 text-center">
-			<legend id="categories">Browse by Categories</legend>
-				<md-grid-list class="gridListdemoDynamicTiles" md-cols="3" md-cols-sm="2" md-cols-xs="2" md-cols-md="5"
-					md-cols-gt-md="7" md-row-height-gt-md="1:2" md-row-height="4:3"
-					md-gutter="8px" md-gutter-gt-sm="4px"> 
-					<md-grid-tile  ng-class="getCssClass(theme)" ng-click="searchByCategory(theme)"  ng-repeat="theme in dcatThemes track by $index" md-colspan-sm="1"
-					md-colspan-xs="1" md-colspan-md="1" style="cursor:pointer">
-<!-- 					<md-icon md-svg-icon="images/dcat_themes_icon/{{theme.value}}.svg"></md-icon> -->
-					 <img ng-src="images/dcat_themes_icon/{{theme.value}}.svg"
-					style="max-height: 40%"> 
-					<md-grid-tile-footer style="overflow:unset;background-color:#ffffff">
-					<h3>
-						<a class="text-center" href="javascript:void(0)" >{{theme.text}}</a>
-					</h3>
-				</md-grid-tile-footer> </md-grid-tile> </md-grid-list>
-			</div>
-			<div class="col-md-2 col-lg-2 col-sm-2">  
-			</div>
-<!-- 			<div class="col-md-12 col-lg-12 col-sm-12"> -->
-<!-- 						<p style="font-size:12px">Icon made by <a href="https://www.freepik.com/" target="_blank">Freepik</a> from <a href="https://www.flaticon.com" target="_blank">www.flaticon.com</a></p> -->
-<!-- 					</div> -->
-		</div>
-		
-<!-- 		<div class="col-md-12 col-lg-12 col-sm-12"> -->
-<!-- 				<a class="pull-right" href="#/credits">Credits</a> -->
-<!-- 		</div> -->
 	</div>
 
 	<!-- glyphicon glyphicon-search -->

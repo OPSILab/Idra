@@ -177,15 +177,15 @@
 				}
 			}	
 		}).
-//		when('/federableNodes',{
-//			templateUrl:'nodes/FederableNodes.html',
-//			controller: 'FederableNodesController',
-//			resolve:{
-//				checkLogin: function( $rootScope,$http,config,$cookies ) {
-//					return checkLogin($rootScope,$http,config,$cookies);
-//				}
-//			}	
-//		}).
+		when('/remotes',{
+			templateUrl:'catalogues/RemoteCatalogues.html',
+			controller: 'RemoteCataloguesController',
+			resolve:{
+				checkLogin: function( $rootScope,$http,config,$cookies ) {
+					return checkLogin($rootScope,$http,config,$cookies);
+				}
+			}	
+		}).
 		when('/viewCatalogues',{
 			templateUrl:'catalogues/ViewCatalogues.html',
 			controller: 'ViewCataloguesController'
