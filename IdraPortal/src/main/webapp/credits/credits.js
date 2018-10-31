@@ -21,15 +21,15 @@ angular.module("IdraPlatform").controller('CreditsCtrl',['$scope','$window','$lo
 		$window.location.assign('#/metadata');
 	}
 	
-	$scope.gotoTop = function() {
-	      // set the location.hash to the id of
-	      // the element you wish to scroll to.
-	      $location.hash('topAnchor');
-
-	      // call $anchorScroll()
-	      $anchorScroll();
-	    };
-	
-	$scope.gotoTop();
+//	$scope.gotoTop = function() {
+//	      // set the location.hash to the id of
+//	      // the element you wish to scroll to.
+//	      $location.hash('topAnchor');
+//
+//	      // call $anchorScroll()
+//	      $anchorScroll();
+//	    };
+//	
+//	$scope.gotoTop();
 	
 }]);	

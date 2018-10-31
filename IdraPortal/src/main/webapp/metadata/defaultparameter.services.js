@@ -21,19 +21,32 @@ DefaultParameter.$inject = ['$log'];
 
 function DefaultParameter($log){
 
-	var dcatThemes=[{"value":"agri","text":"Agriculture, fisheries, forestry and food"},
-		{"value":"econ","text":"Economy and finance"},
-		{"value":"educ","text":"Education, culture and sport"},
+//	var dcatThemes=[{"value":"agri","text":"Agriculture, fisheries, forestry and food"},
+//		{"value":"econ","text":"Economy and finance"},
+//		{"value":"educ","text":"Education, culture and sport"},
+//		{"value":"ener","text":"Energy"},
+//		{"value":"envi","text":"Environment"},
+//		{"value":"gove","text":"Government and public sector"},
+//		{"value":"heal","text":"Health"},
+//		{"value":"intr","text":"International issues"},
+//		{"value":"just","text":"Justice, legal system and public safety"},
+//		{"value":"regi","text":"Regions and cities"},
+//		{"value":"soci","text":"Population and society"},
+//		{"value":"tech","text":"Science and technology"},
+//		{"value":"tran","text":"Transport"}];
+	
+	var dcatThemes=[{"value":"agri","text":"Agriculture"},
+		{"value":"econ","text":"Economy"},
+		{"value":"educ","text":"Education"},
 		{"value":"ener","text":"Energy"},
 		{"value":"envi","text":"Environment"},
-		{"value":"gove","text":"Government and public sector"},
+		{"value":"gove","text":"Government"},
 		{"value":"heal","text":"Health"},
-		{"value":"intr","text":"International issues"},
-		{"value":"just","text":"Justice, legal system and public safety"},
-//		{"value":"OP_DATPRO","text":"Provisional data"},
-		{"value":"regi","text":"Regions and cities"},
-		{"value":"soci","text":"Population and society"},
-		{"value":"tech","text":"Science and technology"},
+		{"value":"intr","text":"International"},
+		{"value":"just","text":"Justice"},
+		{"value":"regi","text":"Regions"},
+		{"value":"soci","text":"Population"},
+		{"value":"tech","text":"Technology"},
 		{"value":"tran","text":"Transport"}];
 	
 	var orderBy=[{"value":"releaseDate","text":"Release Date"},

@@ -26,7 +26,7 @@
 		<div layout="column" layout-align="top center">
 			<md-card md-theme-watch class="md-whiteframe-3dp" style="width:100%;margin: 0px 0px 8px 0px">
 			<md-card-title> <md-card-title-text>
-			<h2 style="margin: 0px 0px 0px 0px" ng-bind-html="dataset.title"></h2>
+			<h3  style="margin: 0px 0px 0px 0px" ng-bind-html="dataset.title"></h3>
 			<span class="md-subhead" style="color: #6a6b68; padding-top: 0px"><strong>{{dataset.nodeName}}</strong>
 			</span> </md-card-title-text> </md-card-title> <md-card-content>
 			<p style="line-height: 1.75em;" >
@@ -36,7 +36,7 @@
 	
 			<div class="row container-fluid" ng-show="dataset.keywords.length>0 || (dataset.keywords.length==1 && dataset.keywords[0]!='')" 
 				style="padding: 0px 0px 0px 0px">
-				<h5 class="md-headline">Tags</h5>
+				<h4>Tags</h4>
 				<md-chips ng-model='dataset.keywords' md-removable="false" md-on-select="searchFacet($chip)"
 					readonly="false" > <md-chip-template  ng-show="$chip!=''" style="font-size: inherit;cursor: pointer;">
 				<strong >{{$chip}}</strong> </md-chip-template> </md-chips>
@@ -46,7 +46,7 @@
 				ng-show="dataset.distributions.length>0"
 				style="padding: 0px 0px 0px 0px">
 		
-				<h5 class="md-headline">Resources</h5>
+				<h4>Resources</h4>
 				
 				<ul class="list-group list" style="margin: 0px 0px 0px 0px;">
 					<li class='list-group-item' ng-repeat="distribution in dataset.distributions track by $index">
@@ -76,20 +76,20 @@
 <!-- 						<div class="col-md-1 col-sm-1 col-xs-1 buttons"> -->
 						<div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
 						<a href="javascript:void(0)"
-								class="btn-flat mdi-material-deep-orange" target="_blank">
+								class="btn-flat " target="_blank">
 								<i ng-show="distribution.collapseDetails" ng-click="distribution.collapseDetails = !distribution.collapseDetails"
 									class="mdi-navigation-expand-more"><md-tooltip>More Details</md-tooltip></i>
 								<i ng-show="!distribution.collapseDetails" ng-click="distribution.collapseDetails = !distribution.collapseDetails"
 									class="mdi-navigation-expand-less"><md-tooltip>Less Details</md-tooltip></i>
 								</a>
 								<a href='{{distribution.downloadURL}}' target="_blank"
-								class="btn-flat mdi-material-deep-orange" target="_blank">
+								class="btn-flat " target="_blank">
 								<i class="mdi-file-file-download"></i>
 									<md-tooltip>Download</md-tooltip>
 								</a>
 								<span>
 								<a ng-show="distribution.dataletShowButtonEnabled" href="javascript:void(0)"
-								class="btn-flat mdi-material-deep-orange" target="_blank" a-disabled="!distribution.distributionDonwloadUrlOk">
+								class="btn-flat " target="_blank" a-disabled="!distribution.distributionDonwloadUrlOk">
 								<i ng-click="createDatalet(dataset.id,dataset.nodeID,distribution)"
 									class="mdi-action-open-in-new"></i>
 								</a>
@@ -97,7 +97,7 @@
 									<md-tooltip ng-show="!distribution.distributionDonwloadUrlOk">Unable to create datalet</md-tooltip>	
 								</span>
 								<a href="javascript:void(0)"
-								class="btn-flat mdi-material-deep-orange" target="_blank">
+								class="btn-flat " target="_blank">
 								<i ng-show="distribution.hasDatalets" ng-click="showDatalets(dataset.id,dataset.nodeID,distribution)"
 									class="mdi-action-open-in-browser"></i>
 									<md-tooltip>Show datalets</md-tooltip>
@@ -140,7 +140,7 @@
 											<td>{{distribution.license.name}} <a
 												ng-show="distribution.license.license.uri!=''"
 												href="{{distribution.license.uri}}"
-												class="btn-flat mdi-material-deep-orange" target="_blank"><i
+												class="btn-flat " target="_blank"><i
 													class="mdi-action-open-in-new"
 													style="vertical-align: middle;"></i></a></td>
 										</tr>
@@ -235,7 +235,7 @@
 				
 			</div>
 			<div class="row container-fluid" style="padding: 0px 0px 0px 0px">
-				<h5 class="md-headline">Additional Info</h5>
+				<h4>Additional Info</h4>
 				<table class="table table-responsive">
 				<thead style="border-top: 0px;border-bottom: 0px;">
 	<tr>
@@ -265,7 +265,7 @@
 									ng-repeat="license in dataset.licenses track by $index" style="padding-left: 0px;">{{license.name}} <a
 							ng-show="license.uri!=''"
 							href="{{license.uri}}"
-							class="btn-flat mdi-material-deep-orange" target="_blank"><i
+							class="btn-flat " target="_blank"><i
 								class="mdi-action-open-in-new" style="vertical-align: middle;"></i></a></li>
 							</ul>
 						</td>

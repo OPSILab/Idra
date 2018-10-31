@@ -49,7 +49,8 @@
 <link rel="stylesheet" href="bower_components/angular-material/angular-material.min.css">
 
 <link rel="stylesheet" href="material-bootstrap/css/roboto.min.css">
-<link rel="stylesheet" href="material-bootstrap/css/material-fullpalette.css">
+<!--<link rel="stylesheet" href="material-bootstrap/css/material-fullpalette.css">-->
+<link href="material-bootstrap/css/material_original.css" rel="stylesheet">
 <link rel="stylesheet" href="material-bootstrap/css/ripples.min.css">
 
 <link rel="stylesheet" href="bower_components/ng-img-crop/compile/minified/ng-img-crop.css">
@@ -257,11 +258,17 @@ div.m-app-loading p {
 	<div class="m-app-loading">
 		<!--         BEGIN: Actual animated container. -->
 		<div class="animated-container">
-			<div class="messaging">
+			<div class="messaging hide-xs show-gt-xs">
 				<img class="img-responsive " src="images/idra_logo.png"
 					style="margin: 0 auto; max-width: 20%;">
-				<img class="img-responsive " src="images/spinner.gif"
+				<img class="img-responsive " src="images/spinner_synchro.gif"
 					style="margin: 0 auto; max-width: 2%;">
+			</div>
+			<div class="messaging hide-gt-xs">
+				<img class="img-responsive " src="images/idra_logo.png"
+					style="margin: 0 auto; max-width: 50%;">
+				<img class="img-responsive " src="images/spinner_synchro.gif"
+					style="margin: 0 auto; max-width: 10%;">
 			</div>
 			<!--         END: Actual animated container. -->
 		</div>
@@ -272,40 +279,43 @@ div.m-app-loading p {
 	<div class="wrapper" style="background-color: #FFFFFF;">
 		<!-- HEADER -->
 		<div id="header" ng-controller="HeaderController" ng-cloak="">
-			<div class="us-spinner-wrapper" ng-show="spinneractive">
-				<div us-spinner="{radius:50, width:15, length: 25,color:'#44313f'}"
-					spinner-key="spinner-1"></div>
-			</div>
-
 			<!-- NAVBAR -->
 			<div class="navbar navbar-default">
-				<div class="container-fluid" >
+				<div class="container-fluid" style="margin: 10px 0px 0px 0px;">
 					<div class="navbar-header">
 						<a class="navbar-brand" href="#/metadata"
 							style="margin-left: 5px;">
-<!-- 							<img class="img-responsive" style="height:60px" src="./images/idra_white.png"> -->
-<!-- 							<p class="navbar-text" -->
-<!-- 								style="margin-top: -4px; margin-bottom: 0px;"> - Open -->
-<!-- 								Data Federation Platform</p> -->
 						</a>
 						<button type="button" class="navbar-toggle" data-toggle="collapse"
 							data-target=".navbar-responsive-collapse">
-							<span class="icon-bar"></span> <span class="icon-bar"></span> <span
-								class="icon-bar"></span>
+							<span class="icon-bar"></span> 
+							<span class="icon-bar"></span> 
+							<span class="icon-bar"></span>
 						</button>
 					</div>
 					<div class="navbar-collapse collapse navbar-responsive-collapse">
 						<ul class="nav navbar-nav navbar-right">
 							<li
 								ng-class="{ active: isActive('/metadata') || isActive('/showDatasets') || isActive('/showDatasetDetail') || isActive('/createDatalet') }"><a
-								href="#/metadata"><strong>Dataset Search</strong></a></li>
+								href="#/metadata"><strong>Search</strong></a></li>
 							<li
 								ng-class="{ active: isActive('/sparql') || isActive('/showSparqlResult') }"><a
-								href="#/sparql"><strong>SPARQL Search</strong></a></li>
+								href="#/sparql"><strong>SPARQL</strong></a></li>
 							<li ng-class="{ active: isActive('/viewCatalogues')}"><a
-								href="#/viewCatalogues"><strong>Federated
-										Catalogues</strong></a></li>
-
+								href="#/viewCatalogues"><strong>Catalogues</strong></a></li>
+							<li dropdown><a href class="dropdown-toggle" dropdown-toggle><strong>Help</strong><b
+									class="caret"></b></a>
+								<ul class="dropdown-menu">
+									<li>
+										<a href="https://idraopendata.docs.apiary.io" target="_blank"><strong>API</strong></a>
+									</li>
+									<li>
+										<a href="https://github.com/OPSILab/Idra" target="_blank"><strong>GitHub</strong></a>
+									</li>
+									<li>
+										<a href="https://idra.readthedocs.io" target="_blank"><strong>Manual</strong></a>
+									</li>
+								</ul></li>
 							<li ng-if="token!=undefined"
 								ng-class="{ active: isActive('/catalogues') || isActive('/node') || isActive('/configuration') || isActive('/logs') || isActive('/statistics') || isActive('/dataletsManagement')}"
 								dropdown><a href class="dropdown-toggle" dropdown-toggle><strong>Administration</strong><b
@@ -315,9 +325,6 @@ div.m-app-loading p {
 										ng-class="{ active: isActive('/catalogues') || isActive('/addNode') }">
 										<a href="#/catalogues"><strong>Manage Catalogues</strong></a>
 									</li>
-									<!-- 								<li -->
-									<!-- 									ng-class="{ active: isActive('/federableNodes') }"><a -->
-									<!-- 									href="#federableNodes">Manage Federable Catalogues</a></li> -->
 									<li ng-class="{ active: isActive('/configuration')}"><a
 										href="#/configuration"><strong>Manage
 												Configurations</strong></a></li>
@@ -332,13 +339,13 @@ div.m-app-loading p {
 							<li class="loginBtns">
 								<form ng-if="token==undefined" class="navbar-form"
 									ng-controller="LoginCtrl">
-									<button type="button" class="btn btn-default"
+									<button type="button" class="btn btn-primary btn-raised"
 										ng-click="signIn()">Login</button>
 								</form>
 
 								<form ng-if="token!=undefined" class="navbar-form"
 									ng-controller="LogoutCtrl">
-									<button type="button" class="btn btn-default"
+									<button type="button" class="btn btn-primary btn-raised btn-icon"
 										ng-click="logout()">Logout</button>
 								</form>
 
@@ -368,7 +375,7 @@ div.m-app-loading p {
 			ng-controller="ContentCTRL">
 
 			<div class="us-spinner-wrapper" ng-show="spinneractive">
-				<div us-spinner="{radius:50, width:15, length: 25,color:'#44313f'}"
+				<div us-spinner="{radius:25, width:10, length: 20,color:'#00b4ff'}"
 					spinner-key="spinner-1"></div>
 			</div>
 			<div class="col-md-10 col-md-offset-1" ng-controller="AlertCtrl">
@@ -389,22 +396,32 @@ div.m-app-loading p {
 	<!--  END WRAPPER -->
 	<!-- FOOTER -->
 	<div class="footer" style="display: none">
-		<div class="col-md-12 col-lg-12 col-sm-12">
-			<div class="col-md-4 col-lg-4 col-sm-4"></div>
+		<div class="col-md-12 col-lg-12 col-sm-12 text-center hide-xs show-gt-xs" >
 			<div class="col-md-4 col-lg-4 col-sm-4">
-				<a href="https://www.eng.it/" target="_blank"><img
-					class="img-responsive center-block footerImages small-margin"
-					ng-src="images/logo_eng-100.jpg" /></a>
-			</div>
-			<div class="col-md-4 col-lg-4 col-sm-4"></div>
-		</div>
-		<div class="col-md-12 col-lg-12 col-sm-12 text-center copyright">
-			<div class="col-md-4 col-lg-4 col-sm-4"></div>
+			<a href="https://www.eng.it/" target="_blank" class="pull-left"><img
+					class="img-responsive footerImages small-margin"
+					ng-src="images/logo_eng-100.jpg" style="width:25%"/></a></div>
 			<div class="col-md-4 col-lg-4 col-sm-4">
-				<p>Copyright &copy;Engineering 2018. - Idra version {{idraVersion}}</p>
+				<p style="margin-bottom:0px;">Copyright &copy;<a href="https://www.eng.it/" target="_blank">Engineering</a> 2018. - Idra version {{idraVersion}}</p>
 			</div>
 			<div class="col-md-4 col-lg-4 col-sm-4">
 				<a class="pull-right" href="#/credits">Credits</a>
+			</div>
+		</div>
+		<div class="col-md-12 col-lg-12 col-sm-12 text-center hide-gt-xs" >
+			<div class="col-md-12 col-lg-12 col-sm-12">
+				<p style="margin-bottom:0px;">Copyright &copy;<a href="https://www.eng.it/" target="_blank">Engineering</a></p>
+			</div>
+			<div class="col-md-12 col-lg-12 col-sm-12">
+				<p style="margin-bottom:0px;">Idra version {{idraVersion}}</p>
+			</div>
+			<div class="col-md-12 col-lg-12 col-sm-12">
+				<a href="#/credits">Credits</a>
+			</div>
+			<div class="col-md-12 col-lg-12 col-sm-12">
+			<a href="https://www.eng.it/" target="_blank"><img
+					class="img-responsive footerImages center-block"
+					ng-src="images/logo_eng-100.jpg" style="width:40%; margin-bottom:10px"/></a>
 			</div>
 		</div>
 	</div>
@@ -471,8 +488,8 @@ div.m-app-loading p {
 </div>
 
 <div class="modal-footer">
-    <button class="btn btn-default" type="button" ng-click="cancel()">Cancel</button>
-	<button class="btn btn-primary" type="button" ng-click="ok()">OK</button>
+    <button class="btn btn-default btn-raised" type="button" ng-click="cancel()">Cancel</button>
+	<button class="btn btn-primary btn-raised" type="button" ng-click="ok()">OK</button>
 </div>
 </script>
 
@@ -537,8 +554,8 @@ div.m-app-loading p {
 </div>
 
 <div class="modal-footer">
-    <button class="btn btn-default" type="button" ng-click="cancel()">Cancel</button>
-	<button class="btn btn-primary" type="button" ng-click="ok()">OK</button>
+    <button class="btn btn-default btn-raised" type="button" ng-click="cancel()">Cancel</button>
+	<button class="btn btn-primary btn-raised" type="button" ng-click="ok()">OK</button>
 </div>
 </script>
 
@@ -560,7 +577,7 @@ div.m-app-loading p {
 				<ul class="list-group list" >
 					<li ng-repeat="item in allItems | filter:selected as results" class='list-group-item' style='margin-bottom:-18px'>
 							<label class='name h4'>
-							<md-checkbox ng-checked="exists(item, selectedItems)" ng-click="toggle(item, selectedItems)">
+							<md-checkbox ng-checked="exists(item, selectedItems)" ng-click="toggle(item, selectedItems)" class="blue">
                {{ item }}
               </md-checkbox>
 							</label>
@@ -576,13 +593,13 @@ div.m-app-loading p {
 		</div>
 	</div>
 
-	<label class='name checklbl'> <md-checkbox ng-checked="isChecked()"
+	<label class='name checklbl'> <md-checkbox class="blue" ng-checked="isChecked()"
                          ng-click="toggleAll()" > Select All</md-checkbox> </label>
 </div>
 
 <div class="modal-footer">
-    <button class="btn btn-default" type="button" ng-click="cancel()">Cancel</button>
-	<button class="btn btn-primary" type="button" ng-click="ok()">OK</button>
+    <button class="btn btn-default btn-raised" type="button" ng-click="cancel()">Cancel</button>
+	<button class="btn btn-primary btn-raised" type="button" ng-click="ok()">OK</button>
 </div>
 </script>
 
@@ -613,7 +630,7 @@ div.m-app-loading p {
 								<td><span style="font-weight: bold;">License:</span></td>
 								<td>{{distribution.license.name.value}} <a ng-show="distribution.license.license.uri!=''"
 									href="{{distribution.license.uri}}"
-									class="btn-flat mdi-material-deep-orange" target="_blank"><i
+									class="btn-flat " target="_blank"><i
 									class="mdi-action-open-in-new" style="vertical-align: middle;"></i></a></td>
 							</tr>
 							<tr ng-show="distribution.releaseDate.value!=''">
@@ -674,7 +691,7 @@ div.m-app-loading p {
 </div>
 
 <div class="modal-footer">
-    <button class="btn btn-default" type="button" ng-click="cancel()">Close</button>
+    <button class="btn btn-default btn-raised" type="button" ng-click="cancel()">Close</button>
 </div>
 
 </script>
@@ -688,7 +705,7 @@ div.m-app-loading p {
 	<div ng-bind-html="datalet.showHtml"></div>
 </div>
 <div class="modal-footer">
-    <button class="btn btn-default" type="button" ng-click="cancel()">Close</button>
+    <button class="btn btn-default btn-raised" type="button" ng-click="cancel()">Close</button>
 </div>
 </script>
 
@@ -705,9 +722,9 @@ div.m-app-loading p {
 </div>
 <div class="modal-body" ng-bind-html="msg"></div>
 <div class="modal-footer">
-	<button type="button" class="btn btn-default" ng-click="yes()">{{opt1}}</button>
-	<button type="button" class="btn btn-default" ng-click="keep()">{{opt2}}</button>
-	<button type="button" class="btn btn-primary" ng-click="no()">No</button>
+	<button type="button" class="btn btn-default btn-raised" ng-click="yes()">{{opt1}}</button>
+	<button type="button" class="btn btn-default btn-raised" ng-click="keep()">{{opt2}}</button>
+	<button type="button" class="btn btn-primary btn-raised" ng-click="no()">No</button>
 </div>
 </script>
 	<script type="text/ng-template" id="dumpSave_dialog.html">
@@ -720,9 +737,9 @@ div.m-app-loading p {
 </div>
 <div class="modal-body" ng-bind-html="msg"></div>
 <div class="modal-footer">
-	<button type="button" class="btn btn-default" ng-click="discard()">{{opt1}}</button>
-	<button type="button" class="btn btn-default" ng-click="save()">{{opt2}}</button>
-	<button type="button" class="btn btn-primary" ng-click="no()">Cancel</button>
+	<button type="button" class="btn btn-default btn-raised" ng-click="discard()">{{opt1}}</button>
+	<button type="button" class="btn btn-default btn-raised" ng-click="save()">{{opt2}}</button>
+	<button type="button" class="btn btn-primary btn-raised" ng-click="no()">Cancel</button>
 </div>
 </script>
 	<script type="text/javascript" src="bower_components/jquery/jquery.js"></script>

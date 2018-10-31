@@ -31,14 +31,14 @@
 			<form name="upload" class="form form-load-image">
 				<div class="btn-group ">
 					<span
-						class="btn btn-primary btn-xs btn-file btn-material-deep-orange">
+						class="btn btn-primary btn-xs btn-file ">
 						Browse <input type="file" name="file"
 						onchange="angular.element(this).scope().imageUpload(this)"
 						accept=".jpg, .png, .jpeg, .gif, .bmp, .tif, .tiff|images/*">
 					</span>
 					<button ng-disabled="imageRead=='' && node.image.imageData==''
 					" type="button"
-						class="btn btn-primary btn-xs" style="margin: 0px"
+						class="btn btn-default btn-xs" style="margin: 0px"
 						ng-click="openCropModal()">Crop</button>
 				</div>
 			</form>
@@ -119,7 +119,7 @@
 <!-- 				<div class="col-md-4"></div> -->
 <!-- 					<div class="col-md-4">	 -->
 					<button type="button"
-						class="btn btn-md btn-primary btn-file btn-material-deep-orange" style="margin: 0px"
+						class="btn btn-md btn-primary btn-file " style="margin: 0px"
 						ng-click="openDumpModal()">
 						<span ng-if="mode=='create'">Add</span> <span ng-if="mode=='update'">Update</span> File
 						</button>
@@ -222,8 +222,8 @@
 </div>
 
 <div class="modal-footer">
-    <button class="btn btn-default" type="button" ng-click="cancel()">Cancel</button>
-	<button class="btn btn-primary" type="button" ng-click="ok()">OK</button>
+    <button class="btn btn-default btn-raised" type="button" ng-click="cancel()">Cancel</button>
+	<button class="btn btn-primary btn-raised" type="button" ng-click="ok()">OK</button>
 </div>
 </script>
 
