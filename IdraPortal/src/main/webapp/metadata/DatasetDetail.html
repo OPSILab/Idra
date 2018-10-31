@@ -27,7 +27,7 @@
 			<md-card md-theme-watch class="md-whiteframe-3dp" style="width:100%;margin: 0px 0px 8px 0px">
 			<md-card-title> <md-card-title-text>
 			<h3  style="margin: 0px 0px 0px 0px" ng-bind-html="dataset.title"></h3>
-			<span class="md-subhead" style="color: #6a6b68; padding-top: 0px"><strong>{{dataset.nodeName}}</strong>
+			<span class="md-subhead" style="color: #6a6b68; padding-top: 0px; font-size: 12px;"><strong>{{dataset.nodeName}}</strong>
 			</span> </md-card-title-text> </md-card-title> <md-card-content>
 			<p style="line-height: 1.75em;" >
 				<span ng-show="dataset.description!=''" marked="dataset.description"> </span>
@@ -90,8 +90,14 @@
 								<span>
 								<a ng-show="distribution.dataletShowButtonEnabled" href="javascript:void(0)"
 								class="btn-flat " target="_blank" a-disabled="!distribution.distributionDonwloadUrlOk">
+								<span ng-show="!distribution.lockFile">
 								<i ng-click="createDatalet(dataset.id,dataset.nodeID,distribution)"
 									class="mdi-action-open-in-new"></i>
+								</span>	
+								<span ng-show="distribution.lockFile"> <img
+											alt="download" title="download"
+											src="images/spinner_synchro.gif" style="width: 20px;vertical-align: unset;"> <md-tooltip>Getting the file...</md-tooltip>
+								</span>
 								</a>
 									<md-tooltip ng-show="distribution.distributionDonwloadUrlOk">Create new datalet</md-tooltip>
 									<md-tooltip ng-show="!distribution.distributionDonwloadUrlOk">Unable to create datalet</md-tooltip>	
