@@ -34,6 +34,9 @@ angular.module("IdraPlatform").controller('ViewCataloguesController',["$scope","
 	
 	$rootScope.nodeForResults = angular.copy($scope.nodesForResult);
 	$rootScope.stopSpin();
+	
+	$scope.categories = [{text:'Municipality',value:'Municipality'},{text:'Province',value:'Province'},{text:'Private Institution',value:'Private Institution'},{text:'Public Body',value:'Public Body'},{text:'Region',value:'Region'}];
+	
 	/*
 	  ODMSNodesAPI.getODMSNodesAPI(true).then(function(value){
 		var count=0;
@@ -74,7 +77,8 @@ angular.module("IdraPlatform").controller('ViewCataloguesController',["$scope","
 	$scope.orderType="asc";
 	$scope.name="";
 	$scope.country="";
-	
+	$scope.nodeCountries=[]
+	$rootScope.startSpin();
 	ODMSNodesAPI.clientCataloguesAPI(true,$scope.rows,$scope.offset,$scope.orderBy,$scope.orderType,$scope.name,$scope.country).then(function(value){
 		var count=0;
 		for(i=0; i<value.data.catalogues.length; i++){
@@ -98,6 +102,12 @@ angular.module("IdraPlatform").controller('ViewCataloguesController',["$scope","
 			$scope.nodes.push(node);
 			count++;
 		}
+		
+		$scope.nodes.forEach(n=>{
+			if($scope.nodeCountries.indexOf(n.country)<0 && n.country!='')
+				$scope.nodeCountries.push(n.country);
+		});
+		
 		$scope.displayedCollection = [].concat($scope.nodes);
 		$rootScope.nodeForResults = angular.copy($scope.nodesForResult);
 		$rootScope.stopSpin();

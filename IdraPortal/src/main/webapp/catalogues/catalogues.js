@@ -18,6 +18,7 @@
 angular.module("IdraPlatform").controller('CataloguesController',["$scope","$http",'$filter','config','$rootScope','dialogs','$interval','$timeout','$modal','FileSaver','Blob','$window','ODMSNodesAPI','_',function($scope,$http,$filter,config,$rootScope,dialogs,$interval,$timeout,$modal,FileSaver,Blob,$window,ODMSNodesAPI,_){
 
 	$scope.updatePeriods=[{text:'1 hour',value:'3600'},{text:'1 day',value:'86400'},{text:'1 week',value:'604800'}];
+	$scope.nodeTypes = config.NODE_TYPES.split(',');
 	
 	$rootScope.nodeToUpdate = undefined;
 	/*ODMSNodesAPI.getNodes().success(function(value){
@@ -43,10 +44,12 @@ angular.module("IdraPlatform").controller('CataloguesController',["$scope","$htt
 	$scope.dateFormat="MMM - dd - yyyy";
 	
 	var isFirst = true;
+	$scope.nodeCountries=[];
 	$rootScope.getNodes = function(){
 
 		$rootScope.names=[];
 		$rootScope.urls=[];
+		
 		var updatedNodes=[];
 		$http(req).then(function(value){
 
@@ -57,17 +60,15 @@ angular.module("IdraPlatform").controller('CataloguesController',["$scope","$htt
 			$rootScope.names = $scope.nodes.map(a=>a.name.toLowerCase());
 			$rootScope.urls = $scope.nodes.map(a=>a.host.toLowerCase());
 			updatedNodes = new Map($scope.nodes.map((i) => [i.id, i]));
-			//console.log(updatedNodes);
-			//console.log($scope.nodes);
-//			for(i=0; i<$scope.nodes.length; i++){				
-//				$rootScope.names.push($scope.nodes[i].name.toLowerCase());
-//				$rootScope.urls.push($scope.nodes[i].host.toLowerCase());
-//				updatedNodes[$scope.nodes[i].id]=$scope.nodes[i];
-//			}
+			
 			
 			if(isFirst){
 				$scope.nodesSafeSrc = [].concat($scope.nodes);
 				$scope.displayedCollection = [].concat($scope.nodesSafeSrc);
+				$scope.nodesSafeSrc.forEach(n=>{
+					if($scope.nodeCountries.indexOf(n.country)<0 && n.country!='')
+						$scope.nodeCountries.push(n.country);
+				});
 				isFirst=false;
 			}else{
 				var toRemove = [];
@@ -202,35 +203,35 @@ angular.module("IdraPlatform").controller('CataloguesController',["$scope","$htt
 		return date.getDate() + '/' +( date.getMonth()+1) + '/' +  date.getFullYear()+" "+date.getHour()+":"+date.getMinute();
 	}
 
-	$scope.getters={
-			name: function (value) {
-				return value.name;
-			},
-			isActive: function (value) {
-				return value.isActive;
-			},
-			host: function (value) {
-				return value.host;
-			},
-			type: function (value) {
-				return value.nodeType;
-			},
-			federationLevel: function (value) {
-				return value.federationLevel;
-			},
-			status: function (value) {
-				return value.nodeState;
-			},
-			datasetCount: function (value) {
-				return value.datasetCount;
-			},
-			updatePeriod: function (value) {
-				return value.refreshPeriod;
-			},
-			lastUpdate: function (value) {
-				return value.lastUpdateDate;
-			}
-	}
+//	$scope.getters={
+//			name: function (value) {
+//				return value.name;
+//			},
+//			isActive: function (value) {
+//				return value.isActive;
+//			},
+//			host: function (value) {
+//				return value.host;
+//			},
+//			type: function (value) {
+//				return value.nodeType;
+//			},
+//			federationLevel: function (value) {
+//				return value.federationLevel;
+//			},
+//			status: function (value) {
+//				return value.nodeState;
+//			},
+//			datasetCount: function (value) {
+//				return value.datasetCount;
+//			},
+//			updatePeriod: function (value) {
+//				return value.refreshPeriod;
+//			},
+//			lastUpdate: function (value) {
+//				return value.lastUpdateDate;
+//			}
+//	}
 
 //	$scope.checkName = function(data) {
 //		////console.log(data);
@@ -369,6 +370,10 @@ angular.module("IdraPlatform").controller('CataloguesController',["$scope","$htt
 		$window.location.assign('#/catalogue');
 	};
 	
+	$scope.addRemoteNode =function(){
+		$window.location.assign('#/remotes');
+	}
+	
 	$scope.downloadZip = false;
 	
 	$scope.downloadDump = function(node){
@@ -432,4 +437,20 @@ angular.module("IdraPlatform").controller('CataloguesController',["$scope","$htt
 	$scope.keep = function(){
 		$uibModalInstance.close(2);
 	};
-}]);
+}]).directive("stResetSearch", function() {
+    return {
+        restrict: 'EA',
+        require: '^stTable',
+        link: function(scope, element, attrs, ctrl) {
+          return element.bind('click', function() {
+            return scope.$apply(function() {
+              var tableState;
+              tableState = ctrl.tableState();
+              tableState.search.predicateObject = {};
+              tableState.pagination.start = 0;
+              return ctrl.pipe();
+            });
+          });
+        }
+      };
+});

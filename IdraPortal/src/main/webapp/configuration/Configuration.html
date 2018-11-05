@@ -72,7 +72,7 @@
 							<div class="pull-right form-inline">
 
 								<button type="submit"
-									class="btn btn-primary btn-material-deep-orange pull-right"
+									class="btn btn-primary pull-right"
 									ng-disabled="rdfMaxDimension < 1 || rdfMaxDimension > 250 || rdfMaxDimension == ''">Update</button>
 
 
@@ -103,7 +103,7 @@
 							</div>
 							<div class="pull-right form-inline">
 								<button type="submit"
-									class="btn btn-primary btn-material-deep-orange pull-right">Update</button>
+									class="btn btn-primary pull-right">Update</button>
 							</div>
 						</fieldset>
 					</form>
@@ -140,9 +140,9 @@
 									<td>{{p.namespace}}</td>
 									<td>
 										<div class="buttons">
-											<a class="btn-flat mdi-material-deep-orange"
+											<a class="btn-flat "
 												ng-click="openModal(p)"><i class="mdi-content-create"></i></a>
-											<a class="btn-flat mdi-material-deep-orange"
+											<a class="btn-flat "
 												ng-click="deletePrefix(p)"><i class="mdi-content-clear"></i></a>
 										</div>
 									</td>
@@ -156,7 +156,7 @@
 									</td>
 									<td colspan="1"></td>
 									<td><span style="margin: 0 auto" class="pull-right"><button
-												class="btn btn-primary btn-material-deep-orange"
+												class="btn btn-primary "
 												ng-click="openModal('')">Add Prefix</button></span></td>
 								</tr>
 							</tfoot>
@@ -192,9 +192,9 @@
 </div>
 
 <div class="modal-footer">
-	<button class="btn btn-default" type="button" ng-click="cancel()">Cancel</button>
-	<button class="btn btn-primary" type="button" ng-if=" mode=='create' " ng-click="addPrefix()" ng-disabled="tmp.prefix=='' && tmp.namespace==''">Create</button>
-	<button class="btn btn-primary" type="button" ng-if=" mode=='update' " ng-click="updatePrefix()" ng-disabled="tmp.prefix==oldPrefix.prefix && tmp.namespace==oldPrefix.namespace">Update</button>
+	<button class="btn btn-default btn-raised" type="button" ng-click="cancel()">Cancel</button>
+	<button class="btn btn-primary btn-raised" type="button" ng-if=" mode=='create' " ng-click="addPrefix()" ng-disabled="tmp.prefix=='' && tmp.namespace==''">Create</button>
+	<button class="btn btn-primary btn-raised" type="button" ng-if=" mode=='update' " ng-click="updatePrefix()" ng-disabled="tmp.prefix==oldPrefix.prefix && tmp.namespace==oldPrefix.namespace">Update</button>
 </div>
 </script>
 
