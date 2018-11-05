@@ -41,14 +41,14 @@
 		</section>
 	</div>
 	<div class="row form-inline">
-	     	<label class="control-label" >Output Format</label>
+	     	<label class="control-label" >{{'sparqlOutputFormat' | translate}}</label>
 		    <select name="ordMd" class="form-control" ng-options="option for option in outputType" ng-model="outputMode"></select>
 	</div>
 	<div class="row">
 		<div class="pull-right" >
 			<div class="form-inline">
-				<button type="button" class="btn btn-default btn-raised" ng-click="clearArea()">Clear</button>	
-				<button type="button" class="btn btn-primary btn-raised btn-icon" ng-disabled="disabledButton || aceDocumentValue.length==''" ng-click="executeSpaqrl()"><i class="mdi-action-search"></i></i>Search</button> 
+				<button type="button" class="btn btn-default btn-raised" ng-click="clearArea()">{{'sparqlClear' | translate}}</button>	
+				<button type="button" class="btn btn-primary btn-raised btn-icon" ng-disabled="disabledButton || aceDocumentValue.length==''" ng-click="executeSpaqrl()"><i class="mdi-action-search"></i>{{'search' | translate}}</button> 
 			</div>
 		</div>
 	</div>		

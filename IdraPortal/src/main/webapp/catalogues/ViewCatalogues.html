@@ -19,14 +19,14 @@
 
 <ul class="breadcrumb">
   <li class="breadcrumb-item"><a href="#metadata">Home</a></li>
-  <li class="breadcrumb-item active">Catalogues</li>
+  <li class="breadcrumb-item active">{{'DataSources'|translate}}</li>
 </ul>
 <!--  -->
 <div class="row">
 <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
 	<a href="javascript:void(0)" class="btn-flat pull-right" ng-click="enableCardVisualization = !enableCardVisualization">
-	<i ng-show="enableCardVisualization" class="mdi-action-list"><md-tooltip>Table</md-tooltip></i>
-	<i ng-show="!enableCardVisualization" class="mdi-action-dashboard"><md-tooltip>Cards</md-tooltip></i>
+	<i ng-show="enableCardVisualization" class="mdi-action-list"><md-tooltip>{{'table'|translate}}</md-tooltip></i>
+	<i ng-show="!enableCardVisualization" class="mdi-action-dashboard"><md-tooltip>{{'cards'|translate}}</md-tooltip></i>
 	</a>
 </div>
 </div>
@@ -36,16 +36,16 @@
 						class="table table-striped">
 						<thead>
 							<tr>
-								<th st-sort="name">Name</th>
-								<th st-sort="country">Country</th>
-								<th st-sort="category">Category</th>
+								<th st-sort="name">{{'name'|translate}}</th>
+								<th st-sort="country">{{'country'|translate}}</th>
+								<th st-sort="category">{{'category'|translate}}</th>
 								<th st-sort="homepage">Homepage</th>
 								<th st-sort="datasetCount">Datasets</th>
-								<th st-sort="lastUpdate">Last Update</th>
+								<th st-sort="lastUpdate">{{'lastUpdate'|translate}}</th>
 								<th ></th>
 							</tr>
 							<tr>
-					<th><input placeholder="search name" class="form-control"
+					<th><input placeholder="{{'searchName' | translate}}" class="form-control"
 						st-search="name" /></th>
 						<th><select st-search="country" class="form-control">
 							<option value=""></option>
@@ -62,7 +62,7 @@
 					<th></th>
 					<th><a st-reset-search href="javascript:void(0)"
 						class="btn-flat "><i class="mdi-content-clear"></i> <md-tooltip>
-							Clear Filters</md-tooltip></a></th>
+							{{'clearFilters'|translate}}</md-tooltip></a></th>
 				</tr>
 			</thead>
 						<tbody>
@@ -72,7 +72,7 @@
 								</td>
 								<td>
 									<span ng-show="node.country!='' && node.country!=undefined"
-										style="border-style: solid; border-width: 1px; border-color: rgba(0, 0, 0, 0.1)"
+										style="border-style: solid; border-width: 0px; border-color: rgba(0, 0, 0, 0.1)"
 										class="flag-icon "
 										ng-class="'flag-icon-'+node.country.toLowerCase()"></span>
 <!-- 									<span ng-show="node.country!=''">{{node.country}}</span> -->
@@ -94,7 +94,7 @@
 										<a href="javascript:void(0)"
 											class="btn-flat "
 											ng-click="showDatasets(node)"><i class="mdi-action-search"></i><md-tooltip>
-												Show Datasets</md-tooltip></a> 
+												{{'showDatasets'|translate}}</md-tooltip></a> 
 									</div>
 								</td>
 							</tr>
@@ -112,11 +112,11 @@
             <a href="{{node.homepage}}" target="_blank">{{node.name}}</a>
             <a href="javascript:void(0)" class="btn-flat "
 			ng-click="showDatasets(node)"><i class="mdi-action-search"></i>
-			<md-tooltip>Show Datasets</md-tooltip></a>  
+			<md-tooltip>{{'showDatasets'|translate}}</md-tooltip></a>  
             </span>
             <span class="md-subhead"><strong>Datasets:</strong> {{node.datasetCount}}</span>
-            <span class="md-subhead"><strong>Last update:</strong> {{node.lastUpdateDate | date:'yyyy-MM-dd'}}</span>
-            <span class="md-subhead"><strong>Category:</strong> 
+            <span class="md-subhead"><strong>{{'lastUpdate'|translate}}:</strong> {{node.lastUpdateDate | date:'yyyy-MM-dd'}}</span>
+            <span class="md-subhead"><strong>{{'category'|translate}}:</strong> 
             	<span ng-show="node.category!=undefined && node.category!=''">{{node.category}}</span>
             	<span ng-show="node.category==undefined || node.category==''">N/A</span>
             </span> 
@@ -139,12 +139,12 @@
         		<span ng-show="!node.descCollapse" marked='node.description'></span>
         			<span ng-show="node.descCollapse">{{node.tmpDesc}}<a href="javascript:void(0)" class="btn-flat">
         							<span ng-show="node.descCollapse" ng-click="node.descCollapse = !node.descCollapse">...
-        							<md-tooltip>More</md-tooltip>
+        							<md-tooltip>{{'more'|translate}}</md-tooltip>
         							</span>
 								</a></span>
         	</span>
         </span>	
-        <p ng-show="node.description==''">No description available</p>
+        <p ng-show="node.description==''">{{'distributionDetailNoDescription'|translate}}</p>
         </p>
 <!--         </div>		 -->
         </md-card-content>
@@ -156,25 +156,23 @@
 
 	<div class="col-md-6">
 	<md-card class="md-whiteframe-3dp" ng-repeat="node in nodesRight track by node.id">
-	<md-card-title style="padding-bottom:0px;">
-         <md-card-title-text layout-align="center">
+<md-card-title style="padding-bottom:0px;">
+          <md-card-title-text layout-align="center">
             <span class="md-headline"><span ng-show="node.country!='' && node.country!=undefined" 
             style="border-style: solid;border-width: 1px;border-color: rgba(0,0,0,0.1)" class="flag-icon " 
             ng-class="'flag-icon-'+node.country.toLowerCase()"></span>  
             <a href="{{node.homepage}}" target="_blank">{{node.name}}</a>
             <a href="javascript:void(0)" class="btn-flat "
 			ng-click="showDatasets(node)"><i class="mdi-action-search"></i>
-			<md-tooltip>Show Datasets</md-tooltip></a>  
-<!--             <a	class="btn-flat " href="{{node.host}}" target="_blank"> -->
-<!--             <i class="mdi-action-open-in-new" style="vertical-align: middle;"></i></a> -->
+			<md-tooltip>{{'showDatasets'|translate}}</md-tooltip></a>  
             </span>
             <span class="md-subhead"><strong>Datasets:</strong> {{node.datasetCount}}</span>
-            <span class="md-subhead"><strong>Last update:</strong> {{node.lastUpdateDate | date:'yyyy-MM-dd'}}</span>
-            <span class="md-subhead"><strong>Category:</strong> 
+            <span class="md-subhead"><strong>{{'lastUpdate'|translate}}:</strong> {{node.lastUpdateDate | date:'yyyy-MM-dd'}}</span>
+            <span class="md-subhead"><strong>{{'category'|translate}}:</strong> 
             	<span ng-show="node.category!=undefined && node.category!=''">{{node.category}}</span>
             	<span ng-show="node.category==undefined || node.category==''">N/A</span>
             </span> 
-          </md-card-title-text>            		 
+          </md-card-title-text>          		
           	<md-card-avatar hide-xs>
           		<md-card-title-media>
             <div class="md-media-sm card-media">
@@ -185,23 +183,22 @@
           	</md-card-avatar>
         </md-card-title>
         <md-card-content style="padding-bottom:0px;">
-<!--          <div style="max-height:200px; overflow-y:auto"> -->
+<!--         <div style="max-height:200px; overflow-y:auto"> -->
         <p style="line-height: 1.75em;">
-        
-        <span ng-show="node.description!=''">
+        		<span ng-show="node.description!=''">
         	<span ng-show="!node.descriptionIsCollapsible" marked="node.description"></span>
         	<span ng-show="node.descriptionIsCollapsible">
         		<span ng-show="!node.descCollapse" marked='node.description'></span>
-        			<span ng-show="node.descCollapse">{{node.tmpDesc}}</span><span><a href="javascript:void(0)" class="btn-flat">
+        			<span ng-show="node.descCollapse">{{node.tmpDesc}}<a href="javascript:void(0)" class="btn-flat">
         							<span ng-show="node.descCollapse" ng-click="node.descCollapse = !node.descCollapse">...
-        							<md-tooltip>More</md-tooltip>
+        							<md-tooltip>{{'more'|translate}}</md-tooltip>
         							</span>
 								</a></span>
         	</span>
         </span>	
-        <p ng-show="node.description==''">No description available</p>
-        </p>		
-<!--         </div> -->
+        <p ng-show="node.description==''">{{'distributionDetailNoDescription'|translate}}</p>
+        </p>
+<!--         </div>		 -->
         </md-card-content>
 <!-- 		<md-card-actions layout="row" layout-align="end center"> -->
 <!--           <md-button ng-click="showDatasets(node)">Show Datasets</md-button> -->

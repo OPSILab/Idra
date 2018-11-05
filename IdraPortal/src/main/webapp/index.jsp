@@ -297,12 +297,12 @@ div.m-app-loading p {
 						<ul class="nav navbar-nav navbar-right">
 							<li
 								ng-class="{ active: isActive('/metadata') || isActive('/showDatasets') || isActive('/showDatasetDetail') || isActive('/createDatalet') }"><a
-								href="#/metadata"><strong>Search</strong></a></li>
+								href="#/metadata"><strong>{{'datasetSearch' | translate }}</strong></a></li>
 							<li
 								ng-class="{ active: isActive('/sparql') || isActive('/showSparqlResult') }"><a
-								href="#/sparql"><strong>SPARQL</strong></a></li>
+								href="#/sparql"><strong>{{'SPARQLSearch' | translate }}</strong></a></li>
 							<li ng-class="{ active: isActive('/viewCatalogues')}"><a
-								href="#/viewCatalogues"><strong>Catalogues</strong></a></li>
+								href="#/viewCatalogues"><strong>{{'DataSources' | translate }}</strong></a></li>
 							<li dropdown><a href class="dropdown-toggle" dropdown-toggle><strong>Help</strong><b
 									class="caret"></b></a>
 								<ul class="dropdown-menu">
@@ -313,40 +313,50 @@ div.m-app-loading p {
 										<a href="https://github.com/OPSILab/Idra" target="_blank"><strong>GitHub</strong></a>
 									</li>
 									<li>
-										<a href="https://idra.readthedocs.io" target="_blank"><strong>Manual</strong></a>
+										<a href="https://idra.readthedocs.io" target="_blank"><strong>{{'helpMenuManual' | translate }}</strong></a>
 									</li>
 								</ul></li>
 							<li ng-if="token!=undefined"
 								ng-class="{ active: isActive('/catalogues') || isActive('/node') || isActive('/configuration') || isActive('/logs') || isActive('/statistics') || isActive('/dataletsManagement')}"
-								dropdown><a href class="dropdown-toggle" dropdown-toggle><strong>Administration</strong><b
+								dropdown><a href class="dropdown-toggle" dropdown-toggle><strong>{{'administration' | translate }}</strong><b
 									class="caret"></b></a>
 								<ul class="dropdown-menu">
 									<li
 										ng-class="{ active: isActive('/catalogues') || isActive('/addNode') }">
-										<a href="#/catalogues"><strong>Manage Catalogues</strong></a>
+										<a href="#/catalogues"><strong>{{'manageData' | translate }}</strong></a>
 									</li>
 									<li ng-class="{ active: isActive('/configuration')}"><a
-										href="#/configuration"><strong>Manage
-												Configurations</strong></a></li>
+										href="#/configuration"><strong>{{'manageConf' | translate }}</strong></a></li>
 									<li ng-show="dataletEnabled"
 										ng-class="{ active: isActive('/dataletsManagement')}"><a
-										href="#/dataletsManagement"><strong>Manage
-												Datalets</strong></a></li>
+										href="#/dataletsManagement"><strong>{{'manageDatalet' | translate }}</strong></a></li>
 									<li ng-class="{ active: isActive('/logs')}"><a
-										href="#logs"><strong>View Logs</strong></a></li>
+										href="#logs"><strong>{{'viewLogs' | translate }}</strong></a></li>
 								</ul></li>
-
+							<li dropdown><a href class="dropdown-toggle" dropdown-toggle><strong>{{'lang' | translate}}</strong><b
+									class="caret"></b></a>
+								<ul class="dropdown-menu">
+									<li>
+										<a href="javascript:void(0)" ng-click="changeLanguage('it')" >
+										<span class="flag-icon" ng-class="'flag-icon-it'"></span>
+										<strong>Italiano</strong></a>
+									</li>
+									<li>
+										<a href="javascript:void(0)" ng-click="changeLanguage('en')">
+										<span class="flag-icon" ng-class="'flag-icon-gb'"></span><strong>English</strong></a>
+									</li>
+								</ul></li>
 							<li class="loginBtns">
 								<form ng-if="token==undefined" class="navbar-form"
 									ng-controller="LoginCtrl">
 									<button type="button" class="btn btn-primary btn-raised"
-										ng-click="signIn()">Login</button>
+										ng-click="signIn()">{{'login' | translate }}</button>
 								</form>
 
 								<form ng-if="token!=undefined" class="navbar-form"
 									ng-controller="LogoutCtrl">
 									<button type="button" class="btn btn-primary btn-raised btn-icon"
-										ng-click="logout()">Logout</button>
+										ng-click="logout()">{{'logout' | translate }}</button>
 								</form>
 
 							</li>
@@ -402,10 +412,10 @@ div.m-app-loading p {
 					class="img-responsive footerImages small-margin"
 					ng-src="images/logo_eng-100.jpg" style="width:25%"/></a></div>
 			<div class="col-md-4 col-lg-4 col-sm-4">
-				<p style="margin-bottom:0px;">Copyright &copy;<a href="https://www.eng.it/" target="_blank">Engineering</a> 2018. - Idra version {{idraVersion}}</p>
+				<p style="margin-bottom:0px;">Copyright &copy;<a href="https://www.eng.it/" target="_blank">Engineering</a> 2018. - Idra v. {{idraVersion}}</p>
 			</div>
 			<div class="col-md-4 col-lg-4 col-sm-4">
-				<a class="pull-right" href="#/credits">Credits</a>
+				<a class="pull-right" href="#/credits">{{'credits' | translate}}</a>
 			</div>
 		</div>
 		<div class="col-md-12 col-lg-12 col-sm-12 text-center hide-gt-xs" >
@@ -413,10 +423,10 @@ div.m-app-loading p {
 				<p style="margin-bottom:0px;">Copyright &copy;<a href="https://www.eng.it/" target="_blank">Engineering</a></p>
 			</div>
 			<div class="col-md-12 col-lg-12 col-sm-12">
-				<p style="margin-bottom:0px;">Idra version {{idraVersion}}</p>
+				<p style="margin-bottom:0px;">Idra v. {{idraVersion}}</p>
 			</div>
 			<div class="col-md-12 col-lg-12 col-sm-12">
-				<a href="#/credits">Credits</a>
+				<a href="#/credits">{{'credits' | translate}}</a>
 			</div>
 			<div class="col-md-12 col-lg-12 col-sm-12">
 			<a href="https://www.eng.it/" target="_blank"><img
@@ -426,143 +436,11 @@ div.m-app-loading p {
 		</div>
 	</div>
 	<!-- END FOOTER -->
-
-
-	<script type="text/ng-template" id="ModalContent.html">
-<div class="modal-header">
-	<button type="button" class="close" aria-hidden="true" ng-click="cancel()">x</button>
-    <h3 class="modal-title">{{title}}</h3>
-</div>
-<div class="modal-body row">
-	<alert type='{{alertTypeModal}}' style="text-align:center"
-		ng-show="alertModal" close="closeAlertModal()" dismiss-on-timeout="3000">
-	{{textAlertModal}} </alert>
-
-	<div class="col-md-6">
-		<label>Available</label>
-		<div class="well">
-			<input class="search form-control" placeholder="Search" ng-model="no_selected" />
-			<div style="overflow: auto; height: 300px;">
-				<ul class="list-group list" >
-					<li ng-repeat="item in nonSelectedItems | filter:no_selected as results_no" class='list-group-item' ng-click="addItem(item)" >
-							<label class='name h4'>
-							{{item}}   
-							<button type="button" ng-if="federationLevel[item]!='LEVEL_0'" class="btn btn-success btn-xs" ng-click="addItem(item)">
-							<i class="glyphicon glyphicon-arrow-right"></i>
-							</button>
-							</label>
-					</li>
-					<li class="list-group-item" ng-if="results_no.length == 0 ">
-								<strong ng-if="selectedItems.length != allItems.length">No results found!</strong>
-							<strong ng-if="selectedItems.length == allItems.length ">All selected</strong>
-					</li>
-				</ul>				
-			</div>
-		</div>
-	</div>
-
-	<div class="col-md-6">
-		<label>Selected</label>
-		<div class="well">
-			<input class="search form-control" placeholder="Search" ng-model="selected" />
-			<div style="overflow: auto; height: 300px;">
-				<ul class="list-group list" >
-					<li ng-repeat="item in selectedItems | filter:selected as results" class='list-group-item' ng-click="removeItem(item)">
-							<label class='name h4'>
-							<button type="button" class="btn btn-danger btn-xs" ng-click="removeItem(item)">
-							<i class="glyphicon glyphicon-arrow-left"></i>
-							</button>
-							<span class="align-right">
-							{{item}}
-							</label>
-					</li>
-					<li class="list-group-item" ng-if="results.length == 0">
-							<strong ng-if="nonSelectedItems.length != allItems.length" >No results found!</strong>
-							<strong ng-if="nonSelectedItems.length == allItems.length" >All available</strong>
-					</li>
-				</ul>				
-			</div>
-		</div>		  
-	</div>
-	<label class='name checklbl'> <input type='checkbox' ng-click="selectAll()" ng-checked=" selectedItems.length == allItems.length " > Select All </label>
-</div>
-
-<div class="modal-footer">
-    <button class="btn btn-default btn-raised" type="button" ng-click="cancel()">Cancel</button>
-	<button class="btn btn-primary btn-raised" type="button" ng-click="ok()">OK</button>
-</div>
-</script>
-
-	<script type="text/ng-template" id="ModalEurovoc.html">
-<div class="modal-header">
-	<button type="button" class="close" aria-hidden="true" ng-click="cancel()">x</button>
-    <h3 class="modal-title">Eurovoc Languages</h3>
-</div>
-<div class="modal-body row">
-	<alert type='{{alertTypeModal}}' style="text-align:center"
-		ng-show="alertModal" close="closeAlertModal()" dismiss-on-timeout="3000">
-	{{textAlertModal}} </alert>
-
-	<div class="col-md-6">
-		<label>Source Language</label>
-		<div class="well">
-			<input class="search form-control" placeholder="Search" ng-model="inputLanguage" />
-			<div style="overflow: auto; height: 300px;">
-				<md-radio-group ng-model="inputLan">
-					<md-radio-button style="margin-bottom:0px">
-							<label class='name h4'>
-							None   
-							</label>
-					</md-radio-button>
-					<md-radio-button ng-repeat="option in sourceLanguages | filter:inputLanguage as results_inputLanguage" ng-value="option" style="margin-bottom:0px">
-							<label class='name h4'>
-							{{option.text}}   
-							</label>
-					</md-radio-button>
-						<label class='name h4' ng-if="results_inputLanguage.length == 0 ">
-							<strong >No results found!</strong>
-						</label>
-				</md-radio-group>				
-			</div>
-		</div>
-	</div>
-
-	<div class="col-md-6">
-		<label>Target Language</label>
-		<div class="well">
-			<input class="search form-control" placeholder="Search" ng-model="outputLanguage" />
-				<ul class="list-group list" > 
-				 <div style="overflow: auto; height: 300px;">
-					<li ng-repeat="option in targetLanguages | filter:outputLanguage as results_outputLanguage" class='list-group-item' style="margin-bottom:-18px">
-							<label class='name h4'>
-							<md-checkbox ng-checked="exists(option, outputLan)" ng-click="toggle(option, outputLan)">{{option.text}}</md-checkbox>
-							</label>
-					</li>
-						<li class="list-group-item" ng-if="results_outputLanguage.length == 0">
-							<label class='name h4'>
-								<strong >No results found!</strong>
-							</label>
-					</li>
-					</div>
-					<li class="list-group-item" style="margin-bottom:-18px" ng-if="outputLanguage==''">
-						<label class='name h4'> <md-checkbox ng-checked="isChecked()"
-                         ng-click="toggleAll()" > Select All</md-checkbox></label>
-					</li>
-				</ul>				
-		</div>		  
-	</div>
-</div>
-
-<div class="modal-footer">
-    <button class="btn btn-default btn-raised" type="button" ng-click="cancel()">Cancel</button>
-	<button class="btn btn-primary btn-raised" type="button" ng-click="ok()">OK</button>
-</div>
-</script>
-
+	
 	<script type="text/ng-template" id="ModalContentSingle.html">
 <div class="modal-header">
 	<button type="button" class="close" aria-hidden="true" ng-click="cancel()">x</button>
-    <h3 class="modal-title">{{title}}</h3>
+    <h3 class="modal-title">{{'DataSources' | translate}}</h3>
 </div>
 <div class="modal-body row">
 	<alert type='{{alertTypeModal}}' style="text-align:center"
@@ -572,7 +450,7 @@ div.m-app-loading p {
 	<div class="col-md-12 col-sm-12 col-lg-12">
 		<div class="well">
 
-	<input class="search form-control" placeholder="Search" ng-model="selected" />
+	<input class="search form-control" placeholder="{{'search' | translate}}" ng-model="selected" />
 			<div style="overflow: auto; height: 300px;">
 				<ul class="list-group list" >
 					<li ng-repeat="item in allItems | filter:selected as results" class='list-group-item' style='margin-bottom:-18px'>
@@ -584,7 +462,7 @@ div.m-app-loading p {
 					</li>
 					<li class="list-group-item" ng-if="results.length == 0">
 						<label class='name h4'>
-							<strong >No results found!</strong>
+							<strong >{{'noresults' | translate}}!</strong>
 						</label>
 					</li>
 				</ul>				
@@ -594,109 +472,16 @@ div.m-app-loading p {
 	</div>
 
 	<label class='name checklbl'> <md-checkbox class="blue" ng-checked="isChecked()"
-                         ng-click="toggleAll()" > Select All</md-checkbox> </label>
+                         ng-click="toggleAll()" > {{'selectAll' | translate}}</md-checkbox> </label>
 </div>
 
 <div class="modal-footer">
-    <button class="btn btn-default btn-raised" type="button" ng-click="cancel()">Cancel</button>
-	<button class="btn btn-primary btn-raised" type="button" ng-click="ok()">OK</button>
+    <button class="btn btn-default btn-raised" type="button" ng-click="cancel()">{{'cancel' | translate}}</button>
+	<button class="btn btn-primary btn-raised" type="button" ng-click="ok()">{{'ok' | translate}}</button>
 </div>
 </script>
 
-	<script type="text/ng-template" id="ModalDistribution.html">
-<div class="modal-header">
-	<button type="button" class="close" aria-hidden="true" ng-click="cancel()">x</button>
-    <h3 class="modal-title">Distribution Detail</h3>
-</div>
-<div class="modal-body row">
-
-	<md-card md-theme-watch style="width:100%;margin: 0px 0px 8px 0px"> <md-card-title>
-				<md-card-title-text > 
-				<h2 style="margin: 0px 0px 0px 0px">{{distribution.title.value}}</h2> 
-				</md-card-title-text> 
-				</md-card-title> 
-				<md-card-content>
-				<p style="line-height: 1.75em;">
-						<span ng-if="distribution.description.value!=''">{{distribution.description.value}}</span>
-						<span ng-if="distribution.description.value==''">No description available for this distribution.</span>
-				</p>
-				<p>URL: <a href='{{distribution.downloadURL.value}}' target="_blank">{{distribution.downloadURL.value}}</a></p>
-				<table class="table">
-							<tr ng-show="distribution.format.value!=''">
-								<td><span style="font-weight: bold;">Format:</span></td>
-								<td>{{distribution.format.value}}</td>
-							</tr>
-							<tr ng-show="distribution.license.name.value!='' && distribution.license.uri!=''">
-								<td><span style="font-weight: bold;">License:</span></td>
-								<td>{{distribution.license.name.value}} <a ng-show="distribution.license.license.uri!=''"
-									href="{{distribution.license.uri}}"
-									class="btn-flat " target="_blank"><i
-									class="mdi-action-open-in-new" style="vertical-align: middle;"></i></a></td>
-							</tr>
-							<tr ng-show="distribution.releaseDate.value!=''">
-								<td><span style="font-weight: bold;">Release Date:</span></td>
-								<td>{{distribution.releaseDate.value | date}}</td>
-							</tr>
-							<tr ng-show="distribution.updateDate.value!=''">
-								<td><span style="font-weight: bold;">Update Date:</span></td>
-								<td>{{distribution.updateDate.value | date}}</td>
-							</tr>
-							<tr ng-show="distribution.language.length>1 || (distribution.language.length==1 && distribution.language[0]!='' ) ">
-								<td><span style="font-weight: bold;">Language:</span></td>
-								<td>
-									<ul class="list-group list" style="margin:0px 0px 0px 0px;"> 
-										<li class='list-group-item' ng-repeat="language in distribution.language track by $index">{{language}}</li>
-									</ul>
-								</td>
-							</tr>
-							<tr ng-show="distribution.linkedSchemas.length>1 || (distribution.linkedSchemas.length==1 && distribution.linkedSchemas[0]!='' ) ">
-								<td><span style="font-weight: bold;">Linked Schemas:</span></td>
-								<td>
-									<ul class="list-group list" style="margin:0px 0px 0px 0px;"> 
-										<li class='list-group-item' ng-repeat="link in distribution.linkedSchemas track by $index">{{link}}</li>
-									</ul>
-								</td>
-							</tr>
-							<tr ng-show="distribution.rights.value!=''">
-								<td><span style="font-weight: bold;">Rights:</span></td>
-								<td>{{distribution.rights.value}}</td>
-							</tr>
-							<tr ng-show="distribution.status.value!=''">
-								<td><span style="font-weight: bold;">Status:</span></td>
-								<td>{{distribution.status.value}}</td>
-							</tr>
-							<tr ng-show="distribution.mediaType.value!=''">
-								<td><span style="font-weight: bold;">Media Type:</span></td>
-								<td>{{distribution.mediaType.value}}</td>
-							</tr>
-							<tr ng-show="distribution.byteSize.value!='' && distribution.byteSize.value!='0'">
-								<td><span style="font-weight: bold;">Size:</span></td>
-								<td>{{distribution.byteSize.value}}</td>
-							</tr>
-							<tr ng-show="distribution.checksum.value!=''">
-								<td><span style="font-weight: bold;">Checksum:</span></td>
-								<td>{{distribution.checksum.value}}</td>
-							</tr>
-							<tr ng-show="distribution.documentation.length>1 || (distribution.documentation.length==1 && distribution.documentation[0]!='' ) ">
-								<td><span style="font-weight: bold;">Documentation:</span></td>
-								<td>
-									<ul class="list-group list" style="margin:0px 0px 0px 0px;"> 
-										<li class='list-group-item' ng-repeat="doc in distribution.documentation track by $index">{{doc}}</li>
-									</ul>
-								</td>
-							</tr>
-				</table>
-				</md-card-content>			
-	</md-card>
-</div>
-
-<div class="modal-footer">
-    <button class="btn btn-default btn-raised" type="button" ng-click="cancel()">Close</button>
-</div>
-
-</script>
-
-	<script type="text/ng-template" id="ModalDataletAdmin.html">
+<script type="text/ng-template" id="ModalDataletAdmin.html">
 <div class="modal-header">
 	<button type="button" class="close" aria-hidden="true" ng-click="cancel()">x</button>
     <h3 class="modal-title">Datalet Detail</h3>
@@ -712,6 +497,7 @@ div.m-app-loading p {
 	<script type="text/ng-template" id="ModalDatalet.html">
 	<iframe width="100%" height="100%" ng-src="{{iframeURL}}"></iframe>
 </script>
+
 	<script type="text/ng-template" id="deletecatalogue_dialog.html">
 <div class="modal-header dialog-header-confirm">
 	<button type="button" class="close" ng-click="no()">&times;</button>
@@ -727,6 +513,7 @@ div.m-app-loading p {
 	<button type="button" class="btn btn-primary btn-raised" ng-click="no()">No</button>
 </div>
 </script>
+
 	<script type="text/ng-template" id="dumpSave_dialog.html">
 <div class="modal-header dialog-header-confirm">
 	<button type="button" class="close" ng-click="no()">&times;</button>
@@ -742,6 +529,7 @@ div.m-app-loading p {
 	<button type="button" class="btn btn-primary btn-raised" ng-click="no()">Cancel</button>
 </div>
 </script>
+
 	<script type="text/javascript" src="bower_components/jquery/jquery.js"></script>
 	<script type="text/javascript"
 		src="bower_components/angular/angular.js"></script>
@@ -809,6 +597,11 @@ div.m-app-loading p {
 		src="bower_components/d3-cloud/build/d3.layout.cloud.js"></script>
 	<script type="text/javascript"
 		src="bower_components/angular-d3-word-cloud/dist/angular-word-cloud.min.js"></script>
+
+	<script type="text/javascript" src="bower_components/angular-translate/angular-translate.min.js"></script>
+	<script type="text/javascript" src="bower_components/angular-translate-storage-local/angular-translate-storage-local.min.js"></script>
+	<script type="text/javascript" src="bower_components/angular-translate-storage-cookie/angular-translate-storage-cookie.min.js"></script>
+	<script type="text/javascript" src="bower_components/angular-translate-loader-static-files/angular-translate-loader-static-files.min.js"></script>
 
 	<script type="text/javascript" src="app.js"></script>
 	<script type="text/javascript" src="catalogues/catalogues.services.js"></script>

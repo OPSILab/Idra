@@ -18,8 +18,8 @@
 <div>
 	<div class="row  text-center" id="top" style="margin: 0 0 0 0">
 		<h3 style="display: inline;">
-			Search over <strong>{{numberOfDatasets}}</strong> dataset from <strong>{{numberOfCatalogues}}</strong>
-			catalogues!
+			{{'metadataMessage_1' | translate}} <strong>{{numberOfDatasets}}</strong> {{'metadataMessage_2' | translate}} <strong>{{numberOfCatalogues}}</strong>
+			{{'metadataMessage_3' | translate}}
 		</h3>
 	</div>
 	<form class="form" ng-submit="executeQuery()"
@@ -33,7 +33,7 @@
 							ng-class="{ 'has-error': item.text=='' && item.selectedOption!='ALL' }"
 							style="display: block; margin-top: 10px;">
 							<tags-input type="text" autofocus="true" class="form-control"
-								placeholder="Insert comma separated keywords" min-length="1"
+								placeholder="{{'keywords' | translate}}" min-length="1"
 								ng-required="option.req" replace-spaces-with-dashes="false"
 								ng-model="items[0].tags" addOnBlur="true" addOnComma="true"
 								addOnEnter="true" addOnSpace="false"
@@ -71,7 +71,7 @@
 							ng-repeat="item in items track by $index"
 							style="margin: 5px 0 5px 0; display: inline-block;">
 							<div class="col-md-3 col-lg-3 col-sm-3 ">
-								<label class="control-label">Filter {{$index+1}}</label> <select
+								<label class="control-label">{{'filter' | translate }} {{$index+1}}</label> <select
 									name="mySelect" class="form-control"
 									ng-options="option.value as option.text for option in item.options"
 									ng-model="item.selectedOption" ng-disabled="!item.last">
@@ -82,7 +82,7 @@
 									ng-class="{ 'has-error': item.text=='' && item.selectedOption!='ALL' }"
 									style="display: block; margin-top: 10px;">
 									<tags-input type="text" autofocus="true" class="form-control"
-										placeholder="Insert comma separated keywords" min-length="1"
+										placeholder="{{'keywords' | translate}}" min-length="1"
 										ng-required="option.req" replace-spaces-with-dashes="false"
 										ng-model="item.tags" addOnBlur="true" addOnComma="true"
 										addOnEnter="true" addOnSpace="false"
@@ -100,14 +100,14 @@
 									</a>
 									</span> <label class="help-block"
 										style="margin: 0px; padding: 0px; font-size: small;"
-										ng-if="item.text=='' && item.selectedOption!='ALL' ">{{messageError}}</label>
+										ng-if="item.text=='' && item.selectedOption!='ALL' ">{{'messageError' | translate}}</label>
 								</div>
 							</div>
 						</div>
 						<div class="col-md-12 col-lg-12 col-sm-12"
 							ng-controller="IssuedCtrl" style="margin: 5px 0 5px 0;">
 							<div class="col-md-3">
-								<label class="control-label">Release Date</label>
+								<label class="control-label">{{'issued' | translate}}</label>
 							</div>
 							<div class="col-md-4">
 								<div class="input-group datepicker">
@@ -116,7 +116,7 @@
 										datepicker-popup="{{format}}" ng-model="issuedStartDate"
 										is-open="status1.opened" min-date="minDate1"
 										max-date="maxDate1" datepicker-options="dateOptions"
-										ng-required="true" close-text="Close" placeholder="From"
+										ng-required="true" close-text="Close" placeholder="{{'from' | translate}}"
 										style="cursor: pointer;" /> <span class="input-group-btn">
 										<a ng-click="open1($event)" href
 										class="btn-flat "><i
@@ -132,7 +132,7 @@
 										datepicker-popup="{{format}}" ng-model="issuedEndDate"
 										is-open="status2.opened" min-date="minDate2"
 										max-date="maxDate2" datepicker-options="dateOptions"
-										ng-required="true" close-text="Close" placeholder="To"
+										ng-required="true" close-text="Close" placeholder="{{'to' | translate}}"
 										style="cursor: pointer;" /> <span class="input-group-btn">
 										<a href class="btn-flat "
 										a-disabled="issuedStartDate==null" ng-click="open2($event)"><i
@@ -145,7 +145,7 @@
 						<div class="col-md-12 col-lg-12 col-sm-12"
 							ng-controller="ModifiedCtrl" style="margin: 5px 0 5px 0;">
 							<div class="col-md-3">
-								<label class="control-label">Update Date</label>
+								<label class="control-label">{{'modified' | translate}}</label>
 							</div>
 							<div class="col-md-4">
 								<div class="input-group  datepicker">
@@ -154,7 +154,7 @@
 										datepicker-popup="{{format}}" ng-model="modifiedStartDate"
 										is-open="status1.opened" min-date="minDate1"
 										max-date="maxDate1" datepicker-options="dateOptions"
-										ng-required="true" close-text="Close" placeholder="From"
+										ng-required="true" close-text="Close" placeholder="{{'from' | translate}}"
 										style="cursor: pointer;" /> <span class="input-group-btn">
 										<a href="javascript:void(0)"
 										class="btn-flat "
@@ -171,7 +171,7 @@
 										datepicker-popup="{{format}}" ng-model="modifiedEndDate"
 										is-open="status2.opened" min-date="minDate2"
 										max-date="maxDate2" datepicker-options="dateOptions"
-										ng-required="true" close-text="Close" placeholder="To"
+										ng-required="true" close-text="Close" placeholder="{{'to' | translate}}"
 										style="cursor: pointer;" /> <span class="input-group-btn">
 										<a href="javascript:void(0)"
 										class="btn-flat "
@@ -185,7 +185,7 @@
 							style="margin: 5px 0 5px 0;">
 							<div class="col-md-3">
 								<div class="input-group">
-									<label class="control-label">Catalogues
+									<label class="control-label">{{'DataSources' | translate}} &nbsp;
 										({{selectedNodeName.length}}/{{nodes.length}}) </label> <a
 										href="javascript:void(0)"
 										class="btn-flat " ng-click="open()"><i
@@ -194,7 +194,7 @@
 							</div>
 							<!-- 						<div class="col-md-2" ng-show="liveSearchEnabled"> -->
 							<div class="col-md-4" ng-show="liveSearchEnabled">
-								<label class="control-label">Search On</label> <select
+								<label class="control-label">{{'liveEnabled' | translate}}</label> <select
 									name="ordMd" class="form-control"
 									ng-options="option.value as option.text for option in searchOn"
 									ng-model="live">
@@ -207,16 +207,16 @@
 							<div class="col-md-3">
 								<!-- 						a<md-input-container>  -->
 								<md-checkbox ng-model="euroVocEnabled" class="blue"> <label
-									class="control-label">Multi Language</label></md-checkbox>
+									class="control-label">{{ 'multilanguage' | translate}}</label></md-checkbox>
 							</div>
 							<div class="col-md-3" ng-show="euroVocEnabled">
-								<label class="control-label">Source</label>
+								<label class="control-label">{{'SourceLanguage' | translate}}</label>
 								<md-select ng-model="selSourceLanguage"> <md-option>
 								<em>None</em></md-option> <md-option ng-repeat="option in sourceLanguages"
 									ng-value="option.value"> {{option.text}} </md-option> </md-select>
 							</div>
 							<div class="col-md-6" ng-show="euroVocEnabled">
-								<label class="control-label">Targets</label>
+								<label class="control-label">{{'TargetLanguage' | translate}}</label>
 								<md-select ng-model="selTargetLanguages" multiple> <md-option
 									ng-repeat="option in targetLanguages" ng-value="option.value">{{option.text}}</md-option>
 								</md-select>
@@ -225,7 +225,7 @@
 						<div class="col-md-12 col-lg-12 col-sm-12"
 							style="margin: 5px 0 5px 0;">
 							<div class="col-md-5">
-								<label class="control-label">Sort By</label> <select
+								<label class="control-label">{{'sortBy' | translate}}</label> <select
 									name="ordBy" class="form-control"
 									ng-options="option.value as option.text for option in orderParameter"
 									ng-model="orderBy">
@@ -240,7 +240,7 @@
 							</div>
 							<!-- 			<div class="col-md-1"></div> -->
 							<div class="col-md-3">
-								<label class="control-label">Max results per page</label> <select
+								<label class="control-label">{{'resPerPage' | translate}}</label> <select
 									name="rows" class="form-control"
 									ng-options="option.value as option.text for option in numberOfResults"
 									ng-model="rows"></select>
@@ -251,10 +251,10 @@
 						<div class="pull-right form-inline">
 
 							<button type="button" class="btn btn-default btn-raised"
-								ng-click="resetForm()">Reset</button>
+								ng-click="resetForm()">{{'reset' | translate}}</button>
 							<button type="submit" class="btn btn-primary btn-raised btn-icon"
 								ng-disabled="nodes.length ==0">
-								<i class="mdi-action-search"></i>Search
+								<i class="mdi-action-search"></i>{{'search' | translate}}
 							</button>
 
 						</div>
@@ -270,7 +270,7 @@
 			<div class="col-md-8 col-lg-8 col-sm-8 text-center">
 				<md-tabs md-dynamic-height md-border-bottom md-center-tabs> <md-tab>
 				<md-tab-label>
-				<h4>Tags</h4>
+				<h4>{{'metadataTags' | translate}}</h4>
 				</md-tab-label> <md-tab-body>
 				<div ng-controller="TagCloudCTRL as appCtrl">
 					<div id="wordsCloud">
@@ -282,7 +282,7 @@
 				</md-tab-body> </md-tab> 
 				<md-tab>
 				<md-tab-label>
-				<h4>Categories</h4>
+				<h4>{{'metadataCategories' | translate}}</h4>
 				</md-tab-label> <md-tab-body> 			
 				
 				<md-list flex>
