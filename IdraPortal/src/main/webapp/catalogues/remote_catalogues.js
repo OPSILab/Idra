@@ -18,7 +18,10 @@
 angular.module("IdraPlatform").controller('RemoteCataloguesController',["$scope","$http",'$filter','config','$rootScope','dialogs','$interval','$timeout','$modal','FileSaver','Blob','$window','ODMSNodesAPI',function($scope,$http,$filter,config,$rootScope,dialogs,$interval,$timeout,$modal,FileSaver,Blob,$window,ODMSNodesAPI){
 
 	$scope.updatePeriods=[{text:'1 hour',value:'3600'},{text:'1 day',value:'86400'},{text:'1 week',value:'604800'}];
-	
+	$scope.nodeTypes = config.NODE_TYPES.split(',');
+	$scope.returnToCatalogues = function(){
+		$window.location.assign('#/catalogues');
+	}
 	
 	var req = {
 			method: 'GET',
@@ -27,26 +30,22 @@ angular.module("IdraPlatform").controller('RemoteCataloguesController',["$scope"
 				'Content-Type': 'application/json'
 			}};
 
-	$scope.remote_nodes=[];
 	$scope.dateFormat="MMM - dd - yyyy";
 	
 	$scope.getRemoteNodes = function(){
-
+		$rootScope.startSpin();
 		$http(req).then(function(value){
-			$scope.remote_nodes=value.data;
-			for(i=0; i<$scope.remote_nodes.length; i++){
-				$scope.remote_nodes[i].alreadyLocal = alreadyLocal($scope.remote_nodes[i].name,$scope.remote_nodes[i].host); 
-			}
-			$scope.remote_displayedCollection = [].concat($scope.remote_nodes);
-			
+			$rootScope.remote_nodes=value.data; 
+			checkCatalogues();
+			$rootScope.stopSpin();
 		}, function(e){
 			console.log("ERROR");
+			$rootScope.stopSpin();
 		});
 		
 	}
-	$scope.getRemoteNodes();
-	
-	$scope.itemsByPage = 10;
+		
+	$scope.itemsByPage = 20;
 		
 	$scope.toDate = function(value){
 		var date = new Date(value);
@@ -82,10 +81,15 @@ angular.module("IdraPlatform").controller('RemoteCataloguesController',["$scope"
 			fd.append("node",JSON.stringify(node));
 			fd.append("dump",'');
 
+			$rootScope.startSpin();
 			ODMSNodesAPI.addODMSNode(fd).then(function(){
+				$rootScope.stopSpin();
+				$rootScope.showAlert('success',"Catalogue "+node.name+" added to the local Federation!");
 				$rootScope.getNodes();
 			}, function(value){
-
+				
+				$rootScope.stopSpin();
+				
 				if(value.status==401){
 					$rootScope.token=undefined;
 					dialogs.error("Authentication failed","Please login first");
@@ -94,6 +98,7 @@ angular.module("IdraPlatform").controller('RemoteCataloguesController',["$scope"
 				if(value.status!=502){
 					dialogs.error("Registration failed",value.data.userMessage);
 					$rootScope.getNodes();
+					checkCatalogues();
 				}
 
 			});
@@ -101,6 +106,19 @@ angular.module("IdraPlatform").controller('RemoteCataloguesController',["$scope"
 
 		});
 	};	
+	
+	$scope.nodeCountries=[]
+	var checkCatalogues = function(){
+		for(i=0; i<$rootScope.remote_nodes.length; i++){
+			$rootScope.remote_nodes[i].alreadyLocal = alreadyLocal($rootScope.remote_nodes[i].name,$rootScope.remote_nodes[i].host); 
+		}
+		$scope.remote_displayedCollection = [].concat($rootScope.remote_nodes);
+		
+		$rootScope.remote_nodes.forEach(n=>{
+			if($scope.nodeCountries.indexOf(n.country)<0 && n.country!='')
+				$scope.nodeCountries.push(n.country);
+		});
+	}
 	
 	var currentUrls = angular.copy($rootScope.urls);
 	var currentNames = angular.copy($rootScope.names);
@@ -111,6 +129,15 @@ angular.module("IdraPlatform").controller('RemoteCataloguesController',["$scope"
 		}else{
 			tmpHost=host+"/";
 		}
+		
+		if(currentUrls==undefined){
+			return false;
+		}
+
+		if(currentNames==undefined){
+			return false;
+		}
+		
 		if(currentUrls.indexOf(host.toLowerCase())>=0 || currentUrls.indexOf(tmpHost.toLowerCase())>=0){
 				return true;
 		}
@@ -119,5 +146,13 @@ angular.module("IdraPlatform").controller('RemoteCataloguesController',["$scope"
 		}
 		return false;
 	};
+	
+	
+	if($rootScope.remote_nodes==undefined || $rootScope.remote_nodes.length==0 ){
+		$rootScope.remote_nodes=[];		
+		$scope.getRemoteNodes();
+	}else{
+		checkCatalogues();
+	}
 	
 }]);

@@ -89,10 +89,8 @@
             $timeout(function() {
                 var element = $element.find('#wordsCloud');
                 var height = $window.innerHeight * 0.75;
-//                var height = $window.innerHeight * 0.65;
                 element.height(height);
                 var width = element[0].offsetWidth;
-//                var width = element[0].offsetWidth*0.90;
                 var maxCount = originWords[0].count;
                 var minCount = originWords[originWords.length - 1].count;
                 var maxWordSize = width * 0.13;

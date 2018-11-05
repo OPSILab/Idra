@@ -22,17 +22,17 @@
   <li class="breadcrumb-item active">Datasets</li>
 </ul>
 
-	<div class="row form-inline" >
+	<div class="row form-inline">
 	
-		<div class="col-md-2 col-lg-3 col-sm-1 hide-xs" >
+		<div class="col-md-2 col-lg-3 col-sm-3 hide-xs" >
 		<div class="panel-group">
 			<div class="panel panel-primary" ng-repeat="facetsCategory in facetsList track by $index" id="{{facetsCategory.search_parameter}}">
-			<div class="panel-heading">
+			<div class="panel-heading" style="padding-bottom: 5px;padding-top: 5px;">
 				<h4 class="control-label" style="margin: 0px 0px 0px 0px" >{{facetsCategory.displayName}}</h4>
 			</div>
-				<div class="panel-body" >
-					<div style="margin-top: 0px; padding-top: 0px;">
-						<ul class="list-group list" ng-show="facetsCategory.values.length!=0">
+				<div class="panel-body" style="padding-bottom: 5px;padding-top: 5px; line-height: 20px;">
+					<div style="margin-top: 0px; padding-top: 0px;margin-bottom:5px">
+						<ul style="margin-bottom: 0px;" class="list-group list" ng-show="facetsCategory.values.length!=0">
 							<li class='list-group-item'
 								ng-repeat="facet in facetsCategory.values | limitTo:facetsCategory.limit track by $index"
 								ng-show="facet.keyword!=''"
@@ -59,26 +59,38 @@
 			</div>
 			</div>
 		</div>
-	<div class="col-md-10 col-sm-11 col-lg-9" >
-		<div class="row" style="margin: 0px 0px 10px 0px">
-		<div class="col-md-1 text-center" style="padding-left:0px">
-			<button type="button" class="btn btn-primary btn-sm"
+	<div class="col-md-10 col-sm-8 col-lg-9" >
+	<div class="row hide-gt-xs" style="margin: 0px 0px 10px 0px">
+		<div class="pull-left">
+			<button type="button" class="btn btn-primary btn-raised btn-sm"
 				ng-click="returnToForm()">
 				Back
 			</button>
 		</div>
-		<div class="col-md-4 text-center">
+		<div class="pull-right">
+			<pagination max-size="maxSize" class="pagination-sm"
+				ng-change="pageChanged()" boundary-links="true" previous-text="<"
+				next-text=">" first-text="<<" last-text=">>"
+				total-items="totalItems" items-per-page="rows"
+				ng-model="currentPage" ng-click="gotoTop()"></pagination>
+		</div>
+		</div>
+		<div class="row hide-xs show-gt-xs" style="margin: 0px 0px 10px 0px">
+		
+		<div class="col-sm-1 col-md-1 text-center" style="padding-left:0px">
+			<button type="button" class="btn btn-primary btn-raised btn-sm"
+				ng-click="returnToForm()">
+				Back
+			</button>
+		</div>
+		<div class="col-sm-2 col-md-4 text-center ">
 			<label class="control-label">Sort By</label> 
 			<select name="ordBy"
 				class="form-control"
 				ng-options="option.value as option.text for option in orderParameter"
 				ng-model="orderBy"></select>
-
-<!-- <select name="ordMd" class="form-control" -->
-<!-- 				ng-options="option.value as option.text for option in orderType" -->
-<!-- 				ng-model="orderMode"></select> -->
 		</div>
-		<div class="col-md-3 text-center">
+		<div class="col-sm-2 col-md-3 text-center">
 			<label class="control-label">Results</label> <select
 				name="rows" class="form-control"
 				ng-options="option.value as option.text for option in numberOfResults"
@@ -96,7 +108,7 @@
 		</div>
 		<div class="row" style="margin: 0px 0px 10px 0px;">
 				<label class="control-label">Datasets found:</label>
-				<h3 style="display: inline;"><strong>{{totalItems}}</strong></h3>
+				<h4 style="display: inline;"><strong>{{totalItems}}</strong></h4>
 		</div>
 	<div class="row" style="margin: 0px 0px 10px 0px; padding-top: 0px;" ng-show="selectedFacets.length!=0">
 						<md-chips ng-model='selectedFacets' md-removable="true"
@@ -104,36 +116,37 @@
 						<md-chip-template> <strong>{{$chip.display_value}}</strong>
 						</md-chip-template> </md-chips>
 					</div>
-		<div class="row" style="margin: 0px 0px 0px 0px">
+		<div class="row" style="margin: 0px 0px 0px 0px; line-height: 20px;">
 			<div layout="column" layout-align="top center">
 				<md-card class="md-whiteframe-3dp"
 					ng-repeat="dataset in visualDataset.dataset track by $index"
-					md-theme-watch style="width:100%;margin: 0px 0px 8px 0px"> <md-card-title>
+					md-theme-watch style="width:100%;margin: 0px 0px 8px 0px"> 
+				<md-card-title style="padding-top: 5px;padding-bottom: 2px;">
 				<md-card-title-text md-truncate > 
-				<h4 md-truncate class="md-headline" style="margin: 0px 0px 0px 0px">
+				<h4 md-truncate class="md-headline" style="margin: 0px 0px 0px 0px; font-size:16px">
 				<a href="javascript:void(0)" ng-click="openDatasetDetails(dataset)" ng-bind-html="dataset.title"></a></h4> 
-<!-- 				<a href="./#/dataset/{{dataset.seoIdentifier}}" ng-bind-html="dataset.title"></a></h4> -->
-				<span class="md-subhead" style="color: #6a6b68; padding-top:0px" ><strong>{{getRealName(dataset.nodeID)}}</strong></span>
+				<span class="md-subhead" style="color: #6a6b68; padding-top:0px; font-size: 12px;" ><strong>{{getRealName(dataset.nodeID)}}</strong></span>
 				</md-card-title-text> </md-card-title> 
-				<md-card-content style="padding-bottom:0px">
-					<p md-truncate style="line-height: 1.75em;">
+				<md-card-content style="padding-bottom:8px">
+					<p md-truncate style="line-height: 1.75em; margin-bottom:0px">
 						<span ng-if="dataset.description!='' && dataset.description!=undefined" >{{dataset.tmpDesc}}</span>
-						<span ng-if="dataset.description=='' || dataset.description==undefined">No description available for this dataset.</span>
+<!-- 						<span ng-if="dataset.description=='' || dataset.description==undefined">No description available for this dataset.</span> -->
 					</p>
-					<ul class="list-inline list">
+<!-- 					<div style="max-height: 10px;"> -->
+					<ul class="list-inline list" style="margin-bottom: 0px;">
                		 <li class="list-inline-item" ng-repeat="format in dataset.distributionFormats">
                  		 <a href="javascript:void(0)" ng-click="openDatasetDetails(dataset)" class="label" data-format="{{format.format.toLowerCase()}}" style="border-radius: 5px">{{format.format}} ({{format.count}})</a>
                		 </li>
            		 </ul>
+<!--            		 </div> -->
 
 				</md-card-content> 
 				</md-card>
 			</div>
 		</div>
 		<div class="pull-left">
-			<button type="button" class="btn btn-primary btn-sm"
+			<button type="button" class="btn btn-primary btn-raised btn-sm"
 				ng-click="returnToForm()">
-				<!-- 				<i class="mdi-navigation-arrow-back"></i>-->
 				Back
 			</button>
 		</div>
