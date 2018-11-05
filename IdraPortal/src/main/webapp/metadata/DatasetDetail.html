@@ -49,7 +49,7 @@
 				<h4>Resources</h4>
 				
 				<ul class="list-group list" style="margin: 0px 0px 0px 0px;">
-					<li class='list-group-item' ng-repeat="distribution in dataset.distributions track by $index">
+					<li class='list-group-item' ng-repeat="distribution in dataset.distributions track by $index" style="margin-bottom: 4px;">
 						<div class="col-lg-1 col-md-1 col-sm-1 col-xs-1">
 							<a href='{{distribution.downloadURL}}' target="_blank"><img
 									class="icon img-responsive" style="margin:0 auto;" ng-src="{{getIcon(distribution.format,distribution.mediaType)}}"
@@ -57,7 +57,7 @@
 						</div>
 						<div class="col-lg-3 col-md-3 col-sm-5 col-xs-5" >
 						<span ng-show="distribution.collapseDetails">
-							<p	ng-show="distribution.title!=''" md-truncate><strong>{{distribution.title}}</strong></p>
+							<p ng-show="distribution.title!=''" md-truncate><strong>{{distribution.title}}</strong></p>
 								<p ng-show="distribution.title==''"><strong>No
 									title available</strong></p>
 									</span>
