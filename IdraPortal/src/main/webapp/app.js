@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 (function(){
-	var app = angular.module("IdraPlatform",['ngRoute','ui.bootstrap','ngAnimate','smart-table','xeditable','ui.ace','angularUtils.directives.dirPagination','angularSpinner','dialogs.main','angular-md5','zeroclipboard','ngTagsInput','ngCookies','ngImgCrop','ngAria','ngMaterial','hc.marked','ngFileSaver','countrySelect','uiSwitch','underscore','angular-d3-word-cloud']);
+	var app = angular.module("IdraPlatform",['ngRoute','ui.bootstrap','ngAnimate','smart-table','xeditable','ui.ace','angularUtils.directives.dirPagination','angularSpinner','dialogs.main','angular-md5','zeroclipboard','ngTagsInput','ngCookies','ngImgCrop','ngAria','ngMaterial','hc.marked','ngFileSaver','countrySelect','uiSwitch','underscore','angular-d3-word-cloud',,'pascalprecht.translate']);
 	fetchData().then( setTimeout( bootstrapApplication,1500));
 
 	function fetchData() {
@@ -64,8 +64,15 @@
 				return "<a href='" + href + "'" + (title ? " title='" + title + "'" : '') + " target='_blank'>" + text + "</a>";
 			}
 		});
+	}]).config(['$translateProvider', function ($translateProvider) {
+		  $translateProvider.useStaticFilesLoader({
+			  prefix: 'translation_',
+			  suffix:'.json'
+		  });
+		  		 
+		  $translateProvider.preferredLanguage('en');
 	}]);
-
+	
 	app.directive('aDisabled', function() {
 		return {
 			compile: function(tElement, tAttrs, transclude) {
@@ -293,7 +300,7 @@
 
 	}]);	
 	
-	app.controller('HeaderController',['$scope','$location','$rootScope','usSpinnerService','$cookies','config','$http','$window',function($scope,$location,$rootScope,usSpinnerService,$cookies,config,$http,$window){
+	app.controller('HeaderController',['$scope','$location','$rootScope','usSpinnerService','$cookies','config','$http','$window','$translate',function($scope,$location,$rootScope,usSpinnerService,$cookies,config,$http,$window,$translate){
 		$scope.isActive = function (viewLocation) { 
 //			$rootScope.closeAlert();
 			return viewLocation === $location.path();
@@ -372,6 +379,10 @@
 			//return true;
 		}, function(value){
 		});
+		
+		$scope.changeLanguage = function (langKey) {
+		    $translate.use(langKey);
+		  };
 		
 	}]);
 
@@ -815,24 +826,6 @@
 			} else if ($scope.selectedItems.length === 0 || $scope.selectedItems.length > 0) {
 				$scope.selectedItems = $scope.allItems.slice(0);
 			}
-		};
-
-	});
-
-	app.controller('ModalDistributionCtrl',function ($scope, $modalInstance, distribution) {
-
-		$scope.distribution = distribution;
-		console.log(distribution);
-//		$scope.ok = function () {
-//		if($scope.selectedItems.length==0){
-//		$scope.showAlertModal();
-//		}else{
-//		$modalInstance.close($scope.selectedItems);
-//		}
-//		};
-
-		$scope.cancel = function () {
-			$modalInstance.dismiss('cancel');
 		};
 
 	});

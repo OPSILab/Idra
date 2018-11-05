@@ -28,7 +28,7 @@
 		<div class="panel-group">
 			<div class="panel panel-primary" ng-repeat="facetsCategory in facetsList track by $index" id="{{facetsCategory.search_parameter}}">
 			<div class="panel-heading" style="padding-bottom: 5px;padding-top: 5px;">
-				<h4 class="control-label" style="margin: 0px 0px 0px 0px" >{{facetsCategory.displayName}}</h4>
+				<h4 class="control-label" style="margin: 0px 0px 0px 0px" translate={{facetsCategory.displayName.toLowerCase()}}></h4>
 			</div>
 				<div class="panel-body" style="padding-bottom: 5px;padding-top: 5px; line-height: 20px;">
 					<div style="margin-top: 0px; padding-top: 0px;margin-bottom:5px">
@@ -46,14 +46,14 @@
 						<ul class="list-group list" ng-show="facetsCategory.values.length==0">
 							<li class='list-group-item' style="margin-bottom: -0.8em; padding:0px;">
 							<a href="" a-disabled="true">
-								<p style="line-height:1.75em; ">There are no {{facetsCategory.displayName}} that match this search!</p>
+								<p style="line-height:1.75em; ">{{ 'showResultFacetNoData_1' | translate }} {{facetsCategory.displayName}} {{ 'showResultFacetNoData_2' | translate }}!</p>
 								</a>
 							</li>
 						</ul>
 					</div>
 					<span ng-show="facetsCategory.values.length>facetLimit">
-						<a href="javascript:void(0)" alt="Show all" ng-show="facetsCategory.limit != facetsCategory.values.length && facetsCategory.values.length!=0" ng-click="facetsCategory.limit = facetsCategory.values.length"> Show all {{facetsCategory.displayName}}</a>  
-						<a href="javascript:void(0)" alt="Reduce" ng-show="facetsCategory.limit == facetsCategory.values.length && facetsCategory.values.length!=0" ng-click="facetsCategory.limit = 10;goToAnchor(facetsCategory.search_parameter);">Show top 10 {{facetsCategory.displayName}}</a>
+						<a href="javascript:void(0)" alt="Show all" ng-show="facetsCategory.limit != facetsCategory.values.length && facetsCategory.values.length!=0" ng-click="facetsCategory.limit = facetsCategory.values.length"> {{ 'showResultFacetAll' | translate }} {{facetsCategory.displayName}}</a>  
+						<a href="javascript:void(0)" alt="Reduce" ng-show="facetsCategory.limit == facetsCategory.values.length && facetsCategory.values.length!=0" ng-click="facetsCategory.limit = 10;goToAnchor(facetsCategory.search_parameter);">{{ 'showResultFacetTop10' | translate }} {{facetsCategory.displayName}}</a>
 					</span>
 				</div>
 			</div>
@@ -64,7 +64,7 @@
 		<div class="pull-left">
 			<button type="button" class="btn btn-primary btn-raised btn-sm"
 				ng-click="returnToForm()">
-				Back
+				{{ 'back' | translate }}
 			</button>
 		</div>
 		<div class="pull-right">
@@ -80,18 +80,18 @@
 		<div class="col-sm-1 col-md-1 text-center" style="padding-left:0px">
 			<button type="button" class="btn btn-primary btn-raised btn-sm"
 				ng-click="returnToForm()">
-				Back
+				{{'back' | translate}}
 			</button>
 		</div>
 		<div class="col-sm-2 col-md-4 text-center ">
-			<label class="control-label">Sort By</label> 
+			<label class="control-label">{{ 'sortBy' | translate }}</label> 
 			<select name="ordBy"
 				class="form-control"
 				ng-options="option.value as option.text for option in orderParameter"
 				ng-model="orderBy"></select>
 		</div>
 		<div class="col-sm-2 col-md-3 text-center">
-			<label class="control-label">Results</label> <select
+			<label class="control-label">{{ 'showResultResPerPage' | translate}}</label> <select
 				name="rows" class="form-control"
 				ng-options="option.value as option.text for option in numberOfResults"
 				ng-model="rows"></select>
@@ -107,7 +107,7 @@
 		</div>
 		</div>
 		<div class="row" style="margin: 0px 0px 10px 0px;">
-				<label class="control-label">Datasets found:</label>
+				<label class="control-label">{{ 'showResultFound' | translate}}:</label>
 				<h4 style="display: inline;"><strong>{{totalItems}}</strong></h4>
 		</div>
 	<div class="row" style="margin: 0px 0px 10px 0px; padding-top: 0px;" ng-show="selectedFacets.length!=0">
@@ -147,7 +147,7 @@
 		<div class="pull-left">
 			<button type="button" class="btn btn-primary btn-raised btn-sm"
 				ng-click="returnToForm()">
-				Back
+				{{'back' | translate}}
 			</button>
 		</div>
 		<div class="pull-right">

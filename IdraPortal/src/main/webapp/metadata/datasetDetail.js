@@ -55,11 +55,11 @@ angular.module("IdraPlatform").controller('DatasetDetailCtrl',['$scope','$rootSc
 				allowed=false;
 			break;
 			}
-		}
-		
-		if(!allowed){
-			if(parameter.includes("csv")){
-				allowed=true;
+			
+			if(!allowed){
+				if(parameter.includes("csv")){
+					allowed=true;
+				}
 			}
 		}
 		
@@ -207,14 +207,14 @@ angular.module("IdraPlatform").controller('DatasetDetailCtrl',['$scope','$rootSc
 			default:
 				str='file'
 			}
+			
+			if(str=="file"){
+				if(parameter.includes("csv")){
+					str="csv";
+				}
+			}
 		}else{
 			str='file';
-		}
-
-		if(str=="file"){
-			if(parameter.includes("csv")){
-				str="csv";
-			}
 		}
 		
 		return 'images/'+str+'.png';
