@@ -87,7 +87,7 @@
 			<label class="control-label">{{ 'sortBy' | translate }}</label> 
 			<select name="ordBy"
 				class="form-control"
-				ng-options="option.value as option.text for option in orderParameter"
+				ng-options="option.value as (option.text | translate) for option in orderParameter"
 				ng-model="orderBy"></select>
 		</div>
 		<div class="col-sm-2 col-md-3 text-center">

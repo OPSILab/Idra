@@ -90,6 +90,24 @@
 	"sample":"Sample",
 	"spatialCoverage":"Spatial Coverage",
 	
+	"All":"All",
+	"Description":"Description",
+	"Title":"Title",
+	"Tags":"Tags",
+	"Release Date":"Release Date",
+	"Update Date":"Update Date",
+	"Catalogues":"Catalogues",
+	"Publisher Name":"Publisher Name",
+	"Ascendent":"Ascendent",
+	"Descendent":"Descendent",
+	"Municipality":"Municipality",
+	"Province":"Province",
+	"Private Institution":"Private Institution",
+	"Public Body":"Public Body",
+	"Region":"Region",
+	
+	
+	
 	"table":"Table",
 	"cards":"Cards",
 	"country":"Country",

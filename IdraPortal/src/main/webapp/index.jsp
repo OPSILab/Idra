@@ -333,17 +333,16 @@ div.m-app-loading p {
 									<li ng-class="{ active: isActive('/logs')}"><a
 										href="#logs"><strong>{{'viewLogs' | translate }}</strong></a></li>
 								</ul></li>
-							<li dropdown><a href class="dropdown-toggle" dropdown-toggle><strong>{{'lang' | translate}}</strong><b
+							<li dropdown><a href class="dropdown-toggle" dropdown-toggle><span class="flag-icon" ng-class="(activeLanguage=='it')?'flag-icon-it':'flag-icon-gb'"></span><b
 									class="caret"></b></a>
 								<ul class="dropdown-menu">
 									<li>
-										<a href="javascript:void(0)" ng-click="changeLanguage('it')" >
-										<span class="flag-icon" ng-class="'flag-icon-it'"></span>
-										<strong>Italiano</strong></a>
+										<a href="javascript:void(0)" ng-click="changeLanguage('en')">
+										<span class="flag-icon" ng-class="'flag-icon-gb'"></span>&nbsp<strong>English</strong></a>
 									</li>
 									<li>
-										<a href="javascript:void(0)" ng-click="changeLanguage('en')">
-										<span class="flag-icon" ng-class="'flag-icon-gb'"></span><strong>English</strong></a>
+										<a href="javascript:void(0)" ng-click="changeLanguage('it')" >
+										<span class="flag-icon" ng-class="'flag-icon-it'"></span>&nbsp<strong>Italiano</strong></a>
 									</li>
 								</ul></li>
 							<li class="loginBtns">
