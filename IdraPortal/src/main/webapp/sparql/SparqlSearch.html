@@ -40,12 +40,29 @@
 			</div>
 		</section>
 	</div>
-	<div class="row form-inline">
+		
+	<div class="row form-inline" hide-xs visible-gt-xs>
 	     	<label class="control-label" >{{'sparqlOutputFormat' | translate}}</label>
 		    <select name="ordMd" class="form-control" ng-options="option for option in outputType" ng-model="outputMode"></select>
 	</div>
+	
+	<div class="row form-inline" hide-gt-xs visible-xs>
+			<div class="col-xs-6">
+	     	<label class="control-label" >{{'sparqlOutputFormat' | translate}}</label>
+	     	</div>
+	     	<div class="col-xs-6">
+		    <select name="ordMd" class="form-control" ng-options="option for option in outputType" ng-model="outputMode"></select>
+		    </div>
+	</div>
+	
 	<div class="row">
-		<div class="pull-right" >
+		<div class="pull-right" hide-xs visible-gt-xs >
+			<div class="form-inline">
+				<button type="button" class="btn btn-default btn-raised" ng-click="clearArea()">{{'sparqlClear' | translate}}</button>	
+				<button type="button" class="btn btn-primary btn-raised btn-icon" ng-disabled="disabledButton || aceDocumentValue.length==''" ng-click="executeSpaqrl()"><i class="mdi-action-search"></i>{{'search' | translate}}</button> 
+			</div>
+		</div>
+		<div class="text-center" hide-gt-xs visible-xs >
 			<div class="form-inline">
 				<button type="button" class="btn btn-default btn-raised" ng-click="clearArea()">{{'sparqlClear' | translate}}</button>	
 				<button type="button" class="btn btn-primary btn-raised btn-icon" ng-disabled="disabledButton || aceDocumentValue.length==''" ng-click="executeSpaqrl()"><i class="mdi-action-search"></i>{{'search' | translate}}</button> 

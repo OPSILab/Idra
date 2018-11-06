@@ -24,6 +24,7 @@
 	"liveEnabledMex":"Live search: Inner sort by catalogue",
 	"sortBy" :"Sort By",
 	"resPerPage":"Max results per page",
+	"resPerPageSmall":"Results",
 	"messageError":"This filter cannot be empty!",
 	
 	"selectAll": "Select All",
@@ -45,6 +46,20 @@
 	"catalogues":"Catalogues",
 	"formats":"Formats",
 	"categories":"Categories",
+	
+	"Agriculture":"Agriculture",
+	"Economy":"Economy",
+	"Education":"Education",
+	"Energy":"Energy",
+	"Environment":"Environment",
+	"Government":"Government",
+	"Health":"Health",
+	"International":"International",
+	"Justice":"Justice",
+	"Regions":"Regions",
+	"Population":"Population",
+	"Technology":"Technology",
+	"Transport":"Transport",
 	
 	"datasetDetailNoDescription":"No description available for this dataset.",
 	"distributionDetailNoTitle":"No title available.",

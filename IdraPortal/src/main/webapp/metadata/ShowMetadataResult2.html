@@ -24,7 +24,7 @@
 
 	<div class="row form-inline">
 	
-		<div class="col-md-2 col-lg-3 col-sm-3 hide-xs" >
+		<div class="col-md-2 col-lg-3 col-sm-3" hide-xs visible-gt-xs>
 		<div class="panel-group">
 			<div class="panel panel-primary" ng-repeat="facetsCategory in facetsList track by $index" id="{{facetsCategory.search_parameter}}">
 			<div class="panel-heading" style="padding-bottom: 5px;padding-top: 5px;">
@@ -46,28 +46,22 @@
 						<ul class="list-group list" ng-show="facetsCategory.values.length==0">
 							<li class='list-group-item' style="margin-bottom: -0.8em; padding:0px;">
 							<a href="" a-disabled="true">
-								<p style="line-height:1.75em; ">{{ 'showResultFacetNoData_1' | translate }} {{facetsCategory.displayName}} {{ 'showResultFacetNoData_2' | translate }}!</p>
+								<p style="line-height:1.75em; ">{{ 'showResultFacetNoData_1' | translate }} {{facetsCategory.displayName.toLowerCase() | translate}} {{ 'showResultFacetNoData_2' | translate }}!</p>
 								</a>
 							</li>
 						</ul>
 					</div>
 					<span ng-show="facetsCategory.values.length>facetLimit">
-						<a href="javascript:void(0)" alt="Show all" ng-show="facetsCategory.limit != facetsCategory.values.length && facetsCategory.values.length!=0" ng-click="facetsCategory.limit = facetsCategory.values.length"> {{ 'showResultFacetAll' | translate }} {{facetsCategory.displayName}}</a>  
-						<a href="javascript:void(0)" alt="Reduce" ng-show="facetsCategory.limit == facetsCategory.values.length && facetsCategory.values.length!=0" ng-click="facetsCategory.limit = 10;goToAnchor(facetsCategory.search_parameter);">{{ 'showResultFacetTop10' | translate }} {{facetsCategory.displayName}}</a>
+						<a href="javascript:void(0)" alt="Show all" ng-show="facetsCategory.limit != facetsCategory.values.length && facetsCategory.values.length!=0" ng-click="facetsCategory.limit = facetsCategory.values.length"> {{ 'showResultFacetAll' | translate }} {{facetsCategory.displayName.toLowerCase() | translate}}</a>  
+						<a href="javascript:void(0)" alt="Reduce" ng-show="facetsCategory.limit == facetsCategory.values.length && facetsCategory.values.length!=0" ng-click="facetsCategory.limit = 10;goToAnchor(facetsCategory.search_parameter);">{{ 'showResultFacetTop10' | translate }} {{facetsCategory.displayName.toLowerCase() | translate}}</a>
 					</span>
 				</div>
 			</div>
 			</div>
 		</div>
 	<div class="col-md-10 col-sm-8 col-lg-9" >
-	<div class="row hide-gt-xs" style="margin: 0px 0px 10px 0px">
-		<div class="pull-left">
-			<button type="button" class="btn btn-primary btn-raised btn-sm"
-				ng-click="returnToForm()">
-				{{ 'back' | translate }}
-			</button>
-		</div>
-		<div class="pull-right">
+	<div class="row" style="margin: 0px 0px 10px 0px" hide-gt-xs visible-xs>
+		<div class="text-center">
 			<pagination max-size="maxSize" class="pagination-sm"
 				ng-change="pageChanged()" boundary-links="true" previous-text="<"
 				next-text=">" first-text="<<" last-text=">>"
@@ -75,7 +69,7 @@
 				ng-model="currentPage" ng-click="gotoTop()"></pagination>
 		</div>
 		</div>
-		<div class="row hide-xs show-gt-xs" style="margin: 0px 0px 10px 0px">
+		<div class="row" style="margin: 0px 0px 10px 0px" hide-xs visible-gt-xs>
 		
 		<div class="col-sm-1 col-md-1 text-center" style="padding-left:0px">
 			<button type="button" class="btn btn-primary btn-raised btn-sm"
@@ -144,6 +138,16 @@
 				</md-card>
 			</div>
 		</div>
+		<div class="row" style="margin: 0px 0px 10px 0px" hide-gt-xs visible-xs>
+		<div class="text-center">
+			<pagination max-size="maxSize" class="pagination-sm"
+				ng-change="pageChanged()" boundary-links="true" previous-text="<"
+				next-text=">" first-text="<<" last-text=">>"
+				total-items="totalItems" items-per-page="rows"
+				ng-model="currentPage" ng-click="gotoTop()"></pagination>
+		</div>
+		</div>
+		<div class="row" style="margin: 0px 0px 10px 0px" hide-xs visible-gt-xs>
 		<div class="pull-left">
 			<button type="button" class="btn btn-primary btn-raised btn-sm"
 				ng-click="returnToForm()">
@@ -156,6 +160,7 @@
 				next-text=">" first-text="<<" last-text=">>"
 				total-items="totalItems" items-per-page="rows"
 				ng-model="currentPage" ng-click="gotoTop()"></pagination>
+		</div>
 		</div>
 	</div>
 </div>
