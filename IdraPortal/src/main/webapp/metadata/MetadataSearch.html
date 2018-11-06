@@ -73,7 +73,7 @@
 							<div class="col-md-3 col-lg-3 col-sm-3 ">
 								<label class="control-label">{{'filter' | translate }} {{$index+1}}</label> <select
 									name="mySelect" class="form-control"
-									ng-options="option.value as option.text for option in item.options"
+									ng-options="option.value as (option.text | translate) for option in item.options"
 									ng-model="item.selectedOption" ng-disabled="!item.last">
 								</select>
 							</div>
@@ -227,12 +227,12 @@
 							<div class="col-md-5">
 								<label class="control-label">{{'sortBy' | translate}}</label> <select
 									name="ordBy" class="form-control"
-									ng-options="option.value as option.text for option in orderParameter"
+									ng-options="option.value as (option.text | translate) for option in orderParameter"
 									ng-model="orderBy">
 								</select>
 								<!-- 			<label class="control-label" >Order Mode</label> -->
 								<select name="ordMd" class="form-control"
-									ng-options="option.value as option.text for option in orderType"
+									ng-options="option.value as (option.text | translate) for option in orderType"
 									ng-model="orderMode"></select> <span
 									ng-class="{ 'has-warning': live }"><p class="help-block"
 										style="margin: 0 auto;" ng-show="live">Live search: Inner

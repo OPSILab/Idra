@@ -380,7 +380,9 @@
 		}, function(value){
 		});
 		
+		$scope.activeLanguage="en";
 		$scope.changeLanguage = function (langKey) {
+			$scope.activeLanguage=langKey;
 		    $translate.use(langKey);
 		  };
 		
