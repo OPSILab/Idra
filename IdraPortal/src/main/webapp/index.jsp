@@ -395,7 +395,7 @@ div.m-app-loading p {
 				</div>
 			</div>
 
-			<div class="col-md-10 col-md-offset-1">
+			<div class="col-md-10 col-sm-10 col-xs-12 col-md-offset-1 col-sm-offset-1">
 				<div ng-view autoscroll="true"></div>
 			</div>
 		</div>
