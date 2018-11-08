@@ -308,6 +308,9 @@ div.m-app-loading p {
 									class="caret"></b></a>
 								<ul class="dropdown-menu">
 									<li>
+										<a href="#/about" ng-click="isOpen=!isOpen"><strong>About</strong></a>
+									</li>
+									<li>
 										<a href="https://idraopendata.docs.apiary.io" target="_blank" ng-click="isOpen=!isOpen"><strong>API</strong></a>
 									</li>
 									<li>
@@ -614,7 +617,7 @@ div.m-app-loading p {
 		src="catalogues/defaultDatasets.services.js"></script>
 	<script type="text/javascript" src="catalogues/editDumpCtrl.js"></script>
 
-	<script type="text/javascript" src="accounts/accounts.js"></script>
+	<script type="text/javascript" src="about/about.js"></script>
 	<script type="text/javascript" src="sparql/sparql.js"></script>
 	<script type="text/javascript" src="js/mode-sparql.js"></script>
 	<script type="text/javascript" src="configuration/configuration.js"></script>

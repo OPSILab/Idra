@@ -147,6 +147,10 @@
 
 	app.config(['$routeProvider',function($routeProvider){
 		$routeProvider.
+		when('/about',{
+			templateUrl:'about/About.html',
+			controller: 'AboutCtrl'
+		}).
 		when('/metadata',{
 			templateUrl:'metadata/MetadataSearch.html',
 			controller: 'MetadataCtrl'
@@ -370,7 +374,7 @@
 		}, function(value){
 		});
 		
-		$scope.activeLanguage="en";
+		$scope.activeLanguage=$translate.use();
 		$scope.changeLanguage = function (langKey) {
 			$scope.isOpen=false;
 			$scope.activeLanguage=langKey;
