@@ -305,17 +305,9 @@
 //			$rootScope.closeAlert();
 			return viewLocation === $location.path();
 		};
-		var first=true;
+//		var first=true;
 		$rootScope.$on("$locationChangeStart",function(event, next, current){
-			if(next==current) return;
-			if(first){
-				if(current.includes('#')){
-					angular.element('.navbar-collapse').collapse('hide');
-				}
-				first=false;
-			}else{
-				angular.element('.navbar-collapse').collapse('hide');
-			}
+			$scope.isOpen=false;
 		});
 		
 		$rootScope.dataletEnabled = (config.DATALET_ENABLED=='true')?true:false;
@@ -357,14 +349,12 @@
 		$scope.isCollapsed = true;
 
 
-		$scope.status = {
-				isopen: false
-		};
+		$scope.isOpen=false;
 
-		$scope.toggleDropdown = function($event) {
-			$event.preventDefault();
-			$event.stopPropagation();
-			$scope.status.isopen = !$scope.status.isopen;
+		$scope.toggleDropdown = function() {
+//			$event.preventDefault();
+//			$event.stopPropagation();
+			$scope.isOpen = !$scope.isOpen;
 		};
 
 		$rootScope.idraVersion="";
@@ -382,6 +372,7 @@
 		
 		$scope.activeLanguage="en";
 		$scope.changeLanguage = function (langKey) {
+			$scope.isOpen=false;
 			$scope.activeLanguage=langKey;
 		    $translate.use(langKey);
 		  };

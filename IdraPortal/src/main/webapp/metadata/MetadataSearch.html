@@ -360,7 +360,8 @@
 						<!-- MOBILE -->
 
 						<hr>
-						<div class=" col-xs-12 form-inline text-center" visible-xs hide-gt-xs>
+						<!-- MOBILE -->
+						<div class=" col-xs-12 form-inline text-center" style="padding:0px 0px 0px 0px" visible-xs hide-gt-xs>
 
 							<button type="button" class="btn btn-default btn-raised"
 								ng-click="resetForm()">{{'reset' | translate}}</button>
@@ -368,8 +369,9 @@
 								ng-disabled="nodes.length ==0">
 								<i class="mdi-action-search"></i>{{'search' | translate}}
 							</button>
-
 						</div>
+						<!-- END MOBILE -->
+						<!-- NORMALE -->
 						<div class="pull-right form-inline" hide-xs visible-gt-xs>
 
 							<button type="button" class="btn btn-default btn-raised"
@@ -378,8 +380,8 @@
 								ng-disabled="nodes.length ==0">
 								<i class="mdi-action-search"></i>{{'search' | translate}}
 							</button>
-
 						</div>
+						<!-- END NORMALE -->
 					</div>
 				</div>
 			</div>
