@@ -139,7 +139,11 @@
 @media (max-width: 480px){
 	.navbar-brand {
 	    /*width: 370px !important;*/
-		width: 270px !important;
+		width: 100px !important;
+	}
+	
+	.navbar .nav.navbar-nav > li > a {
+  	  padding: 10px 15px;
 	}
 }
 

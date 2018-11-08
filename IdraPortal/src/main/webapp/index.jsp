@@ -286,14 +286,15 @@ div.m-app-loading p {
 						<a class="navbar-brand" href="#/metadata"
 							style="margin-left: 5px;">
 						</a>
-						<button type="button" class="navbar-toggle" data-toggle="collapse"
-							data-target=".navbar-responsive-collapse">
+<!-- 						<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" -->
+<!-- 							data-target=".navbar-responsive-collapse"> -->
+						<button type="button" class="navbar-toggle collapsed" ng-click="toggleDropdown()">
 							<span class="icon-bar"></span> 
 							<span class="icon-bar"></span> 
 							<span class="icon-bar"></span>
 						</button>
 					</div>
-					<div class="navbar-collapse collapse navbar-responsive-collapse">
+					<div class="navbar-collapse collapse navbar-responsive-collapse" ng-class="{ 'in': isOpen }">
 						<ul class="nav navbar-nav navbar-right">
 							<li
 								ng-class="{ active: isActive('/metadata') || isActive('/showDatasets') || isActive('/showDatasetDetail') || isActive('/createDatalet') }"><a
@@ -307,13 +308,13 @@ div.m-app-loading p {
 									class="caret"></b></a>
 								<ul class="dropdown-menu">
 									<li>
-										<a href="https://idraopendata.docs.apiary.io" target="_blank"><strong>API</strong></a>
+										<a href="https://idraopendata.docs.apiary.io" target="_blank" ng-click="isOpen=!isOpen"><strong>API</strong></a>
 									</li>
 									<li>
-										<a href="https://github.com/OPSILab/Idra" target="_blank"><strong>GitHub</strong></a>
+										<a href="https://github.com/OPSILab/Idra" target="_blank" ng-click="isOpen=!isOpen"><strong>GitHub</strong></a>
 									</li>
 									<li>
-										<a href="https://idra.readthedocs.io" target="_blank"><strong>{{'helpMenuManual' | translate }}</strong></a>
+										<a href="https://idra.readthedocs.io" target="_blank" ng-click="isOpen=!isOpen"><strong>{{'helpMenuManual' | translate }}</strong></a>
 									</li>
 								</ul></li>
 							<li ng-if="token!=undefined"
