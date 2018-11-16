@@ -89,15 +89,20 @@ RUN cd Idra/Idra && mvn package
 RUN cd Idra/IdraPortal/src/main/webapp && bower install --allow-root
 RUN cd /Idra/IdraPortal && mvn package
 
+### Import script for waiting MySQL completes startup
+RUN git clone https://github.com/vishnubob/wait-for-it.git
+
+
 #### Pass built Idra.war and IdraPortal.war to the next build stage in /usr/local/tomcat/webapps container's folder
 FROM        tomcat:8.0.50-jre8-alpine as deploy
 
 WORKDIR /
 COPY --from=build /Idra/Idra/target/Idra.war /
 COPY --from=build /Idra/IdraPortal/target/IdraPortal.war /
+COPY --from=build /wait-for-it/wait-for-it.sh /
 
 RUN mv IdraPortal.war /usr/local/tomcat/webapps && mv Idra.war /usr/local/tomcat/webapps
-
+RUN chmod +x wait-for-it.sh
 
 
 # Set the port to expose. WARNING The "docker run" command, used to run a container from the image built from this DockerFile,
