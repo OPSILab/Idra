@@ -18,7 +18,7 @@
 <div style="height: 100%;">
 	<ul class="breadcrumb">
 		<li class="breadcrumb-item"><a href="#metadata">Home</a></li>
-		<li class="breadcrumb-item active">Federated Catalogues</li>
+		<li class="breadcrumb-item active">{{'manageData' | translate}}</li>
 	</ul>
 	<!-- 	<div class="row text-center pull-right" style="line-heigth:1.75em"> -->
 	<!-- 			<a href="javascript:void(0)" -->
@@ -47,35 +47,33 @@
 			class="table table-striped">
 			<thead>
 				<tr>
-					<th st-sort="isActive" style="width: 1%">Active</th>
-					<th st-sort="name" st-sort-default="true" style="width: 22%">Name</th>
-					<th st-sort="country" style="width: 7%">Country</th>
-					<th st-sort="nodeType" style="width: 8%">Type</th>
-					<th st-sort="federationLevel" style="width: 5%">Level</th>
-					<th st-sort="nodeState" style="width: 4%">Status</th>
+					<th st-sort="isActive" style="width: 1%">{{'activeCatalogue' | translate}}</th>
+					<th st-sort="name" st-sort-default="true" style="width: 22%">{{'name' | translate}}</th>
+					<th st-sort="country" style="width: 7%">{{'country' | translate}}</th>
+					<th st-sort="nodeType" style="width: 8%">{{'type' | translate}}</th>
+					<th st-sort="federationLevel" style="width: 5%">{{'level' | translate}}</th>
+					<th st-sort="nodeState" style="width: 4%">{{'status' | translate}}</th>
 					<th st-sort="datasetCount" style="width: 8%">Datasets</th>
-					<th st-sort="updatePeriod" style="width: 10%">Update Period</th>
-					<th st-sort="lastUpdate" style="width: 18%">Last Update</th>
+					<th st-sort="updatePeriod" style="width: 10%">{{'updatePeriod' | translate}}</th>
+					<th st-sort="lastUpdate" style="width: 18%">{{'lastUpdate' | translate}}</th>
 					<th style="width: 15%"><a href="javascript:void(0)"
 						class="btn-flat btn-raised" ng-click="addNode()"> <i
 							class="mdi-content-add-circle-outline" style="font-size: 30px"></i>
-							<md-tooltip>Add new Catalogue</md-tooltip></a> <a
+							<md-tooltip>{{'addNewCatalogue' | translate}}</md-tooltip></a> <a
 						href="javascript:void(0)" class="btn-flat btn-raised"
 						ng-click="addRemoteNode()"> <i class="mdi-action-list"
-							style="font-size: 30px"></i> <md-tooltip>Import
-							Catalogue from Remote</md-tooltip></a> <a href="javascript:void(0)"
+							style="font-size: 30px"></i> <md-tooltip>{{'importCatalogueFromRemote' | translate}}</md-tooltip></a> <a href="javascript:void(0)"
 						class="btn-flat btn-raised " ng-click="downloadDump()"> <i
 							class="mdi-file-file-download"
-							style="font-size: 30px; margin-left: 15px"></i> <md-tooltip>Download
-							Full Federation Dump</md-tooltip></a></th>
+							style="font-size: 30px; margin-left: 15px"></i> <md-tooltip>{{'downloadFullDump' | translate}}</md-tooltip></a></th>
 				</tr>
 				<tr>
 					<th><select st-search="isActive" class="form-control">
 							<option value=""></option>
-							<option value="true">True</option>
-							<option value="false">False</option>
+							<option value="true">{{'true' | translate}}</option>
+							<option value="false">{{'false' | translate}}</option>
 					</select></th>
-					<th><input placeholder="search name" class="form-control"
+					<th><input placeholder="{{'searchName' | translate}}" class="form-control"
 						st-search="name" /></th>
 					<th><select st-search="country" class="form-control">
 							<option value=""></option>
@@ -105,7 +103,7 @@
 					<th></th>
 					<th><a st-reset-search href="javascript:void(0)"
 						class="btn-flat "><i class="mdi-content-clear"></i> <md-tooltip>
-							Clear Filters</md-tooltip></a></th>
+							{{'clearFilters' | translate}}</md-tooltip></a></th>
 				</tr>
 			</thead>
 			<tbody>
@@ -136,7 +134,7 @@
 							aria-hidden="true"></i> <md-tooltip>{{node.nodeState}}</md-tooltip>
 					</span> <span ng-show="node.synchLock!='NONE'"> <img
 							alt="Synchronizing" title="Synchronizing"
-							src="images/spinner_synchro.gif" style="width: 30px;"> <md-tooltip>Synchronizing</md-tooltip>
+							src="images/spinner_synchro.gif" style="width: 30px;"> <md-tooltip>{{'synchronizing' | translate}}</md-tooltip>
 					</span></td>
 					<td><span
 						ng-show="node.isActive || (!node.isActive && node.datasetCount!=0)">{{node.datasetCount}}</span>
@@ -149,17 +147,17 @@
 								ng-click="synchroNode(node)"
 								a-disabled="node.synchLock!='NONE' || node.federationLevel=='LEVEL_0' || node.federationLevel=='LEVEL_1' || node.federationLevel=='LEVEL_4' || node.isActive==false "><i
 								class="mdi-action-autorenew"></i> <md-tooltip>
-								Synchronize</md-tooltip></a> <a href="javascript:void(0)" class="btn-flat "
+								{{'synchronize' | translate}}</md-tooltip></a> <a href="javascript:void(0)" class="btn-flat "
 								ng-click="updateNode(node)" a-disabled="node.synchLock!='NONE'"><i
-								class="mdi-content-create"></i> <md-tooltip> Update</md-tooltip></a>
+								class="mdi-content-create"></i> <md-tooltip> {{'update' | translate}}</md-tooltip></a>
 							<a href="javascript:void(0)" class="btn-flat "
 								ng-click="deleteNode(node)" a-disabled="node.synchLock!='NONE'"><i
-								class="mdi-content-clear"></i> <md-tooltip> Delete</md-tooltip></a>
+								class="mdi-content-clear"></i> <md-tooltip> {{'delete' | translate}}</md-tooltip></a>
 							<a href="javascript:void(0)" class="btn-flat "
 								ng-click="downloadDump(node)"
 								a-disabled="node.synchLock!='NONE' || node.isActive==false"><i
 								class="mdi-file-file-download"></i> <md-tooltip>
-								Download Dump</md-tooltip></a>
+								{{'downloadDump' | translate}}</md-tooltip></a>
 							<!--           <a  ng-if="node.messageCount!=0" href="javascript:void(0)" class="btn-flat " ng-click="openMessageModal(node.name,node.id)" a-disabled="node.synchLock!='NONE'"><i class="mdi-action-info"></i></a> -->
 						</div>
 					</td>

@@ -15,7 +15,53 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-angular.module("IdraPlatform").controller('DumpCtrl',["$scope",'dump','type','DefaultDatasets','$modalInstance','dialogs',function($scope,dump,type,DefaultDatasets,$modalInstance,dialogs){
+angular.module("IdraPlatform").controller('DumpCtrl',["$scope",'dump','type','DefaultDatasets','$modalInstance','dialogs','$rootScope','$translate',function($scope,dump,type,DefaultDatasets,$modalInstance,dialogs,$rootScope,$translate){
+	
+	
+	
+	$scope.editorDumpMessageTitle ="";
+	$scope.editorDumpMessage="";
+	$scope.editorDumpMessageOPT1="";
+	$scope.editorDumpMessageOPT2="";
+	$scope.wrongFile="";
+	$scope.wrongFileMexJSON="";
+	$scope.wrongFileMexRDF="";
+	var getTranlsatedValueDialogs = function(){
+			$translate('editorDumpMessageTitle')
+				.then(function (translatedValue) {
+					$scope.editorDumpMessageTitle = translatedValue;
+			 });
+			$translate('editorDumpMessage')
+			.then(function (translatedValue) {
+				$scope.editorDumpMessage = translatedValue;
+			});
+			$translate('editorDumpMessageOPT1')
+			.then(function (translatedValue) {
+				$scope.editorDumpMessageOPT1 = translatedValue;
+			});
+			$translate('editorDumpMessageOPT2')
+			.then(function (translatedValue) {
+				$scope.editorDumpMessageOPT2 = translatedValue;
+			});
+			$translate('wrongFile')
+			.then(function (translatedValue) {
+				$scope.wrongFile = translatedValue;
+			});
+			$translate('wrongFileMexJSON')
+			.then(function (translatedValue) {
+				$scope.wrongFileMexJSON = translatedValue;
+			});
+			$translate('wrongFileMexRDF')
+			.then(function (translatedValue) {
+				$scope.wrongFileMexRDF = translatedValue;
+			});
+	}
+	
+	$rootScope.$on('$translateChangeSuccess', function(event, current, previous) {
+		getTranlsatedValueDialogs();
+    });
+	
+	getTranlsatedValueDialogs();
 	
 	var getMode = function(type){
 		if(type.toLowerCase()=='dcatdump'){
@@ -47,8 +93,8 @@ angular.module("IdraPlatform").controller('DumpCtrl',["$scope",'dump','type','De
 	
 	$scope.ok = function(){
 		if(!$scope.disableSave){
-			var dlg = dialogs.create('dumpSave_dialog.html','dumpDialogCtrlEdit',{'header':"Warning",
-				'msg':"There are unsaved changes!",'opt1':"Discard",'opt2':"Save"},{key: false,back: 'static'});
+			var dlg = dialogs.create('dumpSave_dialog.html','dumpDialogCtrlEdit',{'header':$scope.editorDumpMessageTitle,
+				'msg':$scope.editorDumpMessage,'opt1':$scope.editorDumpMessageOPT1,'opt2':$scope.editorDumpMessageOPT2},{key: false,back: 'static'});
 			dlg.result.then(function(value){
 				if(value==1){
 					//Discard Changes
@@ -137,7 +183,7 @@ angular.module("IdraPlatform").controller('DumpCtrl',["$scope",'dump','type','De
 
 			  reader.readAsText(file);
 		  }else{
-			  dialogs.error("Wrong file","Please provide a .json file");
+			  dialogs.error($scope.wrongFile,$scope.wrongFileMexJSON);
 			  return;
 		  }
 	};
@@ -159,7 +205,7 @@ angular.module("IdraPlatform").controller('DumpCtrl',["$scope",'dump','type','De
 
 			  reader.readAsText(file);
 		}else{
-			dialogs.error("Wrong file","Please provide an .xml or .rdf file");
+			dialogs.error($scope.wrongFile,$scope.wrongFileMexRDF);
 			return;
 		}
 	};
