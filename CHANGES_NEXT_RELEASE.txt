@@ -1,1 +1,3 @@
 - New Feature: Support for StatPortal OpenData (SPOD) portals.
+- New Feature: Support internationalization (EN,IT)
+- Updated portal graphics, with mobile support.
