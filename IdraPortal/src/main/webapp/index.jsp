@@ -487,13 +487,13 @@ div.m-app-loading p {
 <script type="text/ng-template" id="ModalDataletAdmin.html">
 <div class="modal-header">
 	<button type="button" class="close" aria-hidden="true" ng-click="cancel()">x</button>
-    <h3 class="modal-title">Datalet Detail</h3>
+    <h3 class="modal-title">{{'dataletDetail' | translate}}</h3>
 </div>
 <div class="modal-body row">
 	<div ng-bind-html="datalet.showHtml"></div>
 </div>
 <div class="modal-footer">
-    <button class="btn btn-default btn-raised" type="button" ng-click="cancel()">Close</button>
+    <button class="btn btn-default btn-raised" type="button" ng-click="cancel()">{{'dialog_close' | translate}}</button>
 </div>
 </script>
 

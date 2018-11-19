@@ -15,10 +15,56 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-angular.module("IdraPlatform").controller('CataloguesController',["$scope","$http",'$filter','config','$rootScope','dialogs','$interval','$timeout','$modal','FileSaver','Blob','$window','ODMSNodesAPI','_',function($scope,$http,$filter,config,$rootScope,dialogs,$interval,$timeout,$modal,FileSaver,Blob,$window,ODMSNodesAPI,_){
+angular.module("IdraPlatform").controller('CataloguesController',["$scope","$http",'$filter','config','$rootScope','dialogs','$interval','$timeout','$modal','FileSaver','Blob','$window','ODMSNodesAPI','_','$translate',function($scope,$http,$filter,config,$rootScope,dialogs,$interval,$timeout,$modal,FileSaver,Blob,$window,ODMSNodesAPI,_,$translate){
 
 	$scope.updatePeriods=[{text:'1 hour',value:'3600'},{text:'1 day',value:'86400'},{text:'1 week',value:'604800'}];
 	$scope.nodeTypes = config.NODE_TYPES.split(',');
+	
+	$scope.deleteCatalogueTitle ="";
+	$scope.deleteCatalogueMessage="";
+	$scope.deactivateCatalogueTitle="";
+	$scope.deactivateCatalogueMessage="";
+	$scope.deactivateCatalogueOPT1="";
+	$scope.deactivateCatalogueOPT2="";
+	$scope.deleteCatalogueSuccMex="";
+	
+	var getTranlsatedValueDialogs = function(){
+			$translate('deleteCatalogueTitle')
+				.then(function (translatedValue) {
+					$scope.deleteCatalogueTitle = translatedValue;
+			 });
+			$translate('deleteCatalogueMessage')
+			.then(function (translatedValue) {
+				$scope.deleteCatalogueMessage = translatedValue;
+			});
+			$translate('deactivateCatalogueTitle')
+			.then(function (translatedValue) {
+				$scope.deactivateCatalogueTitle = translatedValue;
+			});
+			$translate('deactivateCatalogueMessage')
+			.then(function (translatedValue) {
+				$scope.deactivateCatalogueMessage = translatedValue;
+			});
+			$translate('deactivateCatalogueOPT1')
+			.then(function (translatedValue) {
+				$scope.deactivateCatalogueOPT1 = translatedValue;
+			});
+			$translate('deactivateCatalogueOPT2')
+			.then(function (translatedValue) {
+				$scope.deactivateCatalogueOPT2 = translatedValue;
+			});
+			
+			$translate('deleteCatalogueSuccMex')
+			.then(function (translatedValue) {
+				$scope.deleteCatalogueSuccMex = translatedValue;
+			});
+	}
+	
+	$rootScope.$on('$translateChangeSuccess', function(event, current, previous) {
+		getTranlsatedValueDialogs();
+    });
+	
+	getTranlsatedValueDialogs();
 	
 	$rootScope.nodeToUpdate = undefined;
 	/*ODMSNodesAPI.getNodes().success(function(value){
@@ -123,8 +169,8 @@ angular.module("IdraPlatform").controller('CataloguesController',["$scope","$htt
 			
 		}else{
 			var keepDatasets=true;
-			var dlg = dialogs.create('deletecatalogue_dialog.html','confirmDialogCtrlEdit',{'header':"Deactivate catalogue "+node.name+"?",
-				'msg':"Chose KEEP DATASETS in order to keep dataset in cache ",'opt1':"Delete ALL",'opt2':"KEEP Datasets"},{key: false,back: 'static'});
+			var dlg = dialogs.create('deletecatalogue_dialog.html','confirmDialogCtrlEdit',{'header':$scope.deactivateCatalogueTitle+" "+node.name+"?",
+				'msg':$scope.deactivateCatalogueMessage,'opt1':$scope.deactivateCatalogueOPT1,'opt2':$scope.deactivateCatalogueOPT2},{key: false,back: 'static'});
 			dlg.result.then(function(value){
 				node.synchLock = 'PERIODIC';
 				if(value==1) keepDatasets=false;
@@ -266,7 +312,7 @@ angular.module("IdraPlatform").controller('CataloguesController',["$scope","$htt
 		var keepCatalogue=true;
 //		var dlg = dialogs.create('deletenode_dialog.html','confirmDialogCtrlEdit',{'header':"Delete catalogue "+node.name+"?",
 //			'msg':"Deleting this catalogue you will delete all of the associated resources."},{key: false,back: 'static'});
-		var dlg = dialogs.confirm("Delete node "+node.name+"?","Deleting this node you will delete all of the associated resources.");
+		var dlg = dialogs.confirm($scope.deleteCatalogueTitle+" "+node.name+"?",$scope.deleteCatalogueMessage);
 		dlg.result.then(function(value){
 		
 			var index = $scope.nodes.indexOf(node);
@@ -274,7 +320,7 @@ angular.module("IdraPlatform").controller('CataloguesController',["$scope","$htt
 
 			ODMSNodesAPI.deleteODMSNode(node.id).then(function(value){
 				console.log("Success");
-				$rootScope.showAlert('success',"Catalogue "+node.name+" deleted!");	 
+				$rootScope.showAlert('success',node.name+" "+$scope.deleteCatalogueSuccMex);	 
 				$rootScope.getNodes();
 			}, function(value){
 				$rootScope.getNodes();

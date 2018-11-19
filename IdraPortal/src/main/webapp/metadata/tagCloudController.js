@@ -89,15 +89,17 @@
             $timeout(function() {
                 var element = $element.find('#wordsCloud');
                 var height = $window.innerHeight * 0.75;
-                element.height(height);
+                element.height(height + 'px');
                 var width = element[0].offsetWidth;
+                //var width = element.getBoundingClientRect().width;
                 var maxCount = originWords[0].count;
                 var minCount = originWords[originWords.length - 1].count;
-                var maxWordSize = width * 0.13;
+                var maxWordSize = width * 0.15;
                 var minWordSize = maxWordSize / 5;
                 var spread = maxCount - minCount;
                 if (spread <= 0) spread = 1;
                 var step = (maxWordSize - minWordSize) / spread;
+                if (step <= 0) step = 1;
                 self.words = originWords.map(function(word) {
                     return {
                         text: word.text,

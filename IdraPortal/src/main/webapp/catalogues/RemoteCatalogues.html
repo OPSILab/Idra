@@ -18,13 +18,13 @@
 <div style="height: 100%;">
 	<ul class="breadcrumb">
 		<li class="breadcrumb-item"><a href="#/metadata">Home</a></li>
-		<li class="breadcrumb-item active">Remote Catalogues</li>
+		<li class="breadcrumb-item active">{{'remoteCatalogues' | translate}}</li>
 	</ul>
 	<div class="row">
 		<div class="pull-left">
 			<div class="col-sm-1 col-md-1 text-center" style="padding-left: 0px">
 				<button type="button" class="btn btn-primary btn-raised btn-sm"
-					ng-click="returnToCatalogues()">Back</button>
+					ng-click="returnToCatalogues()">{{'back' | translate}}</button>
 			</div>
 		</div>
 	</div>
@@ -35,15 +35,15 @@
 						<thead>
 							<tr>
 								<th st-sort="name" st-sort-default="true"
-									style="width: 30%">Name</th>
-								<th st-sort="country" style="width: 15%">Country</th>
-								<th st-sort="nodeType" style="width: 15%">Type</th>
-								<th st-sort="federationLevel" style="width: 5%">Level</th>
-								<th st-sort="host" style="width: 30%">Host</th>
+									style="width: 30%">{{'name' | translate}}</th>
+								<th st-sort="country" style="width: 15%">{{'country' | translate}}</th>
+								<th st-sort="nodeType" style="width: 15%">{{'type' | translate}}</th>
+								<th st-sort="federationLevel" style="width: 5%">{{'level' | translate}}</th>
+								<th st-sort="host" style="width: 30%">{{'host' | translate}}</th>
 								<th style="width: 5%"></th>
 							</tr>
 							<tr>
-								<th><input placeholder="search name" class="form-control" st-search="name" /></th>
+								<th><input placeholder="{{'searchName' | translate}}" class="form-control" st-search="name" /></th>
 								<th>
 								<select st-search="country" class="form-control">
                     					<option value=""></option>
@@ -68,7 +68,7 @@
 											class="btn-flat "><i
 											class="mdi-content-clear"></i>
 											<md-tooltip>
-												Clear Filters</md-tooltip></a></th>
+												{{'clearFilters' | translate}}</md-tooltip></a></th>
 							</tr>
 							</tr>
 						</thead>
@@ -88,7 +88,7 @@
 											a-disabled="node.alreadyLocal"
 											ng-click="addRemoteNode(node)"> <i
 											class="mdi-content-add-circle-outline"> <md-tooltip ng-show="!node.alreadyLocal">
-												Add Catalogue</md-tooltip></i>
+												{{'addCatalogue' | translate}}</md-tooltip></i>
 										</a>
 									</div>
 								</td>
