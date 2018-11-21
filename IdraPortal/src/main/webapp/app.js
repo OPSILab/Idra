@@ -315,6 +315,7 @@
 		});
 		
 		$rootScope.dataletEnabled = (config.DATALET_ENABLED=='true')?true:false;
+		$rootScope.showUpdatePass = (config['idra.authentication.method']=='BASIC')?true:false;
 		
 		$rootScope.token = $cookies.get('loggedin');
 		$rootScope.loggedUsername = $cookies.get('username');	

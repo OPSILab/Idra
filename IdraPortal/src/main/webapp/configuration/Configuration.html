@@ -32,7 +32,7 @@
 			ng-click="main.active.tab = 'defaultConfiguration'">{{'DataSources' | translate}}</a></li>
 		<li ng-class="{active: main.active.tab == 'prefixManagement'}"><a
 			ng-click="main.active.tab = 'prefixManagement'">{{'sparqlPrefixes' | translate}}</a></li>
-		<li ng-class="{active: main.active.tab == 'updatePassword'}"><a
+		<li ng-class="{active: main.active.tab == 'updatePassword'}" ng-if="showUpdatePass"><a
 			ng-click="main.active.tab = 'updatePassword'">{{'updatePassword' | translate}}</a></li>
 	</ul>
 
@@ -45,7 +45,7 @@
 							<div class="row form-inline">
 								<label for="refresh" class="control-label">{{'defaultRefPeriod' | translate}}:</label> <select class="form-control"
 									ng-model="refreshPeriod"
-									ng-options="option.value as option.text for option in values"
+									ng-options="option.value as (option.text | translate) for option in values"
 									ng-required></select>
 							</div>
 							<div class="row form-inline">
@@ -77,7 +77,7 @@
 				</div>
 			</div>
 
-			<div ng-switch-when="updatePassword">
+			<div ng-switch-when="updatePassword" ng-if="showUpdatePass">
 				<div class="col-md-6" ng-controller="UpdatePasswordCtrl">
 					<form class="form" ng-submit="updatePassword()" novalidate>
 						<fieldset>
