@@ -259,13 +259,13 @@ div.m-app-loading p {
 		<!--         BEGIN: Actual animated container. -->
 		<div class="animated-container">
 			<div class="messaging hide-xs show-gt-xs">
-				<img class="img-responsive " src="images/idra_logo.png"
+				<img class="img-responsive " src="images/idra_D_v6_black.svg"
 					style="margin: 0 auto; max-width: 20%;">
 				<img class="img-responsive " src="images/spinner_synchro.gif"
 					style="margin: 0 auto; max-width: 2%;">
 			</div>
 			<div class="messaging hide-gt-xs">
-				<img class="img-responsive " src="images/idra_logo.png"
+				<img class="img-responsive " src="images/idra_D_v6_black.svg"
 					style="margin: 0 auto; max-width: 50%;">
 				<img class="img-responsive " src="images/spinner_synchro.gif"
 					style="margin: 0 auto; max-width: 10%;">

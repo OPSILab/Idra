@@ -139,7 +139,7 @@
 					<td><span
 						ng-show="node.isActive || (!node.isActive && node.datasetCount!=0)">{{node.datasetCount}}</span>
 						<span ng-show="!node.isActive && node.datasetCount==0">n/a</span></td>
-					<td>{{getHours(node.refreshPeriod)}}</td>
+					<td>{{getHours(node.refreshPeriod) | translate}}</td>
 					<td>{{node.lastUpdateDate | date:'yyyy-MM-dd HH:mm:ss'}}</td>
 					<td>
 						<div class="buttons">
@@ -149,7 +149,7 @@
 								class="mdi-action-autorenew"></i> <md-tooltip>
 								{{'synchronize' | translate}}</md-tooltip></a> <a href="javascript:void(0)" class="btn-flat "
 								ng-click="updateNode(node)" a-disabled="node.synchLock!='NONE'"><i
-								class="mdi-content-create"></i> <md-tooltip> {{'update' | translate}}</md-tooltip></a>
+								class="mdi-content-create"></i> <md-tooltip> {{'edit' | translate}}</md-tooltip></a>
 							<a href="javascript:void(0)" class="btn-flat "
 								ng-click="deleteNode(node)" a-disabled="node.synchLock!='NONE'"><i
 								class="mdi-content-clear"></i> <md-tooltip> {{'delete' | translate}}</md-tooltip></a>

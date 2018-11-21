@@ -20,6 +20,7 @@
     .controller('TagCloudCTRL',['$scope','$window', '$element', '$timeout','$http','$rootScope','config','searchService',appController])
     
   function appController($scope,$window, $element, $timeout,$http,$rootScope,config,searchService) {
+
     var originWords = [];
         var maxWordCount = 1000;
         var self = this;
@@ -39,7 +40,7 @@
         	}
         });
         
-//        angular.element($window).bind('resize', resizeWordsCloud);
+       //angular.element($window).bind('resize', resizeWordsCloud);
         
         function getWords() {
         	
@@ -69,7 +70,7 @@
         			}
         		});
 
-        		var end=(tags[0].values.length>30)?30:tags[0].values.length;
+        		var end=(tags[0].values.length>50)?50:tags[0].values.length;
         		for(i=0; i<end; i++){
         			var t=tags[0].values[i];
         			originWords.push({text: t.keyword, count: parseInt(t.facet.substring(t.facet.indexOf("(")+1,t.facet.indexOf(")")))});
@@ -88,27 +89,40 @@
         function resizeWordsCloud() {
             $timeout(function() {
                 var element = $element.find('#wordsCloud');
-                var height = $window.innerHeight * 0.75;
-                element.height(height + 'px');
                 var width = element[0].offsetWidth;
+                
+                var wordResizeParam = 0.15;
+                var wordResizeParam_divide = 5;
+                var heigthResize=0.75;
+                var countDivider = 1;
+
+                if(width<700){
+                	wordResizeParam = 0.1;
+                	wordResizeParam_divide = 2;
+                	countDivider = 10;
+                }
+                
+                var height = $window.innerHeight * heigthResize;
+                element.height(height + 'px');                
                 //var width = element.getBoundingClientRect().width;
-                var maxCount = originWords[0].count;
-                var minCount = originWords[originWords.length - 1].count;
-                var maxWordSize = width * 0.15;
-                var minWordSize = maxWordSize / 5;
+                var maxCount = Math.floor(originWords[0].count/countDivider);
+                var minCount = Math.floor(originWords[originWords.length - 1].count/countDivider);
+                
+                var maxWordSize = width * wordResizeParam;
+                var minWordSize = maxWordSize / wordResizeParam_divide;
                 var spread = maxCount - minCount;
                 if (spread <= 0) spread = 1;
                 var step = (maxWordSize - minWordSize) / spread;
-                if (step <= 0) step = 1;
+                //if (step <= 0) step = 1;
                 self.words = originWords.map(function(word) {
                     return {
                         text: word.text,
-                        size: Math.round(maxWordSize - ((maxCount - word.count) * step)),
+                        size: Math.round(maxWordSize - ((maxCount - Math.floor(word.count/countDivider)) * step)),
                         color: self.customColor
                     }
                 })
-                self.width = width*0.9;
-                self.height = height*0.9;
+                self.width = width;
+                self.height = height;
             })
         }
 
