@@ -74,7 +74,7 @@ API Reference Documentation (**Apiary**):
 A demo instance of Idra - Open Data Federation Platform is available at the
 following link:
 
--   [`https://idra-sandbox.opsilab.it`](https://idra-sandbox.opsilab.it)
+-   [`https://idra-sandbox.eng.it`](https://idra-sandbox.eng.it)
 
 <a name="support"></a>
 
