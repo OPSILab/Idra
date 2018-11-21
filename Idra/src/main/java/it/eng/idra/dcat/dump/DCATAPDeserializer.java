@@ -48,6 +48,7 @@ import org.apache.jena.vocabulary.RDF;
 import org.apache.jena.vocabulary.SKOS;
 import org.apache.jena.vocabulary.VCARD4;
 
+import it.eng.idra.beans.DCATThemes;
 import it.eng.idra.beans.dcat.DCATAPFormat;
 import it.eng.idra.beans.dcat.DCATAPProfileNotValidException;
 import it.eng.idra.beans.dcat.DCATDataset;
@@ -120,8 +121,8 @@ public class DCATAPDeserializer implements IDCATAPDeserialize {
 		List<String> keywords = new ArrayList<String>(), documentation = new ArrayList<String>(),
 				hasVersion = new ArrayList<String>(), isVersionOf = new ArrayList<String>(), language = null,
 				provenance = new ArrayList<String>(), otherIdentifier = null, sample = new ArrayList<String>(),
-				source = new ArrayList<String>(), versionNotes = new ArrayList<String>();
-
+				source = new ArrayList<String>(), versionNotes = new ArrayList<String>(), relatedResource = new ArrayList<String>();
+		
 		List<DCATDistribution> distributionList = new ArrayList<DCATDistribution>();
 
 		if (datasetResource.hasProperty(DCTerms.title))
@@ -150,6 +151,12 @@ public class DCATAPDeserializer implements IDCATAPDeserialize {
 		StmtIterator dIt = datasetResource.listProperties(FOAF.page);
 		while (dIt.hasNext()) {
 			documentation.add(dIt.next().getString());
+		}
+		
+		// Iterate over related properties
+		StmtIterator relIt = datasetResource.listProperties(DCTerms.relation);
+		while (relIt.hasNext()) {
+				relatedResource.add(relIt.next().getString());
 		}
 
 		frequency = deserializeFrequency(datasetResource);
@@ -248,7 +255,7 @@ public class DCATAPDeserializer implements IDCATAPDeserialize {
 		mapped = new DCATDataset(nodeID,identifier, title, description, distributionList, theme, publisher, contactPointList,
 				keywords, accessRights, conformsTo, documentation, frequency, hasVersion, isVersionOf, landingPage,
 				language, provenance, releaseDate, updateDate, otherIdentifier, sample, source,
-				spatialCoverage, temporalCoverage, type, version, versionNotes, rightsHolder, creator, subject);
+				spatialCoverage, temporalCoverage, type, version, versionNotes, rightsHolder, creator, subject,relatedResource);
 
 		distributionList = null;
 		contactPointList = null;
@@ -259,6 +266,7 @@ public class DCATAPDeserializer implements IDCATAPDeserialize {
 		keywords = null;
 		theme = null;
 		documentation = null;
+		relatedResource=null;
 		hasVersion = null;
 		isVersionOf = null;
 		language = null;

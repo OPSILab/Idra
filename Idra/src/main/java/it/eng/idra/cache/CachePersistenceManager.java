@@ -562,6 +562,9 @@ public class CachePersistenceManager {
 
 		q = em.createNativeQuery("DELETE FROM dcat_versionNotes where nodeID= " + nodeID);
 		q.executeUpdate();
+		
+		q = em.createNativeQuery("DELETE FROM dcat_relatedResource where nodeID= " + nodeID);
+		q.executeUpdate();
 
 		q = em.createNativeQuery("DELETE FROM dcat_standard_referencedocumentation where nodeID= " + nodeID);
 		q.executeUpdate();

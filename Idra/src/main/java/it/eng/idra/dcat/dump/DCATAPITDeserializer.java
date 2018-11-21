@@ -77,7 +77,7 @@ public class DCATAPITDeserializer extends DCATAPDeserializer {
 		List<String> keywords = new ArrayList<String>(), documentation = new ArrayList<String>(),
 				hasVersion = new ArrayList<String>(), isVersionOf = new ArrayList<String>(), language = null,
 				provenance = new ArrayList<String>(), otherIdentifier = null, sample = new ArrayList<String>(),
-				source = new ArrayList<String>(), versionNotes = new ArrayList<String>();
+				source = new ArrayList<String>(), versionNotes = new ArrayList<String>(), relatedResource = new ArrayList<String>();
 
 		List<DCATDistribution> distributionList = new ArrayList<DCATDistribution>();
 
@@ -214,10 +214,16 @@ public class DCATAPITDeserializer extends DCATAPDeserializer {
 			distributionList.add(resourceToDCATDistribution(distrIt.next().getResource(), nodeID));
 		}
 
+		// Iterate over related properties
+		StmtIterator relIt = datasetResource.listProperties(DCTerms.relation);
+		while (relIt.hasNext()) {
+			relatedResource.add(relIt.next().getString());
+		}
+		
 		mapped = new DCATDataset(nodeID,identifier, title, description, distributionList, theme, publisher, contactPointList,
 				keywords, accessRights, conformsTo, documentation, frequency, hasVersion, isVersionOf, landingPage,
 				language, provenance, releaseDate, updateDate, otherIdentifier, sample, source,
-				spatialCoverage, temporalCoverage, type, version, versionNotes, rightsHolder, creator, subject);
+				spatialCoverage, temporalCoverage, type, version, versionNotes, rightsHolder, creator, subject,relatedResource);
 
 		distributionList = null;
 		contactPointList = null;
@@ -228,6 +234,7 @@ public class DCATAPITDeserializer extends DCATAPDeserializer {
 		keywords = null;
 		theme = null;
 		documentation = null;
+		relatedResource = null;
 		hasVersion = null;
 		isVersionOf = null;
 		language = null;

@@ -18,25 +18,28 @@
 
 /*No FESTIVAL */
 #header div.navbar.navbar-default .navbar-header .navbar-brand {
-	background-image: url("../images/idra_white.png");
+	background-image: url("../images/idra_D_v6_black.svg");
 	background-repeat: no-repeat;
 	background-size: auto 60px;
-  	color: #fefefe;
+  	/*color: #fefefe;*/
 	display: block;
 	font-size: 24px;
 	font-weight: 900;
-	height: 60px;
-	width: 445px;
+	/*height: 60px;*/
+	height: 70px;
+	width: 100px;
 	text-transform: capitalize;
 }
 
 #header div.navbar {
-  	background-color: #4A2E40;
+  	/*   	background-color: #4A2E40; */
+  	background-color: #ffffff;
   	border: 0 none;
+  	border-bottom: 3px solid #00b4ff;
   	border-radius: 0;
-	box-shadow: 0 0.25em 0.5em 0 rgba(0, 0, 0, 0.25);
-	-webkit-box-shadow: 0 0.25em 0.5em 0 rgba(0, 0, 0, 0.25);
-	-moz-box-shadow: 0 0.25em 0.5em 0 rgba(0, 0, 0, 0.25);
+/* 	box-shadow: 0 0.25em 0.5em 0 rgba(0, 0, 0, 0.25); */
+/* 	-webkit-box-shadow: 0 0.25em 0.5em 0 rgba(0, 0, 0, 0.25); */
+/* 	-moz-box-shadow: 0 0.25em 0.5em 0 rgba(0, 0, 0, 0.25); */
 	cursor: default;
 /*   	height: 3.85em; */
   	line-height: 3.85em;
@@ -58,7 +61,7 @@
 }
 
 #header div.navbar.navbar-default .btn.btn-default {
-  background-color: #e94f1d;
+  background-color: #00b4ff;
   border: 0 none;
   border-radius: 2px;
   box-shadow: none;
@@ -83,23 +86,38 @@
 }
 
 #header div.navbar.navbar-default .navbar-nav li a {
-  color: #fff;
+  /*   color: #fff; */
+  color: #555;
+  text-transform: uppercase;
+/*   padding-bottom:0px; */
 }
 #header div.navbar.navbar-default .navbar-nav li a:hover {
-  color: #e94f1d;
+  /*   color: #e94f1d; */
+  color: #00b4ff;
 }
 #header div.navbar.navbar-default .navbar-nav li.active > a {
-  color: #e94f1d;
+  /*   color: #e94f1d; */
+  	outline: none;
+    color: #00b4ff;
+/*     border-bottom: 1px solid #555; */
+/*     padding-bottom:0px; */
 }
 
 #header div.navbar.navbar-default .dropdown-menu {
-  background-color: #4a2e40;
+ /*   background-color: #4a2e40; */
+/*   background-color: #f1f1f2; */
   padding: 5px 20px 5px 0;
 }
 
 #header .navbar .navbar-toggle .icon-bar {
     background-color: inherit;
     border: 1.5px solid;
+}
+
+.navbar.navbar .dropdown-menu .active > a, 
+.navbar-default.navbar .dropdown-menu .active > a {
+  background-color: transparent;
+  color: #00b4ff !important;
 }
 
 #header .navbar .navbar-toggle .icon-bar {
@@ -120,16 +138,21 @@
 
 @media (max-width: 480px){
 	.navbar-brand {
-	    width: 370px !important;
+	    /*width: 370px !important;*/
+		width: 100px !important;
+	}
+	
+	.navbar .nav.navbar-nav > li > a {
+  	  padding: 10px 15px;
 	}
 }
 
-/* .navbar .navbar-toggle, .navbar .navbar-toggle:hover, */
-/*  .navbar .navbar-toggle:focus { */
-/*     background-color: #00b4ff; */
-/* } */
+.navbar .navbar-toggle, .navbar .navbar-toggle:hover,
+ .navbar .navbar-toggle:focus {
+    background-color: #00b4ff;
+}
 
-/* .navbar-brand { */
-/* 	    padding: 0px; */
-/* 	    height: inherit; */
-/* 	} */
+.navbar-brand {
+	    padding: 0px;
+	    height: inherit;
+	}

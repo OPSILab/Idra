@@ -24,7 +24,7 @@ services :
                 - 3306:3306
             volumes:
                 - ./opt/idra/mysql-data:/var/lib/mysql
-                - ./idra_db.sql:/docker-entrypoint-initdb.d/idra_db.sql
+                - ../idra_db.sql:/docker-entrypoint-initdb.d/idra_db.sql
             networks:
                 idra_main:
             environment:
@@ -49,6 +49,8 @@ services :
             depends_on: 
                 - db
                 # - rdf4j
+            command: ["./wait-for-it.sh", "db:3306", "--timeout=0", "--", "catalina.sh", "run"]
+            
             environment:
                 - idra.db.host=jdbc:mysql://db:3306/idra_db?serverTimezone=UTC&useLegacyDatetimeCode=false&useEncoding=true&characterEncoding=UTF-8&useSSL\=false
                 - idra.db.host.min=jdbc:mysql://db:3306

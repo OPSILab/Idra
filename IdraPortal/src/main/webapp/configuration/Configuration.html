@@ -18,7 +18,7 @@
 <div class="col-md-12">
 <ul class="breadcrumb">
   <li class="breadcrumb-item"><a href="#metadata">Home</a></li>
-  <li class="breadcrumb-item active">Administration Configurations</li>
+  <li class="breadcrumb-item active">{{'manageConf' | translate}}</li>
 </ul>
 <!-- 	<legend for="refresh" class="control-label">Manage -->
 <!-- 		Configurations</legend> -->
@@ -29,11 +29,11 @@
 	<ul class="nav nav-tabs"
 		ng-init="main.active.tab = 'defaultConfiguration'">
 		<li ng-class="{active: main.active.tab == 'defaultConfiguration'}"><a
-			ng-click="main.active.tab = 'defaultConfiguration'">Catalogues</a></li>
+			ng-click="main.active.tab = 'defaultConfiguration'">{{'DataSources' | translate}}</a></li>
 		<li ng-class="{active: main.active.tab == 'prefixManagement'}"><a
-			ng-click="main.active.tab = 'prefixManagement'">Prefix</a></li>
-		<li ng-class="{active: main.active.tab == 'updatePassword'}"><a
-			ng-click="main.active.tab = 'updatePassword'">Update Password</a></li>
+			ng-click="main.active.tab = 'prefixManagement'">{{'sparqlPrefixes' | translate}}</a></li>
+		<li ng-class="{active: main.active.tab == 'updatePassword'}" ng-if="showUpdatePass"><a
+			ng-click="main.active.tab = 'updatePassword'">{{'updatePassword' | translate}}</a></li>
 	</ul>
 
 	<div class="tab-content">
@@ -43,37 +43,32 @@
 					<form class="form" ng-submit="updateConfiguration()" novalidate>
 						<fieldset>
 							<div class="row form-inline">
-								<label for="refresh" class="control-label">Default Nodes
-									Refresh Period:</label> <select class="form-control"
+								<label for="refresh" class="control-label">{{'defaultRefPeriod' | translate}}:</label> <select class="form-control"
 									ng-model="refreshPeriod"
-									ng-options="option.value as option.text for option in values"
+									ng-options="option.value as (option.text | translate) for option in values"
 									ng-required></select>
 							</div>
 							<div class="row form-inline">
-								<label for="refresh" class="control-label">Enable RDF
-									controls:</label> <input type="checkbox" class="form-control"
+								<label for="refresh" class="control-label">{{'RDFcontrol' | translate}}:</label> <input type="checkbox" class="form-control"
 									ng-model="checkContentLength">
 							</div>
 							<div class="row form-inline" ng-show="checkContentLength">
-								<label for="refresh" class="control-label">Enable RDF
-									max size check:</label> <input type="checkbox" class="form-control"
+								<label for="refresh" class="control-label">{{'RDFmaxSizeEnable' | translate}}:</label> <input type="checkbox" class="form-control"
 									ng-model="checkRdfDimension">
 							</div>
 							<div class="row form-inline" ng-show="checkContentLength"
 								ng-class="{ 'has-error': rdfMaxDimension < 1 || rdfMaxDimension > 250 || rdfMaxDimension == ''}">
-								<label for="refresh" class="control-label">RDF max
-									dimension (MB):</label> <input type="number"
+								<label for="refresh" class="control-label">{{'RDFmax' | translate}}:</label> <input type="number"
 									ng-disabled="!checkRdfDimension" class="form-control"
 									ng-model="rdfMaxDimension">
 								<p class="help-block"
-									ng-if="rdfMaxDimension < 1 || rdfMaxDimension > 250 || rdfMaxDimension == ''">Dimension
-									between 1 MB and 250 MB</p>
+									ng-if="rdfMaxDimension < 1 || rdfMaxDimension > 250 || rdfMaxDimension == ''">{{'RDFdimMex' | translate}}</p>
 							</div>
 							<div class="pull-right form-inline">
 
 								<button type="submit"
-									class="btn btn-primary btn-material-deep-orange pull-right"
-									ng-disabled="rdfMaxDimension < 1 || rdfMaxDimension > 250 || rdfMaxDimension == ''">Update</button>
+									class="btn btn-primary pull-right"
+									ng-disabled="rdfMaxDimension < 1 || rdfMaxDimension > 250 || rdfMaxDimension == ''">{{'update' | translate}}</button>
 
 
 							</div>
@@ -82,28 +77,28 @@
 				</div>
 			</div>
 
-			<div ng-switch-when="updatePassword">
+			<div ng-switch-when="updatePassword" ng-if="showUpdatePass">
 				<div class="col-md-6" ng-controller="UpdatePasswordCtrl">
 					<form class="form" ng-submit="updatePassword()" novalidate>
 						<fieldset>
 							<div class="row form-inline">
 								<label for="refresh" class="control-label">
-									Old Password: </label><input type="password" class="form-control" name="password"
-									placeholder="Old Password" ng-model='oldPassword' > 
+									{{'oldPassword' | translate}} </label><input type="password" class="form-control" name="password"
+									placeholder="{{'oldPassword' | translate}}" ng-model='oldPassword' > 
 							</div>
 							<div class="row form-inline">
 								<label for="refresh" class="control-label">
-									New Password: </label><input type="password" class="form-control" name="password"
-									placeholder="Old Password" ng-model='newPassword' > 
+									{{'newPassword' | translate}}: </label><input type="password" class="form-control" name="password"
+									placeholder="{{'newPassword' | translate}}" ng-model='newPassword' > 
 							</div>
 							<div class="row form-inline">
 								<label for="refresh" class="control-label">
-									Confirm Password: </label><input type="password" class="form-control" name="password"
-									placeholder="Old Password" ng-model='newPasswordConfirm' > 
+									{{'confirmPassword' | translate}}: </label><input type="password" class="form-control" name="password"
+									placeholder="{{'confirmPassword' | translate}}" ng-model='newPasswordConfirm' > 
 							</div>
 							<div class="pull-right form-inline">
 								<button type="submit"
-									class="btn btn-primary btn-material-deep-orange pull-right">Update</button>
+									class="btn btn-primary pull-right">{{'update' | translate}}</button>
 							</div>
 						</fieldset>
 					</form>
@@ -115,21 +110,21 @@
 				<div class="col-md-12" ng-controller="PrefixCtrl">
 
 					<div class="col-md-12 inner-section-title">
-						<label class="control-label">Sparql Prefixes</label>
+						<label class="control-label">{{'sparqlPrefixes' | translate}}</label>
 					</div>
 					<div class=" col-md-12 table-responsive">
 						<table st-table="displayedCollection" st-safe-src="allPrefix"
 							class="table table-striped">
 							<thead>
 								<tr>
-									<th st-sort="prefix" st-sort-default="true">Prefix</th>
-									<th st-sort="namespace">Namespace</th>
-									<th>Edit</th>
+									<th st-sort="prefix" st-sort-default="true">{{'prefix' | translate}}</th>
+									<th st-sort="namespace">{{'namespace' | translate}}</th>
+									<th>{{'edit' | translate}}</th>
 								</tr>
 								<tr>
-									<th><input placeholder="search prefix" st-search="prefix" />
+									<th><input placeholder="{{'searchprefix' | translate}}" st-search="prefix" />
 									</th>
-									<th><input placeholder="search namespace"
+									<th><input placeholder="{{'searchnamespace' | translate}}"
 										st-search="namespace" /></th>
 									<th></th>
 								</tr>
@@ -140,9 +135,9 @@
 									<td>{{p.namespace}}</td>
 									<td>
 										<div class="buttons">
-											<a class="btn-flat mdi-material-deep-orange"
+											<a class="btn-flat "
 												ng-click="openModal(p)"><i class="mdi-content-create"></i></a>
-											<a class="btn-flat mdi-material-deep-orange"
+											<a class="btn-flat "
 												ng-click="deletePrefix(p)"><i class="mdi-content-clear"></i></a>
 										</div>
 									</td>
@@ -156,8 +151,8 @@
 									</td>
 									<td colspan="1"></td>
 									<td><span style="margin: 0 auto" class="pull-right"><button
-												class="btn btn-primary btn-material-deep-orange"
-												ng-click="openModal('')">Add Prefix</button></span></td>
+												class="btn btn-primary "
+												ng-click="openModal('')">{{'addPrefix' | translate}}</button></span></td>
 								</tr>
 							</tfoot>
 						</table>
@@ -168,7 +163,7 @@
 				<script type="text/ng-template" id="PrefixModalContent.html">
 <div class="modal-header">
 	<button type="button" class="close" aria-hidden="true" ng-click="cancel()">x</button>
-    <h3 class="modal-title">{{title}}</h3>
+    <h3 class="modal-title">{{'createNewPrefix' | translate}}</h3>
 </div>
 <div class="modal-body row">
 	<alert type='danger' style="text-align:center"
@@ -179,22 +174,22 @@
 	<div class="row form-inline" name="formPrefix">
 		<label class="control-label">Prefix</label>
 			<input type="text" class="form-control" name="prefix"
-							placeholder="Insert prefix" autofocus
+							placeholder="{{'insertPrefix' | translate}}" autofocus
 							ng-model="tmp.prefix">
 	</div>
 	<div class="row form-inline">
 		<label class="control-label">Namespace</label>
 			<input type="text" class="form-control" style="width:60%" name="namespace"
-							placeholder="Insert namespace <url>"
+							placeholder="{{'addnamespaceurl' | translate}}"
 							ng-model="tmp.namespace">
 	</div>
 	</div>
 </div>
 
 <div class="modal-footer">
-	<button class="btn btn-default" type="button" ng-click="cancel()">Cancel</button>
-	<button class="btn btn-primary" type="button" ng-if=" mode=='create' " ng-click="addPrefix()" ng-disabled="tmp.prefix=='' && tmp.namespace==''">Create</button>
-	<button class="btn btn-primary" type="button" ng-if=" mode=='update' " ng-click="updatePrefix()" ng-disabled="tmp.prefix==oldPrefix.prefix && tmp.namespace==oldPrefix.namespace">Update</button>
+	<button class="btn btn-default btn-raised" type="button" ng-click="cancel()">{{'cancel' | translate}}</button>
+	<button class="btn btn-primary btn-raised" type="button" ng-if=" mode=='create' " ng-click="addPrefix()" ng-disabled="tmp.prefix=='' && tmp.namespace==''">{{'create' | translate}}</button>
+	<button class="btn btn-primary btn-raised" type="button" ng-if=" mode=='update' " ng-click="updatePrefix()" ng-disabled="tmp.prefix==oldPrefix.prefix && tmp.namespace==oldPrefix.namespace">{{'update' | translate}}</button>
 </div>
 </script>
 
