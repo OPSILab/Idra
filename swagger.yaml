@@ -17,7 +17,7 @@ tags:
     description: 'Technical specification of Idra End User APIs. These APIs provide functionalities for searching among federated datasets metadata, execute sparql queries and create Datalets from distribution.'
   - name: Federation Api
     description: 'Technical specification of the APIs that an ODMS catalogue should implement, in order to be federated by the Idra.'
-host: idra-sandbox.opsilab.it
+host: idra-sandbox.eng.it
 basePath: /Idra/
 paths:
   /api/v1/administration/version:
