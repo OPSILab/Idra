@@ -14,7 +14,7 @@ html, body {
 }
 .footer {
 	background-color:#ffffff;
-	min-height: 100px;
+	min-height: 40px;
 }
 .push {
     height: 4em;

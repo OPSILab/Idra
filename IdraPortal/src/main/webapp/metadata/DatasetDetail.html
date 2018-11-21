@@ -16,27 +16,26 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <!-- <div class="datasetPage"> -->
-<div class="datasetPage"  id="top">
 <ul class="breadcrumb">
   <li class="breadcrumb-item"><a href="#metadata">Home</a></li>
   <li class="breadcrumb-item"><a href="#showDatasets">Datasets</a></li>
   <li class="breadcrumb-item active" ng-bind-html="dataset.title"></li>
 </ul>
-<div>
+<div class="datasetPage"  id="top">
 		<div layout="column" layout-align="top center">
 			<md-card md-theme-watch class="md-whiteframe-3dp" style="width:100%;margin: 0px 0px 8px 0px">
 			<md-card-title> <md-card-title-text>
-			<h2 style="margin: 0px 0px 0px 0px" ng-bind-html="dataset.title"></h2>
-			<span class="md-subhead" style="color: #6a6b68; padding-top: 0px"><strong>{{dataset.nodeName}}</strong>
+			<h3  style="margin: 0px 0px 0px 0px" ng-bind-html="dataset.title"></h3>
+			<span class="md-subhead" style="color: #6a6b68; padding-top: 0px; font-size: 12px;"><strong>{{dataset.nodeName}}</strong>
 			</span> </md-card-title-text> </md-card-title> <md-card-content>
 			<p style="line-height: 1.75em;" >
 				<span ng-show="dataset.description!=''" marked="dataset.description"> </span>
-				<span ng-show="dataset.description==''">No description available for this dataset.</span>
+				<span ng-show="dataset.description==''">{{'datasetDetailNoDescription' | translate}}</span>
 			</p>
 	
 			<div class="row container-fluid" ng-show="dataset.keywords.length>0 || (dataset.keywords.length==1 && dataset.keywords[0]!='')" 
 				style="padding: 0px 0px 0px 0px">
-				<h5 class="md-headline">Tags</h5>
+				<h4>Tags</h4>
 				<md-chips ng-model='dataset.keywords' md-removable="false" md-on-select="searchFacet($chip)"
 					readonly="false" > <md-chip-template  ng-show="$chip!=''" style="font-size: inherit;cursor: pointer;">
 				<strong >{{$chip}}</strong> </md-chip-template> </md-chips>
@@ -46,118 +45,133 @@
 				ng-show="dataset.distributions.length>0"
 				style="padding: 0px 0px 0px 0px">
 		
-				<h5 class="md-headline">Resources</h5>
+				<h4>{{'resources' | translate}}</h4>
 				
 				<ul class="list-group list" style="margin: 0px 0px 0px 0px;">
-					<li class='list-group-item' ng-repeat="distribution in dataset.distributions track by $index">
-						<div class="col-lg-1 col-md-1 col-sm-1 col-xs-1">
+					<li class='list-group-item' ng-repeat="distribution in dataset.distributions track by $index" style="margin-bottom: 4px;padding:0px">						
+						<!-- MOBILE -->
+						<div class="col-xs-2" style="padding:0px 0px 0px 0px;" hide-gt-xs visible-xs>
+							<a href='{{distribution.downloadURL}}' target="_blank"><img
+									class="icon img-responsive" style="margin:0px 0px 0px 0px;" ng-src="{{getIcon(distribution.format,distribution.mediaType)}}"
+									alt="Download" /></a><md-tooltip visible-xs hide-gt-xs>{{distribution.format}}</md-tooltip>
+						</div>
+						
+						<div class="col-xs-10" style="padding:0px 0px 0px 0px;" hide-gt-xs visible-xs>
+						<span ng-show="distribution.collapseDetails">
+								<p style="margin-top:7px; margin-bottom:5px" ng-show="distribution.title!=''" md-truncate><strong>{{distribution.title}}</strong>
+								<md-tooltip>{{distribution.title}}</md-tooltip>
+								</p>
+								<p style="margin-top:7px; margin-bottom:5px" ng-show="distribution.title==''"><strong>{{'distributionDetailNoTitle' | translate}}</strong></p>
+								
+							</span>
+						</div>
+						<!-- END MOBILE -->
+						
+						<div class="col-lg-1 col-md-1 col-sm-1" hide-xs visible-gt-xs>
 							<a href='{{distribution.downloadURL}}' target="_blank"><img
 									class="icon img-responsive" style="margin:0 auto;" ng-src="{{getIcon(distribution.format,distribution.mediaType)}}"
 									alt="Download" /></a>
 						</div>
-						<div class="col-lg-3 col-md-3 col-sm-5 col-xs-5" >
+						
+						<div class="col-lg-3 col-md-3 col-sm-5" hide-xs visible-gt-xs>
 						<span ng-show="distribution.collapseDetails">
-							<p	ng-show="distribution.title!=''" md-truncate><strong>{{distribution.title}}</strong></p>
-								<p ng-show="distribution.title==''"><strong>No
-									title available</strong></p>
-									</span>
-<!-- 							<p md-truncate ng-show="distribution.collapseDetails"><strong>{{distribution.title}}</strong></p> -->
+								<p ng-show="distribution.title!=''" md-truncate><strong>{{distribution.title}}</strong></p>
+								<p ng-show="distribution.title==''"><strong>{{'distributionDetailNoTitle' | translate}}</strong></p>
+								
+							</span>
 						</div>
-						<div class="col-lg-2 col-md-2 col-sm-3 col-xs-3" >
+						
+						<div class="col-lg-2 col-md-2 col-sm-3" hide-xs visible-gt-xs>
 							<p ng-show="distribution.collapseDetails">{{distribution.format}}</p>
 						</div>
-						<div class="col-lg-3 col-md-3 hidden-sm hidden-xs" >
+						<div class="col-lg-3 col-md-3 col-sm-3" hide-xs visible-gt-xs>
 						<span ng-show="distribution.collapseDetails">
-							<p	ng-show="distribution.description!=''" md-truncate>{{distribution.description}}</p>
-								<p ng-show="distribution.description==''">No
-									description available</p>
+							<p ng-show="distribution.description!=''" md-truncate>{{distribution.description}}</p>
+								<p ng-show="distribution.description==''">{{'distributionDetailNoDescription' | translate}}</p>
 									</span>
 						</div>
-<!-- 						<div class="col-md-1 col-sm-1 col-xs-1 buttons"> -->
-						<div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
+						<div class="col-lg-3 col-md-3 col-sm-3" hide-xs visible-gt-xs>
 						<a href="javascript:void(0)"
-								class="btn-flat mdi-material-deep-orange" target="_blank">
+								class="btn-flat " target="_blank">
 								<i ng-show="distribution.collapseDetails" ng-click="distribution.collapseDetails = !distribution.collapseDetails"
-									class="mdi-navigation-expand-more"><md-tooltip>More Details</md-tooltip></i>
+									class="mdi-navigation-expand-more"><md-tooltip>{{'distributionDetailMore' | translate}}</md-tooltip></i>
 								<i ng-show="!distribution.collapseDetails" ng-click="distribution.collapseDetails = !distribution.collapseDetails"
-									class="mdi-navigation-expand-less"><md-tooltip>Less Details</md-tooltip></i>
+									class="mdi-navigation-expand-less"><md-tooltip>{{'distributionDetailLess' | translate}}</md-tooltip></i>
 								</a>
 								<a href='{{distribution.downloadURL}}' target="_blank"
-								class="btn-flat mdi-material-deep-orange" target="_blank">
+								class="btn-flat " target="_blank">
 								<i class="mdi-file-file-download"></i>
-									<md-tooltip>Download</md-tooltip>
+									<md-tooltip>{{'distributionDetailDownload' | translate}}</md-tooltip>
 								</a>
 								<span>
 								<a ng-show="distribution.dataletShowButtonEnabled" href="javascript:void(0)"
-								class="btn-flat mdi-material-deep-orange" target="_blank" a-disabled="!distribution.distributionDonwloadUrlOk">
+								class="btn-flat " target="_blank" a-disabled="!distribution.distributionDonwloadUrlOk">
+								<span ng-show="!distribution.lockFile">
 								<i ng-click="createDatalet(dataset.id,dataset.nodeID,distribution)"
 									class="mdi-action-open-in-new"></i>
+								</span>	
+								<span ng-show="distribution.lockFile"> <img
+											alt="download" title="download"
+											src="images/spinner_synchro.gif" style="width: 20px;vertical-align: unset;"> <md-tooltip>{{'distributionDetailGetFile' | translate}}</md-tooltip>
+								</span>
 								</a>
-									<md-tooltip ng-show="distribution.distributionDonwloadUrlOk">Create new datalet</md-tooltip>
-									<md-tooltip ng-show="!distribution.distributionDonwloadUrlOk">Unable to create datalet</md-tooltip>	
+									<md-tooltip ng-show="distribution.distributionDonwloadUrlOk">{{'distributionDetailCreateDatalet' | translate}}</md-tooltip>
+									<md-tooltip ng-show="!distribution.distributionDonwloadUrlOk">{{'distributionDetailUnableDatalet' | translate}}</md-tooltip>	
 								</span>
 								<a href="javascript:void(0)"
-								class="btn-flat mdi-material-deep-orange" target="_blank">
+								class="btn-flat " target="_blank">
 								<i ng-show="distribution.hasDatalets" ng-click="showDatalets(dataset.id,dataset.nodeID,distribution)"
 									class="mdi-action-open-in-browser"></i>
-									<md-tooltip>Show datalets</md-tooltip>
+									<md-tooltip>{{'distributionDetailShowDatalet' | translate}}</md-tooltip>
 								</a>
 						</div>
 						<div collapse="distribution.collapseDetails" class="panel collapse">
 						<div class="panel-body">
-						<table class="table table-responsive">
-									<thead style="border-top: 0px; border-bottom: 0px;">
-										<tr>
-											<th style="width: 15%; border-top: 0px; border-bottom: 0px;"></th>
-											<th style="width: 85%; border-top: 0px; border-bottom: 0px;"></th>
-										</tr>
-									</thead>
+						<div class="table-responsive">
+						<table class="table">
 									<tbody>
 										<tr ng-show="distribution.title!=''">
-											<td><span style="font-weight: bold;">Title</span></td>
+											<td><span style="font-weight: bold;">{{'title' | translate}}</span></td>
 											<td><span ng-show="distribution.title!=''"><strong>{{distribution.title}}</strong></span>
-												<span ng-show="distribution.title==''">No title
-													available</span></td>
+												<span ng-show="distribution.title==''">{{'distributionDetailNoTitle' | translate}}</span></td>
 										</tr>
 										<tr ng-show="distribution.description!=''">
-											<td><span style="font-weight: bold;">Description</span></td>
+											<td><span style="font-weight: bold;">{{'description' | translate}}</span></td>
 											<td><span ng-show="distribution.description!=''">{{distribution.description}}</span>
-												<span ng-show="distribution.description==''">No
-													description available</span></td>
+												<span ng-show="distribution.description==''">{{'distributionDetailNoDescription' | translate}}</span></td>
 										</tr>
 										<tr ng-show="distribution.format!=''">
-											<td><span style="font-weight: bold;">Format</span></td>
+											<td><span style="font-weight: bold;">{{'format' | translate}}</span></td>
 											<td>{{distribution.format}}</td>
 										</tr>
 										<tr ng-show="distribution.accessURL!=''">
-											<td><span style="font-weight: bold;">Access URL</span></td>
+											<td><span style="font-weight: bold;">{{'accessURL' | translate}}</span></td>
 											<td><a href='{{distribution.downloadURL}}'
 												target="_blank">{{distribution.downloadURL}}</a></td>
 										</tr>
 										<tr
 											ng-show="distribution.license.name!='' && distribution.license.uri!=''">
-											<td><span style="font-weight: bold;">License:</span></td>
+											<td><span style="font-weight: bold;">{{'license' | translate}}:</span></td>
 											<td>{{distribution.license.name}} <a
 												ng-show="distribution.license.license.uri!=''"
 												href="{{distribution.license.uri}}"
-												class="btn-flat mdi-material-deep-orange" target="_blank"><i
+												class="btn-flat " target="_blank"><i
 													class="mdi-action-open-in-new"
 													style="vertical-align: middle;"></i></a></td>
 										</tr>
 										<tr
 											ng-show="distribution.releaseDate!='' && showDate(distribution.releaseDate)">
-											<td><span style="font-weight: bold;">Release
-													Date:</span></td>
+											<td><span style="font-weight: bold;">{{'releaseDate' | translate}}:</span></td>
 											<td>{{distribution.releaseDate | date}}</td>
 										</tr>
 										<tr
 											ng-show="distribution.updateDate!='' && showDate(distribution.updateDate)">
-											<td><span style="font-weight: bold;">Update Date:</span></td>
+											<td><span style="font-weight: bold;">{{'updateDate' | translate}}:</span></td>
 											<td>{{distribution.updateDate | date}}</td>
 										</tr>
 										<tr
 											ng-show="distribution.language.length>1 || (distribution.language.length==1 && distribution.language[0]!='' ) ">
-											<td><span style="font-weight: bold;">Language:</span></td>
+											<td><span style="font-weight: bold;">{{'languageDistro' | translate}}:</span></td>
 											<td>
 												<ul class="list-group list" style="margin: 0px 0px 0px 0px;">
 													<li class='list-group-item'
@@ -167,8 +181,7 @@
 										</tr>
 										<tr
 											ng-show="distribution.linkedSchemas.length>1 || (distribution.linkedSchemas.length==1 && distribution.linkedSchemas[0]!='' ) ">
-											<td><span style="font-weight: bold;">Linked
-													Schemas:</span></td>
+											<td><span style="font-weight: bold;">{{'linkedSchemas' | translate}}:</span></td>
 											<td>
 												<ul class="list-group list" style="margin: 0px 0px 0px 0px;">
 													<li class='list-group-item'
@@ -177,11 +190,11 @@
 											</td>
 										</tr>
 										<tr ng-show="distribution.rights!=''">
-											<td><span style="font-weight: bold;">Rights:</span></td>
+											<td><span style="font-weight: bold;">{{'rights' | translate}}:</span></td>
 											<td>{{distribution.rights}}</td>
 										</tr>
 										<tr ng-show="distribution.status!='' && distribution.status!=undefined">
-											<td><span style="font-weight: bold;">Status:</span></td>
+											<td><span style="font-weight: bold;">{{'statusDistro' | translate}}:</span></td>
 											<td>
 												<ul class="list-inline list" style="margin: 0px 0px 0px 0px;">
 													<li class='list-inline-item'
@@ -197,25 +210,23 @@
 										</tr>
 										<tr
 											ng-show="distribution.byteSize!='' && distribution.byteSize!='0'">
-											<td><span style="font-weight: bold;">Size:</span></td>
+											<td><span style="font-weight: bold;">{{'size' | translate}}:</span></td>
 											<td>{{distribution.byteSize}} B</td>
 										</tr>
 										<tr
 											ng-show="distribution.checksum!=undefined && distribution.checksum!='' && distribution.checksum.algorithm!=''">
-											<td><span style="font-weight: bold;">Checksum
-													Algorithm:</span></td>
+											<td><span style="font-weight: bold;">{{'checksumAlgorithm' | translate}}:</span></td>
 											<td>{{distribution.checksum.algorithm}}</td>
 										</tr>
 										<tr
 											ng-show="distribution.checksum!=undefined && distribution.checksum!='' && distribution.checksum.checksumValue!='' && distribution.checksum.algorithm!=''">
-											<td><span style="font-weight: bold;">Checksum
-													Value:</span></td>
+											<td><span style="font-weight: bold;">{{'checksumValue' | translate}}:</span></td>
 											<td>{{distribution.checksum.checksumValue}}</td>
 										</tr>
 										<tr
 											ng-show="distribution.documentation.length>1 || (distribution.documentation.length==1 && distribution.documentation[0]!='' ) ">
 											<td></td>
-											<td><span style="font-weight: bold;">Documentation:</span></td>
+											<td><span style="font-weight: bold;">{{'documentation' | translate}}:</span></td>
 											<td>
 												<ul class="list-group list" style="margin: 0px 0px 0px 0px;">
 													<li class='list-group-item'
@@ -226,30 +237,110 @@
 										</tr>
 									</tbody>
 								</table>
+								</div>
 					</div>
-					</div>
-<!-- 						<md-divider></md-divider> -->
-						
+					</div>				
 					</li>
 				</ul>
-				
 			</div>
 			<div class="row container-fluid" style="padding: 0px 0px 0px 0px">
-				<h5 class="md-headline">Additional Info</h5>
-				<table class="table table-responsive">
-				<thead style="border-top: 0px;border-bottom: 0px;">
-	<tr>
-	<th style="width:15%;border-top: 0px;border-bottom: 0px;"></th>
-	<th style="width:85%;border-top: 0px;border-bottom: 0px;"></th>
-	</tr>
-	</thead>
-	<tbody>
+				<h4>{{'additionalInfoDataset' | translate}}</h4>
+				
+				<div hide-gt-xs visible-xs>
+				
+				<div class="col-xs-12" style="padding:0px 0px 0px 0px;margin-bottom:5px;" ng-show="dataset.landingPage!=''">
+					<label class="control-label">{{'landingPage' | translate}}:</label>
+					<br/>
+					<p md-truncate><a href="{{dataset.landingPage}}" target="_blank">{{dataset.landingPage}}</a></p>
+				</div>
+				
+				<div class="col-xs-12" style="padding:0px 0px 0px 0px;margin-bottom:5px;" ng-show="dataset.publisher!=undefined &&  (dataset.publisher.name!='' || dataset.publisher.mbox!='' || dataset.publisher.homepage!='' || dataset.publisher.type!='')">
+					<label class="control-label">{{'publisher' | translate}}:</label>
+					<br/>
+					<span ng-show="dataset.publisher.name!=''">{{dataset.publisher.name}}</span> 
+					<span ng-show="dataset.publisher.mbox!=''">{{dataset.publisher.mbox}}</span>
+					<span ng-show="dataset.publisher.homepage!=''">{{dataset.publisher.homepage}}</span>
+					<span ng-show="dataset.publisher.type!=''">{{dataset.publisher.type}}</span>
+				</div>
+				
+				<div class="col-xs-12" style="padding:0px 0px 0px 0px;margin-bottom:5px;" ng-show="dataset.licenses.length!=0">
+					<label class="control-label">{{'licenses' | translate}}:</label>
+					<br/>
+					<ul class="list-inline list" style="margin: 0px 0px 0px 0px;">
+								<li class='list-inline-item'
+									ng-repeat="license in dataset.licenses track by $index" style="padding-left: 0px;">{{license.name}} <a
+							ng-show="license.uri!=''"
+							href="{{license.uri}}"
+							class="btn-flat " target="_blank"><i
+								class="mdi-action-open-in-new" style="vertical-align: middle;"></i></a></li>
+							</ul>
+				</div>
+				
+				<div class="col-xs-12" style="padding:0px 0px 0px 0px;margin-bottom:5px;" ng-show="dataset.releaseDate!='' && showDate(dataset.releaseDate)">
+					<label class="control-label">{{'releaseDate' | translate}}:</label>
+					<br/>
+					<p md-truncate>{{dataset.releaseDate | date}}</p>
+				</div>
+				
+				<div class="col-xs-12" style="padding:0px 0px 0px 0px;margin-bottom:5px;" ng-show="dataset.updateDate!='' && showDate(dataset.updateDate)">
+					<label class="control-label">{{'updateDate' | translate}}:</label>
+					<br/>
+					<p md-truncate>{{dataset.updateDate | date}}</p>
+				</div>
+				
+				<div class="col-xs-12" style="padding:0px 0px 0px 0px;margin-bottom:5px;" ng-show="dataset.identifier!=''">
+					<label class="control-label">{{'identifier' | translate}}:</label>
+					<br/>
+					<p md-truncate>{{dataset.identifier}}</p>
+				</div>
+				
+				<div class="col-xs-12" style="padding:0px 0px 0px 0px;margin-bottom:5px;" ng-show="dataset.theme.length>1 || (dataset.theme.length==1 && dataset.theme[0].prefLabel.length!=0 && dataset.theme[0].prefLabel[0]!='')">
+					<label class="control-label">{{'theme' | translate}}:</label>
+					<br/>
+					<ul class="list-inline list" style="margin: 0px 0px 0px 0px;" ng-repeat="tmp in dataset.theme track by $index">
+								<li class='list-inline-item'
+									ng-repeat="values in tmp.prefLabel track by $index"
+									style="padding-left: 0px;">{{values.value}}</li>
+							</ul>
+				</div>
+				
+				<div class="col-xs-12" style="padding:0px 0px 0px 0px;margin-bottom:5px;" ng-show="dataset.contactPoint.length>1 || 
+					(dataset.contactPoint.length==1 &&
+					 (dataset.contactPoint[0].fn!='' ||
+					 dataset.contactPoint[0].hasEmail!=''
+					 || dataset.contactPoint[0].hasURL!=''
+					 || dataset.contactPoint[0].hasTelephoneValue!='')) ">
+					<label class="control-label">{{'contacts' | translate}}:</label>
+					<br/>
+					<md-list class="md-dense" flex style="padding: 0px 0px 0px 0px;"> <md-list-item
+								class="md-2-line"
+								ng-repeat="contact in dataset.contactPoint track by $index"
+								style="padding: 0px 0px 0px 0px;">
+							<div class="md-list-item-text" layout="column">
+								<h3 md-truncate>
+									<strong>{{contact.fn | limitTo:150}}{{contact.fn.length > 150 ? '...' : ''}}</strong>
+								</h3>
+								<h4 md-truncate ng-show="contact.hasEmail!=''">{{contact.hasEmail}}</h4>
+								<h4 md-truncate ng-show="contact.hasURL!=''">{{contact.hasURL}}</h4>
+								<h4 md-truncate ng-show="contact.hasTelephoneValue!=''">{{contact.hasTelephoneValue}}</h4>
+							</div>
+							<md-divider
+								ng-show="dataset.contactPoint.length>1 && ($index != dataset.contactPoint.length-1)"></md-divider>
+							</md-list-item> </md-list>
+				</div>
+				
+				</div>
+				
+				
+				<div class="table-responsive" hide-xs visible-gt-xs>
+				<table class="table">
+					<tbody>
 					<tr ng-show="dataset.landingPage!=''">
-						<td ><span style="font-weight: bold;">Landing Page:</span></td>
-						<td ><a href="{{dataset.landingPage}}" target="_blank">{{dataset.landingPage}}</a></td>
+							<td><span style="font-weight: bold;">{{'landingPage' | translate}}:</span></td>
+							<td><a href="{{dataset.landingPage}}" target="_blank">{{dataset.landingPage}}</a></td>
 					</tr>
 					<tr ng-show="dataset.publisher!=undefined &&  (dataset.publisher.name!='' || dataset.publisher.mbox!='' || dataset.publisher.homepage!='' || dataset.publisher.type!='')">
-						<td><span style="font-weight: bold;">Publisher:</span></td>
+						<td><span style="font-weight: bold;">{{'publisher' | translate}}:</span></td>
 						<td><span ng-show="dataset.publisher.name!=''">{{dataset.publisher.name}}</span> 
 						<span ng-show="dataset.publisher.mbox!=''">{{dataset.publisher.mbox}}</span>
 							<span ng-show="dataset.publisher.homepage!=''">{{dataset.publisher.homepage}}</span>
@@ -258,39 +349,38 @@
 					</tr>
 
 					<tr	ng-show="dataset.licenses.length!=0">
-						<td><span style="font-weight: bold;">Licenses:</span></td>
+						<td><span style="font-weight: bold;">{{'licenses' | translate}}:</span></td>
 						<td>
 						<ul class="list-inline list" style="margin: 0px 0px 0px 0px;">
 								<li class='list-inline-item'
 									ng-repeat="license in dataset.licenses track by $index" style="padding-left: 0px;">{{license.name}} <a
 							ng-show="license.uri!=''"
 							href="{{license.uri}}"
-							class="btn-flat mdi-material-deep-orange" target="_blank"><i
+							class="btn-flat " target="_blank"><i
 								class="mdi-action-open-in-new" style="vertical-align: middle;"></i></a></li>
 							</ul>
 						</td>
 					</tr>
 					<tr ng-show="dataset.releaseDate!='' && showDate(dataset.releaseDate)">
-						<td><span style="font-weight: bold;">Release Date:</span></td>
+						<td><span style="font-weight: bold;">{{'releaseDate' | translate}}:</span></td>
 						<td>{{dataset.releaseDate | date}}</td>
 					</tr>
 					<tr ng-show="dataset.updateDate!='' && showDate(dataset.updateDate)">
-						<td><span style="font-weight: bold;">Update Date:</span></td>
+						<td><span style="font-weight: bold;">{{'updateDate' | translate}}:</span></td>
 						<td>{{dataset.updateDate | date}}</td>
 					</tr>
 					<tr ng-show="dataset.frequency!=''">
-						<td><span style="font-weight: bold;">Frequency:</span></td>
+						<td><span style="font-weight: bold;">{{'frequency' | translate}}:</span></td>
 						<td>{{dataset.frequency}}</td>
 					</tr>
 					<tr ng-show="dataset.temporalCoverage!=undefined">
-						<td><span style="font-weight: bold;">Temporal
-								Coverage:</span></td>
+						<td><span style="font-weight: bold;">{{'temporalCoverage' | translate}}:</span></td>
 						<td>{{dataset.temporalCoverage.startDate | date}} -
 							{{dataset.temporalCoverage.endDate | date}}</td>
 					</tr>
 					<tr
 						ng-show="dataset.language.length>1 || (dataset.language.length==1 && dataset.language[0]!='' ) ">
-						<td><span style="font-weight: bold;">Language:</span></td>
+						<td><span style="font-weight: bold;">{{'languageDistro' | translate}}:</span></td>
 						<td>
 							<ul class="list-group list" style="margin: 0px 0px 0px 0px;">
 								<li class='list-group-item'
@@ -300,7 +390,7 @@
 					</tr>
 					<tr
 						ng-show="dataset.provenance.length>1 || (dataset.provenance.length==1 && dataset.provenance[0]!='' )">
-						<td><span style="font-weight: bold;">Provenance:</span></td>
+						<td><span style="font-weight: bold;">{{'provenance'|translate}}:</span></td>
 						<td>
 							<ul class="list-group list" style="margin: 0px 0px 0px 0px;">
 								<li class='list-group-item'
@@ -311,11 +401,11 @@
 					</tr>
 
 					<tr ng-show="dataset.accessRights!=''">
-						<td><span style="font-weight: bold;">Access Rights:</span></td>
+						<td><span style="font-weight: bold;">{{'accessRights'|translate}}:</span></td>
 						<td>{{dataset.accessRights}}</td>
 					</tr>
 					<tr ng-show="dataset.rightsHolder!=undefined && (dataset.rightsHolder.name!='' || dataset.rightsHolder.mbox!='' || dataset.rightsHolder.homepage!='' || dataset.rightsHolder.type!='')">
-						<td><span style="font-weight: bold;">Rights Holder:</span></td>
+						<td><span style="font-weight: bold;">{{'rightsHolder'|translate}}:</span></td>
 						<td> <span ng-show="dataset.rightsHolder.name!=''">{{dataset.rightsHolder.name}} </span><span
 							ng-show="dataset.rightsHolder.mbox!=''">{{dataset.rightsHolder.mbox}}</span>
 							<span ng-show="dataset.rightsHolder.homepage!=''">{{dataset.rightsHolder.homepage}}</span>
@@ -323,7 +413,7 @@
 						</td>
 					</tr>
 					<tr ng-show="dataset.creator!=undefined">
-						<td><span style="font-weight: bold;">Creator:</span></td>
+						<td><span style="font-weight: bold;">{{'creator'|translate}}:</span></td>
 						<td>{{dataset.creator.name}} <span
 							ng-show="dataset.creator.mbox!=''">{{dataset.creator.mbox}}</span>
 							<span ng-show="dataset.creator.homepage!=''">{{dataset.creator.homepage}}</span>
@@ -332,7 +422,7 @@
 					</tr>
 					<tr
 						ng-show="dataset.theme.length>1 || (dataset.theme.length==1 && dataset.theme[0].prefLabel.length!=0 && dataset.theme[0].prefLabel[0]!='')">
-						<td><span style="font-weight: bold;">Theme:</span></td>
+						<td><span style="font-weight: bold;">{{'theme'|translate}}:</span></td>
 						<td>
 							<ul class="list-inline list" style="margin: 0px 0px 0px 0px;" ng-repeat="tmp in dataset.theme track by $index">
 								<li class='list-inline-item'
@@ -343,7 +433,7 @@
 					</tr>
 					<tr
 						ng-show="dataset.subject.length>1 || (dataset.subject.length==1 && dataset.subject[0].prefLabel.length!=0 && dataset.subject[0].prefLabel[0]!='' )">
-						<td><span style="font-weight: bold;">Subject:</span></td>
+						<td><span style="font-weight: bold;">{{'subject'|translate}}:</span></td>
 						<td>
 							<ul class="list-inline list" style="margin: 0px 0px 0px 0px;" ng-repeat="tmp in dataset.subject track by $index">
 								<li class='list-inline-item'
@@ -354,7 +444,7 @@
 					</tr>
 					<tr
 						ng-show="dataset.source.length>1 || (dataset.source.length==1 && dataset.source[0]!='' )">
-						<td><span style="font-weight: bold;">Source:</span></td>
+						<td><span style="font-weight: bold;">{{'source'|translate}}:</span></td>
 						<td>
 							<ul class="list-group list" style="margin: 0px 0px 0px 0px;">
 								<li class='list-group-item'
@@ -366,7 +456,7 @@
 
 					<tr
 						ng-show="dataset.documentation.length>1 || (dataset.documentation.length==1 && dataset.documentation[0]!='' )">
-						<td><span style="font-weight: bold;">Documentation:</span></td>
+						<td><span style="font-weight: bold;">{{'documentation'|translate}}:</span></td>
 						<td>
 							<ul class="list-group list" style="margin: 0px 0px 0px 0px;">
 								<li class='list-group-item'
@@ -376,12 +466,12 @@
 						</td>
 					</tr>
 					<tr ng-show="dataset.identifier!=''">
-						<td><span style="font-weight: bold;">Identifier:</span></td>
+						<td><span style="font-weight: bold;">{{'identifier'|translate}}:</span></td>
 						<td>{{dataset.identifier}}</td>
 					</tr>
 					<tr
 						ng-show="dataset.otherIdentifier.length>1 || (dataset.otherIdentifier.length==1 && dataset.otherIdentifier[0]!='' )">
-						<td><span style="font-weight: bold;">Other Identifier:</span></td>
+						<td><span style="font-weight: bold;">{{'otherIdentifier'|translate}}:</span></td>
 						<td>
 							<ul class="list-group list" style="margin: 0px 0px 0px 0px;">
 								<li class='list-group-item'
@@ -390,13 +480,26 @@
 							</ul>
 						</td>
 					</tr>
+					<tr
+						ng-show="dataset.relatedResource.length>1 || (dataset.relatedResource.length==1 && dataset.relatedResource[0]!='' )">
+						<td><span style="font-weight: bold;">{{'relatedResource'|translate}}:</span></td>
+						<td>
+							<ul class="list-group list" style="margin: 0px 0px 0px 0px;">
+								<li class='list-group-item'
+									ng-repeat="tmp in dataset.relatedResource track by $index" style="padding-left: 0px;">
+										<a href='{{tmp}}' target='_blank'>{{tmp}}</a>
+								</li>
+							</ul>
+
+						</td>
+					</tr>
 					<tr ng-show="dataset.contactPoint.length>1 || 
 					(dataset.contactPoint.length==1 &&
 					 (dataset.contactPoint[0].fn!='' ||
 					 dataset.contactPoint[0].hasEmail!=''
 					 || dataset.contactPoint[0].hasURL!=''
 					 || dataset.contactPoint[0].hasTelephoneValue!='')) ">
-						<td><span style="font-weight: bold;">Contacts:</span></td>
+						<td><span style="font-weight: bold;">{{'contacts'|translate}}:</span></td>
 						<td><md-list class="md-dense" flex style="padding: 0px 0px 0px 0px;"> <md-list-item
 								class="md-2-line"
 								ng-repeat="contact in dataset.contactPoint track by $index"
@@ -414,12 +517,12 @@
 							</md-list-item> </md-list></td>
 					</tr>
 					<tr ng-show="dataset.version!=''">
-						<td><span style="font-weight: bold;">Version:</span></td>
+						<td><span style="font-weight: bold;">{{'version'|translate}}:</span></td>
 						<td>{{dataset.version}}</td>
 					</tr>
 					<tr
 						ng-show="dataset.versionNotes.length>1 || (dataset.versionNotes.length==1 && dataset.versionNotes[0]!='' )">
-						<td><span style="font-weight: bold;">Version Notes:</span></td>
+						<td><span style="font-weight: bold;">{{'versionNotes'|translate}}:</span></td>
 						<td>
 							<ul class="list-group list" style="margin: 0px 0px 0px 0px;">
 								<li class='list-group-item'
@@ -430,7 +533,7 @@
 					</tr>
 					<tr
 						ng-show="dataset.hasVersion.length>1 || (dataset.hasVersion.length==1 && dataset.hasVersion[0]!='' )">
-						<td><span style="font-weight: bold;">Has Version:</span></td>
+						<td><span style="font-weight: bold;">{{'hasVersion'|translate}}:</span></td>
 						<td>
 							<ul class="list-group list" style="margin: 0px 0px 0px 0px;">
 								<li class='list-group-item'
@@ -441,7 +544,7 @@
 					</tr>
 					<tr
 						ng-show="dataset.isVersionOf.length>1 || (dataset.isVersionOf.length==1 && dataset.isVersionOf[0]!='' )">
-						<td><span style="font-weight: bold;">Is Version Of:</span></td>
+						<td><span style="font-weight: bold;">{{'isVersionOf'|translate}}:</span></td>
 						<td>
 							<ul class="list-group list" style="margin: 0px 0px 0px 0px;">
 								<li class='list-group-item'
@@ -452,7 +555,7 @@
 					</tr>
 					<tr 
 					ng-show="dataset.conformsTo.length>1 || (dataset.conformsTo.length==1 && (dataset.conformsTo[0].identifier!='' || dataset.conformsTo[0].title!='' || dataset.conformsTo[0].description!='' || dataset.conformsTo[0].referenceDocumentation!=''))">
-					<td><span style="font-weight: bold;">Conforms To:</span></td>
+					<td><span style="font-weight: bold;">{{'conformsTo'|translate}}:</span></td>
 					<td>
 							<ul class="list-group list" style="margin: 0px 0px 0px 0px;">
 								<li class='list-group-item'
@@ -468,7 +571,7 @@
 					</tr>
 					<tr
 						ng-show="dataset.sample.length>1 || (dataset.sample.length==1 && dataset.sample[0]!='' )">
-						<td><span style="font-weight: bold;">Sample:</span></td>
+						<td><span style="font-weight: bold;">{{'sample'|translate}}:</span></td>
 						<td>
 							<ul class="list-group list" style="margin: 0px 0px 0px 0px;">
 								<li class='list-group-item'
@@ -478,18 +581,16 @@
 						</td>
 					</tr>
 					<tr ng-show="dataset.spatialCoverage!=undefined && (dataset.spatialCoverage.geographicalName!='' || dataset.spatialCoverage.geometry!='')">
-						<td><span style="font-weight: bold;">Spatial Coverage:</span></td>
+						<td><span style="font-weight: bold;">{{'spatialCoverage'|translate}}:</span></td>
 						<td><span
 							ng-show="dataset.spatialCoverage.geographicalName!=''">{{dataset.spatialCoverage.geographicalName}}</span>
 							<span ng-show="dataset.spatialCoverage.geometry!=''"> <br /> {{dataset.spatialCoverage.geometry}}</span></td>
 					</tr>
 					</tbody>
 				</table>
+				</div>
 			</div>
 
 			</md-card-content> </md-card>
 		</div>
 	</div>
-</div>
-
-

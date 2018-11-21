@@ -10,7 +10,7 @@
 
 .form-control {
   background-color: rgba(94, 67, 84, 0);
-  background-image: linear-gradient(#e94f1d, #e94f1d), linear-gradient(#e94f1d, #e94f1d);
+  background-image: linear-gradient(#00b4ff, #00b4ff), linear-gradient(#d2d2d2, #d2d2d2);
   background-position: center bottom, center calc(100% - 1px);
   background-repeat: no-repeat;
   background-size: 0 2px, 100% 1px;
@@ -21,7 +21,7 @@
 }
 .form-control:focus, 
 .form-control.focus {
-  background-image: linear-gradient(#e94f1d, #e94f1d), linear-gradient(#F39200 , #F39200 );
+  background-image: linear-gradient(#00b4ff, #00b4ff), linear-gradient(#d2d2d2, #d2d2d2);
   background-size: 100% 2px, 100% 1px;
   box-shadow: none;
   outline: medium none;
@@ -93,9 +93,9 @@
 
 .dropdown-menu .btn:not(.btn-link):not(.btn-flat), 
 .dropdown-menu .btn-default:not(.btn-link):not(.btn-flat) {
-  background-color: rgba(233, 79, 29, 0);
+/*   background-color: rgba(233, 79, 29, 0); */
   border-radius: 0;
-  color: #fefefe;
+/*   color: #fefefe; */
   margin: 0;
   padding: 10px;
 }
@@ -138,10 +138,10 @@
 }
 
 .modal-content {
-  background-color: #5e4354;
+  background-color: #f1f1f2;
 }
 .modal-content .well {
-  background-color: #5e4354;
+  background-color: #f1f1f2;
   box-shadow: none;
   -webkit-box-shadow: none;
   -moz-box-shadow: none;
@@ -155,19 +155,38 @@
 /* Datepicker */
 
 .datepicker .ng-binding.text-info {
-  color: #e94f1d;
+  color: #31708f;
 }
 
 /*MD-select*/
 md-select.md-default-theme:not([disabled]):focus .md-select-value, md-select:not([disabled]):focus .md-select-value {
-    border-bottom-color: #e94f1d;
+    border-bottom-color: #00b4ff;
     color: rgba(0,0,0,0.87);
 }
 
 md-select-menu.md-default-theme md-content md-option[selected], md-select-menu md-content md-option[selected] {
-    color: #e94f1d;
+    color: #00b4ff;
 }
 
 .md-checkbox-enabled.md-default-theme[selected] .md-icon, .md-checkbox-enabled[selected] .md-icon {
-    background-color: #e94f1d;
+    background-color: #00b4ff;
+}
+
+/*MD-TAB*/
+md-tabs.md-default-theme .md-tab, md-tabs .md-tab {
+    color: #555;
+}
+
+md-tabs.md-default-theme .md-tab.md-active, md-tabs .md-tab.md-active, md-tabs.md-default-theme .md-tab.md-active md-icon, md-tabs .md-tab.md-active md-icon, md-tabs.md-default-theme .md-tab.md-focused, md-tabs .md-tab.md-focused, md-tabs.md-default-theme .md-tab.md-focused md-icon, md-tabs .md-tab.md-focused md-icon {
+    color: #00b4ff;
+}
+
+md-tabs.md-default-theme md-ink-bar, md-tabs md-ink-bar {
+    color: #00b4ff;
+    background: #00b4ff;
+}
+
+/*MD-LIST*/
+md-list-item .md-avatar, md-list-item .md-avatar-icon, md-list-item .md-list-item-inner .md-avatar, md-list-item .md-list-item-inner .md-avatar-icon {
+	border-radius: 0 !important;
 }

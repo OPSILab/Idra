@@ -18,7 +18,7 @@
 <div>
 	<ul class="breadcrumb">
 		<li class="breadcrumb-item"><a href="#metadata">Home</a></li>
-		<li class="breadcrumb-item"><a href="#catalogues">Catalogues</a></li>
+		<li class="breadcrumb-item"><a href="#catalogues">{{'manageData' | translate}}</a></li>
 		<li class="breadcrumb-item active">{{pageTitle}} <span ng-show=""></span></li>
 	</ul>
 	<div class="nodeManage col-md-10 col-md-offset-1">
@@ -31,15 +31,15 @@
 			<form name="upload" class="form form-load-image">
 				<div class="btn-group ">
 					<span
-						class="btn btn-primary btn-xs btn-file btn-material-deep-orange">
-						Browse <input type="file" name="file"
+						class="btn btn-primary btn-xs btn-file ">
+						{{'browse' | translate}} <input type="file" name="file"
 						onchange="angular.element(this).scope().imageUpload(this)"
 						accept=".jpg, .png, .jpeg, .gif, .bmp, .tif, .tiff|images/*">
 					</span>
 					<button ng-disabled="imageRead=='' && node.image.imageData==''
 					" type="button"
-						class="btn btn-primary btn-xs" style="margin: 0px"
-						ng-click="openCropModal()">Crop</button>
+						class="btn btn-default btn-xs" style="margin: 0px"
+						ng-click="openCropModal()">{{'crop' | translate}}</button>
 				</div>
 			</form>
 		</div>
@@ -47,31 +47,31 @@
 			<form class="form-signin" name="userForm">
 				<div class="col-md-12 form-group"
 					ng-class="{ 'has-error': node.nameInvalid || checkNodeName()}">
-					<label for="name">Name:</label> <input type="text" name="name"
+					<label for="name">{{'name' | translate}}:</label> <input type="text" name="name"
 						class="form-control" ng-model="node.name" ng-required />
 					<p class="help-block" ng-if="node.nameInvalid">{{messageName}}</p>
-					<p class="help-block" ng-if="checkNodeName()">Catalogue name exists</p>
+					<p class="help-block" ng-if="checkNodeName()">{{'catalogueNameError' | translate}}</p>
 				</div>
 				<div class="col-md-12 form-group"
 					ng-class="{ 'has-error': node.pubNameInvalid }">
-					<label for="publisherName">Publisher Name:</label> <input
+					<label for="publisherName">{{'Publisher Name' | translate}}:</label> <input
 						type="text" name="publisherName" class="form-control"
 						ng-model="node.publisherName" ng-required />
 					<p class="help-block" ng-if="node.pubNameInvalid">{{messagePublisher}}</p>
 				</div>
 				<div class="col-md-6 form-group">
-						<label for="name">Country:</label>
+						<label for="name">{{'country'| translate}}:</label>
 						<country-select class="form-control" ng-model="node.country"></country-select>
 				</div>
 				<div class="col-md-6 form-group">
-					<label for="host">Category:
+					<label for="host">{{'category' | translate}}:
 					</label> <select
 						class="form-control" ng-model="node.category"
-						ng-options="option.value as option.text for option in ODMSCategories">
+						ng-options="option.value as (option.text | translate) for option in ODMSCategories">
 					</select>
 				</div>
 				<div class="col-md-12 form-group">
-					<label for="description">Description:</label>
+					<label for="description">{{'description' | translate}}:</label>
 					<textarea class="form-control" rows="2" ng-model="node.description"></textarea>
 				</div>
 				
@@ -89,28 +89,27 @@
 						ng-disabled=" mode=='update'" class="form-control"
 						ng-model="node.host" ng-required />
 					<p class="help-block" ng-if="node.hostInvalid">{{messageUrl}}</p>
-					<p class="help-block" ng-if="checkNodeHost() && mode=='create'">Catalogue
-						host exists</p>
+					<p class="help-block" ng-if="checkNodeHost() && mode=='create'">{{'catalogueHostError' | translate}}</p>
 				</div>
 				<div class="col-md-6 form-group">
-					<label for="nodeType">Type:</label> <select class="form-control"
+					<label for="nodeType">{{'type' | translate}}:</label> <select class="form-control"
 						ng-model="node.nodeType" class="form-control"
 						ng-disabled="mode=='update'"
 						ng-options="option for option in types | orderBy:'toString()'" ng-required>
 					</select>
 				</div>
 				<div class="col-md-3 form-group">
-					<label for="host">Active:
+					<label for="host">{{'activeCatalogue' | translate}}:
 					</label> <select
 						class="form-control" ng-model="node.isActive" ng-disabled="mode=='update'"
-						ng-options="option.value as option.text for option in activeMode">
+						ng-options="option.value as (option.text | translate ) for option in activeMode">
 					</select>
 				</div>
 				<div class="col-md-3 form-group">
-					<label for="refreshPeriod">Refresh:</label> <select
+					<label for="refreshPeriod">{{'refresh' | translate}}:</label> <select
 						class="form-control" ng-model="node.refreshPeriod"
 						class="form-control"
-						ng-options="option.value as option.text for option in updatePeriods">
+						ng-options="option.value as (option.text | translate) for option in updatePeriods">
 					</select>
 				</div>
 				
@@ -119,9 +118,9 @@
 <!-- 				<div class="col-md-4"></div> -->
 <!-- 					<div class="col-md-4">	 -->
 					<button type="button"
-						class="btn btn-md btn-primary btn-file btn-material-deep-orange" style="margin: 0px"
+						class="btn btn-md btn-primary btn-file " style="margin: 0px"
 						ng-click="openDumpModal()">
-						<span ng-if="mode=='create'">Add</span> <span ng-if="mode=='update'">Update</span> File
+						<span ng-if="mode=='create'">{{'addFile' | translate}}</span> <span ng-if="mode=='update'">{{'update' | translate}}</span> File
 						</button>
 <!-- 						</div> -->
 				</div>
@@ -130,19 +129,18 @@
 					ng-show="node.nodeType == 'DCATDUMP'">
 					<label for="upload">Dump Url:</label> <input type="text"
 						name="dumpURL" class="form-control" ng-model="node.dumpURL" />
-					<p class="help-block" ng-show="dumpInvalid">Please provide a
-						valid dump url</p>
+					<p class="help-block" ng-show="dumpInvalid">{{'validDumpURLMex' | translate}}</p>
 				</div>
 				<div class="col-md-6 form-group"
 					ng-class="{ 'has-error': dumpInvalid }"
 					ng-show="node.nodeType == 'DCATDUMP'">
-					<label for="upload">Profile:</label> <select
+					<label for="upload">{{'Profile' | translate}}:</label> <select
 						class="form-control" ng-model="node.dcatProfile"
 						ng-options="option.value as option.text for option in dcatProfiles">
 					</select>
 				</div>
 				<div class="col-md-6 form-group" ng-show="node.nodeType =='NATIVE'">
-					<label for="federationLevel">Federation Level:</label> <select
+					<label for="federationLevel">{{'federationLevel' | translate}}:</label> <select
 						class="form-control" ng-model="node.federationLevel"
 						class="form-control" ng-options="option for option in grades"
 						ng-required>
@@ -151,7 +149,7 @@
  				<div class="col-md-12 form-group" ng-if="node.nodeType=='ORION'">
 					<div class="col-md-3" style="padding-left: 0px;">
 							<md-checkbox ng-model="node.additionalConfig.isAuthenticated"> 
-							<label	class="control-label">Authenticated</label></md-checkbox>
+							<label	class="control-label">{{'authenticated' | translate}}</label></md-checkbox>
 						</div>
 					<span ng-show="node.additionalConfig.isAuthenticated">
 						<div class="col-md-12 form-group">
@@ -186,16 +184,16 @@
 				<!-- 			</div> -->
 				<div class="pull-right">
 					<button type="button" class="btn btn-default btn-raised"
-						ng-click="back()">Back</button>
+						ng-click="back()">{{'back' | translate}}</button>
 					<button type="button" class="btn btn-default btn-raised"
-						ng-click="resetNode()">Reset</button>
+						ng-click="resetNode()">{{'reset' | translate}}</button>
 					<button ng-if="mode == 'update' " type="button"
 						class="btn btn-primary btn-raised"
 						ng-click="updateNode($data,node)"
-						ng-disabled="isEqual(node,nodeToUpdate)">Update</button>
+						ng-disabled="isEqual(node,nodeToUpdate)">{{'update' | translate}}</button>
 					<button ng-if="mode == 'create'" ng-disabled='node.nodeType==""' type="button"
 						class="btn btn-primary btn-raised"
-						ng-click="createNode($data,node)">Create</button>
+						ng-click="createNode($data,node)">{{'create' | translate}}</button>
 				</div>
 			</form>
 		</div>
@@ -204,7 +202,7 @@
 <script type="text/ng-template" id="ImageCrop.html">
 <div class="modal-header">
 	<button type="button" class="close" aria-hidden="true" ng-click="cancel()">x</button>
-    <h3 class="modal-title">Image Crop</h3>
+    <h3 class="modal-title">{{'imageCropTitle' | translate}}</h3>
 </div>
 <div class="modal-body row">
 	
@@ -222,8 +220,8 @@
 </div>
 
 <div class="modal-footer">
-    <button class="btn btn-default" type="button" ng-click="cancel()">Cancel</button>
-	<button class="btn btn-primary" type="button" ng-click="ok()">OK</button>
+    <button class="btn btn-default btn-raised" type="button" ng-click="cancel()">{{'cancel' | translate}}</button>
+	<button class="btn btn-primary btn-raised" type="button" ng-click="ok()">{{'ok' | translate}}</button>
 </div>
 </script>
 
@@ -244,13 +242,13 @@
 			onchange="angular.element(this).scope().fileUploadDUMP(this)"
 			accept=".rdf, .xml">
  	</i>
-	<md-tooltip>Upload File</md-tooltip></button>
+	<md-tooltip>{{'uploadFile' | translate}}</md-tooltip></button>
 	
 	<span>
 	<button ng-click="save()" a-disabled="disableSave==true" class="btn btn-xs btn-file"
 		style="background-color: #ebebeb; margin: 0px 0px 0px 0px;"> <i
 		class="mdi-content-save"></i>
-	</button><md-tooltip>Save</md-tooltip>
+	</button><md-tooltip>{{'saveFile'}}</md-tooltip>
 	</span>
 	
 	<span>
@@ -270,7 +268,7 @@
 	<button ng-if="nodeType=='ORION' || nodeType=='SPARQL'" ng-click="addNewDataset(false)" class="btn btn-xs btn-file"
 		style="background-color: #ebebeb; margin: 0px 0px 0px 0px;"> <i
 		class="mdi-content-add"></i>
-	<md-tooltip>Add Empty Dataset</md-tooltip></button>
+	<md-tooltip>{{'addEmptyDataset' | translate}}</md-tooltip></button>
 	
 </div>
 <div style="height: 450px" ng-model="aceDocumentValue"
@@ -290,7 +288,7 @@
 </div>
 
 <div class="modal-footer">
-    <button class="btn btn-default" type="button" ng-click="cancel()">Cancel</button>
-	<button class="btn btn-primary" type="button" ng-click="ok()">OK</button>
+    <button class="btn btn-default" type="button" ng-click="cancel()">{{'cancel' | translate}}</button>
+	<button class="btn btn-primary" type="button" ng-click="ok()">{{'ok' | translate}}</button>
 </div>
 </script>
