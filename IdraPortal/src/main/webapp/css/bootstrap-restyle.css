@@ -8,8 +8,9 @@ html, body{
 	padding: 0;
 	border: 0;
 	font-family: "Roboto", Helvetica, sans-serif;
+/* 	font-family: 'Arial', 'Helvetica', sans-serif; */
 	vertical-align: baseline;
-	line-height: 1.75em;
+ 	line-height: 1.75em; 
 }
 
 body {
@@ -36,7 +37,8 @@ a {
 
 /*No FESTIVAL*/
 #header nav.navbar.navbar-default .navbar-header .navbar-brand {
-  	color: #fefefe;
+/*   	color: #fefefe; */
+  	color: #5b5b5f;
 	display: block;
 	font-size: 24px;
 	font-weight: 900;
@@ -62,7 +64,8 @@ a {
 }*/
 
 #header nav.navbar {
-  	background-color: #4A2E40;
+/*   	background-color: #4A2E40; */
+  	background-color: #f1f1f2;
   	border: 0 none;
   	border-radius: 0;
   
@@ -87,7 +90,8 @@ a {
 }
 
 #header nav.navbar.navbar-default #navbar .navbar-nav li a {
-  color: #fff;
+/*   color: #fff; */
+  color:#8e8e8e;
   font-size: 11.5pt;
   font-style: normal;
   font-weight: 100;
@@ -95,10 +99,12 @@ a {
   padding: 0;
 }
 #header nav.navbar.navbar-default #navbar .navbar-nav li a:hover {
-  color: #e94f1d;
+/*   color: #e94f1d; */
+  color: #48b9c9;
 }
 #header nav.navbar.navbar-default #navbar .navbar-nav li.active > a {
-  color: #e94f1d;
+/*   color: #e94f1d; */
+  color: #48b9c9;
 }
 
 #header nav.navbar.navbar-default #navbar .navbar-form {
@@ -124,7 +130,7 @@ a {
 }
 
 #header nav.navbar.navbar-default #navbar .btn.btn-default {
-  background-color: #e94f1d;
+/*   background-color: #e94f1d; */
   border: 0 none;
   border-radius: 2px;
   box-shadow: none;
@@ -142,14 +148,16 @@ a {
 }
 
 #header nav.navbar.navbar-default #navbar .dropdown-menu {
-  background-color: #4a2e40;
+/*   background-color: #4a2e40; */
+  background-color: #f1f1f2;
   padding: 5px 20px 5px 0;
 }
 
 /* CONTENT */
 
 #content {
-  padding-top: 5.5em;
+  padding-top: 8em;
+  /*padding-top: 5.5em;*/
 }
 
 #content legend {
@@ -161,7 +169,8 @@ a {
 
 #content .row {
 /*   height: 50px; */
-  line-height: 50px;
+/* line-height: 50px; */
+/*   line-height: 20px; */
   margin: 10px 0 10px;
   vertical-align: middle;
 }
@@ -181,7 +190,7 @@ a {
 }
 
 #content .dropdown-menu {
-  background-color: rgba(74, 46, 64, 1);
+  background-color: #f1f1f2;
   border-radius: 2px;
 }
 
@@ -192,10 +201,10 @@ a {
 /* Datepicker */
 
 .datepicker th.text-center.ng-scope {
-  color: #fff;
+/*   color: #fff; */
 }
 .datepicker td em.ng-binding {
-  color: #fff;
+/*   color: #fff; */
   font-weight: bold;
 }
 
@@ -203,16 +212,19 @@ a {
 /* Modale */
 
 .modal .modal-title {
-  border-bottom: 2px solid #fefefe;
+/*   border-bottom: 2px solid #fefefe; */
+  border-bottom: 2px solid #555;
 }
 .modal .modal-dialog {
-  color: #fefefe;
+/*   color: #fefefe; */
+  color: #555;
 }
 .modal label.checklbl {
   margin: 5px 20px;
 }
 .modal .btn.btn-default {
-  color: #fefefe;
+/*   color: #fefefe; */
+  color: #555;
 }
 
 /* Pagination */
@@ -226,12 +238,15 @@ a {
 .pagination > .active > span:hover, 
 .pagination > .active > a:focus, 
 .pagination > .active > span:focus {
-  background-color: #5e4354;
-  border-color: #5e4354;
+/*   background-color: #5e4354; */
+/*   border-color: #5e4354; */
+  background-color: #00b4ff;
+  border-color: #00b4ff;
   color: #fff;
 }
 .pagination > li > a, .pagination > li > span {
-  color: #5e4354;
+  color: #555;
+/*   color: #5e4354; */
 }
 .pagination > li > a:hover, 
 .pagination > li > span:hover, 
@@ -239,7 +254,8 @@ a {
 .pagination > li > span:focus {
   background-color: #eee;
   border-color: #ddd;
-  color: #4A2E40;
+/*   color: #4A2E40; */
+  color: #555;
 }
 
 /* ***** PAGES ***** */
@@ -301,5 +317,14 @@ a {
   vertical-align: middle;
 }
 .nav.nav-tabs li.active a {
-  color: #e94f1d !important;
+/*   color: #e94f1d !important; */
+  color: #48b9c9 !important;
+}
+
+md-checkbox.md-checked.blue .md-icon {
+ background-color: #00b4ff;
+}
+
+.nav-tabs {
+    background: #555;
 }

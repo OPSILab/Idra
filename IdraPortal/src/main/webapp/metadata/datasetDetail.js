@@ -55,7 +55,14 @@ angular.module("IdraPlatform").controller('DatasetDetailCtrl',['$scope','$rootSc
 				allowed=false;
 			break;
 			}
+			
+			if(!allowed){
+				if(parameter.includes("csv")){
+					allowed=true;
+				}
+			}
 		}
+		
 		distribution.dataletShowButtonEnabled=allowed;
 	}
 		
@@ -64,6 +71,7 @@ angular.module("IdraPlatform").controller('DatasetDetailCtrl',['$scope','$rootSc
 		$scope.dataset.licenses = [];
 		var tmpLic=[];
 		for(i=0; i<$scope.dataset.distributions.length; i++){
+			$scope.dataset.distributions[i].lockFile=false;
 			$scope.dataset.distributions[i].collapseDetails=true;
 			if(tmpLic.indexOf($scope.dataset.distributions[i].license.name)<0 && $scope.dataset.distributions[i].license.name!=''){
 				tmpLic.push($scope.dataset.distributions[i].license.name);
@@ -199,10 +207,16 @@ angular.module("IdraPlatform").controller('DatasetDetailCtrl',['$scope','$rootSc
 			default:
 				str='file'
 			}
+			
+			if(str=="file"){
+				if(parameter.includes("csv")){
+					str="csv";
+				}
+			}
 		}else{
 			str='file';
 		}
-
+		
 		return 'images/'+str+'.png';
 
 	};
@@ -282,10 +296,13 @@ angular.module("IdraPlatform").controller('DatasetDetailCtrl',['$scope','$rootSc
 				method: 'GET',
 				url: config.CLIENT_SERVICES_BASE_URL+config.CHECK_DISTRIBUTION_URL+window.encodeURIComponent(distribution.downloadURL)
 		};
-			
+		
+		distribution.lockFile=true;
 		$http(reqCheckDownloadUri).then(function(value){
+			distribution.lockFile=false;
 			$window.open($sce.trustAsResourceUrl(config.DATALET_URL+"?format="+parameter+"&nodeID="+nodeID+"&distributionID="+distribution.id+"&datasetID="+datasetID+"&url="+window.encodeURIComponent(distribution.downloadURL)));
 		},function(value){
+			distribution.lockFile=false;
 			distribution.distributionDonwloadUrlOk = false;
 			dialogs.error("Unable to create Datalet","File with url <br/> "+distribution.downloadURL+" <br/> returned "+value.status+"!");
 		});		
