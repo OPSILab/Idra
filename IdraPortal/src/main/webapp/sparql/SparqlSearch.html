@@ -19,7 +19,7 @@
 
 <ul class="breadcrumb">
   <li class="breadcrumb-item"><a href="#metadata">Home</a></li>
-  <li class="breadcrumb-item active">Sparql Query</li>
+  <li class="breadcrumb-item active">Sparql</li>
 </ul>
 	
 	<div class="panel panel-default" style=" border-right: 0px;  border-left: 0px;">
@@ -40,15 +40,32 @@
 			</div>
 		</section>
 	</div>
-	<div class="row form-inline">
-	     	<label class="control-label" >Output Format</label>
+		
+	<div class="row form-inline" hide-xs visible-gt-xs>
+	     	<label class="control-label" >{{'sparqlOutputFormat' | translate}}</label>
 		    <select name="ordMd" class="form-control" ng-options="option for option in outputType" ng-model="outputMode"></select>
 	</div>
+	
+	<div class="row form-inline" hide-gt-xs visible-xs>
+			<div class="col-xs-6">
+	     	<label class="control-label" >{{'sparqlOutputFormat' | translate}}</label>
+	     	</div>
+	     	<div class="col-xs-6">
+		    <select name="ordMd" class="form-control" ng-options="option for option in outputType" ng-model="outputMode"></select>
+		    </div>
+	</div>
+	
 	<div class="row">
-		<div class="pull-right" >
+		<div class="pull-right" hide-xs visible-gt-xs >
 			<div class="form-inline">
-				<button type="button" class="btn btn-default btn-raised" ng-click="clearArea()">Clear</button>	
-				<button type="button" class="btn btn-primary btn-raised btn-icon" ng-disabled="disabledButton || aceDocumentValue.length==''" ng-click="executeSpaqrl()"><i class="mdi-action-search"></i></i>Search</button> 
+				<button type="button" class="btn btn-default btn-raised" ng-click="clearArea()">{{'sparqlClear' | translate}}</button>	
+				<button type="button" class="btn btn-primary btn-raised btn-icon" ng-disabled="disabledButton || aceDocumentValue.length==''" ng-click="executeSpaqrl()"><i class="mdi-action-search"></i>{{'search' | translate}}</button> 
+			</div>
+		</div>
+		<div class="text-center" hide-gt-xs visible-xs >
+			<div class="form-inline">
+				<button type="button" class="btn btn-default btn-raised" ng-click="clearArea()">{{'sparqlClear' | translate}}</button>	
+				<button type="button" class="btn btn-primary btn-raised btn-icon" ng-disabled="disabledButton || aceDocumentValue.length==''" ng-click="executeSpaqrl()"><i class="mdi-action-search"></i>{{'search' | translate}}</button> 
 			</div>
 		</div>
 	</div>		

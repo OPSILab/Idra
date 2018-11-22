@@ -15,18 +15,5 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<script type="text/ng-template" id="deletecatalogue_dialog.html">
-<div class="modal-header dialog-header-confirm">
-	<button type="button" class="close" ng-click="no()">&times;</button>
-	<h4 class="modal-title">
-		<span class="icon"></span>
-		
-	</h4>
+<div marked src="'about/about_'+activeLanguage+'.md'">
 </div>
-<div class="modal-body" ng-bind-html="msg"></div>
-<div class="modal-footer">
-	<button type="button" class="btn btn-default btn-raised" ng-click="yes()">Delete ALL</button>
-	<button type="button" class="btn btn-default btn-raised" ng-click="keepCatalogue()">Keep Catalogue</button>
-	<button type="button" class="btn btn-primary btn-raised" ng-click="no()">No</button>
-</div>
-</script>
