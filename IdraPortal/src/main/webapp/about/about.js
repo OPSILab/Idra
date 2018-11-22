@@ -15,21 +15,9 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-angular.module("IdraPlatform").controller('CreditsCtrl',['$scope','$window','$location','$anchorScroll',function($scope,$window,$location,$anchorScroll){
-
-	$scope.returnToForm = function(){
-		$window.location.assign('#/metadata');
-	}
-	
-//	$scope.gotoTop = function() {
-//	      // set the location.hash to the id of
-//	      // the element you wish to scroll to.
-//	      $location.hash('topAnchor');
-//
-//	      // call $anchorScroll()
-//	      $anchorScroll();
-//	    };
-//	
-//	$scope.gotoTop();
-	
+angular.module("IdraPlatform").controller('AboutCtrl',['$scope','$translate','$rootScope','$route',function($scope,$translate,$rootScope,$route){
+	$scope.activeLanguage=$translate.use();
+	$rootScope.$on('$translateChangeSuccess', function(event, current, previous) {
+		$route.reload();
+    });
 }]);	

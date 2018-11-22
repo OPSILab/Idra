@@ -15,12 +15,116 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-angular.module("IdraPlatform").controller('CatalogueCtrl',['$scope','$http','config','$rootScope','dialogs','$timeout','$modal','$window','ODMSNodesAPI',function($scope,$http,config,$rootScope,dialogs,$timeout,$modal,$window,ODMSNodesAPI){
+angular.module("IdraPlatform").controller('CatalogueCtrl',['$scope','$http','config','$rootScope','dialogs','$timeout','$modal','$window','ODMSNodesAPI','$translate',function($scope,$http,config,$rootScope,dialogs,$timeout,$modal,$window,ODMSNodesAPI,$translate){
 
 	if($rootScope.mode == undefined || ($rootScope.mode!="create" && $rootScope.nodeToUpdate == undefined)){
 		$window.location.assign('#/catalogues');
 		return;
 	}
+	
+	$scope.pageTitle="";
+	$scope.catalogueUpdated="";
+	$scope.catalogueNameReq="";
+	$scope.catalogueUrlReq="";
+	$scope.catalogueValidUrl="";
+	$scope.catalogueHomepageReq="";
+	$scope.publisherNameReq="";
+	$scope.fileMandatory="";
+	$scope.fileMandatoryMex="";
+	$scope.dumpMandatory="";
+	$scope.dumpMandatoryMex="";
+	$scope.missingConf="";
+	$scope.missingConfMex="";
+	$scope.authenticationFailed="";
+	$scope.authenticationFailedMex="";
+	$scope.registrationFailed="";
+	
+	var getTranlsatedValue = function(){
+		if($rootScope.mode == "create" ){
+			$translate('addCatalogue')
+				.then(function (translatedValue) {
+					$scope.pageTitle = translatedValue;
+			 });
+		}else{
+			$translate('updateCatalogue')
+			.then(function (translatedValue) {
+				$scope.pageTitle = translatedValue;
+		 });
+		}
+		
+		$translate('catalogueUpdated')
+		.then(function (translatedValue) {
+			$scope.catalogueUpdated = translatedValue;
+		});
+		$translate('catalogueNameReq')
+		.then(function (translatedValue) {
+			$scope.catalogueNameReq = translatedValue;
+		});
+		$translate('catalogueUrlReq')
+		.then(function (translatedValue) {
+			$scope.catalogueUrlReq = translatedValue;
+		});
+		$translate('catalogueValidUrl')
+		.then(function (translatedValue) {
+			$scope.catalogueValidUrl = translatedValue;
+		});
+		$translate('catalogueHomepageReq')
+		.then(function (translatedValue) {
+			$scope.catalogueHomepageReq = translatedValue;
+		});
+		$translate('publisherNameReq')
+		.then(function (translatedValue) {
+			$scope.publisherNameReq = translatedValue;
+		});
+		
+		$translate('fileMandatory')
+		.then(function (translatedValue) {
+			$scope.fileMandatory = translatedValue;
+		});
+		$translate('fileMandatoryMex')
+		.then(function (translatedValue) {
+			$scope.fileMandatoryMex = translatedValue;
+		});
+		$translate('dumpMandatory')
+		.then(function (translatedValue) {
+			$scope.dumpMandatory = translatedValue;
+		});
+		$translate('dumpMandatoryMex')
+		.then(function (translatedValue) {
+			$scope.dumpMandatoryMex = translatedValue;
+		});
+		$translate('missingConf')
+		.then(function (translatedValue) {
+			$scope.missingConf = translatedValue;
+		});
+		$translate('missingConfMex')
+		.then(function (translatedValue) {
+			$scope.missingConfMex = translatedValue;
+		});
+		
+		$translate('authenticationFailed')
+		.then(function (translatedValue) {
+			$scope.authenticationFailed = translatedValue;
+		});
+		$translate('authenticationFailedMex')
+		.then(function (translatedValue) {
+			$scope.authenticationFailedMex = translatedValue;
+		});
+		$translate('registrationFailed')
+		.then(function (translatedValue) {
+			$scope.registrationFailed = translatedValue;
+		});
+	}
+	
+	$rootScope.$on('$translateChangeSuccess', function(event, current, previous) {
+		getTranlsatedValue();
+    });
+	
+	getTranlsatedValue();
+	
+	
+	
+	
 	
 	$scope.types=config.NODE_TYPES.split(',');
 	$scope.grades=config.FEDERATION_LEVEL.split(',');
@@ -33,7 +137,7 @@ angular.module("IdraPlatform").controller('CatalogueCtrl',['$scope','$http','con
 	$scope.showMessageUrl = false;
 	$scope.showMessageName = false;
 
-	$scope.pageTitle='';
+	//$scope.pageTitle='';
 		
 	$scope.imageRead="";
 	$scope.dumpInvalid=false;
@@ -188,7 +292,7 @@ angular.module("IdraPlatform").controller('CatalogueCtrl',['$scope','$http','con
 	};
 		
 	if($rootScope.mode == "create" ){
-		$scope.pageTitle='Add Catalogue';
+		//$scope.pageTitle='Add Catalogue';
 
 		$scope.$watch('node.nodeType',function(newVal,old){
 			if(newVal.toLowerCase()=='orion'){
@@ -272,7 +376,7 @@ angular.module("IdraPlatform").controller('CatalogueCtrl',['$scope','$http','con
 	}else{
 		
 		$scope.node = angular.copy($rootScope.nodeToUpdate);
-		$scope.pageTitle='Update Catalogue: '+$scope.node.name;
+		//$scope.pageTitle='Update Catalogue: '+$scope.node.name;
 		$scope.node.nameInvalid=false;
 		$scope.node.pubNameInvalid=false;
 		$scope.node.hostInvalid=false;
@@ -335,13 +439,13 @@ angular.module("IdraPlatform").controller('CatalogueCtrl',['$scope','$http','con
 		
 		if(node.name==''){
 			$scope.node.nameInvalid=true;
-			$scope.messageName="Catalogue name required";
+			$scope.messageName=$scope.catalogueNameReq;
 		} else if (node.publisherName=='') {
 			$scope.node.pubNameInvalid=true;
-			$scope.messagePublisher="Publisher name required";
+			$scope.messagePublisher=$scope.publisherNameReq;
 		}else if(!validateUrl(node.homepage)){
 			$scope.node.homepageInvalid=true;
-			$scope.messageHomepage="Please insert a valid url";
+			$scope.messageHomepage=$scope.catalogueValidUrl;
 		}else{
 			$scope.node.homepageInvalid=false;
 			$scope.node.nameInvalid=false;
@@ -370,7 +474,7 @@ angular.module("IdraPlatform").controller('CatalogueCtrl',['$scope','$http','con
 		fd.append("dump",'');  
 				
 		ODMSNodesAPI.updateODMSNode(node.id,fd).then(function(value){
-				$rootScope.showAlert('success',"Catalogue updated!");
+				$rootScope.showAlert('success',$scope.catalogueUpdated);
 				$timeout(function(){
 					$window.location.assign("#/catalogues");
 				},1000);
@@ -466,10 +570,10 @@ angular.module("IdraPlatform").controller('CatalogueCtrl',['$scope','$http','con
 		
 		if(node.name==''){
 			$scope.node.nameInvalid=true;
-			$scope.messageName="Catalogue name required";
+			$scope.messageName=$scope.catalogueNameReq;
 		} else if (node.publisherName=='') {
 			$scope.node.pubNameInvalid=true;
-			$scope.messagePublisher="Publisher name required";
+			$scope.messagePublisher=$scope.publisherNameReq;
 		}else {
 			$scope.node.nameInvalid=false;
 			$scope.node.pubNameInvalid=false;
@@ -479,7 +583,7 @@ angular.module("IdraPlatform").controller('CatalogueCtrl',['$scope','$http','con
 
 		if(node.host == ''){
 			$scope.node.hostInvalid=true;
-			$scope.messageUrl="Catalogue url required";
+			$scope.messageUrl=$scope.catalogueUrlReq;
 		}else{
 			$scope.node.hostInvalid=false;
 			$scope.messageUrl="";
@@ -487,7 +591,7 @@ angular.module("IdraPlatform").controller('CatalogueCtrl',['$scope','$http','con
 		
 		if(node.homepage == ''){
 			$scope.node.homepageInvalid=true;
-			$scope.messageHomepage="Catalogue homepage required";
+			$scope.messageHomepage=$scope.catalogueHomepageReq;
 		}else{
 			$scope.node.homepageInvalid=false;
 			$scope.messageHomepage="";
@@ -498,7 +602,7 @@ angular.module("IdraPlatform").controller('CatalogueCtrl',['$scope','$http','con
 		if(!validateUrl(node.homepage)){
 			$scope.node.homepageInvalid=true;
 			$scope.showMessageUrl = true;
-			$scope.messageHomepage ="Please insert a valid url";
+			$scope.messageHomepage =$scope.catalogueValidUrl;
 		}
 		
 		if(validateUrl(node.host)){
@@ -545,14 +649,14 @@ angular.module("IdraPlatform").controller('CatalogueCtrl',['$scope','$http','con
 			
 			if(node.nodeType == 'WEB'){
 				if(angular.equals({}, node.sitemap)){
-					dialogs.error("File mandatory","Please upload the sitemap file");
+					dialogs.error($scope.fileMandatory,$scope.fileMandatoryMex);
 					return;
 				}
 			}
 
-			if(node.nodeType == 'ORION'){
+			if(node.nodeType == 'ORION' || node.nodeType == 'SPARQL'){
 				if(angular.equals({}, node.additionalConfig)){
-					dialogs.error("Missing Configuration","Please add Orion configurations!");
+					dialogs.error($scope.missingConf,$scope.missingConfMex);
 					return;
 				}
 			}
@@ -574,7 +678,7 @@ angular.module("IdraPlatform").controller('CatalogueCtrl',['$scope','$http','con
 
 			if(node.nodeType == 'DCATDUMP'){
 				if($scope.dump==null && node.dumpURL=='' && node.dumpString==''){
-					dialogs.error("Dump mandatory","Please upload the dump file or a dump url");
+					dialogs.error($scope.dumpMandatory,$scope.dumpMandatoryMex);
 					return;
 				}else{
 
@@ -612,11 +716,11 @@ angular.module("IdraPlatform").controller('CatalogueCtrl',['$scope','$http','con
 
 					if(value.status==401){
 						$rootScope.token=undefined;
-						dialogs.error("Authentication failed","Please login first");
+						dialogs.error($scope.authenticationFailed,$scope.authenticationFailedMex);
 					}
 
 					if(value.status!=502){
-						dialogs.error("Registration failed",value.data.userMessage);
+						dialogs.error($scope.registrationFailed,value.data.userMessage);
 						$rootScope.getNodes();
 					}
 					
@@ -630,7 +734,7 @@ angular.module("IdraPlatform").controller('CatalogueCtrl',['$scope','$http','con
 		}else{
 			$scope.node.hostInvalid=true;
 			$scope.showMessageUrl = true;
-			$scope.messageUrl ="Please insert a valid url";
+			$scope.messageUrl =$scope.catalogueValidUrl;
 		}
 	}
 
