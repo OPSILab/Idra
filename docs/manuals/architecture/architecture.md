@@ -8,7 +8,7 @@ common and uniform format. In addition, it manages Linked Open Data (LOD),
 importing them into a specific repository in order to perform queries on them.
 The following picture illustrates the architecture of Idra.
 
-<p align="center"><img src="idra_architecture.png" alt="Idra Architecture" width="600"/></p>
+![alt tag](idra_architecture.png "Idra Architecture")
 
 Its main components are:
 
