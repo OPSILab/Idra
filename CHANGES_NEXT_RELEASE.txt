@@ -1,5 +1,1 @@
-- New Feature: Support for StatPortal OpenData (SPOD) portals
-- New Feature: Idra portal - Multilanguage support (EN,IT)
-- New Feature: Idra portal - Updated portal graphics and added "Help" section 
-- New Feature: Idra portal - added mobile support
-- Fix: Docker-compose bug fixed
+
