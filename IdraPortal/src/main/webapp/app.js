@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 (function(){
-	var app = angular.module("IdraPlatform",['ngRoute','ui.bootstrap','ngAnimate','smart-table','xeditable','ui.ace','angularUtils.directives.dirPagination','angularSpinner','dialogs.main','angular-md5','zeroclipboard','ngTagsInput','ngCookies','ngImgCrop','ngAria','ngMaterial','hc.marked','ngFileSaver','countrySelect','uiSwitch','underscore','angular-d3-word-cloud',,'pascalprecht.translate']);
+	var app = angular.module("IdraPlatform",['ngRoute','ui.bootstrap','ngAnimate','smart-table','xeditable','ui.ace','angularUtils.directives.dirPagination','angularSpinner','dialogs.main','angular-md5','zeroclipboard','ngTagsInput','ngCookies','ngImgCrop','ngAria','ngMaterial','hc.marked','ngFileSaver','countrySelect','uiSwitch','underscore','angular-d3-word-cloud',,'pascalprecht.translate','chart.js']);
 	fetchData().then( setTimeout( bootstrapApplication,1500));
 
 	function fetchData() {
@@ -244,6 +244,10 @@
 		when('/credits',{
 			templateUrl:'credits/Credits.html',
 			controller:'CreditsCtrl'
+		}).
+		when('/charts',{
+			templateUrl:'chart/Charts.html',
+			controller:'ChartCtrl'
 		}).
 //		when('/statistics',{
 //		templateUrl:'statistics/Stats.html',

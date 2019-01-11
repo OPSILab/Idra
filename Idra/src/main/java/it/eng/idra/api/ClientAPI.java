@@ -56,6 +56,7 @@ import it.eng.idra.utils.GsonUtilException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.sql.SQLException;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
@@ -100,7 +101,7 @@ import org.apache.solr.client.solrj.SolrServerException;
 @Path("/client")
 public class ClientAPI {
 
-	private static Logger logger = LogManager.getLogger(MetadataCacheManager.class);
+	private static Logger logger = LogManager.getLogger(ClientAPI.class);
 	private static Client client;
 
 	@POST
@@ -1077,7 +1078,7 @@ public class ClientAPI {
 				
 	}
 	
-	 
+	
 	private static Response handleErrorResponse500(Exception e) {
 
 		e.printStackTrace();

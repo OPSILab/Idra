@@ -39,6 +39,7 @@ public class ApplicationConfig extends Application {
 
 		Set<Class<?>> resources = new HashSet<Class<?>>();
 		resources.add(it.eng.idra.api.ClientAPI.class);
+		resources.add(it.eng.idra.api.StatisticsAPI.class);
 		resources.add(it.eng.idra.api.AdministrationAPI.class);
 		resources.add(it.eng.idra.api.FederationAPIMockup.class);
 		resources.add(org.glassfish.jersey.media.multipart.MultiPartFeature.class);
