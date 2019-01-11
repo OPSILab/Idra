@@ -606,6 +606,9 @@ div.m-app-loading p {
 	<script type="text/javascript" src="bower_components/angular-translate-storage-cookie/angular-translate-storage-cookie.min.js"></script>
 	<script type="text/javascript" src="bower_components/angular-translate-loader-static-files/angular-translate-loader-static-files.min.js"></script>
 
+	<script type="text/javascript" src="bower_components/chart.js/dist/Chart.js"></script>
+	<script type="text/javascript" src="bower_components/angular-chart.js/dist/angular-chart.js"></script>
+
 	<script type="text/javascript" src="app.js"></script>
 	<script type="text/javascript" src="catalogues/catalogues.services.js"></script>
 	<script type="text/javascript" src="catalogues/catalogues.js"></script>
@@ -635,6 +638,9 @@ div.m-app-loading p {
 	<script type="text/javascript" src="datalets/dataletAdmin.js"></script>
 	<script type="text/javascript" src="logPage/logging.js"></script>
 	<script type="text/javascript" src="credits/credits.js"></script>
+	
+	<script type="text/javascript" src="chart/statistics.services.js"></script>
+	<script type="text/javascript" src="chart/chart.js"></script>
 
 	<script type="text/javascript"
 		src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>

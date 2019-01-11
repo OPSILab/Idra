@@ -44,7 +44,9 @@
 		"angular-translate": "x",
 		"angular-translate-storage-local": "x",
 		"angular-translate-storage-cookie": "x",
-		"angular-translate-loader-static-files": "x"
+		"angular-translate-loader-static-files": "x",
+		"chart.js":"2.x",
+		"angular-chart.js":"1.1.1"
 	},
 	"resolutions": {
 		"angular": "~1.5.9",
