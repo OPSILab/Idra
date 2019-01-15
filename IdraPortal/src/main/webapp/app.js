@@ -52,6 +52,10 @@
 		if(!config.CLIENT_SERVICES_BASE_URL.startsWith('http')){
 			config.CLIENT_SERVICES_BASE_URL=$location.protocol() + "://" + $location.host() + ":" + $location.port()+(clientURL.startsWith("/")?"":"/")+clientURL;
 		}
+		var statisticsURL = config.STATISTICS_SERVICES_BASE_URL;
+		if(!config.STATISTICS_SERVICES_BASE_URL.startsWith('http')){
+			config.STATISTICS_SERVICES_BASE_URL=$location.protocol() + "://" + $location.host() + ":" + $location.port()+(statisticsURL.startsWith("/")?"":"/")+statisticsURL;
+		}
 	}]);
 
 	app.config(['uiZeroclipConfigProvider', function(uiZeroclipConfigProvider) {
