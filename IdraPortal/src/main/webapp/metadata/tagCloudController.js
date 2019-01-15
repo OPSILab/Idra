@@ -70,7 +70,7 @@
         			}
         		});
 
-        		var end=(tags[0].values.length>50)?50:tags[0].values.length;
+        		var end=(tags[0].values.length>30)?30:tags[0].values.length;
         		for(i=0; i<end; i++){
         			var t=tags[0].values[i];
         			originWords.push({text: t.keyword, count: parseInt(t.facet.substring(t.facet.indexOf("(")+1,t.facet.indexOf(")")))});
@@ -91,7 +91,7 @@
                 var element = $element.find('#wordsCloud');
                 var width = element[0].offsetWidth;
                 
-                var wordResizeParam = 0.15;
+                var wordResizeParam = 0.11;
                 var wordResizeParam_divide = 5;
                 var heigthResize=0.75;
                 var countDivider = 1;
