@@ -1,7 +1,6 @@
 package it.eng.idra.statistics;
 
 import java.time.ZonedDateTime;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -52,11 +51,14 @@ public class PlatformStatisticsManager {
 			searchParameters.put("nodes", cataloguesIDS);
 
 			SearchResult resultForFacets = FederatedSearch.search(searchParameters);
+			SearchResult distributionFormats = FederatedSearch.getFormatStatistics(searchParameters);
+			
 			/*MANAGE FACETS*/
 			FacetsStatistics facetsStats = new FacetsStatistics(
-					resultForFacets.getFacets().stream().
-					filter(x->x.getSearch_parameter().equals("distributionFormats")).
+					distributionFormats.getFacets().stream().
+					filter(x->x.getSearch_parameter().equals("format")).
 					map(x-> x.getValues()).findFirst().get(),
+					
 					resultForFacets.getFacets().stream().
 					filter(x->x.getSearch_parameter().equals("distributionLicenses")).
 					map(x-> x.getValues()).findFirst().get()
