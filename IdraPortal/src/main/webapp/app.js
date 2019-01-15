@@ -245,9 +245,9 @@
 			templateUrl:'credits/Credits.html',
 			controller:'CreditsCtrl'
 		}).
-		when('/charts',{
-			templateUrl:'chart/Charts.html',
-			controller:'ChartCtrl'
+		when('/statistics',{
+			templateUrl:'statistics/Statistics.html',
+			controller:'StatisticsCtrl'
 		}).
 //		when('/statistics',{
 //		templateUrl:'statistics/Stats.html',

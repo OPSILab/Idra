@@ -49,6 +49,17 @@
 	"formats":"Formats",
 	"categories":"Categories",
 	
+	"statisticsPeriod":"Period",
+	"statisticsTop10Catalogues":"Top 10 Federated Catalogues",
+	"statisticsMostActiveCatalogues":"Most Active Catalogues",
+	"statisticsCataloguesTechnologies":"Federated Catalogues Technologies",
+	"statisticsDistributionFormats":"Most Used Distribution Formats",
+	"statisticsDistributionLicenses":"Most Used Distribution Licenses",
+	"Last Week":"Last Week",
+	"Last Month":"Last Month",
+	"Last Year":"Last Year",
+	
+	
 	"Agriculture":"Agriculture",
 	"Economy":"Economy",
 	"Education":"Education",
@@ -132,6 +143,7 @@
 	"lastUpdate":"Last Update",
 	"clearFilters":"Clear Filters",
 	"showDatasets":"Show Datasets",
+	"showStatistics":"Show Statistics",
 	"more":"More",
 	"searchName":"search name",
 	
