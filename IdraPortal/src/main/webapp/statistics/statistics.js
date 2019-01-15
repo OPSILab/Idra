@@ -90,7 +90,6 @@ angular.module("IdraPlatform").controller('StatisticsCtrl',['$scope','Statistics
 	var licensesAll = {labels:[],pie:[],total:0};
 
 	var drawCharts = function(res){
-		console.log("ADASDASDASDASDASDSADSAQWEEQWEQWCZXCCZXCZCZX");
 		$scope.labels =[];
 		$scope.data =[];
 
@@ -132,14 +131,21 @@ angular.module("IdraPlatform").controller('StatisticsCtrl',['$scope','Statistics
 		var othCnt=0;
 		res.facetsStatistics.formatsStatistics.forEach(x=>{	
 			formatsAll.total+=x.cnt;
-			formatsAll.labels.push(x.format);
+			if(x.format=="")
+				formatsAll.labels.push("?");
+			else
+				formatsAll.labels.push(x.format);
 			//formatsAll.barChart[0].push(x.cnt);
 			formatsAll.pie.push(x.cnt);
 
 			//$scope.formats.total+=x.cnt;
 
 			if($scope.formats.labels.length<10){
-				$scope.formats.labels.push(x.format);
+				if(x.format=="")
+					$scope.formats.labels.push("?");
+				else
+					$scope.formats.labels.push(x.format);
+				
 				//$scope.formats.barChart[0].push(x.cnt);
 				$scope.formats.pie.push(x.cnt);
 			}else{
