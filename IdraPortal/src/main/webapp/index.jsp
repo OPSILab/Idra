@@ -304,6 +304,8 @@ div.m-app-loading p {
 								href="#/sparql"><strong>{{'SPARQLSearch' | translate }}</strong></a></li>
 							<li ng-class="{ active: isActive('/viewCatalogues')}"><a
 								href="#/viewCatalogues"><strong>{{'DataSources' | translate }}</strong></a></li>
+							<li ng-class="{ active: isActive('/statistics')}"><a
+								href="#/statistics"><strong>{{'statistics' | translate }}</strong></a></li>
 							<li dropdown><a href class="dropdown-toggle" dropdown-toggle><strong>Help</strong><b
 									class="caret"></b></a>
 								<ul class="dropdown-menu">
@@ -639,8 +641,8 @@ div.m-app-loading p {
 	<script type="text/javascript" src="logPage/logging.js"></script>
 	<script type="text/javascript" src="credits/credits.js"></script>
 	
-	<script type="text/javascript" src="chart/statistics.services.js"></script>
-	<script type="text/javascript" src="chart/chart.js"></script>
+	<script type="text/javascript" src="statistics/statistics.services.js"></script>
+	<script type="text/javascript" src="statistics/statistics.js"></script>
 
 	<script type="text/javascript"
 		src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
