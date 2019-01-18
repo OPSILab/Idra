@@ -34,6 +34,16 @@ angular.module("IdraPlatform").controller('StatisticsCtrl',['$scope','Statistics
 
 	var initialization = true;
 	
+	$scope.selectAllCatalogues = function () {
+		$scope.cataloguesSelect.forEach(x=>{
+				$scope.selectedCatalogues.push(x.id);
+		})
+    };
+    
+    $scope.removeAllCatalogues = function () {
+		$scope.selectedCatalogues=[];
+    };
+	
 	ODMSNodesAPI.clientCataloguesInfoAPI().then(function(response){
 		$scope.cataloguesSelect = response.data;
 		if($routeParams.catalogueID==undefined){
@@ -97,7 +107,7 @@ angular.module("IdraPlatform").controller('StatisticsCtrl',['$scope','Statistics
 		$scope.dataPolar =[];
 
 		$scope.labelsAddUpdate=[];
-		$scope.seriesAddUpdate=["Added Datasets","Updated Datasets"];
+		$scope.seriesAddUpdate=["New Datasets","Updated Datasets"]; //Non vengono tradotti al momento
 		$scope.dataAddUpdate=[[],[]];
 
 		$scope.formats={labels:[],pie:[],total:0};
@@ -111,10 +121,15 @@ angular.module("IdraPlatform").controller('StatisticsCtrl',['$scope','Statistics
 			}
 		});
 
-		res.cataloguesStatistics.technologiesStat.sort((a, b) => (a.type > b.type) - (a.type < b.type)).forEach(x=>{
+		res.cataloguesStatistics.technologiesStat.sort((a, b) => b.count-a.count).forEach(x=>{
 			$scope.labelsPolar.push(x.type);
 			$scope.dataPolar.push(x.count);
 		});
+		
+//		res.cataloguesStatistics.technologiesStat.sort((a, b) => (a.type > b.type) - (a.type < b.type)).forEach(x=>{
+//			$scope.labelsPolar.push(x.type);
+//			$scope.dataPolar.push(x.count);
+//		});
 
 		//Creating the chart
 		res.cataloguesStatistics.datasetUpdatedStat.sort(function(a, b){return (b.added+b.updated)-(a.added+a.updated)}).forEach(x=>{
@@ -235,7 +250,7 @@ angular.module("IdraPlatform").controller('StatisticsCtrl',['$scope','Statistics
 	                            return {
 	                                // Instead of `text: label,`
 	                                // We add the value to the string
-	                                text: (label.length>15)?label.substring(0,15)+"...":label + ' '+Math.floor(((value/$scope.cataloguesSelect.length) * 100)+0.5) +'%',
+	                                text: ((label.length>15)?label.substring(0,20)+"...":label) + ' '+Math.floor(((value/$scope.cataloguesSelect.length) * 100)+0.5) +'%',
 	                                fillStyle: fill,
 	                                strokeStyle: stroke,
 	                                lineWidth: bw,
@@ -295,7 +310,7 @@ angular.module("IdraPlatform").controller('StatisticsCtrl',['$scope','Statistics
 	                            return {
 	                                // Instead of `text: label,`
 	                                // We add the value to the string
-	                                text: (label.length>15)?label.substring(0,15)+"...":label+ ' '+Math.floor(((value/formatsAll.total) * 100)+0.5) +'%',
+	                                text: ((label.length>15)?label.substring(0,20)+"...":label)+ ' '+Math.floor(((value/formatsAll.total) * 100)+0.5) +'%',
 	                                fillStyle: fill,
 	                                strokeStyle: stroke,
 	                                lineWidth: bw,
@@ -353,7 +368,7 @@ angular.module("IdraPlatform").controller('StatisticsCtrl',['$scope','Statistics
 	                            return {
 	                                // Instead of `text: label,`
 	                                // We add the value to the string
-	                                text: (label.length>15)?label.substring(0,15)+"...":label+ ' '+Math.floor(((value/licensesAll.total) * 100)+0.5)+'%',
+	                                text: ((label.length>15)?label.substring(0,20)+"...":label)+ ' '+Math.floor(((value/licensesAll.total) * 100)+0.5)+'%',
 	                                fillStyle: fill,
 	                                strokeStyle: stroke,
 	                                lineWidth: bw,

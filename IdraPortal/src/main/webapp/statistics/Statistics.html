@@ -22,21 +22,26 @@
 
 <div class="row">
 	<div class="col-lg-3 col-md-3 col-xs-6">
+<!--  	<md-input-container>  -->
 		<label class="control-label">{{'DataSources' | translate}}</label>
-		<md-select style="margin-top:0px;margin-bottom:5px;" ng-model="selectedCatalogues" multiple> <md-option
+		<md-select style="margin-top:0px;margin-bottom:5px;" ng-model="selectedCatalogues" multiple>
+			<md-button value="all" ng-click="selectAllCatalogues()">Select all</md-button>
+			<md-button value="all" ng-click="removeAllCatalogues()">Remove all</md-button>
+		 <md-option
 			ng-repeat="option in cataloguesSelect" ng-value="option.id">{{option.name}}</md-option>
 		</md-select>
+<!--  		</md-input-container>  -->
 	</div>
-	<div class="col-lg-3 col-md-3 col-xs-6">
-		<label class="control-label">{{'statisticsPeriod' |
-			translate}}</label>
-		<md-select style="margin-top:0px;margin-bottom:5px;"  ng-model="selectedPeriods"> <md-option
-			ng-repeat="option in periodsSelect" ng-value="option.days">{{option.text
-		| translate}}</md-option> </md-select>
-	</div>
+<!--  	<div class="col-lg-3 col-md-3 col-xs-6">  -->
+<!--  		<label class="control-label">{{'statisticsPeriod' |  -->
+<!--  			translate}}</label>  -->
+<!--  		<md-select style="margin-top:0px;margin-bottom:5px;"  ng-model="selectedPeriods"> <md-option  -->
+<!--  			ng-repeat="option in periodsSelect" ng-value="option.days">{{option.text  -->
+<!--  		| translate}}</md-option> </md-select>  -->
+<!--  	</div>  -->
 </div>
 
-<div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
 	<md-card class="md-whiteframe-3dp"> <md-card-title>
 	<md-card-title-text layout-align="center"> <span
 		class="md-headline">{{'statisticsTop10Catalogues' | translate}}</span>
@@ -44,49 +49,55 @@
 	<canvas id="line" class="chart chart-horizontal-bar" chart-data="data"
 		chart-labels="labels" chart-series="seriesCatalogue"
 		chart-options="{
- 		responsive: true,  
-		title:{  
-				display:false,  
-				text:'Top 10 Federated Catalogues' 
-				}, 
-		scales: { 
-		xAxes: [{	 
-       			scaleLabel: { 
-         			display: true, 
-         			labelString: 'Datasets' 
-       				} 
-     			}]  
-     			} 
-  			}" 
+  		responsive: true,   
+ 		title:{   
+ 				display:false,   
+ 				text:'Top 10 Federated Catalogues'  
+ 				},  
+ 		scales: {  
+ 		xAxes: [{	  
+        			scaleLabel: {  
+          			display: true,  
+          			labelString: 'Datasets'  
+        				}  
+      			}]   
+      			}  
+   			}"  
 		chart-click="onClick">
 </canvas>
 	</md-card-content> </md-card>
 </div>
 
-<div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
 	<md-card class="md-whiteframe-3dp"> <md-card-title>
 	<md-card-title-text layout-align="center"> <span
 		class="md-headline">{{'statisticsMostActiveCatalogues' |
-		translate}} ( {{getTextFromDay(selectedPeriods) | translate}} )</span> </md-card-title-text> </md-card-title> <md-card-content>
+		translate}}</span> </md-card-title-text>
+		<md-select style="margin-top:0px;margin-bottom:5px;"  ng-model="selectedPeriods"> <md-option
+			ng-repeat="option in periodsSelect" ng-value="option.days">{{option.text
+		| translate}}</md-option> </md-select>
+		</md-card-title> 
+		
+		
+		<md-card-content>
 	<canvas id="line" class="chart chart-horizontal-bar"
 		chart-data="dataAddUpdate" chart-labels="labelsAddUpdate"
 		chart-series="seriesAddUpdate"
 		chart-options="{
-  			title:{  
-				display:false,  
-				text:'Most Active Catalogues'  
-			},  
-  			legend:{  
-  				display:true,  
-  				position:'bottom'  
- 				}  
-  			}" 
+   			title:{   
+ 				display:false,   
+ 				text:'Most Active Catalogues'   
+ 			},   
+   			legend:{   
+   				display:true,   
+   				position:'bottom'   
+  				}   
+   			}"  
 		chart-click="onClick">
 </canvas></md-card-content> </md-card>
 </div>
 
-<div class="col-lg-3 col-md-3" hide-sm hide-xs></div>
-<div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
 	<md-card class="md-whiteframe-3dp"> <md-card-title>
 	<md-card-title-text layout-align="center"> <span
 		class="md-headline">{{'statisticsCataloguesTechnologies' |
@@ -95,9 +106,8 @@
 		chart-labels="labelsPolar" chart-options="optionsTechnologies"></canvas> 
 		</md-card-content> </md-card>
 </div>
-<div class="col-lg-3 col-md-3" hide-sm hide-xs></div>
 
-<div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
 	<md-card class="md-whiteframe-3dp"> <md-card-title>
 	<md-card-title-text layout-align="center"> <span
 		class="md-headline">{{'statisticsDistributionFormats' |
@@ -113,7 +123,7 @@
 	</md-card-content> </md-card>
 </div>
 
-<div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
 	<md-card class="md-whiteframe-3dp"> <md-card-title>
 	<md-card-title-text layout-align="center"> <span
 		class="md-headline">{{'statisticsDistributionLicenses' |

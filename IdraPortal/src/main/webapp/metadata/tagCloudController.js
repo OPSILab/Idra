@@ -121,8 +121,8 @@
                         color: self.customColor
                     }
                 })
-                self.width = width;
-                self.height = height;
+                self.width = width*0.9;
+                self.height = height*0.9;
             })
         }
 
