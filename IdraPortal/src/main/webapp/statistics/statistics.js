@@ -235,7 +235,7 @@ angular.module("IdraPlatform").controller('StatisticsCtrl',['$scope','Statistics
 	                            return {
 	                                // Instead of `text: label,`
 	                                // We add the value to the string
-	                                text: (label.length>15)?label.substring(0,15)+"...":label,
+	                                text: (label.length>15)?label.substring(0,15)+"...":label + ' '+Math.floor(((value/$scope.cataloguesSelect.length) * 100)+0.5) +'%',
 	                                fillStyle: fill,
 	                                strokeStyle: stroke,
 	                                lineWidth: bw,
@@ -295,7 +295,7 @@ angular.module("IdraPlatform").controller('StatisticsCtrl',['$scope','Statistics
 	                            return {
 	                                // Instead of `text: label,`
 	                                // We add the value to the string
-	                                text: (label.length>15)?label.substring(0,15)+"...":label,
+	                                text: (label.length>15)?label.substring(0,15)+"...":label+ ' '+Math.floor(((value/formatsAll.total) * 100)+0.5) +'%',
 	                                fillStyle: fill,
 	                                strokeStyle: stroke,
 	                                lineWidth: bw,
@@ -353,7 +353,7 @@ angular.module("IdraPlatform").controller('StatisticsCtrl',['$scope','Statistics
 	                            return {
 	                                // Instead of `text: label,`
 	                                // We add the value to the string
-	                                text: (label.length>15)?label.substring(0,15)+"...":label,
+	                                text: (label.length>15)?label.substring(0,15)+"...":label+ ' '+Math.floor(((value/licensesAll.total) * 100)+0.5)+'%',
 	                                fillStyle: fill,
 	                                strokeStyle: stroke,
 	                                lineWidth: bw,

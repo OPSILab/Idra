@@ -56,6 +56,8 @@
 <link rel="stylesheet" href="bower_components/ng-img-crop/compile/minified/ng-img-crop.css">
 <link rel="stylesheet" href="bower_components/flag-icon-css/css/flag-icon.min.css">
 <link rel="stylesheet" href="bower_components/angular-ui-switch/angular-ui-switch.css">
+<link rel="stylesheet" href="bower_components/pdf.js-viewer/viewer.css">
+<link rel="stylesheet" href="bower_components/leaflet/dist/leaflet.css">
 
 <link rel="stylesheet" href="css/flag.css">
 <link rel="stylesheet" href="css/main.css">
@@ -64,6 +66,11 @@
 
 
 <style type="text/css">
+
+#toolbarViewerRight{
+	visibility: hidden;
+}
+
 .breadcrumb {
 	background-color: #ffffff;
 }
@@ -535,6 +542,87 @@ div.m-app-loading p {
 </div>
 </script>
 
+<!-- PREVIEW TEMPLATES -->
+
+<script type="text/ng-template" id="TablePreview.html">
+<div class="modal-header">
+	<button type="button" class="close" aria-hidden="true" ng-click="cancel()">x</button>
+    <h3 class="modal-title">{{'modalTitlePreview' | translate}}</h3>
+</div>
+<div class="modal-body row">
+	<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="overflow-x: scroll;">
+	<table st-table="dataDisplayed" st-safe-src="data" class="table table-striped">
+						<thead>
+							<tr>
+								<th ng-repeat="header in headers track by $index"><p md-truncate>{{header}}</p></th>
+							</tr>
+			</thead>
+						<tbody>
+							<tr ng-repeat="row in dataDisplayed track by $index">
+								<td ng-repeat="column in row track by $index">
+      								<p md-truncate>{{ column }}</p>
+    							</td>
+							</tr>
+						</tbody>
+					<tfoot>
+				<tr>
+					<td colspan="{{colSpan}}" class="text-center">
+						<div st-pagination="" st-items-by-page="10"
+							st-displayed-pages="3"></div>
+					</td>
+				</tr>
+			</tfoot>
+		</table>
+	</div>
+</div>
+</script>
+
+<script type="text/ng-template" id="DocumentPreview.html">
+<div class="modal-header">
+	<button type="button" class="close" aria-hidden="true" ng-click="cancel()">x</button>
+    <h3 class="modal-title">{{'modalTitlePreview' | translate}}</h3>
+</div>
+<div class="modal-body row">
+	<div style="height: 500px" ng-model="previewDocument"
+	ui-ace="{
+					  		useWrapMode : true, 
+					 		showPrintMargin: false, 
+ 					   		showGutter: true, 
+ 					  		theme:'chrome', 
+ 					  		firstLineNumber: 1, 
+ 					  		onLoad: aceLoaded, 
+ 					  		rendererOptions: { 
+ 					     		 maxLinks: Infinity 
+ 					  		} 
+ 						}">
+	</div>
+</div>
+</script>
+
+<script type="text/ng-template" id="PDFPreview.html">
+<div class="modal-header">
+	<button type="button" class="close" aria-hidden="true" ng-click="cancel()">x</button>
+    <h3 class="modal-title">{{'modalTitlePreview' | translate}}</h3>
+</div>
+<div class="modal-body row">
+	<div style="height:500px">
+		<pdfjs-viewer data="pdf"></pdfjs-viewer>
+	</div>
+</div>
+</script>
+
+<script type="text/ng-template" id="GEOJSONPreview.html">
+<div class="modal-header">
+	<button type="button" class="close" aria-hidden="true" ng-click="cancel()">x</button>
+    <h3 class="modal-title">{{'modalTitlePreview' | translate}}</h3>
+</div>
+<div class="modal-body row">
+	<leaflet style="height:500px; width:100%" center="center" geojson="geojson"></leaflet>
+</div>
+</script>
+
+<!-- END PREVIEW TEMPLATES -->
+
 	<script type="text/javascript" src="bower_components/jquery/jquery.js"></script>
 	<script type="text/javascript"
 		src="bower_components/angular/angular.js"></script>
@@ -610,6 +698,16 @@ div.m-app-loading p {
 
 	<script type="text/javascript" src="bower_components/chart.js/dist/Chart.js"></script>
 	<script type="text/javascript" src="bower_components/angular-chart.js/dist/angular-chart.js"></script>
+	
+	<script type="text/javascript" src="bower_components/papaparse/papaparse.min.js"></script>
+	<script type="text/javascript" src="bower_components/angular-papaparse/dist/js/angular-PapaParse.js"></script>
+	
+	<script  type="text/javascript" src="bower_components/pdf.js-viewer/pdf.js"></script>
+    <script  type="text/javascript" src="bower_components/angular-pdfjs-viewer/dist/angular-pdfjs-viewer.js"></script>
+    
+    <script  type="text/javascript" src="bower_components/leaflet/dist/leaflet.js"></script>
+	<script  type="text/javascript" src="bower_components/angular-leaflet-directive/dist/angular-leaflet-directive.min.js"></script>
+
 
 	<script type="text/javascript" src="app.js"></script>
 	<script type="text/javascript" src="catalogues/catalogues.services.js"></script>
@@ -632,6 +730,9 @@ div.m-app-loading p {
 	<script type="text/javascript" src="metadata/metadata.services.js"></script>
 	<script type="text/javascript" src="metadata/metadata.js"></script>
 	<script type="text/javascript" src="metadata/datasetResults.js"></script>
+	
+	<script type="text/javascript" src="templatePreview/template_preview_ctrls.js"></script>
+	
 	<script type="text/javascript" src="metadata/datasetDetail.js"></script>
 	<script type="text/javascript" src="metadata/datesModIssued.js"></script>
 	<script type="text/javascript" src="metadata/tagCloudController.js"></script>

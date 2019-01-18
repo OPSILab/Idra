@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 (function(){
-	var app = angular.module("IdraPlatform",['ngRoute','ui.bootstrap','ngAnimate','smart-table','xeditable','ui.ace','angularUtils.directives.dirPagination','angularSpinner','dialogs.main','angular-md5','zeroclipboard','ngTagsInput','ngCookies','ngImgCrop','ngAria','ngMaterial','hc.marked','ngFileSaver','countrySelect','uiSwitch','underscore','angular-d3-word-cloud',,'pascalprecht.translate','chart.js']);
+	var app = angular.module("IdraPlatform",['ngRoute','ui.bootstrap','ngAnimate','smart-table','xeditable','ui.ace','angularUtils.directives.dirPagination','angularSpinner','dialogs.main','angular-md5','zeroclipboard','ngTagsInput','ngCookies','ngImgCrop','ngAria','ngMaterial','hc.marked','ngFileSaver','countrySelect','uiSwitch','underscore','angular-d3-word-cloud',,'pascalprecht.translate','chart.js','ngPapaParse','pdfjsViewer','leaflet-directive']);
 	fetchData().then( setTimeout( bootstrapApplication,1500));
 
 	function fetchData() {
@@ -75,7 +75,9 @@
 		  });
 		  		 
 		  $translateProvider.preferredLanguage('en');
-	}]);
+	}]).config(function($logProvider){
+		  $logProvider.debugEnabled(false);
+	});
 	
 	app.directive('aDisabled', function() {
 		return {
