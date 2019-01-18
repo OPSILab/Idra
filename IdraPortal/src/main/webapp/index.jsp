@@ -67,6 +67,15 @@
 
 <style type="text/css">
 
+.select-page {
+  width: 50px;
+  text-align: center;
+}
+.pagination li a input {
+  padding: 0;
+  margin: -5px 0;
+}
+
 #toolbarViewerRight{
 	visibility: hidden;
 }
@@ -547,7 +556,7 @@ div.m-app-loading p {
 <script type="text/ng-template" id="TablePreview.html">
 <div class="modal-header">
 	<button type="button" class="close" aria-hidden="true" ng-click="cancel()">x</button>
-    <h3 class="modal-title">{{'modalTitlePreview' | translate}}</h3>
+    <h3 class="modal-title" md-truncate>{{'modalTitlePreview' | translate}}:&nbsp{{title}}</h3>
 </div>
 <div class="modal-body row">
 	<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="overflow-x: scroll;">
@@ -568,7 +577,7 @@ div.m-app-loading p {
 				<tr>
 					<td colspan="{{colSpan}}" class="text-center">
 						<div st-pagination="" st-items-by-page="10"
-							st-displayed-pages="3"></div>
+							st-template="CustomPagination.html"></div>
 					</td>
 				</tr>
 			</tfoot>
@@ -580,7 +589,7 @@ div.m-app-loading p {
 <script type="text/ng-template" id="DocumentPreview.html">
 <div class="modal-header">
 	<button type="button" class="close" aria-hidden="true" ng-click="cancel()">x</button>
-    <h3 class="modal-title">{{'modalTitlePreview' | translate}}</h3>
+    <h3 class="modal-title" md-truncate>{{'modalTitlePreview' | translate}}:&nbsp{{title}}</h3>
 </div>
 <div class="modal-body row">
 	<div style="height: 500px" ng-model="previewDocument"
@@ -602,7 +611,7 @@ div.m-app-loading p {
 <script type="text/ng-template" id="PDFPreview.html">
 <div class="modal-header">
 	<button type="button" class="close" aria-hidden="true" ng-click="cancel()">x</button>
-    <h3 class="modal-title">{{'modalTitlePreview' | translate}}</h3>
+    <h3 class="modal-title" md-truncate>{{'modalTitlePreview' | translate}}:&nbsp{{title}}</h3>
 </div>
 <div class="modal-body row">
 	<div style="height:500px">
@@ -614,11 +623,23 @@ div.m-app-loading p {
 <script type="text/ng-template" id="GEOJSONPreview.html">
 <div class="modal-header">
 	<button type="button" class="close" aria-hidden="true" ng-click="cancel()">x</button>
-    <h3 class="modal-title">{{'modalTitlePreview' | translate}}</h3>
+    <h3 class="modal-title" md-truncate>{{'modalTitlePreview' | translate}}:&nbsp{{title}}</h3>
 </div>
 <div class="modal-body row">
 	<leaflet style="height:500px; width:100%" center="center" geojson="geojson"></leaflet>
 </div>
+</script>
+
+<script type="text/ng-template" id="CustomPagination.html">
+<nav ng-if="pages.length >= 2">
+  <ul class="pagination">
+    <li><a ng-click="selectPage(1)">First</a>
+    </li><li><a ng-click="selectPage(currentPage - 1)">&lt;</a>
+    </li><li><a><page-select></page-select> of {{numPages}}</a>
+    </li><li><a ng-click="selectPage(currentPage + 1)">&gt;</a>
+    </li><li><a ng-click="selectPage(numPages)">Last</a></li>
+  </ul>
+</nav>
 </script>
 
 <!-- END PREVIEW TEMPLATES -->

@@ -17,7 +17,9 @@
  ******************************************************************************/
 
 angular.module("IdraPlatform")
-.controller('TablePreviewCtrl',function($scope,$modalInstance,headers,data){
+.controller('TablePreviewCtrl',function($scope,$modalInstance,title,headers,data){
+	
+	$scope.title = title;
 	
 	$scope.data = data;
 	$scope.dataDisplayed = [].concat($scope.data);
@@ -28,9 +30,10 @@ angular.module("IdraPlatform")
 		$modalInstance.dismiss('cancel');
 	};
 	
-}).controller('DocumentPreviewCtrl',function($scope,$modalInstance,data,format){
+}).controller('DocumentPreviewCtrl',function($scope,$modalInstance,title,data,format){
 	
-	console.log(data);
+	$scope.title = title;
+	
 	if(format=='json'){
 		$scope.previewDocument =JSON.stringify(data,null,4);
 	}else
@@ -58,15 +61,15 @@ angular.module("IdraPlatform")
 		$modalInstance.dismiss('cancel');
 	};
 	
-}).controller('PDFPreviewCtrl',function($scope,$modalInstance,data){
-	console.log(data);
+}).controller('PDFPreviewCtrl',function($scope,$modalInstance,title,data){
+	$scope.title = title;
 	$scope.pdf = new Uint8Array(data);
 	
 	$scope.cancel = function () {
 		$modalInstance.dismiss('cancel');
 	};
-}).controller('GEOJSONPreviewCtrl',function($scope,$modalInstance,leafletData,leafletBoundsHelpers,geojson){	
-	//$scope.center=getLatLon(geojson.features[0].geometry.coordinates);
+}).controller('GEOJSONPreviewCtrl',function($scope,$modalInstance,leafletData,leafletBoundsHelpers,title,geojson){	
+	$scope.title = title;
 	$scope.center={lat:0,lng:0,zoom:10};
 	
 	$scope.centerJSON = function() {
@@ -107,4 +110,15 @@ angular.module("IdraPlatform")
 		}
 	}
 	
-});		
+})
+.directive('pageSelect', function() {
+    return {
+      restrict: 'E',
+      template: '<input type="text" class="select-page" ng-model="inputPage" ng-change="selectPage(inputPage)">',
+      link: function(scope, element, attrs) {
+        scope.$watch('currentPage', function(c) {
+          scope.inputPage = c;
+        });
+      }
+    }
+  });;		

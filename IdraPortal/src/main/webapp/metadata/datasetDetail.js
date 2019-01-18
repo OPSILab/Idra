@@ -370,7 +370,6 @@ $scope.showPreview = function(datasetID,nodeID,distribution){
 		
 		$http(reqCheckPreview).then(function(value){
 			//console.log(distribution.format);
-			distribution.lockPreview=false;
 			if(distribution.format.toLowerCase().includes('csv')){
 				
 				Papa.parse(config.CLIENT_SERVICES_BASE_URL+'/downloadFromUri?url='+window.encodeURIComponent(distribution.downloadURL),{
@@ -378,18 +377,25 @@ $scope.showPreview = function(datasetID,nodeID,distribution){
 					dynamicTyping: true,
 					encoding:"UTF-8",
 					error:function(){
+						distribution.lockPreview=false;
+						distribution.distributionPreviewOk=false;
 						dialogs.error("Error","Error parsing the CSV file!");
 					},
 					complete:function(res){
 						
 						var headers = res.data.shift();
 						var data = res.data;
+						data.pop();
+						distribution.lockPreview=false;
 						var modalInstance = $modal.open({
 							animation: true,
 							templateUrl: 'TablePreview.html',
 							controller: 'TablePreviewCtrl',
 							size: 'lg',
 							resolve: {
+								title: function(){
+									return distribution.title;
+								},
 								headers: function(){
 									return headers;
 								},
@@ -431,12 +437,17 @@ $scope.showPreview = function(datasetID,nodeID,distribution){
 						|| distribution.format.toLowerCase() == 'rdf' || distribution.format.toLowerCase() == 'rdf+xml' 
 						 || distribution.format.toLowerCase() == 'txt' || distribution.format.toLowerCase() == 'text' || distribution.format.toLowerCase() == 'sparql'){
 						
+						distribution.lockPreview=false;
+						
 						var modalInstance = $modal.open({
 							animation: true,
 							templateUrl: 'DocumentPreview.html',
 							controller: 'DocumentPreviewCtrl',
 							size: 'lg',
 							resolve: {
+								title: function(){
+									return distribution.title;
+								},
 								data: function(){
 									return response.data;
 								},
@@ -451,12 +462,17 @@ $scope.showPreview = function(datasetID,nodeID,distribution){
 						});
 					}else if(distribution.format.toLowerCase()=='pdf' || distribution.format.toLowerCase()=='application/pdf'){
 						
+						distribution.lockPreview=false;
+						
 						var modalInstance = $modal.open({
 							animation: true,
 							templateUrl: 'PDFPreview.html',
 							controller: 'PDFPreviewCtrl',
 							size: 'lg',
 							resolve: {
+								title: function(){
+									return distribution.title;
+								},
 								data: function(){
 									return response.data;
 								}
@@ -468,12 +484,17 @@ $scope.showPreview = function(datasetID,nodeID,distribution){
 						});
 					}else if(distribution.format.toLowerCase()=='geojson'){
 						
+						distribution.lockPreview=false;
+						
 						var modalInstance = $modal.open({
 							animation: true,
 							templateUrl: 'GEOJSONPreview.html',
 							controller: 'GEOJSONPreviewCtrl',
 							size: 'lg',
 							resolve: {
+								title: function(){
+									return distribution.title;
+								},
 								geojson: function(){
 									return response.data;
 								}
@@ -486,6 +507,8 @@ $scope.showPreview = function(datasetID,nodeID,distribution){
 					}
 					
 				},function(error){
+					distribution.lockPreview=false;
+					distribution.distributionPreviewOk=false;
 					dialogs.error("Error",error);
 				})
 			}
