@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-angular.module("IdraPlatform").controller('DatasetDetailCtrl',['$scope','$rootScope','$http','config','$anchorScroll','$location','$modal','$sce','$window','dataletsAPI','dialogs','$routeParams',function($scope,$rootScope,$http,config,$anchorScroll,$location,$modal,$sce,$window,dataletsAPI,dialogs,$routeParams){
+angular.module("IdraPlatform").controller('DatasetDetailCtrl',['$scope','$rootScope','$http','config','$anchorScroll','$location','$modal','$sce','$window','dataletsAPI','dialogs','$routeParams','Papa',function($scope,$rootScope,$http,config,$anchorScroll,$location,$modal,$sce,$window,dataletsAPI,dialogs,$routeParams,Papa){
 	
 	console.log($routeParams.id);
 	//console.log($routeParams.catalogue);
@@ -28,6 +28,7 @@ angular.module("IdraPlatform").controller('DatasetDetailCtrl',['$scope','$rootSc
 		}
 			
 		var allowed=false;
+		var preview=false;
 		var parameter=undefined;
 		
 		if(distribution.format!=undefined && distribution.format!=""){
@@ -55,15 +56,59 @@ angular.module("IdraPlatform").controller('DatasetDetailCtrl',['$scope','$rootSc
 				allowed=false;
 			break;
 			}
+						
+		switch(parameter.toLowerCase()){		
+		case 'xml':
+		case 'rdf':
+		case 'rdf+xml':
+		case 'geojson':
+		//case 'html':
+		case 'text/html':
+		case 'text':
+		case 'txt':
+		case 'text/plain':
+		case 'csv':
+		case 'text/csv':
+		case 'json':
+		case 'fiware-ngsi':
+		case 'text/json':
+		case 'application/json':
+//check
+		case 'sparql':
+		case 'pdf':
+		case 'application/pdf':
+/*		case 'excel':
+		case 'xlsx':
+		case 'xls':
+		case 'doc':
+		case 'docx':
+		case 'ppt':
+		case 'kml':
+		case 'png':
+		case 'jpeg':
+		case 'jpg':*/
+//end check
+			preview=true;
+			break;
+		default:
+			preview=false;
+		}
 			
-			if(!allowed){
-				if(parameter.includes("csv")){
-					allowed=true;
-				}
+		
+		if(!allowed){
+			if(parameter.includes("csv")){
+				allowed=true;
 			}
+		}else if(!preview){
+			if(parameter.includes("csv")){
+				preview=true;
+			}
+		}
+			
 		}
 		
 		distribution.dataletShowButtonEnabled=allowed;
+		distribution.previewShowButtonEnabled=preview;
 	}
 		
 	
@@ -80,6 +125,8 @@ angular.module("IdraPlatform").controller('DatasetDetailCtrl',['$scope','$rootSc
 			
 			$scope.dataset.distributions[i].dataletShowButtonEnabled = false;	
 			$scope.dataset.distributions[i].distributionDonwloadUrlOk = true;
+			$scope.dataset.distributions[i].distributionPreviewOk=true;
+			$scope.dataset.distributions[i].previewShowButtonEnabled = false;
 			
 			checkDistributionFormat($scope.dataset.distributions[i]);
 		}
@@ -144,6 +191,7 @@ angular.module("IdraPlatform").controller('DatasetDetailCtrl',['$scope','$rootSc
 				str='xml';
 				break;
 			case 'rdf':
+			case 'sparql':
 				str='rdf';
 				break;
 			case 'csv':
@@ -308,6 +356,176 @@ angular.module("IdraPlatform").controller('DatasetDetailCtrl',['$scope','$rootSc
 		});		
 	};
 	
+	
+$scope.showPreview = function(datasetID,nodeID,distribution){
+		
+		var parameter=undefined;
+		
+		var reqCheckPreview = {
+				method: 'GET',
+				url: config.CLIENT_SERVICES_BASE_URL+config.CHECK_DISTRIBUTION_PREVIEW+window.encodeURIComponent(distribution.downloadURL)
+		};
+		
+		distribution.lockPreview=true;
+		
+		$http(reqCheckPreview).then(function(value){
+			//console.log(distribution.format);
+			distribution.lockPreview=false;
+			if(distribution.format.toLowerCase().includes('csv')){
+				
+				Papa.parse(config.CLIENT_SERVICES_BASE_URL+'/downloadFromUri?url='+window.encodeURIComponent(distribution.downloadURL),{
+					download:true,
+					dynamicTyping: true,
+					encoding:"UTF-8",
+					error:function(){
+						dialogs.error("Error","Error parsing the CSV file!");
+					},
+					complete:function(res){
+						
+						var headers = res.data.shift();
+						var data = res.data;
+						var modalInstance = $modal.open({
+							animation: true,
+							templateUrl: 'TablePreview.html',
+							controller: 'TablePreviewCtrl',
+							size: 'lg',
+							resolve: {
+								headers: function(){
+									return headers;
+								},
+								data: function(){
+									return data;
+								}
+							}
+						});
+
+						modalInstance.result.then(function () {
+							console.log("MODAL RESULT");
+						});
+						
+						//apriamo una bella modale
+					}})
+			}else{
+				
+				
+				var req ={
+						method:'GET',
+						url: config.CLIENT_SERVICES_BASE_URL+'/downloadFromUri?url='+window.encodeURIComponent(distribution.downloadURL),
+					}
+				
+				if(distribution.format.toLowerCase()!='pdf'){
+					req.transformResponse = function(response){
+						if(distribution.format.toLowerCase()=='json' || distribution.format.toLowerCase() == 'geojson'){
+							return JSON.parse(response);
+						}else{
+							return response;
+						}
+					}
+				}else{
+					req.responseType= 'arraybuffer';
+				}
+								
+				$http(req).then(function(response){
+					//OK
+					if(distribution.format.toLowerCase()=='json' || distribution.format.toLowerCase()=='fiware-ngsi' || distribution.format.toLowerCase() == 'xml' 
+						|| distribution.format.toLowerCase() == 'rdf' || distribution.format.toLowerCase() == 'rdf+xml' 
+						 || distribution.format.toLowerCase() == 'txt' || distribution.format.toLowerCase() == 'text' || distribution.format.toLowerCase() == 'sparql'){
+						
+						var modalInstance = $modal.open({
+							animation: true,
+							templateUrl: 'DocumentPreview.html',
+							controller: 'DocumentPreviewCtrl',
+							size: 'lg',
+							resolve: {
+								data: function(){
+									return response.data;
+								},
+								format: function(){
+									return distribution.format.toLowerCase();
+								}
+							}
+						});
+
+						modalInstance.result.then(function () {
+							console.log("MODAL RESULT");
+						});
+					}else if(distribution.format.toLowerCase()=='pdf' || distribution.format.toLowerCase()=='application/pdf'){
+						
+						var modalInstance = $modal.open({
+							animation: true,
+							templateUrl: 'PDFPreview.html',
+							controller: 'PDFPreviewCtrl',
+							size: 'lg',
+							resolve: {
+								data: function(){
+									return response.data;
+								}
+							}
+						});
+
+						modalInstance.result.then(function () {
+							console.log("MODAL RESULT");
+						});
+					}else if(distribution.format.toLowerCase()=='geojson'){
+						
+						var modalInstance = $modal.open({
+							animation: true,
+							templateUrl: 'GEOJSONPreview.html',
+							controller: 'GEOJSONPreviewCtrl',
+							size: 'lg',
+							resolve: {
+								geojson: function(){
+									return response.data;
+								}
+							}
+						});
+
+						modalInstance.result.then(function () {
+							console.log("MODAL RESULT");
+						});	
+					}
+					
+				},function(error){
+					dialogs.error("Error",error);
+				})
+			}
+			
+			//$window.open($sce.trustAsResourceUrl(config.DATALET_URL+"?format="+parameter+"&nodeID="+nodeID+"&distributionID="+distribution.id+"&datasetID="+datasetID+"&url="+window.encodeURIComponent(distribution.downloadURL)));
+		},function(value){
+			distribution.lockPreview=false;
+			distribution.distributionPreviewOk=false;
+			if(value.status==413){
+				dialogs.error("Unable to show Preview","File with url <br/> "+distribution.downloadURL+" <br/> dimension exceeds the limit for a preview!");
+			}else{
+				dialogs.error("Unable to create Datalet","File with url <br/> "+distribution.downloadURL+" <br/> returned "+value.status+"!");
+			}
+		});		
+	};
+	
+	$scope.showDatalets = function(datasetID,nodeID,distribution){
+		$rootScope.distributionTitle = distribution.title;
+		$rootScope.datasetTitle = $rootScope.datasetDetail.title;
+		$rootScope.dataletDatasetID = datasetID;
+		$rootScope.datalets=[];
+		
+		var req = {
+				method: 'GET',
+				url: config.CLIENT_SERVICES_BASE_URL+"/catalogues/"+nodeID+"/dataset/"+datasetID+"/distribution/"+distribution.id+"/datalets",
+				headers: {
+					'Content-Type': 'application/json'
+				}
+		};
+		
+		dataletsAPI.getDataletsByDistribution(nodeID,datasetID,distribution.id).then(function(value){
+			dataletsAPI.setCurrentDatalets(value.data);
+			$window.location.assign("#/datalets");
+		},function(value){
+			console.log("Error retrieving datalets")
+		});
+
+	}
+	
+	
 	// Cancel interval on page changes
 //	$scope.$on('$destroy', function(){
 //	    if (angular.isDefined(promise)) {
@@ -340,28 +558,5 @@ angular.module("IdraPlatform").controller('DatasetDetailCtrl',['$scope','$rootSc
 //			console.log("Error retrieving dataset")
 //		});
 //	};
-	
-	$scope.showDatalets = function(datasetID,nodeID,distribution){
-		$rootScope.distributionTitle = distribution.title;
-		$rootScope.datasetTitle = $rootScope.datasetDetail.title;
-		$rootScope.dataletDatasetID = datasetID;
-		$rootScope.datalets=[];
-		
-		var req = {
-				method: 'GET',
-				url: config.CLIENT_SERVICES_BASE_URL+"/catalogues/"+nodeID+"/dataset/"+datasetID+"/distribution/"+distribution.id+"/datalets",
-				headers: {
-					'Content-Type': 'application/json'
-				}
-		};
-		
-		dataletsAPI.getDataletsByDistribution(nodeID,datasetID,distribution.id).then(function(value){
-			dataletsAPI.setCurrentDatalets(value.data);
-			$window.location.assign("#/datalets");
-		},function(value){
-			console.log("Error retrieving datalets")
-		});
-
-	}
 	
 }]);

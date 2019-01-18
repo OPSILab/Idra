@@ -80,6 +80,9 @@
 	"distributionDetailCreateDatalet": "Crea una nuova datalet",
 	"distributionDetailUnableDatalet": "Impossibile creare una datalet",
 	"distributionDetailShowDatalet": "Mostra le datalet",
+	"distributionDetailShowPreview": "Mostra Anteprima",
+	"modalTitlePreview": "Anteprima",
+	
 	"accessURL": "URL",
 	"releaseDate": "Data di Rilascio",
 	"updateDate": "Data di Aggiornamento",
