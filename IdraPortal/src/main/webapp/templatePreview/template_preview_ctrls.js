@@ -23,8 +23,10 @@ angular.module("IdraPlatform")
 	
 	$scope.data = data;
 	$scope.dataDisplayed = [].concat($scope.data);
-	$scope.colSpan = $scope.dataDisplayed[0].length;
 	$scope.headers=headers;
+//	$scope.colSpan = ($scope.dataDisplayed==undefined || $scope.dataDisplayed==null || $scope.dataDisplayed[0]==undefined)?0:$scope.dataDisplayed[0].length;
+	$scope.colSpan = $scope.headers.length;
+	
 
 	$scope.cancel = function () {
 		$modalInstance.dismiss('cancel');
@@ -84,6 +86,19 @@ angular.module("IdraPlatform")
     
 	$scope.geojson = { 
 			data:geojson,
+//			filter:function(feature){
+//				console.log(++qwe);
+//				if(feature.hasOwnProperty('geometry')){
+//					var g = feature.geometry;
+//					if(!g.hasOwnProperty('coordinates')){
+//						return false;
+//					}else{
+//						return checkCoordinates(g.coordinates);	
+//					}
+//				}else{
+//					return false;
+//				}
+//			},
 			onEachFeature: function(feature, layer) {
 				var propertiesKey = Object.keys(feature.properties);
 				var str="";
@@ -92,6 +107,9 @@ angular.module("IdraPlatform")
 					if(i!=propertiesKey.length-1){
 						str+="</br>";
 					}
+				}
+				if(propertiesKey.length==0){
+					str+="<span>No info provided</span>"
 				}
                 layer.bindPopup(str);
             }
@@ -102,6 +120,35 @@ angular.module("IdraPlatform")
 		$modalInstance.dismiss('cancel');
 	};
 	
+	function checkCoordinates(tmp){
+			
+		if(Array.isArray(tmp)){
+			
+			if(tmp.length==0) return false;
+			
+			tmp.forEach(f=>{
+				if(Array.isArray(f)){
+					return checkCoordinates(f);
+				}else{
+					try{
+						var x = parseFloat(f);
+//						return !isNaN(x);
+						if(isNaN(x)){
+							return false;
+						}else{
+							return true;
+						}
+					}catch(e){
+						console.log(e);
+						return false;
+					}
+				}
+			})
+		}else{
+			return false;
+		}
+	}
+	
 	function getLatLon(tmp){
 		if(Array.isArray(tmp[0])){
 			return getLatLon(tmp[0]);
@@ -110,7 +157,18 @@ angular.module("IdraPlatform")
 		}
 	}
 	
-})
+}).controller('IdraDialogErrorCTRL',['$scope','$uibModalInstance','data',function($scope,$uibModalInstance,data){
+	//-- Variables -----//
+
+	$scope.header = (angular.isDefined(data.header)) ? data.header : "Unable to Show Preview";
+	$scope.msg = (angular.isDefined(data.msg)) ? data.msg : "";
+	$scope.icon = (angular.isDefined(data.fa) && angular.equals(data.fa,true)) ? 'fa fa-check' : 'glyphicon glyphicon-warning-sign';
+	//-- Methods -----//
+	
+	$scope.close = function(){
+		$uibModalInstance.dismiss(0);
+	}; // end close
+}])
 .directive('pageSelect', function() {
     return {
       restrict: 'E',

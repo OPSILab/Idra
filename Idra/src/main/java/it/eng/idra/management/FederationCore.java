@@ -104,7 +104,7 @@ public class FederationCore {
 
 			MetadataCacheManager.onFinalize();
 			PersistenceManager.jpaFinalize();
-			DBConnectionManager.closeDbConnection();
+//			DBConnectionManager.closeDbConnection();
 
 		} catch (Exception e) {
 			e.printStackTrace();

@@ -53,11 +53,11 @@ import it.eng.idra.utils.CommonUtil;
 import it.eng.idra.utils.GsonUtil;
 import it.eng.idra.utils.GsonUtilException;
 
-import java.io.File;
+import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
-import java.sql.SQLException;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
@@ -92,7 +92,6 @@ import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.StreamingOutput;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.jena.query.QueryParseException;
@@ -101,6 +100,7 @@ import org.json.JSONObject;
 
 import org.apache.logging.log4j.*;
 import org.apache.solr.client.solrj.SolrServerException;
+import org.apache.tika.parser.txt.CharsetDetector;
 
 @Path("/client")
 public class ClientAPI {
@@ -553,38 +553,39 @@ public class ClientAPI {
 	@Path("/downloadFromUri")
 	public Response downloadFromUri(@Context HttpServletRequest httpRequest, @QueryParam("url") String url,
 			@QueryParam("format") String format,@QueryParam("downloadFile") @DefaultValue("true") boolean downloadFile,@QueryParam("isPreview") @DefaultValue("false") boolean isPreview) {
+		
+		logger.info("Download file API: "+downloadFile);
+		String compiledUri = url;
 
+		client = ClientBuilder.newClient();
+
+		
 		try {
-
-			logger.info("Download file API: "+downloadFile);
-			//String compiledUri = java.net.URLDecoder.decode(url, "UTF-8");
-			String compiledUri = url;
-			logger.info("File uri: " + compiledUri);
-			logger.info("File format: " + format);
-			client = ClientBuilder.newClient();
 
 			WebTarget webTarget = client.target(compiledUri);
 			Response request = webTarget.request().get();
+			logger.info("File uri: " + compiledUri);
+			logger.info("File format: " + format);
+			
 			ResponseBuilder responseBuilder = Response.status(request.getStatus());
 			if(downloadFile) {
-				final InputStream responseStream = (InputStream) request.getEntity();
 				
-//				StreamingOutput output = new StreamingOutput() {
-//
-//					@Override
-//					public void write(OutputStream out) throws IOException, WebApplicationException {
-//						int length;
-//						byte[] buffer = new byte[1024];
-//						while ((length = responseStream.read(buffer)) != -1) {
-//							out.write(buffer, 0, length);
-//						}
-//						out.flush();
-//						out.close();
-//						responseStream.close();
-//					}
-//				};
-				
-				responseBuilder.entity(responseStream);
+				if(StringUtils.isNotBlank(format) && format.toLowerCase().contains("csv")) {
+					InputStream stream = new BufferedInputStream((InputStream) request.getEntity());
+					CharsetDetector charDetector = new CharsetDetector();
+					charDetector.setText(stream);
+					responseBuilder.entity(new InputStreamReader(stream,charDetector.detect().getName()));
+				}else {
+					responseBuilder.entity(new StreamingOutput() {
+						@Override
+						public void write(OutputStream output) throws IOException, WebApplicationException {
+							// TODO Auto-generated method stub
+							IOUtils.copy((InputStream) request.getEntity(), output);
+//							output.flush();
+							output.close();
+						}
+					});
+				}
 			}
 			
 			MultivaluedMap<String, Object> headers = request.getHeaders();
@@ -604,6 +605,7 @@ public class ClientAPI {
 							logger.debug("Content-Length");
 							logger.debug(headers.get(k).get(0));
 							dimension = Long.parseLong((String) headers.get(k).get(0));
+							break;
 						}
 						else if(k.toLowerCase().contains("content-range")) {
 							logger.debug("Content-Range");
@@ -611,14 +613,19 @@ public class ClientAPI {
 							logger.debug(headers.get(k).get(0).toString());
 							logger.debug(headers.get(k).get(0).toString().split("/")[1].replaceFirst("]", ""));
 							dimension = Long.parseLong((String) headers.get(k).get(0).toString().split("/")[1].replaceFirst("]", ""));
+							break;
 						}
 
 					}
 					
 					
-					if(dimension==0L || dimension>previewLimit) {
+					if(dimension>previewLimit) {
 						responseBuilder = Response.status(Status.REQUEST_ENTITY_TOO_LARGE);
 					}
+					
+//					if(dimension==0L || dimension>previewLimit) {
+//						responseBuilder = Response.status(Status.REQUEST_ENTITY_TOO_LARGE);
+//					}
 					
 				}catch(NumberFormatException ex) {
 //					System.out.println("Unable to retrieve the dimension of the element");
@@ -639,6 +646,9 @@ public class ClientAPI {
 			e.printStackTrace();
 			return handleErrorResponse500(e);
 
+		}finally {
+//			request.close();
+			client.close();
 		}
 
 	}

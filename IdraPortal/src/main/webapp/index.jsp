@@ -217,6 +217,11 @@ a.disabled {
 [ng\:cloak], [ng-cloak], .ng-cloak {
 	display: none !important;
 }
+
+.dialog-header-idra {
+	background-color: #03a9f4;
+}
+
 </style>
 
 <style type="text/css">
@@ -551,6 +556,20 @@ div.m-app-loading p {
 </div>
 </script>
 
+<script type="text/ng-template" id="idra_error_dialog.html">
+<div class="modal-header dialog-header-idra">
+	<button type="button" class="close" ng-click="close()">&times;</button>
+	<h4 class="modal-title">
+		<span class="{{icon}}"></span>
+		{{header}}
+	</h4>
+</div>
+<div class="modal-body" ng-bind-html="msg"></div>
+<div class="modal-footer">
+	<button type="button" class="btn btn-primary btn-raised" ng-click="close()">CLOSE</button>
+</div>
+</script>
+
 <!-- PREVIEW TEMPLATES -->
 
 <script type="text/ng-template" id="TablePreview.html">
@@ -575,7 +594,7 @@ div.m-app-loading p {
 						</tbody>
 					<tfoot>
 				<tr>
-					<td colspan="{{colSpan}}" class="text-center">
+					<td colspan="{{colSpan}}">
 						<div st-pagination="" st-items-by-page="10"
 							st-template="CustomPagination.html"></div>
 					</td>
@@ -633,11 +652,11 @@ div.m-app-loading p {
 <script type="text/ng-template" id="CustomPagination.html">
 <nav ng-if="pages.length >= 2">
   <ul class="pagination">
-    <li><a ng-click="selectPage(1)">First</a>
+    <li><a ng-click="selectPage(1)">&lt;&lt;</a>
     </li><li><a ng-click="selectPage(currentPage - 1)">&lt;</a>
     </li><li><a><page-select></page-select> of {{numPages}}</a>
     </li><li><a ng-click="selectPage(currentPage + 1)">&gt;</a>
-    </li><li><a ng-click="selectPage(numPages)">Last</a></li>
+    </li><li><a ng-click="selectPage(numPages)">&gt;&gt;</a></li>
   </ul>
 </nav>
 </script>
