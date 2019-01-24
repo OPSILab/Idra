@@ -38,6 +38,7 @@ import org.apache.solr.client.solrj.SolrClient;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.client.solrj.embedded.EmbeddedSolrServer;
+import org.apache.solr.client.solrj.impl.HttpSolrClient;
 import org.apache.solr.client.solrj.response.FacetField;
 import org.apache.solr.client.solrj.response.QueryResponse;
 import org.apache.solr.client.solrj.response.UpdateResponse;
@@ -1142,9 +1143,9 @@ public class MetadataCacheManager {
 		logger.info("SOLR SERVER - init - start");
 		CoreContainer container = new CoreContainer(configPath);
 		container.load();
-		server = new EmbeddedSolrServer(container, "core");
-//		String urlString = "http://localhost:8983/solr/opendatafederation";
-//		server = new HttpSolrClient.Builder(urlString).build();
+//		server = new EmbeddedSolrServer(container, "core");
+		String urlString = "http://localhost:8983/solr/opendatafederation";
+		server = new HttpSolrClient.Builder(urlString).build();
 		logger.info("SOLR SERVER - init - end");
 
 		// ******************************************************/

@@ -33,12 +33,12 @@
 	<listener>
 		<listener-class>it.eng.idra.management.InitServletListener</listener-class>
 	</listener>
-	<listener>
-		<listener-class>it.eng.idra.odfscheduler.CustomQuartzInitializer</listener-class>
-	</listener>
-	<listener>
-		<listener-class>it.eng.idra.odfscheduler.ODFSchedulerListener</listener-class>
-	</listener>
+<!-- 	<listener> -->
+<!-- 		<listener-class>it.eng.idra.odfscheduler.CustomQuartzInitializer</listener-class> -->
+<!-- 	</listener> -->
+<!-- 	<listener> -->
+<!-- 		<listener-class>it.eng.idra.odfscheduler.ODFSchedulerListener</listener-class> -->
+<!-- 	</listener> -->
 	<display-name>Driver API</display-name>
 	<servlet>
 		<servlet-name>Jersey REST Service</servlet-name>
