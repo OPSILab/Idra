@@ -1143,9 +1143,9 @@ public class MetadataCacheManager {
 		logger.info("SOLR SERVER - init - start");
 		CoreContainer container = new CoreContainer(configPath);
 		container.load();
-//		server = new EmbeddedSolrServer(container, "core");
-		String urlString = "http://localhost:8983/solr/opendatafederation";
-		server = new HttpSolrClient.Builder(urlString).build();
+		server = new EmbeddedSolrServer(container, "core");
+//		String urlString = "http://localhost:8983/solr/opendatafederation";
+//		server = new HttpSolrClient.Builder(urlString).build();
 		logger.info("SOLR SERVER - init - end");
 
 		// ******************************************************/
