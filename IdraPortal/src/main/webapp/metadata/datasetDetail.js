@@ -69,6 +69,8 @@ angular.module("IdraPlatform").controller('DatasetDetailCtrl',['$scope','$rootSc
 		case 'fiware-ngsi':
 		case 'text/json':
 		case 'application/json':
+		case 'kml':
+//		case 'gpx':
 //check
 		case 'sparql':
 		case 'pdf':
@@ -487,30 +489,48 @@ $scope.showPreview = function(datasetID,nodeID,distribution){
 						     
 						      delete response;
 					    });
-					}else if(distribution.format.toLowerCase()=='geojson'){
+					}else if(distribution.format.toLowerCase()=='geojson' || distribution.format.toLowerCase()=='kml'){
+						
+						var tmp=response.data;
+						
+						if(distribution.format.toLowerCase()=='kml'){
+							data = toGeoJSON.kml((new DOMParser()).parseFromString(tmp, 'text/xml'));
+						}
+//						else if(distribution.format.toLowerCase()=='gpx'){
+//							data = toGeoJSON.gpx((new DOMParser()).parseFromString(tmp, 'text/xml'));
+//						}
+						else{
+							data = tmp;
+						}
 						
 						distribution.lockPreview=false;
 						
-						console.log(response.data.features.length);
+//						console.log(response.data.features.length);
 						
-						if(response.data.hasOwnProperty('features')){
+						if(data.hasOwnProperty('features')){
 							//Caso featurecollection
-							if(response.data.features.length > 1000){
+							if(data.features.length > 1000){
 								delete response;
+								delete data;
 								dialogs.create('idra_error_dialog.html','IdraDialogErrorCTRL',{'header':"Unable to show Preview",
 									'msg':"Too many features in the geojson!"},{key: false,back: 'static'});
+								distribution.distributionPreviewOk=false;
 								return;
 							}
-						}else if(!response.data.hasOwnProperty('geometry')){
+						}else if(!data.hasOwnProperty('geometry')){
 							//Caso singolaFeatures
 							delete response;
+							delete data;
 							dialogs.create('idra_error_dialog.html','IdraDialogErrorCTRL',{'header':"Unable to show Preview",
 								'msg':"Please check the original file content!"},{key: false,back: 'static'});
+							distribution.distributionPreviewOk=false;
 							return;
 						}else{
 							delete response;
+							delete data;
 							dialogs.create('idra_error_dialog.html','IdraDialogErrorCTRL',{'header':"Unable to show Preview",
 								'msg':"Please check the original file content!"},{key: false,back: 'static'});
+							distribution.distributionPreviewOk=false;
 							return;
 						}
 							
@@ -526,7 +546,7 @@ $scope.showPreview = function(datasetID,nodeID,distribution){
 									return distribution.title;
 								},
 								geojson: function(){
-									return response.data;
+									return data;
 								}
 							}
 						});
@@ -535,6 +555,7 @@ $scope.showPreview = function(datasetID,nodeID,distribution){
 						},function () {
 
 							delete response;
+							delete data;
 						});
 						
 					}

@@ -67,6 +67,10 @@
 
 <style type="text/css">
 
+.modal .form-control {
+    color: rgb(85,85,85);
+}
+
 .select-page {
   width: 50px;
   text-align: center;
@@ -681,7 +685,7 @@ div.m-app-loading p {
 	<script type="text/javascript"
 		src="bower_components/ace-builds/src-noconflict/ace.js"></script>
 	<script type="text/javascript"
-		src="bower_components/angular-ui-ace/ui-ace.js"></script>
+		src="bower_components/angular-ui-ace/src/ui-ace.js"></script>
 	<script type="text/javascript"
 		src="bower_components/angular-bootstrap/ui-bootstrap.js"></script>
 	<script type="text/javascript"
@@ -748,6 +752,7 @@ div.m-app-loading p {
     <script  type="text/javascript" src="bower_components/leaflet/dist/leaflet.js"></script>
 	<script  type="text/javascript" src="bower_components/angular-leaflet-directive/dist/angular-leaflet-directive.min.js"></script>
 
+	<script  type="text/javascript" src="bower_components/togeojson/togeojson.js"></script>
 
 	<script type="text/javascript" src="app.js"></script>
 	<script type="text/javascript" src="catalogues/catalogues.services.js"></script>
