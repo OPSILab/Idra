@@ -7,6 +7,7 @@
 [![](https://nexus.lab.fiware.org/repository/raw/public/badges/chapters/data-publication.svg)](https://www.fiware.org/developers/catalogue/)
 [![License badge](https://img.shields.io/github/license/OPSILab/Idra.svg)](https://opensource.org/licenses/AGPL-3.0)
 [![Docker Pulls](https://img.shields.io/docker/pulls/idraopendata/idra.svg)](https://hub.docker.com/r/idraopendata/idra/)
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Frobcalla%2FIdra.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2Frobcalla%2FIdra?ref=badge_shield)
 [![](https://img.shields.io/badge/tag-fiware-orange.svg?logo=stackoverflow)](http://stackoverflow.com/questions/tagged/fiware)
 <br>
 [![Documentation badge](https://img.shields.io/readthedocs/idra.svg)](https://idra.readthedocs.io/en/latest/)
@@ -109,3 +110,6 @@ PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
 
 You should have received a copy of the GNU Affero General Public License along
 with this program. If not, see <http://www.gnu.org/licenses/>.
+
+
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Frobcalla%2FIdra.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2Frobcalla%2FIdra?ref=badge_large)
