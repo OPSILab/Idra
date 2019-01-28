@@ -17,9 +17,7 @@
  ******************************************************************************/
 angular.module("IdraPlatform").controller('DatasetDetailCtrl',['$scope','$rootScope','$http','config','$anchorScroll','$location','$modal','$sce','$window','dataletsAPI','dialogs','$routeParams','Papa',function($scope,$rootScope,$http,config,$anchorScroll,$location,$modal,$sce,$window,dataletsAPI,dialogs,$routeParams,Papa){
 	
-	console.log($routeParams.id);
-	//console.log($routeParams.catalogue);
-	
+	console.log($routeParams.id);	
 	var checkDistributionFormat = function(distribution){
 		
 		
