@@ -254,42 +254,6 @@ angular.module("IdraPlatform").controller('CatalogueCtrl',['$scope','$http','con
 		});     
 		$scope.addFile();
 	};
-
-	$scope.uploadDataUrl = function(){
-		var url = 'UploadImage';
-		
-		$http.post(url, {
-			headers: {
-				'Content-Type': 'application/json'
-					},
-			data: {
-				"image": $scope.imageRead,
-				"name": $scope.node.name
-			}
-		})
-			.success(function(data, status, headers, config) { 
-				$scope.node.image = data;
-			})
-			.error(function(data, status, headers, config) {
-				console.log('error');
-			})
-	};
-	
-	$scope.addFile = function() {
-		
-		var url = 'UploadImage';
-		var fd = new FormData();   
-		fd.append("file",$scope.file);          
-		$http.post(url, fd,{
-			transformRequest: angular.identity,
-			headers: {'Content-Type': undefined} })
-			.success(function(data, status, headers, config) { 
-				$scope.node.image = data;
-			})
-			.error(function(data, status, headers, config) {
-				console.log('error');
-			})
-	};
 		
 	if($rootScope.mode == "create" ){
 		//$scope.pageTitle='Add Catalogue';
