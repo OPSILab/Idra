@@ -551,7 +551,7 @@ div.m-app-loading p {
 	<script type="text/javascript"
 		src="bower_components/ace-builds/src-noconflict/ace.js"></script>
 	<script type="text/javascript"
-		src="bower_components/angular-ui-ace/ui-ace.js"></script>
+		src="bower_components/angular-ui-ace/src/ui-ace.js"></script>
 	<script type="text/javascript"
 		src="bower_components/angular-bootstrap/ui-bootstrap.js"></script>
 	<script type="text/javascript"
