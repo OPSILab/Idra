@@ -373,8 +373,18 @@ $scope.showPreview = function(datasetID,nodeID,distribution){
 		
 		distribution.lockPreview=true;
 		
+		var parameter='';
+		if(distribution.format!=undefined && distribution.format!=""){
+			parameter=distribution.format.toLowerCase();
+		}else if(distribution.mediaType!=undefined && distribution.mediaType!=""){
+			if(distribution.mediaType.indexOf("/")>0)
+				parameter=distribution.mediaType.split("/")[1].toLowerCase();
+			else
+				parameter=distribution.mediaType.toLowerCase();
+		}
+		
 		$http(reqCheckPreview).then(function(value){
-			if(distribution.format.toLowerCase().includes('csv')){
+			if(parameter.includes('csv')){
 				
 				Papa.parse(config.CLIENT_SERVICES_BASE_URL+'/downloadFromUri?url='+window.encodeURIComponent(distribution.downloadURL)+"&format=csv",{
 					download:true,
@@ -422,9 +432,9 @@ $scope.showPreview = function(datasetID,nodeID,distribution){
 						url: config.CLIENT_SERVICES_BASE_URL+'/downloadFromUri?url='+window.encodeURIComponent(distribution.downloadURL),
 					}
 				
-				if(distribution.format.toLowerCase()!='pdf'){
+				if(parameter!='pdf'){
 					req.transformResponse = function(response){
-						if(distribution.format.toLowerCase()=='json' || distribution.format.toLowerCase() == 'geojson'){
+						if(parameter=='json' || parameter == 'geojson' || parameter=='fiware-ngsi' ){
 							return JSON.parse(response);
 						}else{
 							return response;
@@ -436,9 +446,9 @@ $scope.showPreview = function(datasetID,nodeID,distribution){
 								
 				$http(req).then(function(response){
 					//OK
-					if(distribution.format.toLowerCase()=='json' || distribution.format.toLowerCase()=='fiware-ngsi' || distribution.format.toLowerCase() == 'xml' 
-						|| distribution.format.toLowerCase() == 'rdf' || distribution.format.toLowerCase() == 'rdf+xml' 
-						 || distribution.format.toLowerCase() == 'txt' || distribution.format.toLowerCase() == 'text' || distribution.format.toLowerCase() == 'sparql'){
+					if(parameter=='json' || parameter=='fiware-ngsi' || parameter == 'xml' 
+						|| parameter == 'rdf' || parameter == 'rdf+xml' 
+						 || parameter == 'txt' || parameter == 'text' || parameter == 'sparql'){
 						
 						distribution.lockPreview=false;
 						
@@ -455,7 +465,7 @@ $scope.showPreview = function(datasetID,nodeID,distribution){
 									return response.data;
 								},
 								format: function(){
-									return distribution.format.toLowerCase();
+									return parameter;
 								}
 							}
 						});
@@ -465,7 +475,7 @@ $scope.showPreview = function(datasetID,nodeID,distribution){
 						     
 						      delete response;
 					    });
-					}else if(distribution.format.toLowerCase()=='pdf' || distribution.format.toLowerCase()=='application/pdf'){
+					}else if(parameter=='pdf' || parameter=='application/pdf'){
 						
 						distribution.lockPreview=false;
 						
@@ -489,7 +499,7 @@ $scope.showPreview = function(datasetID,nodeID,distribution){
 						     
 						      delete response;
 					    });
-					}else if(distribution.format.toLowerCase()=='geojson' || distribution.format.toLowerCase()=='kml'){
+					}else if(parameter=='geojson' || parameter=='kml'){
 						
 						var tmp=response.data;
 						
