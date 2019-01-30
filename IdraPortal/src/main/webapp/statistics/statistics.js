@@ -34,7 +34,19 @@ angular.module("IdraPlatform").controller('StatisticsCtrl',['$scope','Statistics
 
 	var initialization = true;
 	
+	$scope.updateSelectedCatalogues =function(){
+	}
+	
+	$scope.getSelectionText = function(){
+		if($scope.selectedCatalogues.length == $scope.cataloguesSelect.length){
+			return "All Selected";
+		}else{
+			return $scope.selectedCatalogues.length+" Selected";
+		}
+	}
+	
 	$scope.selectAllCatalogues = function () {
+		$scope.selectedCatalogues=[];
 		$scope.cataloguesSelect.forEach(x=>{
 				$scope.selectedCatalogues.push(x.id);
 		})

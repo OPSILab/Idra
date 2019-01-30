@@ -649,7 +649,7 @@ div.m-app-loading p {
     <h3 class="modal-title" md-truncate>{{'modalTitlePreview' | translate}}:&nbsp{{title}}</h3>
 </div>
 <div class="modal-body row">
-	<leaflet style="height:500px; width:100%" center="center" geojson="geojson"></leaflet>
+	<leaflet style="height:500px;width:100%" lf-center="center" geojson="geojson" default="default"></leaflet>
 </div>
 </script>
 

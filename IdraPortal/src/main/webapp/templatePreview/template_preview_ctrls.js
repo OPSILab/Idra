@@ -70,20 +70,26 @@ angular.module("IdraPlatform")
 	$scope.cancel = function () {
 		$modalInstance.dismiss('cancel');
 	};
-}).controller('GEOJSONPreviewCtrl',function($scope,$modalInstance,leafletData,leafletBoundsHelpers,title,geojson){	
+}).controller('GEOJSONPreviewCtrl',function($scope,$modalInstance,leafletData,leafletBoundsHelpers,title,geojson,$timeout){	
 	$scope.title = title;
-	$scope.center={lat:0,lng:0,zoom:10};
+	$scope.center={lat:0,lng:0,zoom:0};
 	
-	$scope.centerJSON = function() {
+	$scope.defaults= {
+        scrollWheelZoom: false,
+        maxZoom:10,
+        reset:true
+    }
+	
+	var centerJSON = function() {
 		leafletData.getMap().then(function(map) {
         	leafletData.getGeoJSON().then(function(v){
         		map.fitBounds(v.getBounds());
+        		map.invalidateSize();
+                map._resetView(map.getCenter(), map.getZoom(), true);  
         	})
         });  
     };
 
-    
-    
 	$scope.geojson = { 
 			data:geojson,
 //			filter:function(feature){
@@ -114,7 +120,10 @@ angular.module("IdraPlatform")
                 layer.bindPopup(str);
             }
 		};
-	$scope.centerJSON();
+	
+	$timeout(function(){ 
+		centerJSON();
+		},100);
 
 	$scope.cancel = function () {
 		$modalInstance.dismiss('cancel');

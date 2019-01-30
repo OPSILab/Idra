@@ -22,15 +22,16 @@
 
 <div class="row">
 	<div class="col-lg-3 col-md-3 col-xs-6">
-<!--  	<md-input-container>  -->
+ 	<md-input-container> 
 		<label class="control-label">{{'DataSources' | translate}}</label>
-		<md-select style="margin-top:0px;margin-bottom:5px;" ng-model="selectedCatalogues" multiple>
+<!-- 		<md-select style="margin-top:0px;margin-bottom:5px;" ng-model="selectedCatalogues" md-on-close="updateSelectedCatalogues()" multiple> -->
+		<md-select style="margin-top:0px;margin-bottom:5px;" ng-model="selectedCatalogues" md-selected-text="getSelectionText()" multiple>
 			<md-button value="all" ng-click="selectAllCatalogues()">Select all</md-button>
-			<md-button value="all" ng-click="removeAllCatalogues()">Remove all</md-button>
+<!-- 			<md-button value="all" ng-click="removeAllCatalogues()">Remove all</md-button> -->
 		 <md-option
 			ng-repeat="option in cataloguesSelect" ng-value="option.id">{{option.name}}</md-option>
 		</md-select>
-<!--  		</md-input-container>  -->
+ 		</md-input-container> 
 	</div>
 <!--  	<div class="col-lg-3 col-md-3 col-xs-6">  -->
 <!--  		<label class="control-label">{{'statisticsPeriod' |  -->
