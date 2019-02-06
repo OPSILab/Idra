@@ -1767,7 +1767,7 @@ paths:
     x-summary: Datasets Search 
     x-description: 'It performs the federated search on all the dataset metadata belonging to federated ODMS catalogues. It is possible to specific whether the search is to do live, by directly querying specified catalogues or by performing a query on the local search.'
     post:
-      operationId: searchDataset
+      operationId: searchDatasetNative
       tags:
         - Federation Api
       consumes:
@@ -2694,7 +2694,7 @@ definitions:
     required:
       - id
       - nodeID
-      - accessUrl
+      - accessURL
   DCTStandard:
     title: DCTStandard
     description: ''
@@ -2998,6 +2998,9 @@ definitions:
     description: ''
     type: object
     properties:
+      euroVoc:
+        type: boolean
+        default: false
       sourceLanguage:
         description: ''
         $ref: '#/definitions/EuroVocLanguage'
@@ -3062,7 +3065,7 @@ definitions:
     required:
       - filters
       - live
-      - euroVoc
+      - euroVocFilter
       - sort
       - rows
       - start
