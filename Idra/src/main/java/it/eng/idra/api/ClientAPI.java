@@ -67,6 +67,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
@@ -101,6 +102,8 @@ import org.json.JSONObject;
 import org.apache.logging.log4j.*;
 import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.tika.parser.txt.CharsetDetector;
+import org.glassfish.jersey.client.ClientConfig;
+import org.glassfish.jersey.client.ClientProperties;
 
 @Path("/client")
 public class ClientAPI {
@@ -556,17 +559,13 @@ public class ClientAPI {
 		
 		logger.info("Download file API: "+downloadFile);
 		String compiledUri = url;
-
-		client = ClientBuilder.newClient();
-
-		
+		client = ClientBuilder.newBuilder().connectTimeout(5, TimeUnit.SECONDS).readTimeout(5, TimeUnit.SECONDS).build();
+//		client = ClientBuilder.newClient();
 		try {
-
 			WebTarget webTarget = client.target(compiledUri);
 			Response request = webTarget.request().get();
 			logger.info("File uri: " + compiledUri);
 			logger.info("File format: " + format);
-			
 			ResponseBuilder responseBuilder = Response.status(request.getStatus());
 			if(downloadFile) {
 				
