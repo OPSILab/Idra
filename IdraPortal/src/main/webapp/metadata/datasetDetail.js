@@ -389,6 +389,7 @@ $scope.showPreview = function(datasetID,nodeID,distribution){
 					 header: true,
 					dynamicTyping: true,
 					error:function(){
+						delete value;
 						distribution.lockPreview=false;
 						distribution.distributionPreviewOk=false;
 						dialogs.create('idra_error_dialog.html','IdraDialogErrorCTRL',{'header':"Unable to show Preview",
@@ -419,7 +420,7 @@ $scope.showPreview = function(datasetID,nodeID,distribution){
 						modalInstance.result.then(function () {
 						},function () {
 						     
-						      delete response;
+						      delete value;
 					    });
 					}})
 			}else{
