@@ -24,6 +24,7 @@ public enum IDMProperty {
 	IDM_ADMIN_ROLE_NAME("idm.admin.role.name"),
 	IDM_CLIENT_ID("idm.client.id"),
 	IDM_CLIENT_SECRET("idm.client.secret"),
+	IDM_LOGIN_CALLBACK("idm.login.callback"),
 	IDM_REDIRECT_URI("idm.redirecturi"),
 	IDM_PATH_BASE("idm.path.base"),
 	IDM_PATH_TOKEN("idm.path.token"),
