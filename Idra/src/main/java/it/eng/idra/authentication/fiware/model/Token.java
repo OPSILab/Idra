@@ -17,18 +17,20 @@
  ******************************************************************************/
 package it.eng.idra.authentication.fiware.model;
 
+import java.util.Set;
+
 public class Token {
 	
 	private String access_token;
 	private Integer expires_in;
 	private String token_type;
 	private String state;
-	private String scope;
+	private Set<String> scope;
 	private String refresh_token;
 	
 	
 	public Token(String access_token, String token_type,
-			Integer expires_in, String refresh_token, String scope, String state) {
+			Integer expires_in, String refresh_token, Set<String> scope, String state) {
 		this.access_token = access_token;
 		this.token_type = token_type;
 		this.expires_in = expires_in;
@@ -70,10 +72,10 @@ public class Token {
 	public void setRefresh_token(String refresh_token) {
 		this.refresh_token = refresh_token;
 	}
-	public String getScope() {
+	public Set<String> getScope() {
 		return scope;
 	}
-	public void setScope(String scope) {
+	public void setScope(Set<String> scope) {
 		this.scope = scope;
 	}
 	public String getState() {
