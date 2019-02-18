@@ -365,16 +365,14 @@ div.m-app-loading p {
 							</li>
 						</ul>
 					</div>
-					<form style="display:none" id="loginform" method="GET" ng-if="token==undefined"
-						class="navbar-form"
-						action="<%=PropertyManager.getProperty(IDMProperty.IDM_PROTOCOL) + "://"
-					+ PropertyManager.getProperty(IDMProperty.IDM_HOST) + "/oauth2/authorize"%>">
-						<input type="hidden" name="response_type" value="code" /> <input
-							type="hidden" name="client_id"
-							value="<%=PropertyManager.getProperty(IDMProperty.IDM_CLIENT_ID)%>" />
-						<input type="hidden" id="loginstate" name="state" value="" /> <input
-							type="hidden" name="redirect_uri"
-							value="<%=PropertyManager.getProperty(IDMProperty.IDM_REDIRECT_URI)%>" />
+					<form style="display:none" id="loginform" method="GET" ng-if="token==undefined" class="navbar-form"
+						action="<%=PropertyManager.getProperty(IDMProperty.IDM_PROTOCOL) + "://"+ PropertyManager.getProperty(IDMProperty.IDM_HOST) + "/oauth2/authorize"%>">
+						
+						<input type="hidden" name="response_type" value="code" /> 
+						<input type="hidden" name="client_id" value="<%=PropertyManager.getProperty(IDMProperty.IDM_CLIENT_ID)%>" />
+						<input type="hidden" id="loginstate" name="state" value="" /> 
+						<input type="hidden" name="redirect_uri" value="<%=PropertyManager.getProperty(IDMProperty.IDM_REDIRECT_URI)%>" />
+						
 					</form>
 
 				</div>
@@ -647,31 +645,17 @@ div.m-app-loading p {
 	<script>
 	
 		$(document).ready(function() {
-			console.log("Welcome.");
-			
-<%-- 			var sessiontoken = '<%=request.getSession().getAttribute("loggedin")%>'; --%>
-<%-- 			var sessionrefreshtoken = '<%=request.getSession().getAttribute("refresh_token")%>'; --%>
-<%-- 			var sessionusername = '<%=request.getSession().getAttribute("username")%>'; --%>
-// 			if (sessiontoken != "null")
-// 				document.cookie = "loggedin="+sessiontoken+";path=/";
-// 			if (sessionrefreshtoken != "null")
-// 				document.cookie = "refresh_token="+sessionrefreshtoken+";path=/";
-// 			if (sessionusername != "null")
-// 				document.cookie = "username="+sessionusername+";path=/";
 			
 			// This command is used to initialize some elements and make them work properly
 			$.material.init();
 			
 			var loc = window.document.location;
-<%-- 			var postloginuri = loc.protocol+"//"+loc.host+"/"+loc.pathname.split("/")[1]+"<%=PropertyManager.getProperty("idm.postlogin")%>"; --%>
 			
 			// The URI of the PostLogin must be the RedirectUri, that is the Idra Login service
-			var postloginuri = "<%=PropertyManager.getProperty(IDMProperty.IDM_REDIRECT_URI)%>";
-// 			console.log("postloginuri" + postloginuri);
+			var postloginuri = "<%=PropertyManager.getProperty(IDMProperty.IDM_LOGIN_CALLBACK)%>";
+			
 			$('#loginstate').val(btoa(postloginuri));
 			$('#loginstate').parent().find('button').prop('inactive', false);
-			console.log("$location.path(): "+ window.location.href);
-			console.log((window.location.href).split('http://').pop().split('.').shift())
 		});
 	</script>
 	<!-- END INIT -->
