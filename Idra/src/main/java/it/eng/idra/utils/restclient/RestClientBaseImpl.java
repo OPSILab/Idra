@@ -32,8 +32,11 @@ import it.eng.idra.utils.restclient.builders.HttpGetBuilder;
 import it.eng.idra.utils.restclient.builders.HttpHeadBuilder;
 import it.eng.idra.utils.restclient.builders.HttpPostBuilder;
 import it.eng.idra.utils.restclient.builders.HttpPutBuilder;
+
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.config.CookieSpecs;
+import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.conn.ssl.NoopHostnameVerifier;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
@@ -56,6 +59,7 @@ public abstract class RestClientBaseImpl {
 			SSLConnectionSocketFactory sslsf = new SSLConnectionSocketFactory(sshbuilder.build());
 
 			httpclient = HttpClients.custom()
+				.setDefaultRequestConfig(RequestConfig.custom().setCookieSpec(CookieSpecs.STANDARD).build())
 				.setSSLHostnameVerifier(new NoopHostnameVerifier())
 			    .setSSLSocketFactory(sslsf)
 			    .build();
