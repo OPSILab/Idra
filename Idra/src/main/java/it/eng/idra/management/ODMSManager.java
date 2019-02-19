@@ -88,6 +88,7 @@ public class ODMSManager {
 			ODMSConnectorsList.put(ODMSCatalogueType.SPARQL, "it.eng.idra.connectors.SparqlConnector");
 			ODMSConnectorsList.put(ODMSCatalogueType.SPOD, "it.eng.idra.connectors.SPODConnector");
 			ODMSConnectorsList.put(ODMSCatalogueType.JUNAR, "it.eng.idra.connectors.JunarConnector");
+			ODMSConnectorsList.put(ODMSCatalogueType.OPENDATASOFT, "it.eng.idra.connectors.OpenDataSoftConnector");
 
 		} catch (Exception e) {
 			e.printStackTrace();
