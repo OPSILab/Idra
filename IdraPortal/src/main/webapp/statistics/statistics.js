@@ -82,7 +82,6 @@ angular.module("IdraPlatform").controller('StatisticsCtrl',['$scope','Statistics
 	}
 	
 	$scope.$watch("selectedPeriods",function(newVal,oldVal){
-		console.log("DC")
 		if(newVal != oldVal && !initialization){
 			//console.log(newVal);
 			start = new Date();
@@ -99,10 +98,8 @@ angular.module("IdraPlatform").controller('StatisticsCtrl',['$scope','Statistics
 	});
 
 	$scope.$watch("selectedCatalogues",function(newVal,oldVal){
-		console.log("CD")
 		if(newVal != oldVal && !initialization){
 			StatisticsAPI.getGlobalStatistics(newVal.join(','),start.toISOString(),end.toISOString()).then(function(response){
-				console.log("CD1")
 				drawCharts(response.data);
 			})
 		}		
@@ -169,7 +166,7 @@ angular.module("IdraPlatform").controller('StatisticsCtrl',['$scope','Statistics
 
 			if($scope.formats.labels.length<10){
 				if(x.format=="")
-					$scope.formats.labels.push("?");
+					$scope.formats.labels.push("unknown");
 				else
 					$scope.formats.labels.push(x.format);
 				
@@ -289,7 +286,7 @@ angular.module("IdraPlatform").controller('StatisticsCtrl',['$scope','Statistics
 						});
 						var currentValue = dataset.data[tooltipItem.index];
 						var percentage = Math.floor(((currentValue/total) * 100)+0.5);         
-						return data.labels[tooltipItem.index] + " ( "+currentValue+" ) " + percentage + "%" ;
+						return data.labels[tooltipItem.index] + " ( "+currentValue+" / "+$scope.cataloguesSelect.length+" ) " + percentage + "%" ;
 					}
 				}			    	  
 			}
