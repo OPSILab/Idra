@@ -56,6 +56,8 @@
 <link rel="stylesheet" href="bower_components/ng-img-crop/compile/minified/ng-img-crop.css">
 <link rel="stylesheet" href="bower_components/flag-icon-css/css/flag-icon.min.css">
 <link rel="stylesheet" href="bower_components/angular-ui-switch/angular-ui-switch.css">
+<link rel="stylesheet" href="bower_components/pdf.js-viewer/viewer.css">
+<link rel="stylesheet" href="bower_components/leaflet/dist/leaflet.css">
 
 <link rel="stylesheet" href="css/flag.css">
 <link rel="stylesheet" href="css/main.css">
@@ -64,6 +66,24 @@
 
 
 <style type="text/css">
+
+.modal .form-control {
+    color: rgb(85,85,85);
+}
+
+.select-page {
+  width: 50px;
+  text-align: center;
+}
+.pagination li a input {
+  padding: 0;
+  margin: -5px 0;
+}
+
+#toolbarViewerRight{
+	visibility: hidden;
+}
+
 .breadcrumb {
 	background-color: #ffffff;
 }
@@ -201,6 +221,11 @@ a.disabled {
 [ng\:cloak], [ng-cloak], .ng-cloak {
 	display: none !important;
 }
+
+.dialog-header-idra {
+	background-color: #03a9f4;
+}
+
 </style>
 
 <style type="text/css">
@@ -304,6 +329,8 @@ div.m-app-loading p {
 								href="#/sparql"><strong>{{'SPARQLSearch' | translate }}</strong></a></li>
 							<li ng-class="{ active: isActive('/viewCatalogues')}"><a
 								href="#/viewCatalogues"><strong>{{'DataSources' | translate }}</strong></a></li>
+							<li ng-class="{ active: isActive('/statistics')}"><a
+								href="#/statistics"><strong>{{'statistics' | translate }}</strong></a></li>
 							<li dropdown><a href class="dropdown-toggle" dropdown-toggle><strong>Help</strong><b
 									class="caret"></b></a>
 								<ul class="dropdown-menu">
@@ -533,6 +560,113 @@ div.m-app-loading p {
 </div>
 </script>
 
+<script type="text/ng-template" id="idra_error_dialog.html">
+<div class="modal-header dialog-header-idra">
+	<button type="button" class="close" ng-click="close()">&times;</button>
+	<h4 class="modal-title">
+		<span class="{{icon}}"></span>
+		{{header}}
+	</h4>
+</div>
+<div class="modal-body" ng-bind-html="msg"></div>
+<div class="modal-footer">
+	<button type="button" class="btn btn-primary btn-raised" ng-click="close()">CLOSE</button>
+</div>
+</script>
+
+<!-- PREVIEW TEMPLATES -->
+
+<script type="text/ng-template" id="TablePreview.html">
+<div class="modal-header">
+	<button type="button" class="close" aria-hidden="true" ng-click="cancel()">x</button>
+    <h3 class="modal-title" md-truncate>{{'modalTitlePreview' | translate}}:&nbsp{{title}}</h3>
+</div>
+<div class="modal-body row">
+	<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="overflow-x: scroll;">
+	<table st-table="dataDisplayed" st-safe-src="data" class="table table-striped">
+						<thead>
+							<tr>
+								<th ng-repeat="header in headers track by $index"><p md-truncate>{{header}}</p></th>
+							</tr>
+			</thead>
+						<tbody>
+							<tr ng-repeat="row in dataDisplayed track by $index">
+								<td ng-repeat="column in row track by $index">
+      								<p md-truncate>{{ column }}</p>
+    							</td>
+							</tr>
+						</tbody>
+					<tfoot>
+				<tr>
+					<td colspan="{{colSpan}}">
+						<div st-pagination="" st-items-by-page="10"
+							st-template="CustomPagination.html"></div>
+					</td>
+				</tr>
+			</tfoot>
+		</table>
+	</div>
+</div>
+</script>
+
+<script type="text/ng-template" id="DocumentPreview.html">
+<div class="modal-header">
+	<button type="button" class="close" aria-hidden="true" ng-click="cancel()">x</button>
+    <h3 class="modal-title" md-truncate>{{'modalTitlePreview' | translate}}:&nbsp{{title}}</h3>
+</div>
+<div class="modal-body row">
+	<div style="height: 500px" ng-model="previewDocument"
+	ui-ace="{
+					  		useWrapMode : true, 
+					 		showPrintMargin: false, 
+ 					   		showGutter: true, 
+ 					  		theme:'chrome', 
+ 					  		firstLineNumber: 1, 
+ 					  		onLoad: aceLoaded, 
+ 					  		rendererOptions: { 
+ 					     		 maxLinks: Infinity 
+ 					  		} 
+ 						}">
+	</div>
+</div>
+</script>
+
+<script type="text/ng-template" id="PDFPreview.html">
+<div class="modal-header">
+	<button type="button" class="close" aria-hidden="true" ng-click="cancel()">x</button>
+    <h3 class="modal-title" md-truncate>{{'modalTitlePreview' | translate}}:&nbsp{{title}}</h3>
+</div>
+<div class="modal-body row">
+	<div style="height:500px">
+		<pdfjs-viewer data="pdf"></pdfjs-viewer>
+	</div>
+</div>
+</script>
+
+<script type="text/ng-template" id="GEOJSONPreview.html">
+<div class="modal-header">
+	<button type="button" class="close" aria-hidden="true" ng-click="cancel()">x</button>
+    <h3 class="modal-title" md-truncate>{{'modalTitlePreview' | translate}}:&nbsp{{title}}</h3>
+</div>
+<div class="modal-body row">
+	<leaflet style="height:500px;width:100%" lf-center="center" geojson="geojson" default="default"></leaflet>
+</div>
+</script>
+
+<script type="text/ng-template" id="CustomPagination.html">
+<nav ng-if="pages.length >= 2">
+  <ul class="pagination">
+    <li><a ng-click="selectPage(1)">&lt;&lt;</a>
+    </li><li><a ng-click="selectPage(currentPage - 1)">&lt;</a>
+    </li><li><a><page-select></page-select> of {{numPages}}</a>
+    </li><li><a ng-click="selectPage(currentPage + 1)">&gt;</a>
+    </li><li><a ng-click="selectPage(numPages)">&gt;&gt;</a></li>
+  </ul>
+</nav>
+</script>
+
+<!-- END PREVIEW TEMPLATES -->
+
 	<script type="text/javascript" src="bower_components/jquery/jquery.js"></script>
 	<script type="text/javascript"
 		src="bower_components/angular/angular.js"></script>
@@ -606,6 +740,20 @@ div.m-app-loading p {
 	<script type="text/javascript" src="bower_components/angular-translate-storage-cookie/angular-translate-storage-cookie.min.js"></script>
 	<script type="text/javascript" src="bower_components/angular-translate-loader-static-files/angular-translate-loader-static-files.min.js"></script>
 
+	<script type="text/javascript" src="bower_components/chart.js/dist/Chart.js"></script>
+	<script type="text/javascript" src="bower_components/angular-chart.js/dist/angular-chart.js"></script>
+	
+	<script type="text/javascript" src="bower_components/papaparse/papaparse.min.js"></script>
+	<script type="text/javascript" src="bower_components/angular-papaparse/dist/js/angular-PapaParse.js"></script>
+	
+	<script  type="text/javascript" src="bower_components/pdf.js-viewer/pdf.js"></script>
+    <script  type="text/javascript" src="bower_components/angular-pdfjs-viewer/dist/angular-pdfjs-viewer.js"></script>
+    
+    <script  type="text/javascript" src="bower_components/leaflet/dist/leaflet.js"></script>
+	<script  type="text/javascript" src="bower_components/angular-leaflet-directive/dist/angular-leaflet-directive.min.js"></script>
+
+	<script  type="text/javascript" src="bower_components/togeojson/togeojson.js"></script>
+
 	<script type="text/javascript" src="app.js"></script>
 	<script type="text/javascript" src="catalogues/catalogues.services.js"></script>
 	<script type="text/javascript" src="catalogues/catalogues.js"></script>
@@ -627,6 +775,9 @@ div.m-app-loading p {
 	<script type="text/javascript" src="metadata/metadata.services.js"></script>
 	<script type="text/javascript" src="metadata/metadata.js"></script>
 	<script type="text/javascript" src="metadata/datasetResults.js"></script>
+	
+	<script type="text/javascript" src="templatePreview/template_preview_ctrls.js"></script>
+	
 	<script type="text/javascript" src="metadata/datasetDetail.js"></script>
 	<script type="text/javascript" src="metadata/datesModIssued.js"></script>
 	<script type="text/javascript" src="metadata/tagCloudController.js"></script>
@@ -635,6 +786,9 @@ div.m-app-loading p {
 	<script type="text/javascript" src="datalets/dataletAdmin.js"></script>
 	<script type="text/javascript" src="logPage/logging.js"></script>
 	<script type="text/javascript" src="credits/credits.js"></script>
+	
+	<script type="text/javascript" src="statistics/statistics.services.js"></script>
+	<script type="text/javascript" src="statistics/statistics.js"></script>
 
 	<script type="text/javascript"
 		src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>

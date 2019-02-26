@@ -1,1 +1,3 @@
-
+v1.3.0
+- Added Distribution Preview for CSV, JSON, PDF, XML, GEOJSON and KML files
+- Added Statistics section about catatalogues, distribution formats and licenses     

@@ -1,0 +1,141 @@
+<!--
+  Idra - Open Data Federation Platform
+   Copyright (C) 2018 Engineering Ingegneria Informatica S.p.A.
+   
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  at your option) any later version.
+   
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU Affero General Public License for more details.
+   
+  You should have received a copy of the GNU Affero General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+<ul class="breadcrumb">
+	<li class="breadcrumb-item"><a href="#metadata">Home</a></li>
+	<li class="breadcrumb-item active">{{'statistics' | translate}}</li>
+</ul>
+
+<div class="row">
+	<div class="col-lg-3 col-md-3 col-xs-6">
+ 	<md-input-container> 
+		<label class="control-label">{{'DataSources' | translate}}</label>
+<!-- 		<md-select style="margin-top:0px;margin-bottom:5px;" ng-model="selectedCatalogues" md-on-close="updateSelectedCatalogues()" multiple> -->
+		<md-select style="margin-top:0px;margin-bottom:5px;" ng-model="selectedCatalogues" md-selected-text="getSelectionText()" multiple>
+			<md-button value="all" ng-click="selectAllCatalogues()">Select all</md-button>
+<!-- 			<md-button value="all" ng-click="removeAllCatalogues()">Remove all</md-button> -->
+		 <md-option
+			ng-repeat="option in cataloguesSelect" ng-value="option.id">{{option.name}}</md-option>
+		</md-select>
+ 		</md-input-container> 
+	</div>
+<!--  	<div class="col-lg-3 col-md-3 col-xs-6">  -->
+<!--  		<label class="control-label">{{'statisticsPeriod' |  -->
+<!--  			translate}}</label>  -->
+<!--  		<md-select style="margin-top:0px;margin-bottom:5px;"  ng-model="selectedPeriods"> <md-option  -->
+<!--  			ng-repeat="option in periodsSelect" ng-value="option.days">{{option.text  -->
+<!--  		| translate}}</md-option> </md-select>  -->
+<!--  	</div>  -->
+</div>
+
+<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+	<md-card class="md-whiteframe-3dp"> <md-card-title>
+	<md-card-title-text layout-align="center"> <span
+		class="md-headline">{{'statisticsTop10Catalogues' | translate}}</span>
+	</md-card-title-text> </md-card-title> <md-card-content>
+	<canvas id="line" class="chart chart-horizontal-bar" chart-data="data"
+		chart-labels="labels" chart-series="seriesCatalogue"
+		chart-options="{
+  		responsive: true,   
+ 		title:{   
+ 				display:false,   
+ 				text:'Top 10 Federated Catalogues'  
+ 				},  
+ 		scales: {  
+ 		xAxes: [{	  
+        			scaleLabel: {  
+          			display: true,  
+          			labelString: 'Datasets'  
+        				}  
+      			}]   
+      			}  
+   			}"  
+		chart-click="onClick">
+</canvas>
+	</md-card-content> </md-card>
+</div>
+
+<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+	<md-card class="md-whiteframe-3dp"> <md-card-title>
+	<md-card-title-text layout-align="center"> <span
+		class="md-headline">{{'statisticsMostActiveCatalogues' |
+		translate}}</span> </md-card-title-text>
+		<md-select style="margin-top:0px;margin-bottom:5px;"  ng-model="selectedPeriods"> <md-option
+			ng-repeat="option in periodsSelect" ng-value="option.days">{{option.text
+		| translate}}</md-option> </md-select>
+		</md-card-title> 
+		
+		
+		<md-card-content>
+	<canvas id="line" class="chart chart-horizontal-bar"
+		chart-data="dataAddUpdate" chart-labels="labelsAddUpdate"
+		chart-series="seriesAddUpdate"
+		chart-options="{
+   			title:{   
+ 				display:false,   
+ 				text:'Most Active Catalogues'   
+ 			},   
+   			legend:{   
+   				display:true,   
+   				position:'bottom'   
+  				}   
+   			}"  
+		chart-click="onClick">
+</canvas></md-card-content> </md-card>
+</div>
+
+<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+	<md-card class="md-whiteframe-3dp"> <md-card-title>
+	<md-card-title-text layout-align="center"> <span
+		class="md-headline">{{'statisticsCataloguesTechnologies' |
+		translate}}</span> </md-card-title-text> </md-card-title> <md-card-content>
+	<canvas id="pie" class="chart chart-pie" chart-data="dataPolar"
+		chart-labels="labelsPolar" chart-options="optionsTechnologies"></canvas> 
+		</md-card-content> </md-card>
+</div>
+
+<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+	<md-card class="md-whiteframe-3dp"> <md-card-title>
+	<md-card-title-text layout-align="center"> <span
+		class="md-headline">{{'statisticsDistributionFormats' |
+		translate}} <a href="javascript:void(0)"
+		ng-click="showTop10('format')" class="btn-flat btn-xs pull-right"
+		ng-show="showBackFormat"><i class="mdi-navigation-arrow-back"></i>
+			<md-tooltip>Top 10</md-tooltip></a>
+	</span> </md-card-title-text> </md-card-title> <md-card-content> 
+	<canvas id="format1" class="chart chart-doughnut"
+		chart-data="formats.pie" chart-labels="formats.labels"
+		chart-options="optionsFormats" chart-click="onClickFormat">
+</canvas>
+	</md-card-content> </md-card>
+</div>
+
+<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+	<md-card class="md-whiteframe-3dp"> <md-card-title>
+	<md-card-title-text layout-align="center"> <span
+		class="md-headline">{{'statisticsDistributionLicenses' |
+		translate}} <a href="javascript:void(0)"
+		ng-click="showTop10('license')" class="btn-flat btn-xs pull-right"
+		ng-show="showBackLicense"><i class="mdi-navigation-arrow-back"></i>
+			<md-tooltip>Top 10</md-tooltip></a>
+	</span> </md-card-title-text> </md-card-title> <md-card-content>
+	<canvas id="licenses1" class="chart chart-doughnut"
+		chart-data="licenses.pie" chart-labels="licenses.labels"
+		chart-options="optionsLicenses" chart-click="onClickLicense">
+</canvas>
+	</md-card-content> </md-card> 
+</div>

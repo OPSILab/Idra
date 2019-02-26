@@ -80,10 +80,11 @@ public class DCATDumpConnector implements IODMSConnector {
 				break;
 			}
 			
-		} else
+		} else {
 			// If no profile was provided, instantiate a base DCATAP Deserializer and set the profile
 			node.setDCATProfile(DCATAPProfile.DCATAP);
 			deserializer = new DCATAPDeserializer();
+		}
 
 	}
 

@@ -247,14 +247,7 @@ angular.module("IdraPlatform").controller('CatalogueCtrl',['$scope','$http','con
 				$scope.imageRead = croppedImage;
 			});
 	    }
-	    
-	$scope.attachedFile = function(element) {
-		$scope.$apply(function($scope) {
-			$scope.file = element.files[0];   
-		});     
-		$scope.addFile();
-	};
-		
+
 	if($rootScope.mode == "create" ){
 		//$scope.pageTitle='Add Catalogue';
 
