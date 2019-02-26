@@ -185,12 +185,12 @@ public class JunarConnector implements IODMSConnector {
 		description = dataset.optString("description");
 
 		try {
-			issued = CommonUtil.fromMillisToUtcDate(dataset.optLong("created_at"));
+			issued = CommonUtil.fixBadUTCDate(CommonUtil.fromMillisToUtcDate(dataset.optLong("created_at")));
 		} catch (IllegalArgumentException skip) {
 		}
 
 		try {
-			modified = CommonUtil.fromMillisToUtcDate(dataset.optLong("modified_at"));
+			modified = CommonUtil.fixBadUTCDate(CommonUtil.fromMillisToUtcDate(dataset.optLong("modified_at")));
 		} catch (IllegalArgumentException skip) {
 		}
 
@@ -370,17 +370,15 @@ public class JunarConnector implements IODMSConnector {
 		oldDate.setLenient(false);
 		GregorianCalendar newDate = new GregorianCalendar(TimeZone.getTimeZone("UTC"));
 		oldDate.setLenient(false);
-		SimpleDateFormat socrataDateF = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
-
-		SimpleDateFormat DCATDateF = new SimpleDateFormat("EEE MMM dd HH:mm:ss zzz yyyy", Locale.US);
+		SimpleDateFormat ISO = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
 
 		int exception = 0;
 		for (DCATDataset d : intersection) {
 			try {
 				int oldIndex = oldDatasets.indexOf(d);
 				int newIndex = newDatasets.indexOf(d);
-				oldDate.setTime(DCATDateF.parse(oldDatasets.get(oldIndex).getUpdateDate().getValue()));
-				newDate.setTime(socrataDateF.parse(newDatasets.get(newIndex).getUpdateDate().getValue()));
+				oldDate.setTime(ISO.parse(oldDatasets.get(oldIndex).getUpdateDate().getValue()));
+				newDate.setTime(ISO.parse(newDatasets.get(newIndex).getUpdateDate().getValue()));
 
 				if (newDate.after(oldDate)) {
 					syncrhoResult.addToChangedList(d);
