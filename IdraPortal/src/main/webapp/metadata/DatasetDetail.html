@@ -421,9 +421,9 @@
 							<td><span style="font-weight: bold;">{{'publisher' |
 									translate}}:</span></td>
 							<td><span ng-show="dataset.publisher.name!=''">
-										<a ng-show="dataset.publisher.resourceUri!=''" href="{{dataset.publisher.resourceUri}}"
+										<a ng-show="dataset.publisher.resourceUri!='' && dataset.publisher.resourceUri!=undefined" href="{{dataset.publisher.resourceUri}}"
 										class="btn-flat " target="_blank">{{dataset.publisher.name}}</a>
-										<span ng-show="dataset.publisher.resourceUri==''">{{dataset.publisher.name}}</span>
+										<span ng-show="dataset.publisher.resourceUri=='' || dataset.publisher.resourceUri==undefined">{{dataset.publisher.name}}</span>
 									</span>
 								<span ng-show="dataset.publisher.mbox!=''">{{dataset.publisher.mbox}}</span>
 								<span ng-show="dataset.publisher.homepage!=''">{{dataset.publisher.homepage}}</span>
@@ -501,9 +501,9 @@
 						<tr
 							ng-show="dataset.rightsHolder!=undefined && (dataset.rightsHolder.name!='' || dataset.rightsHolder.mbox!='' || dataset.rightsHolder.homepage!='' || dataset.rightsHolder.type!='')">
 							<td><span style="font-weight: bold;">{{'rightsHolder'|translate}}:</span></td>
-							<td><span ng-show="dataset.rightsHolder.name!=''"><a ng-show="dataset.rightsHolder.resourceUri!=''" href="{{dataset.rightsHolder.resourceUri}}"
+							<td><span ng-show="dataset.rightsHolder.name!=''"><a ng-show="dataset.rightsHolder.resourceUri!='' && dataset.rightsHolder.resourceUri!=undefined" href="{{dataset.rightsHolder.resourceUri}}"
 										class="btn-flat " target="_blank">{{dataset.rightsHolder.name}}</a>
-										<span ng-show="dataset.rightsHolder.resourceUri==''">{{dataset.rightsHolder.name}}</span>
+										<span ng-show="dataset.rightsHolder.resourceUri=='' || dataset.rightsHolder.resourceUri==undefined"">{{dataset.rightsHolder.name}}</span>
 							</span><span ng-show="dataset.rightsHolder.mbox!=''">{{dataset.rightsHolder.mbox}}</span>
 								<span ng-show="dataset.rightsHolder.homepage!=''">{{dataset.rightsHolder.homepage}}</span>
 								<span ng-show="dataset.rightsHolder.type!=''">{{dataset.rightsHolder.type}}</span>
@@ -513,9 +513,9 @@
 						<tr
 							ng-show="dataset.creator!=undefined && (dataset.creator.name!='' || dataset.creator.mbox!='' || dataset.creator.homepage!='' || dataset.creator.type!='')">
 							<td><span style="font-weight: bold;">{{'creator'|translate}}:</span></td>
-							<td><span ng-show="dataset.creator.name!=''"><a ng-show="dataset.creator.resourceUri!=''" href="{{dataset.creator.resourceUri}}"
+							<td><span ng-show="dataset.creator.name!=''"><a ng-show="dataset.creator.resourceUri!='' && dataset.creator.resourceUri!=undefined" href="{{dataset.creator.resourceUri}}"
 										class="btn-flat " target="_blank">{{dataset.creator.name}}</a>
-										<span ng-show="dataset.creator.resourceUri==''">{{dataset.creator.name}}</span>
+										<span ng-show="dataset.creator.resourceUri=='' || dataset.creator.resourceUri==undefined">{{dataset.creator.name}}</span>
 							</span><span ng-show="dataset.creator.mbox!=''">{{dataset.creator.mbox}}</span>
 								<span ng-show="dataset.creator.homepage!=''">{{dataset.creator.homepage}}</span>
 								<span ng-show="dataset.creator.type!=''">{{dataset.creator.type}}</span>
