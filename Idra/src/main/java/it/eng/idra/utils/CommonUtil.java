@@ -32,6 +32,7 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.Locale;
 import java.util.UUID;
 import java.util.regex.Matcher;
@@ -346,5 +347,9 @@ public class CommonUtil {
     	}catch(Exception e){
     		e.printStackTrace();
     	}
+	}
+	
+	public static String fromMillisToUtcDate(Long time) {
+		return dtFormatter.format(new Date(time).toInstant());
 	}
 }

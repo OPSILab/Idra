@@ -592,6 +592,9 @@ angular.module("IdraPlatform").controller('CatalogueCtrl',['$scope','$http','con
 			case 'SPARQL':
 				node.federationLevel='LEVEL_4';
 				break;
+			case 'JUNAR':	
+				node.federationLevel='LEVEL_2';
+				break;
 			default:
 				break;
 			}
@@ -613,6 +616,13 @@ angular.module("IdraPlatform").controller('CatalogueCtrl',['$scope','$http','con
 
 			if(node.nodeType == 'ORION' || node.nodeType == 'SPARQL'){
 				if(angular.equals({}, node.additionalConfig)){
+					dialogs.error($scope.missingConf,$scope.missingConfMex);
+					return;
+				}
+			}
+			
+			if(node.nodeType == 'JUNAR'){
+				if(angular.equals(null, node.APIKey)){
 					dialogs.error($scope.missingConf,$scope.missingConfMex);
 					return;
 				}
