@@ -592,6 +592,7 @@ angular.module("IdraPlatform").controller('CatalogueCtrl',['$scope','$http','con
 			case 'SPARQL':
 				node.federationLevel='LEVEL_4';
 				break;
+			case 'OPENDATASOFT':
 			case 'JUNAR':	
 				node.federationLevel='LEVEL_2';
 				break;
