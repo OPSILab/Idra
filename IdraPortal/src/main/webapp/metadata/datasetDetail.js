@@ -15,19 +15,14 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-angular.module("IdraPlatform").controller('DatasetDetailCtrl',['$scope','$rootScope','$http','config','$anchorScroll','$location','$modal','$sce','$window','dataletsAPI','dialogs','$routeParams',function($scope,$rootScope,$http,config,$anchorScroll,$location,$modal,$sce,$window,dataletsAPI,dialogs,$routeParams){
+angular.module("IdraPlatform").controller('DatasetDetailCtrl',['$scope','$rootScope','$http','config','$anchorScroll','$location','$modal','$sce','$window','dataletsAPI','dialogs','$routeParams','Papa',function($scope,$rootScope,$http,config,$anchorScroll,$location,$modal,$sce,$window,dataletsAPI,dialogs,$routeParams,Papa){
 	
-	console.log($routeParams.id);
-	//console.log($routeParams.catalogue);
-	
+	console.log($routeParams.id);	
 	var checkDistributionFormat = function(distribution){
 		
-		if(!$rootScope.dataletEnabled){
-			distribution.dataletShowButtonEnabled=false;
-			return;
-		}
-			
+		
 		var allowed=false;
+		var preview=false;
 		var parameter=undefined;
 		
 		if(distribution.format!=undefined && distribution.format!=""){
@@ -55,15 +50,67 @@ angular.module("IdraPlatform").controller('DatasetDetailCtrl',['$scope','$rootSc
 				allowed=false;
 			break;
 			}
+						
+		switch(parameter.toLowerCase()){		
+		case 'xml':
+		case 'rdf':
+		case 'rdf+xml':
+		case 'geojson':
+		//case 'html':
+		case 'text/html':
+		case 'text':
+		case 'txt':
+		case 'text/plain':
+		case 'csv':
+		case 'text/csv':
+		case 'json':
+		case 'fiware-ngsi':
+		case 'text/json':
+		case 'application/json':
+		case 'kml':
+//		case 'gpx':
+//check
+		case 'sparql':
+		case 'pdf':
+		case 'application/pdf':
+/*		case 'excel':
+		case 'xlsx':
+		case 'xls':
+		case 'doc':
+		case 'docx':
+		case 'ppt':
+		case 'kml':
+		case 'png':
+		case 'jpeg':
+		case 'jpg':*/
+//end check
+			preview=true;
+			break;
+		default:
+			preview=false;
+		}
 			
-			if(!allowed){
-				if(parameter.includes("csv")){
-					allowed=true;
-				}
+		
+		if(!allowed){
+			if(parameter.toLowerCase().includes("csv")){
+				allowed=true;
 			}
 		}
 		
+		if(!preview){
+			if(parameter.toLowerCase().includes("csv")){
+				preview=true;
+			}
+		}
+			
+		}
+		
+		if(!$rootScope.dataletEnabled){
+			allowed=false;
+		}
+		
 		distribution.dataletShowButtonEnabled=allowed;
+		distribution.previewShowButtonEnabled=preview;
 	}
 		
 	
@@ -80,6 +127,8 @@ angular.module("IdraPlatform").controller('DatasetDetailCtrl',['$scope','$rootSc
 			
 			$scope.dataset.distributions[i].dataletShowButtonEnabled = false;	
 			$scope.dataset.distributions[i].distributionDonwloadUrlOk = true;
+			$scope.dataset.distributions[i].distributionPreviewOk=true;
+			$scope.dataset.distributions[i].previewShowButtonEnabled = false;
 			
 			checkDistributionFormat($scope.dataset.distributions[i]);
 		}
@@ -144,6 +193,7 @@ angular.module("IdraPlatform").controller('DatasetDetailCtrl',['$scope','$rootSc
 				str='xml';
 				break;
 			case 'rdf':
+			case 'sparql':
 				str='rdf';
 				break;
 			case 'csv':
@@ -209,7 +259,7 @@ angular.module("IdraPlatform").controller('DatasetDetailCtrl',['$scope','$rootSc
 			}
 			
 			if(str=="file"){
-				if(parameter.includes("csv")){
+				if(parameter.toLowerCase().includes("csv")){
 					str="csv";
 				}
 			}
@@ -304,9 +354,281 @@ angular.module("IdraPlatform").controller('DatasetDetailCtrl',['$scope','$rootSc
 		},function(value){
 			distribution.lockFile=false;
 			distribution.distributionDonwloadUrlOk = false;
-			dialogs.error("Unable to create Datalet","File with url <br/> "+distribution.downloadURL+" <br/> returned "+value.status+"!");
+			dialogs.create('idra_error_dialog.html','IdraDialogErrorCTRL',{'header':"Unable to create Datalet",
+				'msg':"<p md-truncate>File with url "+distribution.downloadURL+" returned "+value.status+"!</p>"},{key: false,back: 'static'});
 		});		
 	};
+	
+	
+$scope.showPreview = function(datasetID,nodeID,distribution){
+		
+		var parameter=undefined;
+		
+		var reqCheckPreview = {
+				method: 'GET',
+				url: config.CLIENT_SERVICES_BASE_URL+config.CHECK_DISTRIBUTION_PREVIEW+window.encodeURIComponent(distribution.downloadURL)
+		};
+		
+		distribution.lockPreview=true;
+		
+		var parameter='';
+		if(distribution.format!=undefined && distribution.format!=""){
+			parameter=distribution.format.toLowerCase();
+		}else if(distribution.mediaType!=undefined && distribution.mediaType!=""){
+			if(distribution.mediaType.indexOf("/")>0)
+				parameter=distribution.mediaType.split("/")[1].toLowerCase();
+			else
+				parameter=distribution.mediaType.toLowerCase();
+		}
+		
+		$http(reqCheckPreview).then(function(value){
+			if(parameter.includes('csv')){
+				
+				Papa.parse(config.CLIENT_SERVICES_BASE_URL+'/downloadFromUri?url='+window.encodeURIComponent(distribution.downloadURL)+"&format=csv",{
+					download:true,
+					 header: true,
+					dynamicTyping: true,
+					error:function(){
+						delete value;
+						distribution.lockPreview=false;
+						distribution.distributionPreviewOk=false;
+						dialogs.create('idra_error_dialog.html','IdraDialogErrorCTRL',{'header':"Unable to show Preview",
+							'msg':"<p md-truncate>Error parsing the CSV file, please check the original file!</p>"},{key: false,back: 'static'});					
+					},
+					complete:function(res){
+						var headers = res.meta.fields;
+						var data = res.data;
+						distribution.lockPreview=false;
+						var modalInstance = $modal.open({
+							animation: true,
+							templateUrl: 'TablePreview.html',
+							controller: 'TablePreviewCtrl',
+							size: 'lg',
+							resolve: {
+								title: function(){
+									return distribution.title;
+								},
+								headers: function(){
+									return headers;
+								},
+								data: function(){
+									return data;
+								}
+							}
+						});
+
+						modalInstance.result.then(function () {
+						},function () {
+						     
+						      delete value;
+					    });
+					}})
+			}else{
+				
+				
+				var req ={
+						method:'GET',
+						url: config.CLIENT_SERVICES_BASE_URL+'/downloadFromUri?url='+window.encodeURIComponent(distribution.downloadURL),
+					}
+				
+				if(parameter!='pdf'){
+					req.transformResponse = function(response){
+						if(parameter=='json' || parameter == 'geojson' || parameter=='fiware-ngsi' ){
+							return JSON.parse(response);
+						}else{
+							return response;
+						}
+					}
+				}else{
+					req.responseType= 'arraybuffer';
+				}
+								
+				$http(req).then(function(response){
+					//OK
+					if(parameter=='json' || parameter=='fiware-ngsi' || parameter == 'xml' 
+						|| parameter == 'rdf' || parameter == 'rdf+xml' 
+						 || parameter == 'txt' || parameter == 'text' || parameter == 'sparql'){
+						
+						distribution.lockPreview=false;
+						
+						var modalInstance = $modal.open({
+							animation: true,
+							templateUrl: 'DocumentPreview.html',
+							controller: 'DocumentPreviewCtrl',
+							size: 'lg',
+							resolve: {
+								title: function(){
+									return distribution.title;
+								},
+								data: function(){
+									return response.data;
+								},
+								format: function(){
+									return parameter;
+								}
+							}
+						});
+
+						modalInstance.result.then(function () {
+						},function () {
+						     
+						      delete response;
+					    });
+					}else if(parameter=='pdf' || parameter=='application/pdf'){
+						
+						distribution.lockPreview=false;
+						
+						var modalInstance = $modal.open({
+							animation: true,
+							templateUrl: 'PDFPreview.html',
+							controller: 'PDFPreviewCtrl',
+							size: 'lg',
+							resolve: {
+								title: function(){
+									return distribution.title;
+								},
+								data: function(){
+									return response.data;
+								}
+							}
+						});
+						
+						modalInstance.result.then(function () {
+						},function () {
+						     
+						      delete response;
+					    });
+					}else if(parameter=='geojson' || parameter=='kml'){
+						
+						var tmp=response.data;
+						
+						if(distribution.format.toLowerCase()=='kml'){
+							data = toGeoJSON.kml((new DOMParser()).parseFromString(tmp, 'text/xml'));
+						}
+//						else if(distribution.format.toLowerCase()=='gpx'){
+//							data = toGeoJSON.gpx((new DOMParser()).parseFromString(tmp, 'text/xml'));
+//						}
+						else{
+							data = tmp;
+						}
+						
+						distribution.lockPreview=false;
+						
+//						console.log(response.data.features.length);
+						
+						if(data.hasOwnProperty('features')){
+							//Caso featurecollection
+							if(data.features.length > 1000){
+								delete response;
+								delete data;
+								dialogs.create('idra_error_dialog.html','IdraDialogErrorCTRL',{'header':"Unable to show Preview",
+									'msg':"Too many features in the geojson!"},{key: false,back: 'static'});
+								distribution.distributionPreviewOk=false;
+								return;
+							}
+						}else if(!data.hasOwnProperty('geometry')){
+							//Caso singolaFeatures
+							delete response;
+							delete data;
+							dialogs.create('idra_error_dialog.html','IdraDialogErrorCTRL',{'header':"Unable to show Preview",
+								'msg':"Please check the original file content!"},{key: false,back: 'static'});
+							distribution.distributionPreviewOk=false;
+							return;
+						}else{
+							delete response;
+							delete data;
+							dialogs.create('idra_error_dialog.html','IdraDialogErrorCTRL',{'header':"Unable to show Preview",
+								'msg':"Please check the original file content!"},{key: false,back: 'static'});
+							distribution.distributionPreviewOk=false;
+							return;
+						}
+							
+								
+								
+						var modalInstance = $modal.open({
+							animation: true,
+							templateUrl: 'GEOJSONPreview.html',
+							controller: 'GEOJSONPreviewCtrl',
+							size: 'lg',
+							resolve: {
+								title: function(){
+									return distribution.title;
+								},
+								geojson: function(){
+									return data;
+								}
+							}
+						});
+
+						modalInstance.result.then(function () {
+						},function () {
+
+							delete response;
+							delete data;
+						});
+						
+					}
+					
+				},function(error){
+					delete response;
+					distribution.lockPreview=false;
+					distribution.distributionPreviewOk=false;
+					console.log(error);
+					dialogs.create('idra_error_dialog.html','IdraDialogErrorCTRL',{'header':"Unable to show Preview",
+						'msg':"Please check the original file content!"},{key: false,back: 'static'});
+
+				})
+			}
+			
+		},function(value){
+			delete response;
+			distribution.lockPreview=false;
+			distribution.distributionPreviewOk=false;
+			var msg='';
+			if(value.status==413){
+				if(distribution.title!=undefined && distribution.title!=''){
+					msg="File "+distribution.title+" dimension exceeds the limit for a preview!";
+				}else{
+					msg="File with url "+distribution.downloadURL+" dimension exceeds the limit for a preview!";
+				}
+			}else{
+				if(distribution.title!=undefined && distribution.title!=''){
+					msg="File "+distribution.title+" returned "+value.status+"!";
+				}else{
+					msg="File with url "+distribution.downloadURL+" returned "+value.status+"!";
+				}
+			}
+			
+			dialogs.create('idra_error_dialog.html','IdraDialogErrorCTRL',{'header':"Unable to show Preview",
+				'msg':"<p md-truncate>"+msg+"</p>"},{key: false,back: 'static'});
+		});		
+	};
+	
+	$scope.showDatalets = function(datasetID,nodeID,distribution){
+		$rootScope.distributionTitle = distribution.title;
+		$rootScope.datasetTitle = $rootScope.datasetDetail.title;
+		$rootScope.dataletDatasetID = datasetID;
+		$rootScope.datalets=[];
+		
+		var req = {
+				method: 'GET',
+				url: config.CLIENT_SERVICES_BASE_URL+"/catalogues/"+nodeID+"/dataset/"+datasetID+"/distribution/"+distribution.id+"/datalets",
+				headers: {
+					'Content-Type': 'application/json'
+				}
+		};
+		
+		dataletsAPI.getDataletsByDistribution(nodeID,datasetID,distribution.id).then(function(value){
+			dataletsAPI.setCurrentDatalets(value.data);
+			$window.location.assign("#/datalets");
+		},function(value){
+			console.log("Error retrieving datalets")
+//			dialogs.create('idra_error_dialog.html','IdraDialogErrorCTRL',{'header':"Error retrieving datalets",
+//				'msg':"Error retrieving datalets"},{key: false,back: 'static'});
+		});
+
+	}
+	
 	
 	// Cancel interval on page changes
 //	$scope.$on('$destroy', function(){
@@ -340,28 +662,5 @@ angular.module("IdraPlatform").controller('DatasetDetailCtrl',['$scope','$rootSc
 //			console.log("Error retrieving dataset")
 //		});
 //	};
-	
-	$scope.showDatalets = function(datasetID,nodeID,distribution){
-		$rootScope.distributionTitle = distribution.title;
-		$rootScope.datasetTitle = $rootScope.datasetDetail.title;
-		$rootScope.dataletDatasetID = datasetID;
-		$rootScope.datalets=[];
-		
-		var req = {
-				method: 'GET',
-				url: config.CLIENT_SERVICES_BASE_URL+"/catalogues/"+nodeID+"/dataset/"+datasetID+"/distribution/"+distribution.id+"/datalets",
-				headers: {
-					'Content-Type': 'application/json'
-				}
-		};
-		
-		dataletsAPI.getDataletsByDistribution(nodeID,datasetID,distribution.id).then(function(value){
-			dataletsAPI.setCurrentDatalets(value.data);
-			$window.location.assign("#/datalets");
-		},function(value){
-			console.log("Error retrieving datalets")
-		});
-
-	}
 	
 }]);

@@ -10,6 +10,7 @@
 	"login": "LOGIN",
 	"login1": "Login",
 	"logout": "LOGOUT",
+	"statistics":"Statistics",
 	"credits":"Credits",
 	"credits_1":"Icons made by",
 	"credits_2":"from",
@@ -48,6 +49,17 @@
 	"formats":"Formats",
 	"categories":"Categories",
 	
+	"statisticsPeriod":"Period",
+	"statisticsTop10Catalogues":"Top 10 Catalogues (No. Datasets)",
+	"statisticsMostActiveCatalogues":"Most Active Catalogues",
+	"statisticsCataloguesTechnologies":"Federated Catalogues Technologies",
+	"statisticsDistributionFormats":"Most Used Distribution Formats",
+	"statisticsDistributionLicenses":"Most Used Distribution Licenses",
+	"Last Week":"Last Week",
+	"Last Month":"Last Month",
+	"Last Year":"Last Year",
+	
+	
 	"Agriculture":"Agriculture",
 	"Economy":"Economy",
 	"Education":"Education",
@@ -72,6 +84,9 @@
 	"distributionDetailCreateDatalet":"Create new datalet",
 	"distributionDetailUnableDatalet":"Unable to create datalet",
 	"distributionDetailShowDatalet":"Show datalets",
+	"distributionDetailShowPreview": "Show Preview",
+	"modalTitlePreview": "Preview",
+	
 	"accessURL":"Access URL",
 	"releaseDate":"Release Date",
 	"updateDate":"Update Date",
@@ -131,6 +146,7 @@
 	"lastUpdate":"Last Update",
 	"clearFilters":"Clear Filters",
 	"showDatasets":"Show Datasets",
+	"showStatistics":"Show Statistics",
 	"more":"More",
 	"searchName":"search name",
 	

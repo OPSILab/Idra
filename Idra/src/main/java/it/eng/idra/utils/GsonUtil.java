@@ -28,8 +28,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 
-import org.ckan.Dataset;
-
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonDeserializationContext;
@@ -67,6 +65,7 @@ import it.eng.idra.beans.spod.SPODTagDeserializer;
 import it.eng.idra.beans.statistics.KeywordStatistics;
 import it.eng.idra.beans.statistics.KeywordStatisticsResult;
 import it.eng.idra.beans.statistics.StatisticsRequest;
+import it.eng.idra.statistics.PlatformStatistcs;
 
 public final class GsonUtil {
 
@@ -193,6 +192,9 @@ public final class GsonUtil {
 	}.getType();
 	
 	public static Type extraListType = new TypeToken<List<org.ckan.Extra>>() {
+	}.getType();
+	
+	public static Type platformStatsType = new TypeToken<PlatformStatistcs>() {
 	}.getType();
 	
 	private static GsonBuilder gsonBuilder = new GsonBuilder()

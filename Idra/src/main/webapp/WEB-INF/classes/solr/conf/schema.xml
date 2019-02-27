@@ -228,7 +228,7 @@
 
 	<field name="mediaType" type="string" indexed="true" stored="true"
 		required="false" multiValued="false" />
-	<field name="format" type="string" indexed="true" stored="true"
+	<field name="format" type="facet_format_string" indexed="true" stored="true"
 		required="false" multiValued="false" />
 	<field name="license" type="string" indexed="true" stored="true"
 		required="false" multiValued="false" />

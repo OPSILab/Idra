@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 (function(){
-	var app = angular.module("IdraPlatform",['ngRoute','ui.bootstrap','ngAnimate','smart-table','xeditable','ui.ace','angularUtils.directives.dirPagination','angularSpinner','dialogs.main','angular-md5','zeroclipboard','ngTagsInput','ngCookies','ngImgCrop','ngAria','ngMaterial','hc.marked','ngFileSaver','countrySelect','uiSwitch','underscore','angular-d3-word-cloud',,'pascalprecht.translate']);
+	var app = angular.module("IdraPlatform",['ngRoute','ui.bootstrap','ngAnimate','smart-table','xeditable','ui.ace','angularUtils.directives.dirPagination','angularSpinner','dialogs.main','angular-md5','zeroclipboard','ngTagsInput','ngCookies','ngImgCrop','ngAria','ngMaterial','hc.marked','ngFileSaver','countrySelect','uiSwitch','underscore','angular-d3-word-cloud','pascalprecht.translate','chart.js','ngPapaParse','pdfjsViewer','leaflet-directive']);
 	fetchData().then( setTimeout( bootstrapApplication,1500));
 
 	function fetchData() {
@@ -52,6 +52,10 @@
 		if(!config.CLIENT_SERVICES_BASE_URL.startsWith('http')){
 			config.CLIENT_SERVICES_BASE_URL=$location.protocol() + "://" + $location.host() + ":" + $location.port()+(clientURL.startsWith("/")?"":"/")+clientURL;
 		}
+		var statisticsURL = config.STATISTICS_SERVICES_BASE_URL;
+		if(!config.STATISTICS_SERVICES_BASE_URL.startsWith('http')){
+			config.STATISTICS_SERVICES_BASE_URL=$location.protocol() + "://" + $location.host() + ":" + $location.port()+(statisticsURL.startsWith("/")?"":"/")+statisticsURL;
+		}
 	}]);
 
 	app.config(['uiZeroclipConfigProvider', function(uiZeroclipConfigProvider) {
@@ -71,7 +75,9 @@
 		  });
 		  		 
 		  $translateProvider.preferredLanguage('en');
-	}]);
+	}]).config(function($logProvider){
+		  $logProvider.debugEnabled(false);
+	});
 	
 	app.directive('aDisabled', function() {
 		return {
@@ -244,6 +250,10 @@
 		when('/credits',{
 			templateUrl:'credits/Credits.html',
 			controller:'CreditsCtrl'
+		}).
+		when('/statistics',{
+			templateUrl:'statistics/Statistics.html',
+			controller:'StatisticsCtrl'
 		}).
 //		when('/statistics',{
 //		templateUrl:'statistics/Stats.html',
