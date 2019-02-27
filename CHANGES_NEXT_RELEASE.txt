@@ -1,4 +1,4 @@
 v1.3.0
 - New Feature: Added Distribution Preview for CSV, JSON, PDF, XML, GEOJSON and KML files
-- New Feature: Added Statistics section about catatalogues, distribution formats and licenses
+- New Feature: Added Statistics section about catalogues, distribution formats and licenses
 - Fix: Minor fix for DCATDumpConnector
