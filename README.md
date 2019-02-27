@@ -43,6 +43,9 @@ part of [FIWARE](https://www.fiware.org/). For more information check the FIWARE
 Catalogue entry for
 [Data Publication](https://github.com/Fiware/catalogue/tree/master/data-publication). The roadmap of this FIWARE GE is described [here](./roadmap.md)
 
+| :books: [Documentation](https://idra.rtfd.io/) | :whale: [Docker Hub](https://hub.docker.com/r/idraopendata/idra) | :dart: [Roadmap](./roadmap.md) |
+|---|---|---|
+
 ## Content
 
 -   [Install](#install)
