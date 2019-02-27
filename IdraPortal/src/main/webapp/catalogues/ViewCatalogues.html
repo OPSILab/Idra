@@ -94,6 +94,8 @@
 											class="btn-flat "
 											ng-click="showDatasets(node)"><i class="mdi-action-search"></i><md-tooltip>
 												{{'showDatasets'|translate}}</md-tooltip></a> 
+<!-- 										<a href="#/statistics?catalogueID={{node.id}}" class="btn-flat "><i class="mdi-editor-insert-chart"></i> -->
+<!-- 											<md-tooltip>{{'showStatistics'|translate}}</md-tooltip></a>  -->
 									</div>
 								</td>
 							</tr>
@@ -111,8 +113,11 @@
             <a href="{{node.homepage}}" target="_blank">{{node.name}}</a>
             <a href="javascript:void(0)" class="btn-flat "
 			ng-click="showDatasets(node)"><i class="mdi-action-search"></i>
-			<md-tooltip>{{'showDatasets'|translate}}</md-tooltip></a>  
+			<md-tooltip>{{'showDatasets'|translate}}</md-tooltip></a>
+<!-- 			<a href="#/statistics?catalogueID={{node.id}}" class="btn-flat "><i class="mdi-editor-insert-chart"></i> -->
+<!-- 			<md-tooltip>{{'showStatistics'|translate}}</md-tooltip></a>     -->
             </span>
+                       
             <span class="md-subhead"><strong>Datasets:</strong> {{node.datasetCount}}</span>
             <span class="md-subhead"><strong>{{'lastUpdate'|translate}}:</strong> {{node.lastUpdateDate | date:'yyyy-MM-dd'}}</span>
             <span class="md-subhead"><strong>{{'category'|translate}}:</strong> 
@@ -163,7 +168,9 @@
             <a href="{{node.homepage}}" target="_blank">{{node.name}}</a>
             <a href="javascript:void(0)" class="btn-flat "
 			ng-click="showDatasets(node)"><i class="mdi-action-search"></i>
-			<md-tooltip>{{'showDatasets'|translate}}</md-tooltip></a>  
+			<md-tooltip>{{'showDatasets'|translate}}</md-tooltip></a> 
+<!-- 			<a href="#/statistics?catalogueID={{node.id}}" class="btn-flat "><i class="mdi-editor-insert-chart"></i> -->
+<!-- 			<md-tooltip>{{'showStatistics'|translate}}</md-tooltip></a>   -->
             </span>
             <span class="md-subhead"><strong>Datasets:</strong> {{node.datasetCount}}</span>
             <span class="md-subhead"><strong>{{'lastUpdate'|translate}}:</strong> {{node.lastUpdateDate | date:'yyyy-MM-dd'}}</span>
