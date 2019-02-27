@@ -230,26 +230,23 @@ public class CommonUtil {
 
 	public static String fixBadUTCDate(String date) {
 
-		Matcher matcher = Pattern.compile(
-				"([0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]T[0-9][0-9]:[0-9][0-9]:[0-9][0-9].[0-9][0-9][0-9][0-9][0-9][0-9])$")
-				.matcher(date);
-		if (matcher.find())
-			date = date.substring(0, date.length() - 7) + "Z";
-		else {
-			matcher = Pattern.compile(
-					"([0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]T[0-9][0-9]:[0-9][0-9]:[0-9][0-9].[0-9][0-9][0-9])$")
-					.matcher(date);
-			if (matcher.find())
-				date = date.substring(0, date.length() - 4) + "Z";
-			else {
-				matcher = Pattern
-						.compile("([0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]T[0-9][0-9]:[0-9][0-9]:[0-9][0-9])$")
-						.matcher(date);
-				if (matcher.find())
-					date = date + "Z";
-			}
-		}
-
+		Pattern pattern1 = Pattern.compile("([0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}.[0-9]{6})$");
+		Pattern pattern2 = Pattern.compile("([0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}.[0-9]{3})$");
+		Pattern pattern3 = Pattern.compile("([0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2})$");
+		Pattern pattern4 = Pattern.compile("([0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}\\+[0-9]{2}:[0-9]{2})$");
+		
+		if(pattern1.matcher(date).find())
+			return date.substring(0, date.length() - 7) + "Z";
+		
+		if(pattern2.matcher(date).find())
+			return date.substring(0, date.length() - 4) + "Z";
+			
+		if(pattern3.matcher(date).find())
+			return date + "Z";
+		
+		if(pattern4.matcher(date).find())
+			return date.substring(0, date.length() - 6) + "Z";
+		
 		return date;
 	}
 
