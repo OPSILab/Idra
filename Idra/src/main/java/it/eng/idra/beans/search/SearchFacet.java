@@ -51,8 +51,13 @@ public class SearchFacet {
 		super();
 		
 		if("datasetThemes".equals(category)){
-			this.facet = FederationCore.getDCATThemesFromAbbr(c.getName())+" ("+c.getCount()+")";
-			this.keyword = FederationCore.getDCATThemesFromAbbr(c.getName());
+			try {
+				this.facet = FederationCore.getDCATThemesFromAbbr(c.getName())+" ("+c.getCount()+")";
+				this.keyword = FederationCore.getDCATThemesFromAbbr(c.getName());
+			}catch(Exception e) {
+				this.facet = c.getName()+" ("+c.getCount()+")";
+				this.keyword = c.getName();
+			}
 			this.search_value = c.getName();
 		}else if("catalogues".equals(category)) {
 			try {
