@@ -382,7 +382,20 @@ public class FederatedSearch {
 		logger.info("Search by resourceIDs and filters");
 		return MetadataCacheManager.searchDriverDatasets(searchParameters);
 	}
+	
+	public static SearchResult getFormatStatistics(HashMap<String, Object> searchParameters)
+			throws IOException, SolrServerException, SQLException {
+		logger.info("Get Format Statistics");
+		return MetadataCacheManager.searchForDistributionStatistics(searchParameters);
+	}
 
+	public static HashMap<String,String> getLicensesInfos(HashMap<String, Object> searchParameters)
+			throws IOException, SolrServerException, SQLException {
+		logger.info("Get Licenses Infos");
+		return MetadataCacheManager.getAllLicensesInfo(searchParameters);
+	}
+	
+	
 	// public static List<DCATDataset> regexSearch(HashMap<String, Object>
 	// searchParameters)
 	// throws IOException, SolrServerException, SQLException {

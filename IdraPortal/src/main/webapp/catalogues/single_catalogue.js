@@ -247,14 +247,7 @@ angular.module("IdraPlatform").controller('CatalogueCtrl',['$scope','$http','con
 				$scope.imageRead = croppedImage;
 			});
 	    }
-	    
-	$scope.attachedFile = function(element) {
-		$scope.$apply(function($scope) {
-			$scope.file = element.files[0];   
-		});     
-		$scope.addFile();
-	};
-		
+
 	if($rootScope.mode == "create" ){
 		//$scope.pageTitle='Add Catalogue';
 
@@ -600,6 +593,7 @@ angular.module("IdraPlatform").controller('CatalogueCtrl',['$scope','$http','con
 				node.federationLevel='LEVEL_4';
 				break;
 			case 'OPENDATASOFT':
+			case 'JUNAR':	
 				node.federationLevel='LEVEL_2';
 				break;
 			default:
@@ -623,6 +617,13 @@ angular.module("IdraPlatform").controller('CatalogueCtrl',['$scope','$http','con
 
 			if(node.nodeType == 'ORION' || node.nodeType == 'SPARQL'){
 				if(angular.equals({}, node.additionalConfig)){
+					dialogs.error($scope.missingConf,$scope.missingConfMex);
+					return;
+				}
+			}
+			
+			if(node.nodeType == 'JUNAR'){
+				if(angular.equals(null, node.APIKey)){
 					dialogs.error($scope.missingConf,$scope.missingConfMex);
 					return;
 				}

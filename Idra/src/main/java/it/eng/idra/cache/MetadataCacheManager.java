@@ -38,6 +38,7 @@ import org.apache.solr.client.solrj.SolrClient;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.client.solrj.embedded.EmbeddedSolrServer;
+import org.apache.solr.client.solrj.impl.HttpSolrClient;
 import org.apache.solr.client.solrj.response.FacetField;
 import org.apache.solr.client.solrj.response.QueryResponse;
 import org.apache.solr.client.solrj.response.UpdateResponse;
@@ -54,6 +55,7 @@ import org.apache.commons.lang3.StringUtils;
 import it.eng.idra.beans.ODFProperty;
 import it.eng.idra.beans.dcat.DCATDataset;
 import it.eng.idra.beans.dcat.DCATDistribution;
+import it.eng.idra.beans.dcat.DCTLicenseDocument;
 import it.eng.idra.beans.exception.DatasetNotFoundException;
 import it.eng.idra.beans.odms.ODMSCatalogue;
 import it.eng.idra.beans.odms.ODMSCatalogueState;
@@ -576,6 +578,105 @@ public class MetadataCacheManager {
 
 	}
 
+	
+	public static SearchResult searchForDistributionStatistics(HashMap<String, Object> searchParameters)
+			throws IOException, SolrServerException {
+		SolrQuery query = new SolrQuery();
+
+		QueryResponse rsp;
+		List<SearchFacetsList> facets = new ArrayList<SearchFacetsList>();
+
+		if (searchParameters.containsKey("nodes") && !searchParameters.containsKey("nodeID")) {
+			ArrayList<Integer> nodes = (ArrayList<Integer>) searchParameters.remove("nodes");
+			String nodeIDString = nodes.stream().map(i -> i.toString()).collect(Collectors.joining(" OR ", "(", ")"));
+			if (!"()".equals(nodeIDString))
+				query.setQuery("nodeID:"+searchParameters.get("nodeID").toString());
+		}else if(searchParameters.containsKey("nodeID")) {
+			query.setQuery("nodeID:"+searchParameters.get("nodeID").toString());
+		}
+		
+		// Risparmiamo cicli inutili nella buildGenericQuery
+		query.set("rows", "0");
+
+		// Facets
+		query.addFacetField("format");
+//		query.addFacetField("license");
+		// query.setFacetLimit(40);
+		query.setFacetMinCount(1);
+
+		// Set the filters in order to match parent and childs
+		query.set("parent_filter", "content_type:" + CacheContentType.distribution);
+
+		query.set("defType", "edismax");
+		query.addFilterQuery("{!parent which=$parent_filter}");
+
+		query.setParam("fl", "*,[child parentFilter=$parent_filter limit=1000]");
+
+		rsp = server.query(query);
+
+		SolrDocumentList docs = rsp.getResults();
+		Long count = docs.getNumFound();
+
+		for (FacetField f : rsp.getFacetFields()) {
+			facets.add(new SearchFacetsList(f));
+		}
+
+		logger.info("-- Search-- Matched Distribution in cache: " + docs.getNumFound());
+
+		docs = null;
+		rsp = null;
+
+		return new SearchResult(count,null,facets);
+
+	}
+	
+	public static HashMap<String,String> getAllLicensesInfo(HashMap<String, Object> searchParameters)
+			throws IOException, SolrServerException {
+		SolrQuery query = new SolrQuery();
+
+		QueryResponse rsp;
+		HashMap<String,String> map = new HashMap<String,String>();
+
+		if (searchParameters.containsKey("nodes") && !searchParameters.containsKey("nodeID")) {
+			ArrayList<Integer> nodes = (ArrayList<Integer>) searchParameters.remove("nodes");
+			String nodeIDString = nodes.stream().map(i -> i.toString()).collect(Collectors.joining(" OR ", "(", ")"));
+			if (!"()".equals(nodeIDString))
+				query.setQuery("nodeID:"+searchParameters.get("nodeID").toString());
+		}else if(searchParameters.containsKey("nodeID")) {
+			query.setQuery("nodeID:"+searchParameters.get("nodeID").toString());
+		}
+		query.setRows(Integer.parseInt(searchParameters.get("rows").toString()));
+
+		// Set the filters in order to match parent and childs
+		query.set("parent_filter", "content_type:" + CacheContentType.distribution);
+//		query.set("defType", "edismax");
+		query.addFilterQuery("{!parent which=$parent_filter}");
+
+		query.setParam("fl", "license");
+
+		rsp = server.query(query);
+
+		SolrDocumentList docs = rsp.getResults();
+		Long count = docs.getNumFound();
+
+		// Collect resulting datasets
+		for (SolrDocument doc : docs) {
+			DCTLicenseDocument l = DCTLicenseDocument.docToDCTLicenseDocument(doc, "");
+			if(!map.containsKey(l.getName().getValue())) {
+				map.put(l.getName().getValue(), l.getUri());
+			}
+		}
+
+		logger.info("-- Search-- Matched Distribution in cache: " + docs.getNumFound());
+
+		docs = null;
+		rsp = null;
+		
+		return map;
+
+	}
+	
+	
 	public static SearchResult searchAllDatasets() throws IOException, SolrServerException {
 
 		List<DCATDataset> totalDatasets = new ArrayList<DCATDataset>();
