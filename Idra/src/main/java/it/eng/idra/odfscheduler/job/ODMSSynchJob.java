@@ -72,6 +72,7 @@ import it.eng.idra.utils.PropertyManager;
 public class ODMSSynchJob implements InterruptableJob{
 
 	private static Logger logger = LogManager.getLogger(ODMSSynchJob.class);
+	private static Boolean enableRdf = Boolean.parseBoolean(PropertyManager.getProperty(ODFProperty.ENABLE_RDF));
 
 	public ODMSSynchJob() {}
 	
@@ -189,7 +190,7 @@ public class ODMSSynchJob implements InterruptableJob{
 
 				try {
 
-					if (!node.getNodeType().equals(ODMSCatalogueType.DCATDUMP)) {
+//					if (!node.getNodeType().equals(ODMSCatalogueType.DCATDUMP)) {
 
 						if (!node.getNodeType().equals(ODMSCatalogueType.CKAN))
 							presentDatasets = MetadataCacheManager.getAllDatasetsByODMSCatalogue(node.getId());
@@ -208,10 +209,10 @@ public class ODMSSynchJob implements InterruptableJob{
 							updatedRDF += ODMSSynchJob.updateDataset(node, dataset);
 						}
 
-					} else if (node.getNodeType().equals(ODMSCatalogueType.DCATDUMP)) {
-						// Do nothing for node type DUMP
+//					} else if (node.getNodeType().equals(ODMSCatalogueType.DCATDUMP)) {
+//						// Do nothing for node type DUMP
 //						synchDUMPODMSNode(node);
-					}
+//					}
 
 				} catch (Exception e) {
 					synchCompleted = false;
@@ -307,7 +308,7 @@ public class ODMSSynchJob implements InterruptableJob{
 
 			if (distributionList != null && !distributionList.isEmpty())
 				for (DCATDistribution d : distributionList) {
-					if (d.isRDF()) {
+					if (d.isRDF() && enableRdf) {
 
 						logger.info("Deleting RDF - " + d.getAccessURL().getValue());
 						try {
@@ -357,7 +358,7 @@ public class ODMSSynchJob implements InterruptableJob{
 				// Repository
 				if (distributionList != null && !distributionList.isEmpty())
 					for (DCATDistribution d : distributionList) {
-						if (d.isRDF()) {
+						if (d.isRDF() && enableRdf) {
 
 							logger.info("Adding new RDF - " + d.getAccessURL().getValue());
 
@@ -405,13 +406,15 @@ public class ODMSSynchJob implements InterruptableJob{
 						logger.info("Updating RDF - " + d.getAccessURL().getValue());
 						if (node.getNodeType().equals(ODMSCatalogueType.SOCRATA) || node.getNodeType().equals(ODMSCatalogueType.DKAN))
 							d.getAccessURL().setValue(d.getAccessURL().getValue().split("\\?")[0]);
-						try {
-							updatedRDF += LODCacheManager.updateRDF(d.getAccessURL().getValue());
-						} catch (IOException | RepositoryException e) {
-							logger.error("Unable to update rdf: " + d.getAccessURL().getValue() + " "
-									+ e.getLocalizedMessage());
-						}
+						if(enableRdf) {
+							try {
 
+								updatedRDF += LODCacheManager.updateRDF(d.getAccessURL().getValue());
+							} catch (IOException | RepositoryException e) {
+								logger.error("Unable to update rdf: " + d.getAccessURL().getValue() + " "
+										+ e.getLocalizedMessage());
+							}
+						}
 					}
 				}
 			if (updatedRDF != 0) {
