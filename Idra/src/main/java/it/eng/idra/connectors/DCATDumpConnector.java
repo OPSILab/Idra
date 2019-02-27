@@ -18,10 +18,12 @@
 package it.eng.idra.connectors;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
-import java.util.regex.Matcher;
+import java.util.TimeZone;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.ClientProtocolException;
@@ -39,6 +41,11 @@ import org.apache.jena.vocabulary.DCAT;
 import org.apache.jena.vocabulary.RDF;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Sets;
+import com.google.common.collect.Sets.SetView;
+
 import it.eng.idra.beans.ODFProperty;
 import it.eng.idra.beans.dcat.DCATAPFormat;
 import it.eng.idra.beans.dcat.DCATAPProfile;
@@ -80,10 +87,11 @@ public class DCATDumpConnector implements IODMSConnector {
 				break;
 			}
 			
-		} else
+		} else {
 			// If no profile was provided, instantiate a base DCATAP Deserializer and set the profile
 			node.setDCATProfile(DCATAPProfile.DCATAP);
 			deserializer = new DCATAPDeserializer();
+		}
 
 	}
 
@@ -224,7 +232,7 @@ public class DCATDumpConnector implements IODMSConnector {
 				int status = response.getStatusLine().getStatusCode();
 				if (status >= 200 && status < 300) {
 					HttpEntity entity = response.getEntity();
-					return entity != null ? EntityUtils.toString(entity) : null;
+					return entity != null ? EntityUtils.toString(entity,"UTF-8") : null;
 				} else {
 					throw new ClientProtocolException("Unexpected response status: " + status);
 				}
@@ -236,9 +244,72 @@ public class DCATDumpConnector implements IODMSConnector {
 	}
 
 	@Override
-	public ODMSSynchronizationResult getChangedDatasets(List<DCATDataset> oldDatasets, String startingDate)
+	public ODMSSynchronizationResult getChangedDatasets(List<DCATDataset> oldDatasets, String startingDateString)
 			throws Exception {
-		return new ODMSSynchronizationResult();
+
+		ArrayList<DCATDataset> newDatasets = (ArrayList<DCATDataset>) getAllDatasets();
+
+		ODMSSynchronizationResult syncrhoResult = new ODMSSynchronizationResult();
+
+		ImmutableSet<DCATDataset> newSets = ImmutableSet.copyOf(newDatasets);
+		ImmutableSet<DCATDataset> oldSets = ImmutableSet.copyOf(oldDatasets);
+
+		int deleted = 0, added = 0, changed = 0;
+
+		/// Find added datasets
+		// difference(current,present)
+		SetView<DCATDataset> diff = Sets.difference(newSets, oldSets);
+		logger.info("New Packages: " + diff.size());
+		for (DCATDataset d : diff) {
+			syncrhoResult.addToAddedList(d);
+			added++;
+		}
+
+		// Find removed datasets
+		// difference(present,current)
+		SetView<DCATDataset> diff1 = Sets.difference(oldSets, newSets);
+		logger.info("Deleted Packages: " + diff1.size());
+		for (DCATDataset d : diff1) {
+			syncrhoResult.addToDeletedList(d);
+			deleted++;
+		}
+
+		// Find updated datasets
+		// intersection(present,current)
+		SetView<DCATDataset> intersection = Sets.intersection(newSets, oldSets);
+		logger.fatal("Changed Packages: " + intersection.size());
+
+		GregorianCalendar oldDate = new GregorianCalendar(TimeZone.getTimeZone("UTC"));
+		oldDate.setLenient(false);
+		GregorianCalendar newDate = new GregorianCalendar(TimeZone.getTimeZone("UTC"));
+		oldDate.setLenient(false);
+		SimpleDateFormat ISO = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+
+		int exception = 0;
+		for (DCATDataset d : intersection) {
+			try {
+				int oldIndex = oldDatasets.indexOf(d);
+				int newIndex = newDatasets.indexOf(d);
+				oldDate.setTime(ISO.parse(oldDatasets.get(oldIndex).getUpdateDate().getValue()));
+				newDate.setTime(ISO.parse(newDatasets.get(newIndex).getUpdateDate().getValue()));
+
+				if (newDate.after(oldDate)) {
+					syncrhoResult.addToChangedList(d);
+					changed++;
+				}
+			} catch (Exception ex) {
+				exception++;
+				if (exception % 1000 == 0) {
+					ex.printStackTrace();
+				}
+			}
+		}
+		logger.info("Changed " + syncrhoResult.getChangedDatasets().size());
+		logger.info("Added " + syncrhoResult.getAddedDatasets().size());
+		logger.info("Deleted " + syncrhoResult.getDeletedDatasets().size());
+		logger.info("Expected new dataset count: " + (node.getDatasetCount() - deleted + added));
+
+		return syncrhoResult;
 	}
 
 }
