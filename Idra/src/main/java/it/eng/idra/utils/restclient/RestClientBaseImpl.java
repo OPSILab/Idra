@@ -19,9 +19,6 @@ package it.eng.idra.utils.restclient;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.security.KeyManagementException;
-import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
 import java.util.Map;
 import java.util.logging.Logger;
 
@@ -32,8 +29,11 @@ import it.eng.idra.utils.restclient.builders.HttpGetBuilder;
 import it.eng.idra.utils.restclient.builders.HttpHeadBuilder;
 import it.eng.idra.utils.restclient.builders.HttpPostBuilder;
 import it.eng.idra.utils.restclient.builders.HttpPutBuilder;
+
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.config.CookieSpecs;
+import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.conn.ssl.NoopHostnameVerifier;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
@@ -56,17 +56,11 @@ public abstract class RestClientBaseImpl {
 			SSLConnectionSocketFactory sslsf = new SSLConnectionSocketFactory(sshbuilder.build());
 
 			httpclient = HttpClients.custom()
+				.setDefaultRequestConfig(RequestConfig.custom().setCookieSpec(CookieSpecs.STANDARD).build())
 				.setSSLHostnameVerifier(new NoopHostnameVerifier())
 			    .setSSLSocketFactory(sslsf)
 			    .build();
-		} catch (NoSuchAlgorithmException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (KeyStoreException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (KeyManagementException e) {
-			// TODO Auto-generated catch block
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		
