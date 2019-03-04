@@ -18,12 +18,11 @@ any time.
 ## Short term
 
 The following list of features are planned to be addressed in the short term,
-and incorporated in the next release of the product planned for **February 2019**:
+and incorporated in the next release of the product planned for **April 2019**:
 
--   Files preview: Idra will allow to directly show in the portal previews for the most common distribution file types: TXT, CSV, Json, GeoJson, XML etc.
--  Statistics about catalogues: (top 10 ranking, most active, most used licences etc.)
 - DCAT-AP metadata will be accessible also through Idra SPARQL endpoint
-
+- Release of Idra web scrapping plugin for Chrome to federate custom websites
+- Upgrade of Solr component and decouple from the Idra core
 
 ## Medium term
 
@@ -32,8 +31,6 @@ typically within the subsequent release(s) generated in the next **9 months**
 after next planned release:
 - Subscription and notification for dataset updates through Orion Context Broker
 - Support for DCAT-AP representation using NGSI-LD
-- Support for new open data portals: [Junar Data Platform](http://www.junar.com/), [OpenDataSoft](https://www.opendatasoft.com/)
-- Release of Idra web scrapping plugin for Chrome to federate custom websites
 - Automatic evaluation of a dataset quality index
 - Integration with Wirecloud for visualisation of dataset distributions
 - Improvement of overall Idra performance 
