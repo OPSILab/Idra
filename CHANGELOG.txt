@@ -1,3 +1,10 @@
+v1.3.0
+- New Feature: Added Distribution Preview for CSV, JSON, PDF, XML, GEOJSON and KML files
+- New Feature: Added Statistics section about catalogues, distribution formats and licenses
+- Fix: Minor fix for DCATDumpConnector
+- New Feature: Support for OpenDataSoft Catalogues
+- New Feature: Support for Junar Catalogues
+
 v1.2.0:
 - New Feature: Support for StatPortal OpenData (SPOD) portals
 - New Feature: Idra portal - Multilanguage support (EN,IT)
