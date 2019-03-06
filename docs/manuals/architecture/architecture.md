@@ -49,12 +49,14 @@ The following table shows the technologies currently supported by Idra:
 
 | Connector | Supported version | Description |
 | ------ | ------ |------ |
-| CKAN |[API v3](https://docs.ckan.org/en/ckan-2.7.3/api/) | Connector for CKAN portals |
+| CKAN |[API v3](https://docs.ckan.org/en/ckan-2.7.3/api/) | Connector for [CKAN](https://ckan.org/) portals |
 | DCATDUMP | [DCAT_AP v1.1](https://joinup.ec.europa.eu/release/dcat-ap/11) ,  [DCAT-AP_IT v1.0](https://www.dati.gov.it/content/dcat-ap-it-v10-profilo-italiano-dcat-ap-0) | Connector to import metadata via dump file compliant with DCAT-AP or DCAT-AP_IT |
-| DKAN |[DCAT Catalog endpoint](https://dkan.readthedocs.io/en/latest/apis/open-data.html) | Connector for DKAN portals |
+| DKAN | [DCAT Catalog endpoint](https://dkan.readthedocs.io/en/latest/apis/open-data.html) | Connector for [DKAN](https://getdkan.org/) portals |
+| JUNAR | [API v2.0](https://junar.github.io/docs/en/_sections/01-index.html) | Connector for [Junar](http://www.junar.com/) portals |
 | NATIVE | [API v1.0](https://idraopendata.docs.apiary.io/#reference/federation-api) | Connector for Idra Federation API |
+| OPENDATASOFT | [Search API v2](https://help.opendatasoft.com/apis/ods-search-v2/#search-api-v2) | Connector for [OpenDataSoft](https://www.opendatasoft.com/) portals |
 | ORION | [NGSI v2](https://swagger.lab.fiware.org/?url=https://raw.githubusercontent.com/Fiware/specifications/master/OpenAPI/ngsiv2/ngsiv2-openapi.json) | Connector that allows to create datasets with NGSI query-based distributions |
-| SOCRATA | DCAT Catalog endpoint | Connector for Socrata portals |
+| SOCRATA | DCAT Catalog endpoint | Connector for [Socrata](https://socrata.com/) portals |
 | SPARQL | [v1.1](https://www.w3.org/TR/sparql11-query/) | Connector that allows to create datasets with SPAQRL query-based distributions|
-| SPOD | [CKAN API v1&2](https://docs.ckan.org/en/ckan-1.7.4/api-v2.html) | Connector for Stat Portal Open Data (SPOD)|
+| SPOD | [CKAN API v1&2](https://docs.ckan.org/en/ckan-1.7.4/api-v2.html) | Connector for [Stat Portal Open Data](http://www.statportal.it/open-data) (SPOD)|
 | WEB | v1.0 | Connector to import sitemaps in order to scrape and federate custom websites|
