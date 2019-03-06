@@ -1,6 +1,2 @@
-v1.3.0
-- New Feature: Added Distribution Preview for CSV, JSON, PDF, XML, GEOJSON and KML files
-- New Feature: Added Statistics section about catalogues, distribution formats and licenses
-- Fix: Minor fix for DCATDumpConnector
-- New Feature: Support for OpenDataSoft Catalogues
-- New Feature: Support for Junar Catalogues
+v1.3.1
+- Fix: Idm Login #34
