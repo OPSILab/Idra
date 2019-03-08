@@ -19,6 +19,10 @@ package it.eng.idra.authentication.fiware.model;
 
 import java.util.Set;
 
+import com.google.gson.annotations.JsonAdapter;
+
+import it.eng.idra.utils.TokenGSONManager;
+@JsonAdapter(TokenGSONManager.class)
 public class Token {
 	
 	private String access_token;
