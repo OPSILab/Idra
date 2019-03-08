@@ -351,6 +351,6 @@ public class CommonUtil {
 	}
 	
 	public static String fromMillisToUtcDate(Long time) {
-		return dtFormatter.format(new Date(time).toInstant());
+		return dtFormatter.format(new Date(time*1000).toInstant());
 	}
 }
