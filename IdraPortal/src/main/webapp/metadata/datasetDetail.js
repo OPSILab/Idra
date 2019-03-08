@@ -43,6 +43,7 @@ angular.module("IdraPlatform").controller('DatasetDetailCtrl',['$scope','$rootSc
 			case 'text/json':
 			case 'text/csv':
 			case 'geojson':
+			case 'fiware-ngsi':
 			case 'kml':
 				allowed=true;
 				break;
@@ -335,6 +336,7 @@ angular.module("IdraPlatform").controller('DatasetDetailCtrl',['$scope','$rootSc
 		
 		if(distribution.format!=undefined && distribution.format!=""){
 			parameter=distribution.format;
+			if(parameter=='fiware-ngsi') parameter ='json';
 		}else if(distribution.mediaType!=undefined && distribution.mediaType!=""){
 			if(distribution.mediaType.indexOf("/")>0)
 				parameter=distribution.mediaType.split("/")[1];
