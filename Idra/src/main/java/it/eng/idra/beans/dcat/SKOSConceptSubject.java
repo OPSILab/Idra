@@ -57,8 +57,11 @@ public class SKOSConceptSubject extends SKOSConcept {
 
 	public static SKOSConceptSubject docToSKOSConcept(SolrDocument doc, String propertyUri, String nodeID) {
 
-		return new SKOSConceptSubject(propertyUri, (String) doc.getFieldValue("resourceUri"), SKOSPrefLabel
+		SKOSConceptSubject t = new SKOSConceptSubject(propertyUri, (String) doc.getFieldValue("resourceUri"), SKOSPrefLabel
 				.jsonArrayToPrefLabelList(new JSONArray(doc.getFieldValue("prefLabel").toString()), nodeID), nodeID);
+		t.setId(doc.getFieldValue("id").toString());
+		
+		return t;
 	}
 
 }

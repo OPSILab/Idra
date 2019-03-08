@@ -36,7 +36,7 @@ angular.module("IdraPlatform")
 	
 	$scope.title = title;
 	
-	if(format=='json'){
+	if(format=='json' || format=='fiware-ngsi'){
 		$scope.previewDocument =JSON.stringify(data,null,4);
 	}else
 		$scope.previewDocument = data.toString();

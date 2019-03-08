@@ -112,7 +112,7 @@ public class OrionConnector implements IODMSConnector {
 		DCTLicenseDocument license = null;
 		String geographicalIdentifier = null, geographicalName = null, geometry = null;
 		List<SKOSConceptTheme> themeList = new ArrayList<SKOSConceptTheme>();
-		List<SKOSConceptSubject> subjectList = null;
+		List<SKOSConceptSubject> subjectList =  new ArrayList<SKOSConceptSubject>();
 		List<String> keywords = new ArrayList<String>(), documentation = new ArrayList<String>(),
 				hasVersion = new ArrayList<String>(), isVersionOf = new ArrayList<String>(),
 				language = new ArrayList<String>(), provenance = new ArrayList<String>(),

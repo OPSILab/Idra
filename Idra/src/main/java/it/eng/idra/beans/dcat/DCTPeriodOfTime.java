@@ -133,8 +133,10 @@ public class DCTPeriodOfTime {
 	}
 
 	public static DCTPeriodOfTime docToDCTPeriodOfTime(SolrDocument doc, String uri, String nodeID) {
-		return new DCTPeriodOfTime(uri, doc.getFieldValue("startDate").toString(),
+		DCTPeriodOfTime p = new DCTPeriodOfTime(uri, doc.getFieldValue("startDate").toString(),
 				doc.getFieldValue("endDate").toString(), nodeID);
+		p.setId(doc.getFieldValue("id").toString());
+		return p; 
 
 	}
 
