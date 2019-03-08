@@ -150,8 +150,10 @@ public class DCTLocation {
 	}
 
 	public static DCTLocation docToDCTLocation(SolrDocument doc, String uri, String nodeID) {
-		return new DCTLocation(uri, doc.getFieldValue("geographicalIdentifier").toString(),
+		DCTLocation l = new DCTLocation(uri, doc.getFieldValue("geographicalIdentifier").toString(),
 				doc.getFieldValue("geographicalName").toString(), doc.getFieldValue("geometry").toString(), nodeID);
+		l.setId(doc.getFieldValue("id").toString());
+		return l;
 
 	}
 

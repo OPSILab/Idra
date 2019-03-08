@@ -196,9 +196,11 @@ public class DCTStandard implements Serializable {
 		String uri = DCTerms.conformsTo.getURI();
 		if (doc.containsKey("uri"))
 			uri = doc.getFieldValue("uri").toString();
-		return new DCTStandard(uri, doc.getFieldValue("identifier").toString(), doc.getFieldValue("title").toString(),
+		DCTStandard s= new DCTStandard(uri, doc.getFieldValue("identifier").toString(), doc.getFieldValue("title").toString(),
 				doc.getFieldValue("description").toString(),
 				(ArrayList<String>) doc.getFieldValue("referenceDocumentation"), nodeID);
+		s.setId(doc.getFieldValue("id").toString());
+		return s;
 
 	}
 

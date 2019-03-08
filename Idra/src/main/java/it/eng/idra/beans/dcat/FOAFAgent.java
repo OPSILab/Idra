@@ -223,11 +223,12 @@ public class FOAFAgent {
 	}
 
 	public static FOAFAgent docToFOAFAgent(SolrDocument doc, String propertyUri, String nodeID) {
-
-		return new FOAFAgent(propertyUri, (String) doc.getFieldValue("resourceUri"),
+		FOAFAgent f = new FOAFAgent(propertyUri, (String) doc.getFieldValue("resourceUri"),
 				doc.getFieldValue("name").toString(), doc.getFieldValue("mbox").toString(),
 				doc.getFieldValue("homepage").toString(), doc.getFieldValue("type").toString(),
 				doc.getFieldValue("identifier").toString(), nodeID);
+		f.setId(doc.getFieldValue("id").toString());
+		return f;
 	}
 
 	@Override
