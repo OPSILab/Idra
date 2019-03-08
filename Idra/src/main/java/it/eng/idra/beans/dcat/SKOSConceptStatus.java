@@ -57,8 +57,12 @@ public class SKOSConceptStatus extends SKOSConcept {
 
 	public static SKOSConceptStatus docToSKOSConcept(SolrDocument doc, String propertyUri, String nodeID) {
 
-		return new SKOSConceptStatus(propertyUri, (String) doc.getFieldValue("resourceUri"), SKOSPrefLabel
+		SKOSConceptStatus t = new SKOSConceptStatus(propertyUri, (String) doc.getFieldValue("resourceUri"), SKOSPrefLabel
 				.jsonArrayToPrefLabelList(new JSONArray(doc.getFieldValue("prefLabel").toString()), nodeID), nodeID);
+		t.setId(doc.getFieldValue("id").toString());
+		
+		return t;
+	
 	}
 
 }

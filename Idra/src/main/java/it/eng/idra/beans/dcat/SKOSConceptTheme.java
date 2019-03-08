@@ -56,9 +56,10 @@ public class SKOSConceptTheme extends SKOSConcept {
 	}
 
 	public static SKOSConceptTheme docToSKOSConcept(SolrDocument doc, String propertyUri, String nodeID) {
-
-		return new SKOSConceptTheme(propertyUri, (String) doc.getFieldValue("resourceUri"), SKOSPrefLabel
+		SKOSConceptTheme t = new SKOSConceptTheme(propertyUri, (String) doc.getFieldValue("resourceUri"), SKOSPrefLabel
 				.jsonArrayToPrefLabelList(new JSONArray(doc.getFieldValue("prefLabel").toString()), nodeID), nodeID);
+		t.setId(doc.getFieldValue("id").toString());
+		return t;
 	}
 
 }

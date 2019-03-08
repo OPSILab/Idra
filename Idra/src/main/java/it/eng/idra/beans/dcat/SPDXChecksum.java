@@ -126,8 +126,10 @@ public class SPDXChecksum {
 	}
 
 	public static SPDXChecksum docToSPDXChecksum(SolrDocument doc, String uri, String nodeID) {
-		return new SPDXChecksum(uri, doc.getFieldValue("algorithm").toString(),
+		SPDXChecksum c = new SPDXChecksum(uri, doc.getFieldValue("algorithm").toString(),
 				doc.getFieldValue("checksumValue").toString(), nodeID);
+		c.setId(doc.getFieldValue("id").toString());
+		return c;
 
 	}
 

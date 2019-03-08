@@ -124,8 +124,9 @@ public class SKOSPrefLabel {
 	}
 
 	public static SKOSPrefLabel docToSKOSPrefLabel(SolrDocument doc, String propertyUri, String nodeID) {
-
-		return new SKOSPrefLabel((String) doc.getFieldValue("language"), doc.getFieldValue("value").toString(), nodeID);
+		SKOSPrefLabel s = new SKOSPrefLabel((String) doc.getFieldValue("language"), doc.getFieldValue("value").toString(), nodeID);
+		s.setId(doc.getFieldValue("id").toString());
+		return s;
 	}
 
 	public static List<SKOSPrefLabel> jsonArrayToPrefLabelList(JSONArray array, String nodeID) {
