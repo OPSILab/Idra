@@ -1,6 +1,6 @@
 site_name: Idra
 site_url: https://idra.readthedocs.org
-repo_url: https://github.com/OPSILab/Idra.git
+repo_url: https://github.com/OPSILab/Idra
 site_description: Idra - Open Data Federation platform Documentation
 docs_dir: docs/manuals
 site_dir: html
