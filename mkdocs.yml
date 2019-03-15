@@ -2,7 +2,7 @@ site_name: Idra
 site_url: https://idra.readthedocs.org
 repo_url: https://github.com/OPSILab/Idra
 site_description: Idra - Open Data Federation platform Documentation
-docs_dir: docs/manuals
+docs_dir: docs
 site_dir: html
 markdown_extensions: [toc,fenced_code]
 use_directory_urls: false
@@ -10,15 +10,15 @@ theme: readthedocs
 extra_css: ["https://fiware.org/style/fiware_readthedocs.css", "https://www.fiware.org/style/fiware_readthedocs_publication.css"]
 
 pages:
-  - 'Home': 'index.md' 
-  - 'Architecture Overview': 'architecture/architecture.md'
+  - 'Home': 'manuals/index.md' 
+  - 'Architecture Overview': 'manuals/architecture/architecture.md'
   - 'Installation & Administration Manual':
-      - 'Introduction': 'admin/index.md'
-      - 'Installation overview': 'admin/installation.md'
-      - 'Install with WARs packages': 'admin/install_war.md'
-      - 'Install with Docker': 'admin/install_docker.md'
-      - 'Sanity Checks': 'admin/sanitychecks.md'
-      - 'Platform Management': 'admin/administration_gui.md'
+      - 'Introduction': 'manuals/admin/index.md'
+      - 'Installation overview': 'manuals/admin/installation.md'
+      - 'Install with WARs packages': 'manuals/admin/install_war.md'
+      - 'Install with Docker': 'manuals/admin/install_docker.md'
+      - 'Sanity Checks': 'manuals/admin/sanitychecks.md'
+      - 'Platform Management': 'manuals/admin/administration_gui.md'
   - 'User Guide':
-      - 'Introduction': 'user/index.md'
-      - 'How to use Idra': 'user/enduser.md'
+      - 'Introduction': 'manuals/user/index.md'
+      - 'How to use Idra': 'manuals/user/enduser.md'
