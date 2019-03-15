@@ -1,6 +1,6 @@
 site_name: Idra
 site_url: https://idra.readthedocs.org
-repo_url: https://github.com/OPSILab/Idra.git
+repo_url: https://github.com/OPSILab/Idra
 site_description: Idra - Open Data Federation platform Documentation
 docs_dir: docs/manuals
 site_dir: html
@@ -8,6 +8,7 @@ markdown_extensions: [toc,fenced_code]
 use_directory_urls: false
 theme: readthedocs
 extra_css: ["https://fiware.org/style/fiware_readthedocs.css", "https://www.fiware.org/style/fiware_readthedocs_publication.css"]
+edit_uri: edit/master/docs/manuals/
 
 pages:
   - 'Home': 'index.md' 
