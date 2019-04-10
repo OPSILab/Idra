@@ -190,16 +190,21 @@ public class MetadataCacheManager {
 	 * @throws SolrServerException
 	 * @throws IOException
 	 */
-	public static List<String> getAllDatasetsID() throws SolrServerException, IOException {
+	public static List<String> getAllDatasetsID(int limit,int offset) throws SolrServerException, IOException {
 		SolrQuery query = new SolrQuery();
 		QueryResponse rsp;
 		List<String> idList = new ArrayList<String>();
 		// Set the filters in order to match parent and childs
-		query.set("parent_filter", "content_type:" + "dataset");
+		query.set("parent_filter", "content_type:" + CacheContentType.dataset);
 		query.set("defType", "edismax");
 		query.addFilterQuery("{!parent which=$parent_filter}");
-		query.setParam("fl", "*,[child parentFilter=$parent_filter limit=1000]");
-		query.set("rows", "1000000");
+		query.setParam("fl", "id");
+		if(limit<0) {
+			query.setRows(1000000);
+		}else {
+			query.setRows(limit);
+			query.setStart(offset);
+		}
 		rsp = server.query(query);
 
 		for (SolrDocument doc : rsp.getResults()) {
@@ -208,6 +213,41 @@ public class MetadataCacheManager {
 		return idList;
 	}
 
+	
+	/**
+	 * 
+	 * Gets ID of all datasets in the SOLR cache belonging to a catalogue
+	 * 
+	 * @param catalogueID, the identifier of the catalogue
+	 * @return List<String> of datasets id 
+	 * @throws SolrServerException
+	 * @throws IOException
+	 */
+	public static List<String> getAllDatasetsIDByCatalogue(String catalogueID,int limit,int offset) throws SolrServerException, IOException {
+		SolrQuery query = new SolrQuery();
+		QueryResponse rsp;
+		List<String> idList = new ArrayList<String>();
+		// Set the filters in order to match parent and childs
+		query.setQuery("nodeID:"+catalogueID);
+		query.set("parent_filter", "content_type:" + CacheContentType.dataset);
+		query.set("defType", "edismax");
+		query.addFilterQuery("{!parent which=$parent_filter}");
+		query.setParam("fl", "id");
+		if(limit<0) {
+			query.setRows(1000000);
+		}else {
+			query.setRows(limit);
+			query.setStart(offset);
+		}
+		rsp = server.query(query);
+
+		for (SolrDocument doc : rsp.getResults()) {
+			idList.add((String) doc.getFieldValue("id"));
+		}
+		System.out.println(idList.size());
+		return idList;
+	}
+	
 	/**
 	 * Searches all Dataset ID belonging to the passed nodeID on local SOLR cache
 	 * 

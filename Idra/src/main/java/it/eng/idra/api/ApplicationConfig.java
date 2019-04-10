@@ -44,6 +44,7 @@ public class ApplicationConfig extends Application {
 		resources.add(it.eng.idra.api.FederationAPIMockup.class);
 		resources.add(org.glassfish.jersey.media.multipart.MultiPartFeature.class);
 		resources.add(it.eng.idra.api.CORSResponseFilter.class);
+		resources.add(it.eng.idra.api.ckan.CKANApi.class);
 		try {
 			resources.add(AuthenticationManager.getActiveAuthenticationManager().getFilterClass());
 		} catch (ClassNotFoundException e) {
