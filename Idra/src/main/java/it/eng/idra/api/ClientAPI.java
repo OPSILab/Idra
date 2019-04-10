@@ -940,7 +940,7 @@ public class ClientAPI {
 		}
 	}
 	
-	/*
+	
 	@GET
 	@Path("/catalogues/{nodeID}/datasets")
 	@Consumes({ MediaType.APPLICATION_JSON })
@@ -990,7 +990,12 @@ public class ClientAPI {
 			ODMSCatalogue cat= FederationCore.getODMSCatalogue(Integer.parseInt(nodeID));
 			if(cat.isActive()) {
 				DCATDataset result = MetadataCacheManager.getDatasetByID(datasetID);
-				return Response.status(Response.Status.OK).entity(GsonUtil.obj2Json(result, GsonUtil.datasetType)).build();
+				if(result.getNodeID().equals(nodeID))
+					return Response.status(Response.Status.OK).entity(GsonUtil.obj2Json(result, GsonUtil.datasetType)).build();
+				else {
+					ErrorResponse err = new ErrorResponse(String.valueOf(Response.Status.NOT_FOUND.getStatusCode()), "Dataset with id: "+datasetID+" not found for catalogue: "+nodeID, String.valueOf(Response.Status.NOT_FOUND.getStatusCode()), "Catalogues with id: "+nodeID+" not found");
+					return Response.status(Response.Status.NOT_FOUND).entity(GsonUtil.obj2Json(err, GsonUtil.errorResponseSetType)).build();	
+				}
 			}else {
 				ErrorResponse err = new ErrorResponse(String.valueOf(Response.Status.NOT_FOUND.getStatusCode()), "Catalogues with id: "+nodeID+" not found", String.valueOf(Response.Status.NOT_FOUND.getStatusCode()), "Catalogues with id: "+nodeID+" not found");
 				return Response.status(Response.Status.NOT_FOUND).entity(GsonUtil.obj2Json(err, GsonUtil.errorResponseSetType)).build();
@@ -1015,7 +1020,7 @@ public class ClientAPI {
 			// TODO Auto-generated catch block
 			return handleBadRequestErrorResponse(e);
 		}
-	}*/
+	}
 	
 	@GET
 	@Path("/datasets/{id}")
