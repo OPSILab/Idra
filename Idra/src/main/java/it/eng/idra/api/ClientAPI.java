@@ -104,6 +104,7 @@ import org.json.JSONObject;
 
 import org.apache.logging.log4j.*;
 import org.apache.solr.client.solrj.SolrServerException;
+import org.apache.tika.parser.txt.CharsetDetector;
 import org.glassfish.jersey.client.ClientProperties;
 
 @Path("/client")
@@ -572,14 +573,13 @@ public class ClientAPI {
 			logger.info("File uri: " + compiledUri);
 			logger.info("File format: " + format);
 			ResponseBuilder responseBuilder = Response.status(request.getStatus());
-			
 			if(downloadFile) {
 				
 				if(StringUtils.isNotBlank(format) && format.toLowerCase().contains("csv")) {
 					InputStream stream = new BufferedInputStream((InputStream) request.getEntity());
-//					CharsetDetector charDetector = new CharsetDetector();
-//					charDetector.setText(stream);
-					responseBuilder.entity(new InputStreamReader(stream,StandardCharsets.ISO_8859_1));
+					CharsetDetector charDetector = new CharsetDetector();
+					charDetector.setText(stream);
+					responseBuilder.entity(new InputStreamReader(stream,charDetector.detect().getName()));
 				}else {
 					responseBuilder.entity(new StreamingOutput() {
 						@Override
