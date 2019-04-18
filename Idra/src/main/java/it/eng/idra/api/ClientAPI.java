@@ -54,6 +54,7 @@ import it.eng.idra.utils.CommonUtil;
 import it.eng.idra.utils.GsonUtil;
 import it.eng.idra.utils.GsonUtilException;
 import it.eng.idra.utils.PropertyManager;
+import it.eng.idra.utils.RedirectFilter;
 
 import java.io.BufferedInputStream;
 import java.io.IOException;
@@ -561,7 +562,7 @@ public class ClientAPI {
 		String compiledUri = url;
 		//client = ClientBuilder.newBuilder().readTimeout(10, TimeUnit.SECONDS).build();
 		int timeout = Integer.parseInt(PropertyManager.getProperty(ODFProperty.PREVIEW_TIMEOUT))*1000;
-		client = ClientBuilder.newClient();
+		client = ClientBuilder.newClient().register(RedirectFilter.class);
 		client.property(ClientProperties.CONNECT_TIMEOUT, timeout);
 	    client.property(ClientProperties.READ_TIMEOUT,    timeout);
 	    
@@ -571,6 +572,7 @@ public class ClientAPI {
 			logger.info("File uri: " + compiledUri);
 			logger.info("File format: " + format);
 			ResponseBuilder responseBuilder = Response.status(request.getStatus());
+			
 			if(downloadFile) {
 				
 				if(StringUtils.isNotBlank(format) && format.toLowerCase().contains("csv")) {
