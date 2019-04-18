@@ -170,6 +170,16 @@ public class MetadataCacheManager {
 
 		return searchDatasets(idParam).getResults();
 	}
+	
+	public static SearchResult getAllDatasetsByODMSCatalogue(int nodeId,int rows, int start)
+			throws DatasetNotFoundException, IOException, SolrServerException {
+		HashMap<String, Object> idParam = new HashMap<String, Object>();
+		idParam.put("nodeID", new Integer(nodeId).toString());
+		idParam.put("rows", Integer.toString(rows));
+		idParam.put("start", Integer.toString(start));
+
+		return searchDatasets(idParam);
+	}
 
 	public static SearchResult getAllDatasetsByODMSCatalogueID(int nodeId)
 			throws DatasetNotFoundException, IOException, SolrServerException {
