@@ -106,6 +106,7 @@ The Sitemap **MUST** contain at least the mandatory dataset Selectors, reported 
 
 
 In order to add new selectors:
+
  - Click on the **Sitemap** menu, then *Selectors*.
  - In the new tab, showing the current Sitemap Selectors, click on **Add new selectors**
  - As the Figure below depicts, select the HTML element to be extracted, by using the **Select** button, then click on the page element and finally on **Done Selecting**.
