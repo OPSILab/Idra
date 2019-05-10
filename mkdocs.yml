@@ -20,6 +20,7 @@ pages:
       - 'Install with Docker': 'admin/install_docker.md'
       - 'Sanity Checks': 'admin/sanitychecks.md'
       - 'Platform Management': 'admin/administration_gui.md'
+      - 'Scraping Guide': 'admin/scraping/scraping.md'
   - 'User Guide':
       - 'Introduction': 'user/index.md'
       - 'How to use Idra': 'user/enduser.md'

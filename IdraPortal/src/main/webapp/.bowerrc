@@ -1,3 +1,5 @@
 {
-	"registry": "https://registry.bower.io"
+	"registry": "https://registry.bower.io",
+	"proxy" : "http://giuciull:El1t3_B00k@proxy.eng.it:3128",
+	"https-proxy" : "http://giuciull:El1t3_B00k@proxy.eng.it:3128"
 }

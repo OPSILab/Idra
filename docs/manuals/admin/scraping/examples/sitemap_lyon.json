@@ -1,0 +1,113 @@
+{
+   "startUrl": "https://data.grandlyon.com/search",
+   "datasetSelectors": [
+      {
+         "id": "title",
+         "type": "SelectorText",
+         "parentSelectors": [
+            "_root"
+         ],
+         "selector": "h1",
+         "multiple": false,
+         "regex": "",
+         "delay": ""
+      },
+      {
+         "id": "description",
+         "type": "SelectorText",
+         "parentSelectors": [
+            "_root"
+         ],
+         "selector": "div#headerSingleTexte p",
+         "multiple": false,
+         "regex": "",
+         "delay": ""
+      },
+      {
+         "id": "keywords",
+         "type": "SelectorText",
+         "parentSelectors": [
+            "_root"
+         ],
+         "selector": "tr.keyword:contains('Mots-clefs') td",
+         "multiple": true,
+         "regex": "",
+         "delay": ""
+      },
+      {
+         "id": "theme",
+         "type": "SelectorText",
+         "parentSelectors": [
+            "_root"
+         ],
+         "selector": "tr.categorie span",
+         "multiple": true,
+         "regex": "",
+         "delay": ""
+      },
+      {
+         "id": "publisher_name",
+         "type": "SelectorText",
+         "parentSelectors": [
+            "_root"
+         ],
+         "selector": "div#bodySingle > table.singleTable tr:contains('Gestionnaire') td",
+         "multiple": false,
+         "regex": "",
+         "delay": ""
+      },
+      {
+         "id": "releaseDate",
+         "type": "SelectorText",
+         "parentSelectors": [
+            "_root"
+         ],
+         "selector": "tr:contains('Publication initiale') td",
+         "multiple": false,
+         "regex": "",
+         "delay": ""
+      },
+      {
+         "id": "frequency",
+         "type": "SelectorText",
+         "parentSelectors": [
+            "_root"
+         ],
+         "selector": "tr:contains('Fréquence de mise à jour') td",
+         "multiple": false,
+         "regex": "",
+         "delay": ""
+      }
+   ],
+   "navigationParameter": {
+      "name": "P",
+      "type": "QUERY_RANGE",
+      "startValue": "0",
+      "endValue": "0",
+      "pageSelectors": [
+         {
+            "parentSelectors": [
+               "_root"
+            ],
+            "type": "SelectorText",
+            "multiple": true,
+            "id": "datasetLink",
+            "selector": "div.result_item_title a",
+            "regex": "",
+            "delay": ""
+         },
+         {
+            "parentSelectors": [
+               "_root"
+            ],
+            "type": "SelectorText",
+            "multiple": false,
+            "id": "lastPage",
+            "selector": "li.last a",
+            "regex": "",
+            "delay": ""
+         }
+      ]
+   },
+   "_id": "lyon"
+}

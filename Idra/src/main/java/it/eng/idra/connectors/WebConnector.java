@@ -185,9 +185,9 @@ public class WebConnector implements IODMSConnector {
 				}
 
 			}
-			
+
 			Elements extractedElem = doc.select(selector);
-			
+
 			switch (sel.getName()) {
 
 			case "title":
@@ -197,9 +197,9 @@ public class WebConnector implements IODMSConnector {
 					throw new DatasetNotValidException("The value " + title + " for the selector: " + sel.getName()
 							+ " is a stopValue then not valid and dataset was skipped");
 				}
-				if("Referente :".equals(title)) {
+				if ("Referente :".equals(title)) {
 					throw new DatasetNotValidException("The value " + title + " for the selector: " + sel.getName()
-					+ " is not a valid title since it is the next div label");
+							+ " is not a valid title since it is the next div label");
 				}
 				break;
 			case "description":
@@ -236,9 +236,9 @@ public class WebConnector implements IODMSConnector {
 				vCardHasURL = extractedElem.text();
 				break;
 			case "keywords":
-				extractedElem.stream().forEach(x -> {
-					if (StringUtils.isNoneBlank(x.text()))
-						keywords.add(x.text().trim());
+				extractedElem.stream().filter(x -> StringUtils.isNoneBlank(x.text())).forEach(x -> {
+
+					Arrays.stream(x.text().trim().split(",")).forEach(k -> keywords.add(k));
 				});
 				break;
 			case "accessRights":
@@ -366,7 +366,8 @@ public class WebConnector implements IODMSConnector {
 				break;
 			case "theme":
 				themeList.addAll(extractConceptList(DCAT.theme.getURI(),
-						extractedElem.stream().map(t -> t.text()).collect(Collectors.toList()),SKOSConceptTheme.class));
+						extractedElem.stream().map(t -> t.text()).collect(Collectors.toList()),
+						SKOSConceptTheme.class));
 				break;
 			default:
 				break;
@@ -384,8 +385,8 @@ public class WebConnector implements IODMSConnector {
 
 		// Contact Point
 		if (vCardUri != null || vCardFn != null || vCardHasEmail != null)
-			contactPointList.add(new VCardOrganization(DCAT.contactPoint.getURI(), vCardUri, vCardFn, vCardHasEmail, vCardHasURL,vCardHasTelephone
-					, "", nodeID));
+			contactPointList.add(new VCardOrganization(DCAT.contactPoint.getURI(), vCardUri, vCardFn, vCardHasEmail,
+					vCardHasURL, vCardHasTelephone, "", nodeID));
 
 		// Publisher
 		if (publisherUri != null || publisherName != null || publisherMbox != null || publisherHomepage != null
@@ -408,18 +409,20 @@ public class WebConnector implements IODMSConnector {
 		if (StringUtils.isBlank(updateDate))
 			updateDate = releaseDate;
 		// if (StringUtils.isBlank(landingPage))
-		//landingPage = doc.baseUri();
-		//MOD robcalla 17/09 -> adding explicit legacyIdentifier as the landingPage of the dataset
-		//legacyIdentifier = landingPage;
+		// landingPage = doc.baseUri();
+		// MOD robcalla 17/09 -> adding explicit legacyIdentifier as the landingPage of
+		// the dataset
+		// legacyIdentifier = landingPage;
 		// identifier = title.replaceAll(":|\\s", "-") + "_" +
 		// CommonUtil.parseDate(releaseDate).toEpochSecond();
 		identifier = landingPage;
-		//Adding legacy identifier for WebConnector
-		
-		mapped = new DCATDataset(nodeID,identifier, title, description, distributionList, themeList, publisher, contactPointList,
-				keywords, accessRights, conformsTo, documentation, frequency, hasVersion, isVersionOf, landingPage,
-				language, provenance, releaseDate, updateDate, otherIdentifier, sample, source,
-				spatialCoverage, temporalCoverage, type, version, versionNotes, rightsHolder, creator, subjectList,relatedResource);
+		// Adding legacy identifier for WebConnector
+
+		mapped = new DCATDataset(nodeID, identifier, title, description, distributionList, themeList, publisher,
+				contactPointList, keywords, accessRights, conformsTo, documentation, frequency, hasVersion, isVersionOf,
+				landingPage, language, provenance, releaseDate, updateDate, otherIdentifier, sample, source,
+				spatialCoverage, temporalCoverage, type, version, versionNotes, rightsHolder, creator, subjectList,
+				relatedResource);
 
 		distributionList = null;
 		publisher = null;
@@ -617,14 +620,12 @@ public class WebConnector implements IODMSConnector {
 				logger.info(e.getMessage());
 				return null;
 			}
-		}).filter(item -> item != null).collect(Collectors.toList());
+		}).filter(item -> item != null).filter(distinctByKey(p -> p.getTitle())).collect(Collectors.toList());
 		// totalDatasets.stream().forEach(d -> System.out
 		// .println("IDENTIFIER: " + d.getIdentifier().getValue() + " URL: " +
 		// d.getLandingPage().getValue()));
 
-		//
-		return totalDatasets.stream().filter(distinctByKey(p -> p.getTitle())).collect(Collectors.toList());
-		// return totalDatasets;
+		return totalDatasets;
 
 	}
 
@@ -664,10 +665,10 @@ public class WebConnector implements IODMSConnector {
 		logger.fatal("Changed Packages: " + intersection.size());
 
 		for (DCATDataset d : intersection) {
-				syncrhoResult.addToChangedList(d);
-				changed++;
+			syncrhoResult.addToChangedList(d);
+			changed++;
 		}
-		
+
 		logger.info("Changed " + syncrhoResult.getChangedDatasets().size());
 		logger.info("Added " + syncrhoResult.getAddedDatasets().size());
 		logger.info("Deleted " + syncrhoResult.getDeletedDatasets().size());
@@ -676,7 +677,6 @@ public class WebConnector implements IODMSConnector {
 		return syncrhoResult;
 	}
 
-	
 	private static <T> Predicate<T> distinctByKey(Function<? super T, Object> keyExtractor) {
 		Map<Object, Boolean> map = new ConcurrentHashMap<>();
 		return t -> map.putIfAbsent(keyExtractor.apply(t), Boolean.TRUE) == null;
@@ -732,13 +732,15 @@ public class WebConnector implements IODMSConnector {
 	 * Return a List of SKOSConcept, each of them containing a prefLabel from input
 	 * String list.
 	 */
-	
-	private <T extends SKOSConcept> List<T> extractConceptList(String propertyUri, List<String> concepts,Class<T> type) {
+
+	private <T extends SKOSConcept> List<T> extractConceptList(String propertyUri, List<String> concepts,
+			Class<T> type) {
 		List<T> result = new ArrayList<T>();
 
 		for (String label : concepts) {
 			try {
-				result.add(type.getDeclaredConstructor(SKOSConcept.class).newInstance(new SKOSConcept(propertyUri, "", Arrays.asList(new SKOSPrefLabel("", label, nodeID)), nodeID)));
+				result.add(type.getDeclaredConstructor(SKOSConcept.class).newInstance(
+						new SKOSConcept(propertyUri, "", Arrays.asList(new SKOSPrefLabel("", label, nodeID)), nodeID)));
 			} catch (InstantiationException | IllegalAccessException | IllegalArgumentException
 					| InvocationTargetException | NoSuchMethodException | SecurityException e) {
 				// TODO Auto-generated catch block
@@ -747,5 +749,5 @@ public class WebConnector implements IODMSConnector {
 		}
 		return result;
 	}
-	
+
 }
