@@ -1,4 +1,4 @@
-**Welcome to the Idra Installation & Administration Manual!**
+# Welcome to the Idra Installation & Administration Manual!
 
 This section provides the description of the administration functionalities. An
 administrator should be able to install, deploy, perform the sanity checks on
