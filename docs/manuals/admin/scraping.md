@@ -12,6 +12,7 @@ These information are defined in the so called **Sitemap**, which can be defined
 This Sitemap can be created through the provided browser plugin, which is a forked version ([here](https://github.com/OPSILab/web-scraper-chrome-extension)) of the [WebScraper.io](https://github.com/martinsbalodis/web-scraper-chrome-extension) plugin for Google Chrome.
 
 In order to install the plugin, perform the following steps in the Chrome browser:
+
  - Clone the repository:
  `git clone https://github.com/OPSILab/web-scraper-chrome-extension.git`.
  - In Chrome, go to `chrome://extensions/` and check the box for **Developer mode** in the top right.
@@ -113,33 +114,36 @@ In order to add new selectors:
 
 
 
-
 # 2. Inserting Sitemap metadata and navigation modes
 
 The Idra Scraper supports the scraping of websites having two ways of navigating the dataset pages: **Range** and **Page**.
+
 Depending on the navigation ways (Range or Page) and on the parameter types (Query or Path), the Navigation Parameters to be put in the **Edit Sitemap metadata** section (in the **Sitemap** menu) will vary.
 
 ## Navigation by Url Range
 
 The dataset Urls have a parameter (e.g. "id") which values varies between a number range:
+
   - **Query** parameter: e.g. `www.example.com/datasets?id=0` to `www.example.com/datasets?id=50`
   In this case, put the following Navigation Parameters:
     - `Nav Param Name` : `id`
-	- `Nav Param Type`:`QUERY RANGE`
-	- `Nav Param Start`:`0`
-	- `Nav Param End`:`50`
-	- `Start URL`: `www.example.com/datasets`
-	The Idra Scraper will fetch all the dataset pages from `www.example.com/datasets?id=0` to `www.example.com/datasets?id=50`.
+    - `Nav Param Type`:`QUERY RANGE`
+    - `Nav Param Start`:`0`
+    - `Nav Param End`:`50`
+    - `Start URL`: `www.example.com/datasets`
+    
+The Idra Scraper will fetch all the dataset pages from `www.example.com/datasets?id=0` to `www.example.com/datasets?id=50`.
   
- - **Path** parameter: e.g. `www.example.com/datasets/id/0` to `www.example.com/datasets/id/50`. 
+  - **Path** parameter: e.g. `www.example.com/datasets/id/0` to `www.example.com/datasets/id/50`. 
  In this case, put the following Navigation Parameters:
-	  - `Nav Param Name` : `id`
-	  - `Nav Param Type`:`PATH RANGE`
-	  - `Nav Param Start`:`0`
-	  - `Nav Param End`:`50`
-	 The Idra Scraper will fetch all the dataset pages from `www.example.com/datasets/id/0` to `www.example.com/datasets/id/50`.
+    - `Nav Param Name` : `id`
+    - `Nav Param Type`:`PATH RANGE`
+    - `Nav Param Start`:`0`
+    - `Nav Param End`:`50`
 
- For each dataset page, it will extract the metadata fields of the single dataset, according to the dataset metadata selectors defined in the [**Defining dataset metadata selectors**]() section.
+The Idra Scraper will fetch all the dataset pages from `www.example.com/datasets/id/0` to `www.example.com/datasets/id/50`.
+
+For each dataset page, it will extract the metadata fields of the single dataset, according to the dataset metadata selectors defined in the [**Defining dataset metadata selectors**]() section.
 
 ## Navigation by Pagination
 
@@ -148,31 +152,37 @@ E.g. The [Data Grand Lyon portal](https://data.grandlyon.com/search/?Q=).
 ![alt tag](pagination.png "Pagination example")
 			 
 In this case you have to:
- 1) Define how to extract the **dataset links** from the list, by creating the specific **"datasetLink"** selector with type **Element Attribute** and `href` as **Attribute Name**. (see the Figure).
+
+ - 1) Define how to extract the **dataset links** from the list, by creating the specific **"datasetLink"** selector with type **Element Attribute** and `href` as **Attribute Name**. (see the Figure).
  ![alt tag](datasetLink.png "datasetLink selector")
   
   > Ensure with **Data preview** that the link URL is extracted correctly.
  
-  2) For the **pagination** you can either: 
+ - 2) For the **pagination** you can either: 
      - Specify manually the pages number of the datasets list (in the **Nav Pages Number** field of **Edit Sitemap metadata** section).
 	
      - Specify the dedicated **"lastPage"** selector in the Sitemap (see the section below), the Scraper will automatically extract the pages number from the specified "last page" element. 
- 3) After defining the **"datasetLink"** selector and the pages number (by the **Nav Pages Number** metadata or by defining the **lastPage** selector), you must select the type and name of the pagination parameter, namely the parameter in the URL that will vary when navigating the list pages: 
+
+ - 3) After defining the **"datasetLink"** selector and the pages number (by the **Nav Pages Number** metadata or by defining the **lastPage** selector), you must select the type and name of the pagination parameter, namely the parameter in the URL that will vary when navigating the list pages: 
+
     - **Query** parameter: 
-	   E.g. `https://data.grandlyon.com/search?P=10`.
-	  In this case, put the following Navigation Parameters:
-	   - `Nav Param Name` : `P`
-	   - `Nav Param Type`:`QUERY PAGE`
-	   - `Start URL`: `https://data.grandlyon.com/search`
-	 The Idra Scraper will fetch all the list pages from `https://data.grandlyon.com/search/?P=0` to `https://data.grandlyon.com/search/?P=81`. 
-	 
-	 - **Path** parameter:
-	  E.g. `https://example.com/search/P/10`
-	  In this case, put the following Navigation Parameters:
-	    - `Nav Param Name` : `P`
-	    - `Nav Param Type`:`PATH PAGE`
-	    - `Start URL`: `https://example.com/search`
-	 The Idra Scraper will fetch all the list pages from `https://data.grandlyon.com/search/P/0` to `https://data.grandlyon.com/search/P/81`.
+      E.g. `https://data.grandlyon.com/search?P=10`.
+	  In this case, put the following Navigation 
+ Parameters:
+      - `Nav Param Name` : `P`
+      - `Nav Param Type`:`QUERY PAGE`
+      - `Start URL`: `https://data.grandlyon.com/search`
+
+    The Idra Scraper will fetch all the list pages from `https://data.grandlyon.com/search/?P=0` to `https://data.grandlyon.com/search/?P=81`. 	
+ 
+    - **Path** parameter:
+      E.g. `https://example.com/search/P/10`
+In this case, put the following Navigation Parameters:
+      - `Nav Param Name` : `P`
+      - `Nav Param Type`:`PATH PAGE`
+      - `Start URL`: `https://example.com/search`
+
+  The Idra Scraper will fetch all the list pages from `https://data.grandlyon.com/search/P/0` to `https://data.grandlyon.com/search/P/81`.
 
 For each page, it will extract all the dataset links using the **"datasetLink"** selector.
 For each dataset link, it will go to the relative page, and then extract the metadata field of the single dataset (according to the dataset selectors defined in the ["Defining dataset metadata selectors"]() section).
@@ -192,6 +202,7 @@ The last page element is an ">>" arrow that consists of the a HTML link element,
   ```
   <a href="https://data.grandlyon.com/search/?Q=&amp;P=81#searchResult"></a>
   ```
+
 In this case, the selector to be defined will be:
     a) A selector with **"lastPage"** name and **"Element Attribute"** type, since we have to extract the `href` attribute from the `a`element. 
     b) Select the HTML element with the "Select" functionality (don't forget to click on **Done Selecting** after highlighting the element).
