@@ -48,7 +48,7 @@
 		<Logger name="log4j.logger.org.hibernate.SQL" level="ERROR"></Logger>
 		<Logger name="log4j.logger.org.hibernate.type" level="ERROR"></Logger>
 		<Logger name="log4j.category.org.apache.http.wire" level="FATAL"></Logger>
-		<Logger name="it.eng.idra.connectors.webscraper.RangeWorker" level="ERROR"></Logger>
+		<Logger name="it.eng.idra.connectors.webscraper.RangeWorker" level="DEBUG"></Logger>
 		
 		<!-- <Logger name="com.mchange.v2.log.MLog" level="ERROR"> -->
 		<!-- <AppenderRef ref="STDOUT" /> -->

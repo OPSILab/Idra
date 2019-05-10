@@ -189,12 +189,12 @@ public class PageWorker implements Runnable {
 			 * Datasets document from extracted links
 			 */
 			navParam.getPageSelectors().stream().forEach(selector -> {
-				if ("elementUrl".equalsIgnoreCase(selector.getName())) {
+				if ("datasetLink".equalsIgnoreCase(selector.getName())) {
 					List<Element> itemElements = pageDocument.select(selector.getSelector());
 
 					if (itemElements != null && !itemElements.isEmpty()) {
 						logger.info("Thread: " + Thread.currentThread().getId() + " Page Document: " + pageNumber
-								+ " Starting to retrieve datasets documents from Element List with size: "
+								+ " Starting to retrieve datasets documents from Datasets List with size: "
 								+ itemElements.size());
 
 						for (Element e : itemElements) {
