@@ -33,7 +33,7 @@ public class SPODGroupDeserializer implements JsonDeserializer<Group>{
 			throws JsonParseException {
 		// TODO Auto-generated method stub
 			Group t = new Group();
-			t.setName(arg0.getAsString());
+			t.setName(arg0.toString());			
 			return t;
 	}
 }
