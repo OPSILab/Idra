@@ -377,6 +377,12 @@ public class FederatedSearch {
 			return localSearch(searchParameters);
 	}
 
+	public static SearchResult searchByQuery(String query,String sort,int rows, int offset,List<String> nodeIDS)
+			throws IOException, SolrServerException, SQLException, ODMSCatalogueNotFoundException, EuroVocTranslationNotFoundException {
+
+		return MetadataCacheManager.searchDatasetsByQuery(query,sort,rows,offset,nodeIDS);
+	}
+	
 	public static List<DCATDataset> searchDriver(HashMap<String, Object> searchParameters)
 			throws IOException, SolrServerException, SQLException {
 		logger.info("Search by resourceIDs and filters");
