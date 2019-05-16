@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -20,6 +21,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.ckan.Dataset;
+import org.json.JSONObject;
 
 import it.eng.idra.beans.ErrorResponse;
 import it.eng.idra.beans.ckan.CKANErrorResponse;
@@ -288,5 +290,100 @@ public class CKANApi {
 
 	}
 
+	@POST
+	@Path("/api/action/package_search")
+	@Produces("application/json")
+	public Response all_package_search_post(@Context HttpServletRequest httpRequest,final String input) {		
+
+		try {
+			
+			JSONObject j = new JSONObject(input);
+					
+			int limit=-1;
+			int offset=0;
+
+			if(StringUtils.isNotBlank(j.optString("rows", ""))) {
+				limit = Integer.parseInt(j.optString("rows", ""));
+			}else {
+				limit=20;
+			}
+
+			if(StringUtils.isNotBlank(j.optString("start", ""))) {
+				offset=Integer.parseInt(j.optString("start", ""));
+			}else {
+				offset=0;
+			}
+			
+			String mappedQuery = CKANUtils.manageQuery(j.optString("q", ""), " ");
+			String mappedSort = CKANUtils.manageSort(j.optString("sort", "metadata_modified desc"));
+			//Adding catalogues ids
+			List<String> ids = FederationCore.getODMSCatalogues(false).stream().filter(x -> x.isActive()).map(x -> Integer.toString(x.getId())).collect(Collectors.toList());
+
+			SearchResult result = FederatedSearch.searchByQuery(mappedQuery, mappedSort, limit, offset, ids);
+			
+			CKANSuccessResponse<CKANSearchResult> res = new CKANSuccessResponse<>();
+			res.setHelp("");
+			res.setResult(CKANUtils.toCkanSearchResult(result));
+			
+			return Response.status(Response.Status.OK).entity(GsonUtil.obj2Json(res, GsonUtil.ckanSuccType)).build();
+		}catch(Exception e) {
+			e.printStackTrace();
+			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+		}
+
+	}
+
+	@POST
+	@Path("{catalogueID}/api/action/package_search")
+	@Produces("application/json")
+	public Response single_package_search_post(@Context HttpServletRequest httpRequest,@PathParam("catalogueID") String catalogueID,final String input) {		
+
+		try {
+			
+			JSONObject j = new JSONObject(input);
+			
+			int limit=-1;
+			int offset=0;
+
+			if(StringUtils.isNotBlank(j.optString("rows", ""))) {
+				limit = Integer.parseInt(j.optString("rows", ""));
+			}else {
+				limit=20;
+			}
+
+			if(StringUtils.isNotBlank(j.optString("start", ""))) {
+				offset=Integer.parseInt(j.optString("start", ""));
+			}else {
+				offset=0;
+			}
+			
+			String mappedQuery = CKANUtils.manageQuery(j.optString("q", ""), " ");
+			String mappedSort = CKANUtils.manageSort(j.optString("sort", "metadata_modified desc"));
+			//Adding catalogues ids
+			try {
+				ODMSCatalogue cat = FederationCore.getODMSCatalogue(Integer.parseInt(catalogueID));
+				if(cat.isActive()) {
+					SearchResult result = FederatedSearch.searchByQuery(mappedQuery, mappedSort, limit, offset, Arrays.asList(catalogueID));
+					
+					CKANSuccessResponse<CKANSearchResult> res = new CKANSuccessResponse<>();
+					res.setHelp("");
+					res.setResult(CKANUtils.toCkanSearchResult(result));
+					
+					return Response.status(Response.Status.OK).entity(GsonUtil.obj2Json(res, GsonUtil.ckanSuccType)).build();
+				}else {
+					CKANErrorResponse err = new CKANErrorResponse("", "Catalogue "+catalogueID+" not found", "Not Found");
+					return Response.status(Response.Status.NOT_FOUND).entity(GsonUtil.obj2Json(err, GsonUtil.ckanErrType)).build();
+				}
+			}catch(ODMSCatalogueNotFoundException e) {
+				CKANErrorResponse err = new CKANErrorResponse("", "Catalogue "+catalogueID+" not found", "Not Found");
+				return Response.status(Response.Status.NOT_FOUND).entity(GsonUtil.obj2Json(err, GsonUtil.ckanErrType)).build();
+			}
+
+		}catch(Exception e) {
+			e.printStackTrace();
+			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+		}
+
+	}
 	
 }
