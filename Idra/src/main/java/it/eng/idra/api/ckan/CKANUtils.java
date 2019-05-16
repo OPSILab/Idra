@@ -218,11 +218,11 @@ public class CKANUtils {
 		if(dataset.getLandingPage()!=null)
 			d.setUrl(StringUtils.isNotBlank(dataset.getLandingPage().getValue())?dataset.getLandingPage().getValue():null);
 
-		//TODO Set extras & group
+		//TODO group
 		List<Extra> extras = new ArrayList<Extra>();
 		if(dataset.getAccessRights()!=null) {
 			if(StringUtils.isNotBlank(dataset.getAccessRights().getValue()))
-				extras.add(new Extra("accessRights",dataset.getAccessRights().getValue()));
+				extras.add(new Extra("access_rights",dataset.getAccessRights().getValue()));
 		}
 		
 		if(dataset.getFrequency()!=null) {
@@ -239,29 +239,41 @@ public class CKANUtils {
 				
 		if(dataset.getRightsHolder()!=null) {
 			if(dataset.getRightsHolder().getName()!=null && StringUtils.isNotBlank(dataset.getRightsHolder().getName().getValue()))
-				extras.add(new Extra("rightsHolder_name",dataset.getRightsHolder().getName().getValue()));
+				extras.add(new Extra("holder_name",dataset.getRightsHolder().getName().getValue()));
 
 			if(dataset.getRightsHolder().getMbox()!=null && StringUtils.isNotBlank(dataset.getRightsHolder().getMbox().getValue()))
-				extras.add(new Extra("rightsHolder_mbox",dataset.getRightsHolder().getMbox().getValue()));
+				extras.add(new Extra("holder_email",dataset.getRightsHolder().getMbox().getValue()));
+			
+			if(dataset.getRightsHolder().getIdentifier()!=null && StringUtils.isNotBlank(dataset.getRightsHolder().getIdentifier().getValue()))
+				extras.add(new Extra("holder_identifier",dataset.getRightsHolder().getIdentifier().getValue()));
+			
+			if(dataset.getRightsHolder().getHomepage()!=null && StringUtils.isNotBlank(dataset.getRightsHolder().getHomepage().getValue()))
+				extras.add(new Extra("holder_url",dataset.getRightsHolder().getHomepage().getValue()));
+			
+			if(dataset.getRightsHolder().getType()!=null && StringUtils.isNotBlank(dataset.getRightsHolder().getType().getValue()))
+				extras.add(new Extra("holder_type",dataset.getRightsHolder().getType().getValue()));
+			
+			if(dataset.getRightsHolder().getResourceUri()!=null && StringUtils.isNotBlank(dataset.getRightsHolder().getResourceUri()))
+				extras.add(new Extra("holder_uri",dataset.getRightsHolder().getResourceUri()));
 		}
 		
 		if(dataset.getSpatialCoverage()!=null) {
 			if(dataset.getSpatialCoverage().getGeographicalIdentifier()!=null && StringUtils.isNotBlank(dataset.getSpatialCoverage().getGeographicalIdentifier().getValue()))
-				extras.add(new Extra("spatial_geographicalIdentifier",dataset.getSpatialCoverage().getGeographicalIdentifier().getValue()));
+				extras.add(new Extra("geographical_identifier",dataset.getSpatialCoverage().getGeographicalIdentifier().getValue()));
 			
 			if(dataset.getSpatialCoverage().getGeographicalName()!=null && StringUtils.isNotBlank(dataset.getSpatialCoverage().getGeographicalName().getValue()))
-				extras.add(new Extra("spatial_geographicalName",dataset.getSpatialCoverage().getGeographicalName().getValue()));
+				extras.add(new Extra("geographical_name",dataset.getSpatialCoverage().getGeographicalName().getValue()));
 			
 			if(dataset.getSpatialCoverage().getGeometry()!=null && StringUtils.isNotBlank(dataset.getSpatialCoverage().getGeometry().getValue()))
-				extras.add(new Extra("spatial_geometry",dataset.getSpatialCoverage().getGeometry().getValue()));
+				extras.add(new Extra("geometry",dataset.getSpatialCoverage().getGeometry().getValue()));
 		}
 		
 		if(dataset.getTemporalCoverage()!=null) {
 			if(dataset.getTemporalCoverage().getEndDate()!=null && StringUtils.isNotBlank(dataset.getTemporalCoverage().getEndDate().getValue()))
-				extras.add(new Extra("temporal_endDate",dataset.getTemporalCoverage().getEndDate().getValue()));
+				extras.add(new Extra("temporal_end",dataset.getTemporalCoverage().getEndDate().getValue()));
 			
 			if(dataset.getTemporalCoverage().getStartDate()!=null && StringUtils.isNotBlank(dataset.getTemporalCoverage().getStartDate().getValue()))
-				extras.add(new Extra("temporal_startDate",dataset.getTemporalCoverage().getStartDate().getValue()));
+				extras.add(new Extra("temporal_start",dataset.getTemporalCoverage().getStartDate().getValue()));
 		}
 		
 		//Lista
@@ -275,14 +287,14 @@ public class CKANUtils {
 		if(dataset.getHasVersion()!=null && dataset.getHasVersion().size()>0) {
 			List<String> strTmp = dataset.getHasVersion().stream().filter(x -> StringUtils.isNotBlank(x.getValue())).map(x -> x.getValue()).collect(Collectors.toList());
 			if(!strTmp.isEmpty()) {
-				extras.add(new Extra("hasVersion",strTmp.toString()));
+				extras.add(new Extra("has_version",strTmp.toString()));
 			}
 		}
 		
 		if(dataset.getIsVersionOf()!=null && dataset.getIsVersionOf().size()>0) {
 			List<String> strTmp = dataset.getIsVersionOf().stream().filter(x -> StringUtils.isNotBlank(x.getValue())).map(x -> x.getValue()).collect(Collectors.toList());
 			if(!strTmp.isEmpty()) {
-				extras.add(new Extra("isVersionOf",strTmp.toString()));
+				extras.add(new Extra("is_version_of",strTmp.toString()));
 			}
 		}
 		
@@ -296,14 +308,14 @@ public class CKANUtils {
 		if(dataset.getOtherIdentifier()!=null && dataset.getOtherIdentifier().size()>0) {
 			List<String> strTmp = dataset.getOtherIdentifier().stream().filter(x -> StringUtils.isNotBlank(x.getValue())).map(x -> x.getValue()).collect(Collectors.toList());
 			if(!strTmp.isEmpty()) {
-				extras.add(new Extra("otherIdentifier",strTmp.toString()));
+				extras.add(new Extra("alternate_identifier",strTmp.toString()));
 			}
 		}
 		
 		if(dataset.getRelatedResource()!=null && dataset.getRelatedResource().size()>0) {
 			List<String> strTmp = dataset.getRelatedResource().stream().filter(x -> StringUtils.isNotBlank(x.getValue())).map(x -> x.getValue()).collect(Collectors.toList());
 			if(!strTmp.isEmpty()) {
-				extras.add(new Extra("relatedResource",strTmp.toString()));
+				extras.add(new Extra("related_resource",strTmp.toString()));
 			}
 		}
 		
@@ -324,7 +336,7 @@ public class CKANUtils {
 		if(dataset.getVersionNotes()!=null && dataset.getVersionNotes().size()>0) {
 			List<String> strTmp = dataset.getVersionNotes().stream().filter(x -> StringUtils.isNotBlank(x.getValue())).map(x -> x.getValue()).collect(Collectors.toList());
 			if(!strTmp.isEmpty()) {
-				extras.add(new Extra("versionNotes",strTmp.toString()));
+				extras.add(new Extra("version_notes",strTmp.toString()));
 			}
 		}
 		
@@ -400,10 +412,6 @@ public class CKANUtils {
 		}
 
 		return String.join(",", outlist);
-	}
-
-	public static void main(String args[]) {
-		System.out.println(StringUtils.isNotBlank(""));
 	}
 	
 }

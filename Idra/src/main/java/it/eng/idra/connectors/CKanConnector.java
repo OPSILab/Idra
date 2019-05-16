@@ -316,6 +316,8 @@ public class CKanConnector implements IODMSConnector {
 				case "geographical_geonames_url":
 				case "spatial_coverage":
 				case "Copertura Geografica URI":
+				case "geometry":
+				case "spatial_geometry":
 					String input = e.getValue();
 					if (checkIfJsonObject(input))
 						geometry = input;
