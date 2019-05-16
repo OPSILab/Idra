@@ -1,8 +1,6 @@
 package it.eng.idra.api.ckan;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -23,7 +21,6 @@ import org.apache.logging.log4j.Logger;
 import org.ckan.Dataset;
 import org.json.JSONObject;
 
-import it.eng.idra.beans.ErrorResponse;
 import it.eng.idra.beans.ckan.CKANErrorResponse;
 import it.eng.idra.beans.ckan.CKANSuccessResponse;
 import it.eng.idra.beans.dcat.DCATDataset;
@@ -42,7 +39,7 @@ public class CKANApi {
 	private static Logger logger = LogManager.getLogger(CKANApi.class);
 
 	@GET
-	@Path("/api/action/package_list")
+	@Path("/api/{var:(3/?)?}action/package_list")
 	@Produces("application/json")
 	public Response all_package_list(@Context HttpServletRequest httpRequest,
 			@QueryParam("limit") String l, @QueryParam("offset") String o) {		
@@ -81,7 +78,7 @@ public class CKANApi {
 	}
 
 	@GET
-	@Path("/{catalogueID}/api/action/package_list")
+	@Path("/{catalogueID}/api/{var:(3/?)?}action/package_list")
 	@Produces("application/json")
 	public Response package_list(@Context HttpServletRequest httpRequest,
 			@PathParam("catalogueID") String catalogueID,@QueryParam("limit") String l, @QueryParam("offset") String o) {		
@@ -124,9 +121,9 @@ public class CKANApi {
 		}
 
 	}
-
+	
 	@GET
-	@Path("/{catalogueID}/api/action/package_show")
+	@Path("/{catalogueID}/api/{var:(3/?)?}action/package_show")
 	@Produces("application/json")
 	public Response package_show(@Context HttpServletRequest httpRequest,
 			@PathParam("catalogueID") String catalogueID,@QueryParam("id") String datasetID) {		
@@ -170,8 +167,9 @@ public class CKANApi {
 
 	}
 
+	
 	@GET
-	@Path("/api/action/package_show")
+	@Path("/api/{var:(3/?)?}action/package_show")
 	@Produces("application/json")
 	public Response all_package_show(@Context HttpServletRequest httpRequest,
 			@QueryParam("id") String datasetID) {		
@@ -205,7 +203,7 @@ public class CKANApi {
 	}
 	
 	@GET
-	@Path("/api/action/package_search")
+	@Path("/api/{var:(3/?)?}action/package_search")
 	@Produces("application/json")
 	public Response all_package_search(@Context HttpServletRequest httpRequest,
 			@QueryParam("q") @DefaultValue("*:*") String query,@QueryParam("start") @DefaultValue("0") String start, @QueryParam("rows") @DefaultValue("20") String rows, @QueryParam("sort") @DefaultValue("metadata_modified desc") String sort ) {		
@@ -241,9 +239,9 @@ public class CKANApi {
 		}
 
 	}
-
+	
 	@GET
-	@Path("{catalogueID}/api/action/package_search")
+	@Path("{catalogueID}/api/{var:(3/?)?}action/package_search")
 	@Produces("application/json")
 	public Response single_package_search(@Context HttpServletRequest httpRequest,@PathParam("catalogueID") String catalogueID,
 			@QueryParam("q") @DefaultValue("*:*") String query,@QueryParam("start") @DefaultValue("0") String start, @QueryParam("rows") @DefaultValue("20") String rows, @QueryParam("sort") @DefaultValue("metadata_modified desc") String sort ) {		
@@ -289,9 +287,9 @@ public class CKANApi {
 		}
 
 	}
-
+	
 	@POST
-	@Path("/api/action/package_search")
+	@Path("/api/{var:(3/?)?}action/package_search")
 	@Produces("application/json")
 	public Response all_package_search_post(@Context HttpServletRequest httpRequest,final String input) {		
 
@@ -333,8 +331,9 @@ public class CKANApi {
 
 	}
 
+
 	@POST
-	@Path("{catalogueID}/api/action/package_search")
+	@Path("{catalogueID}/api/{var:(3/?)?}action/package_search")
 	@Produces("application/json")
 	public Response single_package_search_post(@Context HttpServletRequest httpRequest,@PathParam("catalogueID") String catalogueID,final String input) {		
 

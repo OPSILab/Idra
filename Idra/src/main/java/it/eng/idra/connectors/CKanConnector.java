@@ -435,6 +435,10 @@ public class CKanConnector implements IODMSConnector {
 			if(StringUtils.isNotBlank(d.getMetadata_modified()))
 				updateDate = CommonUtil.fixBadUTCDate(d.getMetadata_modified());
 
+			if(StringUtils.isNotBlank(d.getVersion())){
+				version = d.getVersion();
+			}
+			
 			if (StringUtils.isNotBlank(geographicalIdentifier) || StringUtils.isNotBlank(geographicalName)
 					|| StringUtils.isNotBlank(geometry))
 				spatialCoverage = new DCTLocation(DCTerms.spatial.getURI(), geographicalIdentifier, geographicalName,

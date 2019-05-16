@@ -14,15 +14,17 @@ import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.ckan.Dataset;
-import org.ckan.Dataset.SearchResults;
 import org.ckan.Extra;
+import org.ckan.Group;
 import org.ckan.Tag;
-import org.json.JSONObject;
 
 import it.eng.idra.beans.dcat.DCATDataset;
 import it.eng.idra.beans.dcat.DCATDistribution;
 import it.eng.idra.beans.dcat.DCTLicenseDocument;
+import it.eng.idra.beans.dcat.SKOSConceptTheme;
+import it.eng.idra.beans.dcat.SKOSPrefLabel;
 import it.eng.idra.beans.search.SearchResult;
+import it.eng.idra.management.FederationCore;
 
 public class CKANUtils {
 
@@ -48,19 +50,7 @@ public class CKANUtils {
 
 	public static Dataset toCkanDataset(DCATDataset dataset) {
 		Dataset d = new Dataset();
-
-		if(dataset.getCreator()!=null) {
-			if(dataset.getCreator().getName()!=null)
-				d.setAuthor(StringUtils.isNotBlank(dataset.getCreator().getName().getValue())?dataset.getCreator().getName().getValue():null);
-
-			if(dataset.getCreator().getMbox()!=null)
-				d.setAuthor_email(StringUtils.isNotBlank(dataset.getCreator().getMbox().getValue())?dataset.getCreator().getMbox().getValue():null);
-
-			if(dataset.getCreator().getIdentifier()!=null)
-				d.setCreator_user_id(StringUtils.isNotBlank(dataset.getCreator().getIdentifier().getValue())?dataset.getCreator().getIdentifier().getValue():null);
-			
-		}		
-
+	
 		d.setDownload_url(null);
 
 		d.setId(dataset.getId());
@@ -193,7 +183,7 @@ public class CKANUtils {
 
 		d.setRevision_id(null);
 
-		d.setState("active");
+//		d.setState("active");
 
 		d.setTag_string(null);
 
@@ -236,7 +226,27 @@ public class CKANUtils {
 				extras.add(new Extra("identifier",dataset.getIdentifier().getValue()));
 			}
 		}
-				
+		
+		if(dataset.getCreator()!=null) {
+			if(dataset.getCreator().getName()!=null && StringUtils.isNotBlank(dataset.getCreator().getName().getValue()))
+				extras.add(new Extra("creator_name",dataset.getCreator().getName().getValue()));
+
+			if(dataset.getCreator().getMbox()!=null && StringUtils.isNotBlank(dataset.getCreator().getMbox().getValue()))
+				extras.add(new Extra("creator_email",dataset.getCreator().getMbox().getValue()));
+			
+			if(dataset.getCreator().getIdentifier()!=null && StringUtils.isNotBlank(dataset.getCreator().getIdentifier().getValue()))
+				extras.add(new Extra("creator_identifier",dataset.getCreator().getIdentifier().getValue()));
+			
+			if(dataset.getCreator().getHomepage()!=null && StringUtils.isNotBlank(dataset.getCreator().getHomepage().getValue()))
+				extras.add(new Extra("creator_url",dataset.getCreator().getHomepage().getValue()));
+			
+			if(dataset.getCreator().getType()!=null && StringUtils.isNotBlank(dataset.getCreator().getType().getValue()))
+				extras.add(new Extra("creator_type",dataset.getCreator().getType().getValue()));
+			
+			if(dataset.getCreator().getResourceUri()!=null && StringUtils.isNotBlank(dataset.getCreator().getResourceUri()))
+				extras.add(new Extra("creator_uri",dataset.getCreator().getResourceUri()));			
+		}
+		
 		if(dataset.getRightsHolder()!=null) {
 			if(dataset.getRightsHolder().getName()!=null && StringUtils.isNotBlank(dataset.getRightsHolder().getName().getValue()))
 				extras.add(new Extra("holder_name",dataset.getRightsHolder().getName().getValue()));
@@ -340,17 +350,35 @@ public class CKANUtils {
 			}
 		}
 		
+		dataset.getConformsTo();
 		
 		//TODO completare il mapping inverso
-//		dataset.getSubject();
-//		dataset.getTheme();
-//		dataset.getContactPoint();
-//		dataset.getConformsTo();
+		dataset.getSubject();
+		
+		dataset.getContactPoint();
 		
 		d.setExtras(extras);
 		
 		d.setGroups(null);
-
+		
+		//European opendata portal suggests the mapping dcat themes into ckan's groups
+		List<Group> groups = new ArrayList<Group>();
+		dataset.getTheme();
+		for(SKOSConceptTheme t : dataset.getTheme()) {
+			for(SKOSPrefLabel p : t.getPrefLabel()) {
+				if(StringUtils.isNotBlank(p.getValue())) {
+					Group g = new Group();
+					g.setIs_organization(false);
+					if(FederationCore.isDcatTheme(p.getValue())) {
+						String tmp = FederationCore.getDCATThemesFromAbbr(p.getValue());
+						g.setTitle(tmp);
+						g.setName(p.getValue());	
+					}else {
+						
+					}
+				}
+			}
+		}
 		return d;
 
 	}
@@ -365,7 +393,7 @@ public class CKANUtils {
 
 	public static String toCkanDate(String date) throws ParseException {
 		SimpleDateFormat ISO = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
-		return new Timestamp(ISO.parse(date).getTime()).toString().replace(" ", "T");
+		return new Timestamp(ISO.parse(date).getTime()).toString().replace(" ", "T")+"00000";
 	}
 
 	public static String manageQuery(String query, String separator){
