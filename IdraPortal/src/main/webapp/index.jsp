@@ -442,7 +442,7 @@ div.m-app-loading p {
 					class="img-responsive footerImages small-margin"
 					ng-src="images/logo_eng-100.jpg" style="width:25%"/></a></div>
 			<div class="col-md-4 col-lg-4 col-sm-4">
-				<p style="margin-bottom:0px;">Copyright &copy;<a href="https://www.eng.it/" target="_blank">Engineering</a> 2018. - Idra v. {{idraVersion}}</p>
+				<p style="margin-bottom:0px;">Copyright &copy;<a href="https://www.eng.it/" target="_blank">Engineering</a> 2019. - Idra v. {{idraVersion}}</p>
 			</div>
 			<div class="col-md-4 col-lg-4 col-sm-4">
 				<a class="pull-right" href="#/credits">{{'credits' | translate}}</a>
