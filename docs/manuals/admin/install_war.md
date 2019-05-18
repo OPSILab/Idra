@@ -1,4 +1,4 @@
-**Introduction**
+# Introduction
 
 This document describes how to install and launch the Idra platform, by building
 the WAR packages from source code. After completing the build process, the

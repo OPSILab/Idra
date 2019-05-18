@@ -1,4 +1,4 @@
-**Introduction**
+# Introduction
 
 This document describes how to install and launch the Idra platform very easily
 using [Docker](https://www.docker.com/). There are several ways to accomplish

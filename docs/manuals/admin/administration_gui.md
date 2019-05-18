@@ -1,4 +1,4 @@
-**Introduction**
+# Introduction
 
 This section provides the description of the Administration Functionalities.
 Through the Idra Portal a logged administrator can:
