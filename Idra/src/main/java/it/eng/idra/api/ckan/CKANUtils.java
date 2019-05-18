@@ -15,16 +15,20 @@ import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
 import org.ckan.Dataset;
 import org.ckan.Extra;
-import org.ckan.Group;
 import org.ckan.Tag;
+import org.json.JSONObject;
+
+import com.github.openjson.JSONArray;
 
 import it.eng.idra.beans.dcat.DCATDataset;
 import it.eng.idra.beans.dcat.DCATDistribution;
 import it.eng.idra.beans.dcat.DCTLicenseDocument;
+import it.eng.idra.beans.dcat.DCTStandard;
+import it.eng.idra.beans.dcat.SKOSConceptSubject;
 import it.eng.idra.beans.dcat.SKOSConceptTheme;
 import it.eng.idra.beans.dcat.SKOSPrefLabel;
+import it.eng.idra.beans.dcat.VCardOrganization;
 import it.eng.idra.beans.search.SearchResult;
-import it.eng.idra.management.FederationCore;
 
 public class CKANUtils {
 
@@ -349,36 +353,97 @@ public class CKANUtils {
 				extras.add(new Extra("version_notes",strTmp.toString()));
 			}
 		}
+					
+		JSONArray ar_contactPoint = new JSONArray();
+		for(VCardOrganization o : dataset.getContactPoint()) {
+			if(StringUtils.isNotBlank(o.getFn().getValue()) || StringUtils.isNotBlank(o.getHasEmail().getValue()) || StringUtils.isNotBlank(o.getHasTelephoneType().getValue())
+					|| StringUtils.isNotBlank(o.getHasTelephoneValue().getValue()) || StringUtils.isNotBlank(o.getHasURL().getValue())) {
+				JSONObject tmpObj = new JSONObject();
+				tmpObj.put("fn", StringUtils.isNotBlank(o.getFn().getValue())?o.getFn().getValue():null);
+				tmpObj.put("has_email", StringUtils.isNotBlank(o.getHasEmail().getValue())?o.getHasEmail().getValue():null);
+				tmpObj.put("has_telephone_type", StringUtils.isNotBlank(o.getHasTelephoneType().getValue())?o.getHasTelephoneType().getValue():null);
+				tmpObj.put("has_telephone_value", StringUtils.isNotBlank(o.getHasTelephoneValue().getValue())?o.getHasTelephoneValue().getValue():null);
+				tmpObj.put("has_url", StringUtils.isNotBlank(o.getHasURL().getValue())?o.getHasURL().getValue():null);
+				
+				ar_contactPoint.put(tmpObj);
+			}
+		}
 		
-		dataset.getConformsTo();
+		if(ar_contactPoint.length()>0) {
+			extras.add(new Extra("contact_point",ar_contactPoint.toString()));
+		}
 		
-		//TODO completare il mapping inverso
-		dataset.getSubject();
 		
-		dataset.getContactPoint();
+		JSONArray ar_conformsTo = new JSONArray();
+		for(DCTStandard s : dataset.getConformsTo()) {
+			if(StringUtils.isNotBlank(s.getIdentifier().getValue()) || StringUtils.isNotBlank(s.getDescription().getValue()) || StringUtils.isNotBlank(s.getTitle().getValue())) {
+				JSONObject tmpObj = new JSONObject();
+				tmpObj.put("identifier", StringUtils.isNotBlank(s.getIdentifier().getValue())?s.getIdentifier().getValue():null);
+				tmpObj.put("description", StringUtils.isNotBlank(s.getDescription().getValue())?s.getDescription().getValue():null);
+				tmpObj.put("title", StringUtils.isNotBlank(s.getTitle().getValue())?s.getTitle().getValue():null);
+				if(s.getReferenceDocumentation() != null && !s.getReferenceDocumentation().isEmpty())
+					tmpObj.put("reference_documentation", s.getReferenceDocumentation().stream().filter(x -> StringUtils.isNotBlank(x.getValue())).map(x -> x.getValue()).collect(Collectors.toList()).toString() );
+
+				ar_conformsTo.put(tmpObj);
+			}
+		}
+		
+		if(ar_conformsTo.length()>0) {
+			extras.add(new Extra("conforms_to",ar_conformsTo.toString()));
+		}
+		
+		for(SKOSConceptTheme t : dataset.getTheme()){
+			List<SKOSPrefLabel> labelTmp = t.getPrefLabel().stream().filter(x -> StringUtils.isNotBlank(x.getLanguage()) || StringUtils.isNotBlank(x.getValue())).collect(Collectors.toList()); 
+			if(labelTmp.isEmpty()) {
+				JSONArray ar = new JSONArray();
+				for(SKOSPrefLabel p : labelTmp) {
+					JSONObject tmpObj = new JSONObject();
+					tmpObj.put("language", p.getLanguage());
+					tmpObj.put("value", p.getValue());
+					ar.put(tmpObj);
+				}
+				extras.add(new Extra("theme",ar.toString()));
+			}
+		}
+		
+		for(SKOSConceptSubject t : dataset.getSubject()){
+			List<SKOSPrefLabel> labelTmp = t.getPrefLabel().stream().filter(x -> StringUtils.isNotBlank(x.getLanguage()) || StringUtils.isNotBlank(x.getValue())).collect(Collectors.toList()); 
+			if(labelTmp.isEmpty()) {
+				JSONArray ar = new JSONArray();
+				for(SKOSPrefLabel p : labelTmp) {
+					JSONObject tmpObj = new JSONObject();
+					tmpObj.put("language", p.getLanguage());
+					tmpObj.put("value", p.getValue());
+					ar.put(tmpObj);
+				}
+				extras.add(new Extra("subject",ar.toString()));
+			}
+		}
 		
 		d.setExtras(extras);
+		
+		
 		
 		d.setGroups(null);
 		
 		//European opendata portal suggests the mapping dcat themes into ckan's groups
-		List<Group> groups = new ArrayList<Group>();
-		dataset.getTheme();
-		for(SKOSConceptTheme t : dataset.getTheme()) {
-			for(SKOSPrefLabel p : t.getPrefLabel()) {
-				if(StringUtils.isNotBlank(p.getValue())) {
-					Group g = new Group();
-					g.setIs_organization(false);
-					if(FederationCore.isDcatTheme(p.getValue())) {
-						String tmp = FederationCore.getDCATThemesFromAbbr(p.getValue());
-						g.setTitle(tmp);
-						g.setName(p.getValue());	
-					}else {
-						
-					}
-				}
-			}
-		}
+//		List<Group> groups = new ArrayList<Group>();
+//		dataset.getTheme();
+//		for(SKOSConceptTheme t : dataset.getTheme()) {
+//			for(SKOSPrefLabel p : t.getPrefLabel()) {
+//				if(StringUtils.isNotBlank(p.getValue())) {
+//					Group g = new Group();
+//					g.setIs_organization(false);
+//					if(FederationCore.isDcatTheme(p.getValue())) {
+//						String tmp = FederationCore.getDCATThemesFromAbbr(p.getValue());
+//						g.setTitle(tmp);
+//						g.setName(p.getValue());	
+//					}else {
+//						
+//					}
+//				}
+//			}
+//		}
 		return d;
 
 	}
