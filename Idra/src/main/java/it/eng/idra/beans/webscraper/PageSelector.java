@@ -38,9 +38,9 @@ public class PageSelector extends WebScraperSelector {
 
 	}
 
-	public PageSelector(List<String> parentSelectors, WebScraperSelectorType type, Boolean multiple, String title, String selector,
-			List<String> stopValues) {
-		super(parentSelectors, type, multiple, title, selector, stopValues);
+	public PageSelector(List<String> parentSelectors, WebScraperSelectorType type, Boolean multiple, String title,
+			String selector, String regex, List<String> stopValues) {
+		super(parentSelectors, type, multiple, title, selector, regex, stopValues);
 
 	}
 

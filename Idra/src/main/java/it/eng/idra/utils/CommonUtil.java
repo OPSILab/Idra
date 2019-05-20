@@ -50,7 +50,7 @@ public class CommonUtil {
 
 	private static Logger logger = LogManager.getLogger(CommonUtil.class);
 	private static DateTimeFormatter dtFormatter = DateTimeFormatter.ISO_OFFSET_DATE_TIME.withZone(ZoneOffset.UTC);
-	private static String[] dateFormats = { "dd/MM/yyyy", "yyyy-MM-dd", "EEE MMM dd HH:mm:ss zzz yyyy",
+	private static String[] dateFormats = { "yyyy","dd/MM/yyyy", "yyyy-MM-dd", "EEE MMM dd HH:mm:ss zzz yyyy",
 			"EEEE dd MMMM yyyy", "dd MMMM yyyy", "yyyy-MM-dd'T'HH:mm:ss[XXX][X]"  };
 
 	public static Ordering<ODMSCatalogue> idOrder = new Ordering<ODMSCatalogue>() {
