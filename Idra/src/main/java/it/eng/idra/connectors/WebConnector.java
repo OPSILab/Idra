@@ -19,20 +19,16 @@ package it.eng.idra.connectors;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
-import java.util.Locale;
 import java.util.Map;
-import java.util.TimeZone;
 import java.util.Map.Entry;
-import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.regex.Matcher;
@@ -175,65 +171,78 @@ public class WebConnector implements IODMSConnector {
 		for (DatasetSelector sel : selectors) {
 
 			// Apply the shift if needed
-			String selector = sel.getSelector().replaceAll("'", "");
+			String cssSelector = sel.getSelector().replaceAll("'", "");
 			if (shift != 0) {
-				Matcher m = Pattern.compile("div:nth-of-type\\((\\d+)\\)").matcher(selector);
+				Matcher shiftMatcher = Pattern.compile("div:nth-of-type\\((\\d+)\\)").matcher(cssSelector);
 				String argument = null;
-				if (m.find() && (argument = m.group(1)) != null) {
+				if (shiftMatcher.find() && (argument = shiftMatcher.group(1)) != null) {
 					int argValue = Integer.parseInt(argument);
-					selector = selector.replace("(" + argValue + ")", "(" + (argValue + shift) + ")");
+					cssSelector = cssSelector.replace("(" + argValue + ")", "(" + (argValue + shift) + ")");
 				}
 
 			}
 
-			Elements extractedElem = doc.select(selector);
+			// Extract the HTML element by CSS Selector
+			Elements extractedElem = doc.select(cssSelector);
+
+			// Extract the text from the HTML element with Regex if any in the selector
+			String extractedText = extractedElem.text();
+			String regex = sel.getRegex();
+			if (StringUtils.isNotBlank(regex)) {
+				Matcher regexMatcher = Pattern.compile(regex).matcher(extractedText);
+				if (regexMatcher.find()) {
+					extractedText = regexMatcher.group();
+				}
+			}
 
 			switch (sel.getName()) {
 
 			case "title":
-				title = extractedElem.text();
+				title = extractedText;
 				if (StringUtils.isBlank(title) || WebScraperSelector.getDefaultStopValues().contains(title)
 						|| (sel.getStopValues() != null && sel.getStopValues().contains(title))) {
 					throw new DatasetNotValidException("The value " + title + " for the selector: " + sel.getName()
-							+ " is a stopValue then not valid and dataset was skipped");
+							+ " is a stopValue or is empty then not valid and dataset with URL: " + doc.baseUri()
+							+ " was skipped");
 				}
 				if ("Referente :".equals(title)) {
 					throw new DatasetNotValidException("The value " + title + " for the selector: " + sel.getName()
-							+ " is not a valid title since it is the next div label");
+							+ " is not a valid title since it is the next div label, dataset with URL: " + doc.baseUri()
+							+ " was skipped");
 				}
 				break;
 			case "description":
-				description = extractedElem.text();
+				description = extractedText;
 				break;
 			case "publisher_name":
-				publisherName = extractedElem.text();
+				publisherName = extractedText;
 				break;
 			case "publisher_mbox":
-				publisherMbox = extractedElem.text();
+				publisherMbox = extractedText;
 				break;
 			case "publisher_homepage":
-				publisherHomepage = extractedElem.text();
+				publisherHomepage = extractedText;
 				break;
 			case "publisher_type":
-				publisherType = extractedElem.text();
+				publisherType = extractedText;
 				break;
 			case "publisher_identifier":
-				publisherIdentifier = extractedElem.text();
+				publisherIdentifier = extractedText;
 				break;
 			case "publisher_uri":
-				publisherUri = extractedElem.text();
+				publisherUri = extractedText;
 				break;
 			case "contact_fn":
-				vCardFn = extractedElem.text();
+				vCardFn = extractedText;
 				break;
 			case "contact_email":
-				vCardHasEmail = extractedElem.text();
+				vCardHasEmail = extractedText;
 				break;
 			case "contact_telephone":
-				vCardHasTelephone = extractedElem.text();
+				vCardHasTelephone = extractedText;
 				break;
 			case "contact_url":
-				vCardHasURL = extractedElem.text();
+				vCardHasURL = extractedText;
 				break;
 			case "keywords":
 				extractedElem.stream().filter(x -> StringUtils.isNoneBlank(x.text())).forEach(x -> {
@@ -242,127 +251,127 @@ public class WebConnector implements IODMSConnector {
 				});
 				break;
 			case "accessRights":
-				accessRights = extractedElem.text();
+				accessRights = extractedText;
 				break;
 			case "conformsTo_identifier":
-				conformsToIdentifier = extractedElem.text();
+				conformsToIdentifier = extractedText;
 				break;
 			case "conformsTo_title":
-				conformsToTitle = extractedElem.text();
+				conformsToTitle = extractedText;
 				break;
 			case "conformsTo_description":
-				conformsToDescription = extractedElem.text();
+				conformsToDescription = extractedText;
 				break;
 			case "conformsTo_referenceDocumentation":
-				conformsToReferenceDocumentation = extractedElem.text();
+				conformsToReferenceDocumentation = extractedText;
 				break;
 			case "documentation":
-				documentation.add(extractedElem.text());
+				documentation.add(extractedText);
 				break;
 			case "frequency":
-				frequency = extractedElem.text();
+				frequency = extractedText;
 				break;
 			case "hasVersion":
-				hasVersion.add(extractedElem.text());
+				hasVersion.add(extractedText);
 				break;
 			case "isVersionOf":
-				isVersionOf.add(extractedElem.text());
+				isVersionOf.add(extractedText);
 				break;
 			case "landingPage":
-				landingPage = extractedElem.text();
+				landingPage = extractedText;
 				break;
 			case "language":
-				language.add(extractedElem.text());
+				language.add(extractedText);
 				break;
 			case "provenance":
-				provenance.add(extractedElem.text());
+				provenance.add(extractedText);
 				break;
 			case "releaseDate":
 				try {
-					releaseDate = CommonUtil.fromLocalToUtcDate(extractedElem.text(), null);
+					releaseDate = CommonUtil.fromLocalToUtcDate(extractedText, null);
 				} catch (IllegalArgumentException ignore) {
 				}
 				break;
 			case "updateDate":
 				try {
-					updateDate = CommonUtil.fromLocalToUtcDate(extractedElem.text(), null);
+					updateDate = CommonUtil.fromLocalToUtcDate(extractedText, null);
 				} catch (IllegalArgumentException ignore) {
 				}
 				break;
 			case "source":
-				source.add(extractedElem.text());
+				source.add(extractedText);
 				break;
 			case "sample":
-				sample.add(extractedElem.text());
+				sample.add(extractedText);
 				break;
 			case "spatialCoverage_geographicalIdentifier":
-				geographicalIdentifier = extractedElem.text();
+				geographicalIdentifier = extractedText;
 				break;
 			case "spatialCoverage_geographicalName":
-				geographicalName = extractedElem.text();
+				geographicalName = extractedText;
 				break;
 			case "spatialCoverage_geometry":
-				geometry = extractedElem.text();
+				geometry = extractedText;
 				break;
 			case "temporalCoverage_startDate":
 				try {
-					startDate = CommonUtil.fromLocalToUtcDate(extractedElem.text(), null);
+					startDate = CommonUtil.fromLocalToUtcDate(extractedText, null);
 				} catch (IllegalArgumentException ignore) {
 				}
 				break;
 			case "temporalCoverage_endDate":
 				try {
-					endDate = CommonUtil.fromLocalToUtcDate(extractedElem.text(), null);
+					endDate = CommonUtil.fromLocalToUtcDate(extractedText, null);
 				} catch (IllegalArgumentException ignore) {
 				}
 				break;
 			case "type":
-				type = extractedElem.text();
+				type = extractedText;
 				break;
 			case "version":
-				version = extractedElem.text();
+				version = extractedText;
 				break;
 			case "versionNotes":
-				versionNotes.add(extractedElem.text());
+				versionNotes.add(extractedText);
 				break;
 			case "rightsHolder_name":
-				holderName = extractedElem.text();
+				holderName = extractedText;
 				break;
 			case "rightsHolder_mbox":
-				holderMbox = extractedElem.text();
+				holderMbox = extractedText;
 				break;
 			case "rightsHolder_homepage":
-				holderName = extractedElem.text();
+				holderName = extractedText;
 				break;
 			case "rightsHolder_type":
-				holderType = extractedElem.text();
+				holderType = extractedText;
 				break;
 			case "rightsHolder_uri":
-				holderUri = extractedElem.text();
+				holderUri = extractedText;
 				break;
 			case "rightsHolder_identifier":
-				holderIdentifier = extractedElem.text();
+				holderIdentifier = extractedText;
 				break;
 			case "creator_name":
-				creatorName = extractedElem.text();
+				creatorName = extractedText;
 				break;
 			case "creator_mbox":
-				creatorMbox = extractedElem.text();
+				creatorMbox = extractedText;
 				break;
 			case "creator_homepage":
-				creatorHomepage = extractedElem.text();
+				creatorHomepage = extractedText;
 				break;
 			case "creator_type":
-				creatorType = extractedElem.text();
+				creatorType = extractedText;
 				break;
 			case "creator_uri":
-				creatorUri = extractedElem.text();
+				creatorUri = extractedText;
 				break;
 			case "creator_identifier":
-				creatorIdentifier = extractedElem.text();
+				creatorIdentifier = extractedText;
 				break;
 			case "subject":
-				subject.add(extractedElem.text());
+				subject.add(extractedText);
 				break;
 			case "theme":
 				themeList.addAll(extractConceptList(DCAT.theme.getURI(),
@@ -527,7 +536,7 @@ public class WebConnector implements IODMSConnector {
 				Matcher dinamicMatcher = dinamicPattern.matcher(selName);
 
 				// Fetch Values from multiple Elements from the dataset page, by using current
-				// selector (if it is a dinamic Selector: e.g. distribution_title
+				// selector (if it is a dinamic Selector: e.g. distribution_title)
 				if (dinamicMatcher.find()) {
 					List<String> values = fetchMultipleValuesBySelector(document, sel);
 
@@ -613,17 +622,24 @@ public class WebConnector implements IODMSConnector {
 		// Document doc = WebScraper.getDatasetDocument(node.getSitemap(), 0);
 		List<Document> docs = WebScraper.getDatasetsDocument(node.getSitemap());
 
+		AtomicInteger counter = new AtomicInteger(0);
 		List<DCATDataset> totalDatasets = docs.stream().map(doc -> {
 			try {
 				return datasetToDCAT(doc, node);
 			} catch (DatasetNotValidException e) {
 				logger.info(e.getMessage());
+				counter.getAndIncrement();
 				return null;
 			}
-		}).filter(item -> item != null).filter(distinctByKey(p -> p.getTitle())).collect(Collectors.toList());
-		// totalDatasets.stream().forEach(d -> System.out
+		//}).filter(item -> item != null).filter(distinctByKey(p -> p.getTitle())).collect(Collectors.toList());
+		}).filter(item -> item != null).collect(Collectors.toList());
+			
+			
+			// totalDatasets.stream().forEach(d -> System.out
 		// .println("IDENTIFIER: " + d.getIdentifier().getValue() + " URL: " +
 		// d.getLandingPage().getValue()));
+		logger.info("Skipped Web datasets when mapping: " + counter.get() + "/" + docs.size());
+		logger.info("Final mapped and returned datasets: " + totalDatasets.size() + "/" + docs.size());
 
 		return totalDatasets;
 

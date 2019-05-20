@@ -61,12 +61,20 @@ public class WebScraper {
 
 	private static Logger logger = LogManager.getLogger(WebScraper.class);
 
-	private static final int PAGINATION_RETRY_NUM = 5;
-	private static final int JSOUP_TIMEOUT = 5000;
-	private static final long COUNTDOWN_LATCH_TIMEOUT = 1800; // Seconds == 30 Minutes
+	private static final int PAGINATION_RETRY_NUM;
+	private static final int DATASET_TIMEOUT;
+	private static final long COUNTDOWN_LATCH_TIMEOUT;
+	private static final int WEB_SCRAPER_RANGE_SCALE_NUM;
+	
+	static {
+		PAGINATION_RETRY_NUM = Integer
+				.parseInt(PropertyManager.getProperty(ODFProperty.WEB_SCRAPER_PAGINATION_RETRY_NUM));
+		DATASET_TIMEOUT = Integer.parseInt(PropertyManager.getProperty(ODFProperty.WEB_SCRAPER_DATASET_TIMEOUT));
+		COUNTDOWN_LATCH_TIMEOUT = Long.parseLong(PropertyManager.getProperty(ODFProperty.WEB_SCRAPER_GLOBAL_TIMEOUT));
+		WEB_SCRAPER_RANGE_SCALE_NUM = Integer.parseInt(PropertyManager.getProperty(ODFProperty.WEB_SCRAPER_RANGE_SCALE_NUM));
+	}
 
 	public WebScraper() {
-
 	}
 
 	/**
@@ -82,7 +90,7 @@ public class WebScraper {
 			throws IOException, NavigationTypeNotValidException {
 
 		return Jsoup.connect(buildRangeUrl(conf.getStartUrl(), conf.getNavigationParameter(), incrementValue))
-				.timeout(JSOUP_TIMEOUT).get();
+				.timeout(DATASET_TIMEOUT).get();
 
 	}
 
@@ -91,7 +99,7 @@ public class WebScraper {
 		String finalUrl = buildRangeUrl(startUrl, navParam, incrementValue);
 		// System.out.println(finalUrl);
 
-		return Jsoup.connect(finalUrl).timeout(JSOUP_TIMEOUT).get();
+		return Jsoup.connect(finalUrl).timeout(DATASET_TIMEOUT).get();
 
 	}
 
@@ -134,7 +142,7 @@ public class WebScraper {
 			throws InterruptedException {
 
 		List<Document> rangeResult = Collections.synchronizedList(new ArrayList<Document>());
-		Integer rangeScale = 25, skipped = 0;
+		Integer rangeScale = WEB_SCRAPER_RANGE_SCALE_NUM, skipped = 0;
 		Integer startValue = Integer.parseInt(navParam.getStartValue());
 		Integer endValue = Integer.parseInt(navParam.getEndValue());
 
@@ -161,7 +169,7 @@ public class WebScraper {
 		}
 
 		logger.info("Waiting for threads...");
-		rangeLatch.await(COUNTDOWN_LATCH_TIMEOUT, TimeUnit.SECONDS);
+		rangeLatch.await(COUNTDOWN_LATCH_TIMEOUT, TimeUnit.MILLISECONDS);
 		// skipped = (startValue-endValue) - rangeResult.size();
 		// if (skipped > 0)
 		logger.info("All threads returned\n Returned documents: " + rangeResult.size() + " - Expected: "
@@ -205,16 +213,20 @@ public class WebScraper {
 		 * risultati e chiama lo scraping del dataset singolo
 		 */
 
-		logger.info("Starting Web Scraper PAGE retrieval: " + pagesNumber + " Threads");
-		CountDownLatch pageLatch = new CountDownLatch(pagesNumber);
+		Integer pageMultiplier = navParam.getDatasetsPerPage();
+		pageMultiplier = (pageMultiplier == null || pageMultiplier < 1) ? 1 : pageMultiplier;
+		pagesNumber = pagesNumber / pageMultiplier;
 
-		for (int i = startPageValue; i <= pagesNumber - (1 - startPageValue); i++) {
-			// System.out.println(i);
-			new Thread(new PageWorker(startUrl, navParam, i, pageResult, pageLatch)).start();
+		logger.info("Starting Web Scraper PAGE retrieval: " + pagesNumber + " Threads");
+
+		CountDownLatch pageLatch = new CountDownLatch(pagesNumber);
+		for (int i = startPageValue; i <= pagesNumber; i++) {
+			System.out.println(i);
+			new Thread(new PageWorker(startUrl, navParam, 0, pageResult, pageLatch)).start();
 		}
 
 		logger.info("Waiting for threads...");
-		pageLatch.await(COUNTDOWN_LATCH_TIMEOUT, TimeUnit.SECONDS);
+		pageLatch.await(COUNTDOWN_LATCH_TIMEOUT, TimeUnit.MILLISECONDS);
 		logger.info("All threads returned - Returned documents: " + pageResult.size());
 
 		return pageResult;
