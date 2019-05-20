@@ -36,6 +36,7 @@ import javax.persistence.RollbackException;
 
 import org.apache.solr.client.solrj.SolrClient;
 import org.apache.solr.client.solrj.SolrQuery;
+import org.apache.solr.client.solrj.SolrQuery.SortClause;
 import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.client.solrj.embedded.EmbeddedSolrServer;
 import org.apache.solr.client.solrj.impl.HttpSolrClient;
@@ -170,6 +171,16 @@ public class MetadataCacheManager {
 
 		return searchDatasets(idParam).getResults();
 	}
+	
+	public static SearchResult getAllDatasetsByODMSCatalogue(int nodeId,int rows, int start)
+			throws DatasetNotFoundException, IOException, SolrServerException {
+		HashMap<String, Object> idParam = new HashMap<String, Object>();
+		idParam.put("nodeID", new Integer(nodeId).toString());
+		idParam.put("rows", Integer.toString(rows));
+		idParam.put("start", Integer.toString(start));
+
+		return searchDatasets(idParam);
+	}
 
 	public static SearchResult getAllDatasetsByODMSCatalogueID(int nodeId)
 			throws DatasetNotFoundException, IOException, SolrServerException {
@@ -190,16 +201,21 @@ public class MetadataCacheManager {
 	 * @throws SolrServerException
 	 * @throws IOException
 	 */
-	public static List<String> getAllDatasetsID() throws SolrServerException, IOException {
+	public static List<String> getAllDatasetsID(int limit,int offset) throws SolrServerException, IOException {
 		SolrQuery query = new SolrQuery();
 		QueryResponse rsp;
 		List<String> idList = new ArrayList<String>();
 		// Set the filters in order to match parent and childs
-		query.set("parent_filter", "content_type:" + "dataset");
+		query.set("parent_filter", "content_type:" + CacheContentType.dataset);
 		query.set("defType", "edismax");
 		query.addFilterQuery("{!parent which=$parent_filter}");
-		query.setParam("fl", "*,[child parentFilter=$parent_filter limit=1000]");
-		query.set("rows", "1000000");
+		query.setParam("fl", "id");
+		if(limit<0) {
+			query.setRows(1000000);
+		}else {
+			query.setRows(limit);
+			query.setStart(offset);
+		}
 		rsp = server.query(query);
 
 		for (SolrDocument doc : rsp.getResults()) {
@@ -208,6 +224,41 @@ public class MetadataCacheManager {
 		return idList;
 	}
 
+	
+	/**
+	 * 
+	 * Gets ID of all datasets in the SOLR cache belonging to a catalogue
+	 * 
+	 * @param catalogueID, the identifier of the catalogue
+	 * @return List<String> of datasets id 
+	 * @throws SolrServerException
+	 * @throws IOException
+	 */
+	public static List<String> getAllDatasetsIDByCatalogue(String catalogueID,int limit,int offset) throws SolrServerException, IOException {
+		SolrQuery query = new SolrQuery();
+		QueryResponse rsp;
+		List<String> idList = new ArrayList<String>();
+		// Set the filters in order to match parent and childs
+		query.setQuery("nodeID:"+catalogueID);
+		query.set("parent_filter", "content_type:" + CacheContentType.dataset);
+		query.set("defType", "edismax");
+		query.addFilterQuery("{!parent which=$parent_filter}");
+		query.setParam("fl", "id");
+		if(limit<0) {
+			query.setRows(1000000);
+		}else {
+			query.setRows(limit);
+			query.setStart(offset);
+		}
+		rsp = server.query(query);
+
+		for (SolrDocument doc : rsp.getResults()) {
+			idList.add((String) doc.getFieldValue("id"));
+		}
+		System.out.println(idList.size());
+		return idList;
+	}
+	
 	/**
 	 * Searches all Dataset ID belonging to the passed nodeID on local SOLR cache
 	 * 
@@ -577,6 +628,50 @@ public class MetadataCacheManager {
 		return new SearchResult(count, resultDatasets, facets);
 
 	}
+	
+	public static SearchResult searchDatasetsByQuery(String q,String sort,int rows, int offset,List<String> nodeIDS)
+			throws IOException, SolrServerException {
+		SolrQuery query = new SolrQuery();
+		QueryResponse rsp;
+		List<DCATDataset> resultDatasets = new ArrayList<DCATDataset>();
+		// Set the filters in order to match parent and childs
+		logger.info(q+" AND nodeID:("+String.join(" OR ", nodeIDS)+")");
+		if(StringUtils.isNotBlank(q)) {
+			query.setQuery("nodeID:("+String.join(" OR ", nodeIDS)+") AND "+q);
+		}else {
+			query.setQuery("nodeID:("+String.join(" OR ", nodeIDS)+")");
+		}
+		List<SortClause> sorts = Arrays.asList(sort.split(",")).stream().map(x -> new SortClause(x.split(" ")[0],x.split(" ")[1])).collect(Collectors.toList());
+		query.setSorts(sorts);
+		query.set("parent_filter", "content_type:" + CacheContentType.dataset);
+		query.set("defType", "edismax");
+		query.addFilterQuery("{!parent which=$parent_filter}");
+		query.setParam("fl", "*,[child parentFilter=$parent_filter limit=1000]");
+		if(rows<0) {
+			query.setRows(100);
+		}else {
+			query.setRows(rows);
+			query.setStart(offset);
+		}
+		rsp = server.query(query);
+
+		SolrDocumentList docs = rsp.getResults();
+		Long count = docs.getNumFound();
+
+		// Collect resulting datasets
+		for (SolrDocument doc : docs) {
+			DCATDataset d = DCATDataset.docToDataset(doc);
+			resultDatasets.add(d);
+		}
+		
+		logger.info("-- Search-- Matched Datasets in cache: " + docs.getNumFound());
+
+		docs = null;
+		rsp = null;
+
+		return new SearchResult(count, resultDatasets, null);
+
+	}
 
 	
 	public static SearchResult searchForDistributionStatistics(HashMap<String, Object> searchParameters)
@@ -876,7 +971,7 @@ public class MetadataCacheManager {
 			queryString += ((isFirst ? "" : " AND ") + "updateDate:[" + startEnd[0] + " TO " + startEnd[1] + "]");
 			isFirst = false;
 		}
-		// logger.info(queryString);
+		logger.info(queryString);
 		return queryString;
 	}
 
