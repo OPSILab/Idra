@@ -65,7 +65,9 @@ public enum ODFProperty {
 	WEB_SCRAPER_PAGE_TIMEOUT("idra.scraper.page.timeout"),
 	WEB_SCRAPER_DATASET_TIMEOUT("idra.scraper.dataset.timeout"),
 	WEB_SCRAPER_GLOBAL_TIMEOUT("idra.scraper.global.timeout"),
-	WEB_SCRAPER_GLOBAL_THROTTILING("idra.scraper.throttling");
+	WEB_SCRAPER_GLOBAL_THROTTILING("idra.scraper.throttling"),
+	PREVIEW_TIMEOUT("idra.preview.timeout"),
+	PREVIEW_MAX_SIZE("idra.preview.fileSize");
 	
 	private final String text;
 

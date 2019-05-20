@@ -41,6 +41,8 @@ import com.google.gson.reflect.TypeToken;
 
 import it.eng.idra.authentication.basic.LoggedUser;
 import it.eng.idra.beans.*;
+import it.eng.idra.beans.ckan.CKANErrorResponse;
+import it.eng.idra.beans.ckan.CKANSuccessResponse;
 import it.eng.idra.beans.dcat.DCATDataset;
 import it.eng.idra.beans.dcat.DCATProperty;
 import it.eng.idra.beans.dcat.DCTLicenseDocument;
@@ -195,6 +197,11 @@ public final class GsonUtil {
 	}.getType();
 	
 	public static Type platformStatsType = new TypeToken<PlatformStatistcs>() {
+	}.getType();
+	
+	public static Type ckanSuccType = new TypeToken<CKANSuccessResponse<Object>>() {
+	}.getType();
+	public static Type ckanErrType = new TypeToken<CKANErrorResponse>() {
 	}.getType();
 	
 	private static GsonBuilder gsonBuilder = new GsonBuilder()
