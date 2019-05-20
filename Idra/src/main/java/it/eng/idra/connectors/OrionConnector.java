@@ -184,8 +184,14 @@ public class OrionConnector implements IODMSConnector {
 			JSONArray tmp_arr = j.getJSONArray("conformsTo");
 			for(int i=0; i<tmp_arr.length();i++) {
 				JSONObject tmp = tmp_arr.getJSONObject(i);
-				if(tmp.has("identifier")||tmp.has("title")||tmp.has("description")||tmp.has("referenceDocumentation"))
-					conformsTo.add(new DCTStandard(DCTerms.conformsTo.getURI(), tmp.optString("identifier",null), tmp.optString("title",null), tmp.optString("description",null), GsonUtil.json2Obj(j.getJSONArray("referenceDocumentation").toString(), GsonUtil.stringListType), nodeID));
+				if(tmp.has("identifier")||tmp.has("title")||tmp.has("description")||tmp.has("referenceDocumentation")) {
+					JSONArray refDoc = j.optJSONArray("referenceDocumentation");
+					List<String> refDoclList = null;
+					if(refDoc!=null && refDoc.length()>0) {
+						refDoclList = GsonUtil.json2Obj(refDoc.toString(), GsonUtil.stringListType);
+					}
+					conformsTo.add(new DCTStandard(DCTerms.conformsTo.getURI(), tmp.optString("identifier",null), tmp.optString("title",null), tmp.optString("description",null),refDoclList, nodeID));
+				}					
 			}
 		}
 		
