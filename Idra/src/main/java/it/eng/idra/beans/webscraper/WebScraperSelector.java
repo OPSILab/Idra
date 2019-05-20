@@ -20,24 +20,13 @@ package it.eng.idra.beans.webscraper;
 import java.util.Arrays;
 import java.util.List;
 
-import javax.persistence.CollectionTable;
-import javax.persistence.ElementCollection;
-import javax.persistence.Embeddable;
-import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
 import javax.persistence.MappedSuperclass;
-import javax.persistence.Table;
 import javax.persistence.Transient;
-import javax.transaction.Transactional;
-
 import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.LazyCollection;
-import org.hibernate.annotations.LazyCollectionOption;
-
 import com.google.gson.annotations.SerializedName;
 
 import it.eng.idra.beans.ODFProperty;
@@ -52,7 +41,8 @@ public abstract class WebScraperSelector {
 	private WebScraperSelectorType type;
 	private String extractAttribute;
 	private Boolean multiple;
-
+    private String regex;
+	
 	@SerializedName("id")
 	private String name;
 	private String selector;
@@ -70,15 +60,18 @@ public abstract class WebScraperSelector {
 	 * @param multiple
 	 * @param name
 	 * @param selector
+	 * @param regex
+	 * @param stopValues
 	 */
-	public WebScraperSelector(List<String> parentSelectors, WebScraperSelectorType type, Boolean multiple, String title,
-			String selector, List<String> stopValues) {
+	public WebScraperSelector(List<String> parentSelectors, WebScraperSelectorType type, Boolean multiple, String name,
+			String selector, String regex, List<String> stopValues) {
 		super();
 		this.parentSelectors = parentSelectors;
 		this.type = type;
 		this.multiple = multiple;
-		this.name = title;
+		this.name = name;
 		this.selector = selector;
+		this.regex = regex;
 		this.setStopValues(stopValues);
 	}
 
@@ -164,6 +157,15 @@ public abstract class WebScraperSelector {
 		this.extractAttribute = extractAttribute;
 	}
 
+
+	public String getRegex() {
+		return regex;
+	}
+
+	public void setRegex(String regex) {
+		this.regex = regex;
+	}
+	
 	@Override
 	public String toString() {
 		return "WebScraperSelector [parentSelectors=" + parentSelectors + ", type=" + type + ", extractAttribute="
@@ -198,4 +200,8 @@ public abstract class WebScraperSelector {
 		return name.equals(other.getName());
 	}
 
+
+	
+	
+	
 }

@@ -36,7 +36,7 @@ public class InitServletListener implements ServletContextListener {
 	@Override
 	public void contextInitialized(ServletContextEvent arg0) {
 
-		logger.info("Welcome to Open Data Federation! - Init start");
+		logger.info("Welcome to Idra - Open Data Federation Platform! - Init start");
 
 		System.setProperty(ODFProperty.SESAME_REPO_NAME.toString(),
 				PropertyManager.getProperty(ODFProperty.SESAME_REPO_NAME).trim());

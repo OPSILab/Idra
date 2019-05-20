@@ -39,9 +39,9 @@ public class DatasetSelector extends WebScraperSelector {
 
 	}
 
-	public DatasetSelector(List<String> parentSelectors, WebScraperSelectorType type, Boolean multiple, String title, String selector,
-			List<String> stopValues) {
-		super(parentSelectors, type, multiple, title, selector, stopValues);
+	public DatasetSelector(List<String> parentSelectors, WebScraperSelectorType type, Boolean multiple, String name,
+			String selector, String regex, List<String> stopValues) {
+		super(parentSelectors, type, multiple, name, selector, regex, stopValues);
 
 	}
 
@@ -58,7 +58,7 @@ public class DatasetSelector extends WebScraperSelector {
 	@LazyCollection(LazyCollectionOption.FALSE)
 	@ElementCollection
 	@CollectionTable(name = "odms_sitemap_dataset_selector_stopValues", joinColumns = {
-			@JoinColumn(name = "selector_id")})
+			@JoinColumn(name = "selector_id") })
 	public List<String> getStopValues() {
 		return stopValues;
 	}
