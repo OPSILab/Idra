@@ -57,9 +57,17 @@ public enum ODFProperty {
 	ORION_FILE_DUMP_PATH("idra.orion.orionDumpFilePath"),
 	ORION_INTERNAL_API("idra.orion.orionInternalAPI"),
 	IDRA_CATALOGUE_BASEPATH("idra.catalogue.basepath"),
+	WEB_SCRAPER_PAGINATION_RETRY_NUM("idra.scraper.pagination.retry"),
+	WEB_SCRAPER_PAGE_RETRY_NUM("idra.scraper.page.retry"),
+	WEB_SCRAPER_RANGE_RETRY_NUM("idra.scraper.range.retry"),
+	WEB_SCRAPER_RANGE_SCALE_NUM("idra.scraper.range.scale"),
+	WEB_SCRAPER_DATASET_RETRY_NUM("idra.scraper.dataset.retry"),
+	WEB_SCRAPER_PAGE_TIMEOUT("idra.scraper.page.timeout"),
+	WEB_SCRAPER_DATASET_TIMEOUT("idra.scraper.dataset.timeout"),
+	WEB_SCRAPER_GLOBAL_TIMEOUT("idra.scraper.global.timeout"),
+	WEB_SCRAPER_GLOBAL_THROTTILING("idra.scraper.throttling"),
 	PREVIEW_TIMEOUT("idra.preview.timeout"),
 	PREVIEW_MAX_SIZE("idra.preview.fileSize");
-	
 	
 	private final String text;
 

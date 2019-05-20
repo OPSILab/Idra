@@ -27,10 +27,15 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jsoup.nodes.Document;
 
+import it.eng.idra.beans.ODFProperty;
 import it.eng.idra.beans.webscraper.NavigationParameter;
 import it.eng.idra.beans.webscraper.NavigationTypeNotValidException;
+import it.eng.idra.utils.PropertyManager;
 
 public class RangeWorker implements Runnable {
+
+	private static final int RANGE_RETRY_NUM;
+	private static final int JSOUP_THROTTLING;
 
 	private List<Document> outputScraper;
 	private CountDownLatch countDownLatch;
@@ -38,6 +43,12 @@ public class RangeWorker implements Runnable {
 	private String startUrl;
 	private NavigationParameter navParam;
 	private Logger logger = LogManager.getLogger(RangeWorker.class);
+
+	static {
+		RANGE_RETRY_NUM = Integer.parseInt(PropertyManager.getProperty(ODFProperty.WEB_SCRAPER_RANGE_RETRY_NUM));
+		JSOUP_THROTTLING = Integer.parseInt(PropertyManager.getProperty(ODFProperty.WEB_SCRAPER_GLOBAL_THROTTILING));
+
+	}
 
 	public RangeWorker(String startUrl, NavigationParameter navParam, int roundNumber, int rangeScale, int rangeRest,
 			List<Document> outputScraper, CountDownLatch countDownLatch) {
@@ -84,7 +95,7 @@ public class RangeWorker implements Runnable {
 					 * AVOID DOS EFFECT TO ODMS SERVER
 					 */
 					try {
-						TimeUnit.MILLISECONDS.sleep(100);
+						TimeUnit.MILLISECONDS.sleep(JSOUP_THROTTLING);
 					} catch (InterruptedException e) {
 						e.printStackTrace();
 					}
@@ -105,7 +116,7 @@ public class RangeWorker implements Runnable {
 							+ " while retrieving documents with parameter: " + finalParam + "\nAttempt n: " + retryNum);
 					retry = true;
 					retryNum++;
-					if (retryNum == 5) {
+					if (retryNum > RANGE_RETRY_NUM) {
 						retry = false;
 						e.printStackTrace();
 					}

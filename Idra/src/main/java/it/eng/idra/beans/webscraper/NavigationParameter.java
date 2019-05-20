@@ -44,7 +44,7 @@ public class NavigationParameter {
 	private String startValue;
 	private String endValue;
 	private Integer pagesNumber;
-	private Integer datasetPerPage;
+	private Integer datasetsPerPage;
 	private List<String> enumValues;
 	private List<PageSelector> pageSelectors;
 
@@ -127,12 +127,12 @@ public class NavigationParameter {
 		this.endValue = endValue;
 	}
 
-	public Integer getDatasetPerPage() {
-		return datasetPerPage;
+	public Integer getDatasetsPerPage() {
+		return datasetsPerPage;
 	}
 
-	public void setDatasetPerPage(Integer datasetPerPage) {
-		this.datasetPerPage = datasetPerPage;
+	public void setDatasetsPerPage(Integer datasetsPerPage) {
+		this.datasetsPerPage = datasetsPerPage;
 	}
 
 	@LazyCollection(LazyCollectionOption.FALSE)
@@ -171,7 +171,7 @@ public class NavigationParameter {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((datasetPerPage == null) ? 0 : datasetPerPage.hashCode());
+		result = prime * result + ((datasetsPerPage == null) ? 0 : datasetsPerPage.hashCode());
 		result = prime * result + ((endValue == null) ? 0 : endValue.hashCode());
 		result = prime * result + ((enumValues == null) ? 0 : enumValues.hashCode());
 		result = prime * result + ((id == null) ? 0 : id.hashCode());
@@ -191,10 +191,10 @@ public class NavigationParameter {
 		if (getClass() != obj.getClass())
 			return false;
 		NavigationParameter other = (NavigationParameter) obj;
-		if (datasetPerPage == null) {
-			if (other.datasetPerPage != null)
+		if (datasetsPerPage == null) {
+			if (other.datasetsPerPage != null)
 				return false;
-		} else if (!datasetPerPage.equals(other.datasetPerPage))
+		} else if (!datasetsPerPage.equals(other.datasetsPerPage))
 			return false;
 		if (endValue == null) {
 			if (other.endValue != null)
@@ -234,7 +234,7 @@ public class NavigationParameter {
 	@Override
 	public String toString() {
 		return "NavigationParameter [id=" + id + ", name=" + name + ", type=" + type + ", startValue=" + startValue
-				+ ", endValue=" + endValue + ", datasetPerPage=" + datasetPerPage + ", enumValues=" + enumValues
+				+ ", endValue=" + endValue + ", datasetsPerPage=" + datasetsPerPage + ", enumValues=" + enumValues
 				+ ", pageSelectors=" + pageSelectors + "]";
 	}
 

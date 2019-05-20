@@ -31,17 +31,21 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 
+import it.eng.idra.beans.ODFProperty;
 import it.eng.idra.beans.webscraper.NavigationParameter;
 import it.eng.idra.beans.webscraper.NavigationType;
 import it.eng.idra.beans.webscraper.NavigationTypeNotValidException;
 import it.eng.idra.beans.webscraper.UrlNotParseableException;
+import it.eng.idra.utils.PropertyManager;
 
 public class PageWorker implements Runnable {
 
-	private static final int PAGE_RETRY_NUM = 10;
-	private static final int DATASET_RETRY_NUM = 5;
-	private static final int JSOUP_TIMEOUT = 5000;
-	
+	private static final int PAGE_RETRY_NUM;
+	private static final int DATASET_RETRY_NUM;
+	private static final int PAGE_TIMEOUT;
+	private static final int DATASET_TIMEOUT;
+	private static final int JSOUP_THROTTLING;
+
 	private List<Document> outputScraper;
 	private CountDownLatch countDownLatch;
 	private int pageNumber;
@@ -49,6 +53,15 @@ public class PageWorker implements Runnable {
 	private NavigationParameter navParam;
 	private Logger logger = LogManager.getLogger(PageWorker.class);
 
+	static {
+		PAGE_RETRY_NUM = Integer.parseInt(PropertyManager.getProperty(ODFProperty.WEB_SCRAPER_PAGE_RETRY_NUM));
+		DATASET_RETRY_NUM = Integer.parseInt(PropertyManager.getProperty(ODFProperty.WEB_SCRAPER_DATASET_RETRY_NUM));
+		PAGE_TIMEOUT = Integer.parseInt(PropertyManager.getProperty(ODFProperty.WEB_SCRAPER_PAGE_TIMEOUT));
+		DATASET_TIMEOUT = Integer.parseInt(PropertyManager.getProperty(ODFProperty.WEB_SCRAPER_DATASET_TIMEOUT));
+		JSOUP_THROTTLING = Integer.parseInt(PropertyManager.getProperty(ODFProperty.WEB_SCRAPER_GLOBAL_THROTTILING));
+		
+	}
+	
 	public PageWorker(String startUrl, NavigationParameter navParam, int pageNumber, List<Document> outputScraper,
 			CountDownLatch countDownLatch) {
 		this.outputScraper = outputScraper;
@@ -86,10 +99,15 @@ public class PageWorker implements Runnable {
 	private static String buildPageUrl(String startUrl, NavigationParameter param, int pageValue)
 			throws NavigationTypeNotValidException {
 
+		Integer pageMultiplier = param.getDatasetsPerPage();
+		pageMultiplier = (pageMultiplier == null || pageMultiplier < 1) ? 1 : pageMultiplier;
+
 		if (param.getType().equals(NavigationType.PATH_PAGE))
-			return startUrl + (startUrl.endsWith("/") ? "" : "/") + param.getName() + "/" + String.valueOf(pageValue);
+			return startUrl + (startUrl.endsWith("/") ? "" : "/") + param.getName() + "/"
+					+ String.valueOf(pageValue * pageMultiplier);
 		else if (param.getType().equals(NavigationType.QUERY_PAGE))
-			return startUrl + (startUrl.contains("?") ? "&" : "?") + param.getName() + "=" + String.valueOf(pageValue);
+			return startUrl + (startUrl.contains("?") ? "&" : "?") + param.getName() + "="
+					+ String.valueOf(pageValue * pageMultiplier);
 		else
 			throw new NavigationTypeNotValidException("The input navigation Type is not valid");
 	}
@@ -110,9 +128,8 @@ public class PageWorker implements Runnable {
 
 			try {
 				String pageUrl = buildPageUrl(startUrl, navParam, pageNumber);
-				// logger.debug("--------------- PAGE URL: " + pageUrl + "
-				// -----------------------------");
-				return Jsoup.connect(pageUrl).timeout(20000).get();
+				 logger.debug("--------------- PAGE URL: " + pageUrl + "---------------------------");
+ 				return Jsoup.connect(pageUrl).timeout(PAGE_TIMEOUT).get();
 
 			} catch (IOException | NavigationTypeNotValidException e) {
 				logger.info("\nThread: " + Thread.currentThread().getId() + " Error: " + e.getMessage()
@@ -153,7 +170,7 @@ public class PageWorker implements Runnable {
 				if (link.startsWith("/"))
 					link = extractBaseUrlFromStartUrl() + link;
 
-				return Jsoup.connect(link).timeout(20000).get();
+				return Jsoup.connect(link).timeout(DATASET_TIMEOUT).get();
 			} catch (IOException e) {
 				logger.info("\nThread: " + Thread.currentThread().getId() + "Page: " + pageNumber + " Error: "
 						+ e.getMessage() + " retrieving Dataset Document: " + link + " - Attempt n: " + retryNum);
@@ -200,7 +217,7 @@ public class PageWorker implements Runnable {
 						for (Element e : itemElements) {
 							try {
 								try {
-									TimeUnit.MILLISECONDS.sleep(100);
+									TimeUnit.MILLISECONDS.sleep(JSOUP_THROTTLING);
 								} catch (InterruptedException e2) {
 									e2.printStackTrace();
 								}

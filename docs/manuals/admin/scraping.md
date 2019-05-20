@@ -157,6 +157,7 @@ In this case you have to:
  - 1) Define how to extract the **dataset links** from the list, by creating the specific **"datasetLink"** selector with type **Element Attribute** and `href` as **Attribute Name**. (see the Figure).
  ![alt tag](datasetLink.png "datasetLink selector")
   
+  > Ensure to select **ALL** dataset links (after clicking the second link, all the others will automatically highlight).
   > Ensure with **Data preview** that the link URL is extracted correctly.
  
  - 2) For the **pagination** you can either: 
