@@ -456,7 +456,7 @@
 		<dependency>
 			<groupId>com.github.OPSILab</groupId>
 			<artifactId>CKANClient-J</artifactId>
-			<version>v0.4</version>
+			<version>v0.5</version>
 		</dependency>
 
 		<!-- https://mvnrepository.com/artifact/org.quartz-scheduler/quartz -->
