@@ -1,3 +1,9 @@
+v2.0.0
+- New Feature: Implementation of CKAN API
+- New Feature: Provisioning of RESTful version of Idra API
+- New Feature: Support for Idra "Sitemap Creator" Chrome plugin
+- Fix: various bugs fixed on open data connectors and IDM compatibility
+
 v1.3.1
 - Fix: Idm Login (#34)
 
