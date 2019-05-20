@@ -456,7 +456,7 @@
 		<dependency>
 			<groupId>com.github.OPSILab</groupId>
 			<artifactId>CKANClient-J</artifactId>
-			<version>v0.3</version>
+			<version>v0.4</version>
 		</dependency>
 
 		<!-- https://mvnrepository.com/artifact/org.quartz-scheduler/quartz -->
@@ -466,19 +466,174 @@
 			<version>2.3.0</version>
 		</dependency>
 
-		<!-- TEST -->
-		<!-- <dependency> -->
-		<!-- <groupId>rspa</groupId> -->
-		<!-- <artifactId>CKANClient-J</artifactId> -->
-		<!-- <version>0.1</version> -->
-		<!-- </dependency> -->
-
-		<!-- https://mvnrepository.com/artifact/junit/junit -->
-		<!-- <dependency> -->
-		<!-- <groupId>junit</groupId> -->
-		<!-- <artifactId>junit</artifactId> -->
-		<!-- <version>4.12</version> -->
-		<!-- </dependency> -->
+		<!-- https://mvnrepository.com/artifact/org.apache.tika/tika-parsers -->
+<dependency>
+    <groupId>org.apache.tika</groupId>
+    <artifactId>tika-parsers</artifactId>
+    <version>1.20</version>
+    <exclusions>
+    	<exclusion>
+    		<groupId>org.apache.commons</groupId>
+    		<artifactId>commons-lang3</artifactId>
+    	</exclusion>
+    	<exclusion>
+    		<groupId>javax.xml.bind</groupId>
+    		<artifactId>jaxb-api</artifactId>
+    	</exclusion>
+    	<exclusion>
+    		<groupId>javax.annotation</groupId>
+    		<artifactId>javax.annotation-api</artifactId>
+    	</exclusion>
+    	<exclusion>
+    		<groupId>commons-codec</groupId>
+    		<artifactId>commons-codec</artifactId>
+    	</exclusion>
+    	<exclusion>
+    		<groupId>org.apache.commons</groupId>
+    		<artifactId>commons-compress</artifactId>
+    	</exclusion>
+    	<exclusion>
+    		<groupId>commons-lang</groupId>
+    		<artifactId>commons-lang</artifactId>
+    	</exclusion>
+    	<exclusion>
+    		<groupId>org.slf4j</groupId>
+    		<artifactId>slf4j-api</artifactId>
+    	</exclusion>
+    	<exclusion>
+    		<groupId>org.jdom</groupId>
+    		<artifactId>jdom2</artifactId>
+    	</exclusion>
+    	<exclusion>
+    		<groupId>org.ow2.asm</groupId>
+    		<artifactId>asm</artifactId>
+    	</exclusion>
+    	<exclusion>
+    		<groupId>org.apache.cxf</groupId>
+    		<artifactId>cxf-core</artifactId>
+    	</exclusion>
+    	<exclusion>
+    		<groupId>org.codehaus.woodstox</groupId>
+    		<artifactId>stax2-api</artifactId>
+    	</exclusion>
+    	<exclusion>
+    		<groupId>javax.ws.rs</groupId>
+    		<artifactId>javax.ws.rs-api</artifactId>
+    	</exclusion>
+    	<exclusion>
+    		<groupId>org.apache.cxf</groupId>
+    		<artifactId>cxf-rt-transports-http</artifactId>
+    	</exclusion>
+    	<exclusion>
+    		<groupId>org.apache.commons</groupId>
+    		<artifactId>commons-exec</artifactId>
+    	</exclusion>
+    	<exclusion>
+    		<groupId>commons-io</groupId>
+    		<artifactId>commons-io</artifactId>
+    	</exclusion>
+    	<exclusion>
+    		<groupId>com.google.code.gson</groupId>
+    		<artifactId>gson</artifactId>
+    	</exclusion>
+    	<exclusion>
+    		<groupId>org.slf4j</groupId>
+    		<artifactId>jcl-over-slf4j</artifactId>
+    	</exclusion>
+    	<exclusion>
+    		<groupId>edu.ucar</groupId>
+    		<artifactId>cdm</artifactId>
+    	</exclusion>
+    	<exclusion>
+    		<groupId>com.google.protobuf</groupId>
+    		<artifactId>protobuf-java</artifactId>
+    	</exclusion>
+    	<exclusion>
+    		<groupId>net.jcip</groupId>
+    		<artifactId>jcip-annotations</artifactId>
+    	</exclusion>
+    	<exclusion>
+    		<groupId>org.jsoup</groupId>
+    		<artifactId>jsoup</artifactId>
+    	</exclusion>
+    	<exclusion>
+    		<groupId>org.apache.httpcomponents</groupId>
+    		<artifactId>httpclient</artifactId>
+    	</exclusion>
+    	<exclusion>
+    		<groupId>javax.measure</groupId>
+    		<artifactId>unit-api</artifactId>
+    	</exclusion>
+    	<exclusion>
+    		<groupId>org.itadaki</groupId>
+    		<artifactId>bzip2</artifactId>
+    	</exclusion>
+    	<exclusion>
+    		<groupId>joda-time</groupId>
+    		<artifactId>joda-time</artifactId>
+    	</exclusion>
+    	<exclusion>
+    		<groupId>org.apache.sis.core</groupId>
+    		<artifactId>sis-metadata</artifactId>
+    	</exclusion>
+    	<exclusion>
+    		<groupId>org.bitbucket.mstrobel</groupId>
+    		<artifactId>procyon-core</artifactId>
+    	</exclusion>
+    	<exclusion>
+    		<groupId>org.apache.httpcomponents</groupId>
+    		<artifactId>httpmime</artifactId>
+    	</exclusion>
+    	<exclusion>
+    		<groupId>org.apache.sis.core</groupId>
+    		<artifactId>sis-utility</artifactId>
+    	</exclusion>
+    	<exclusion>
+    		<groupId>com.google.guava</groupId>
+    		<artifactId>guava</artifactId>
+    	</exclusion>
+    	<exclusion>
+    		<groupId>com.fasterxml.jackson.core</groupId>
+    		<artifactId>jackson-databind</artifactId>
+    	</exclusion>
+    	<exclusion>
+    		<groupId>org.apache.sis.core</groupId>
+    		<artifactId>sis-referencing</artifactId>
+    	</exclusion>
+    	<exclusion>
+    		<groupId>com.fasterxml.jackson.core</groupId>
+    		<artifactId>jackson-core</artifactId>
+    	</exclusion>
+    	<exclusion>
+    		<groupId>org.quartz-scheduler</groupId>
+    		<artifactId>quartz</artifactId>
+    	</exclusion>
+    	<exclusion>
+    		<groupId>org.opengis</groupId>
+    		<artifactId>geoapi</artifactId>
+    	</exclusion>
+    	<exclusion>
+    		<groupId>com.fasterxml.jackson.core</groupId>
+    		<artifactId>jackson-annotations</artifactId>
+    	</exclusion>
+    	<exclusion>
+    		<groupId>edu.ucar</groupId>
+    		<artifactId>httpservices</artifactId>
+    	</exclusion>
+    	<exclusion>
+    		<groupId>org.apache.commons</groupId>
+    		<artifactId>commons-csv</artifactId>
+    	</exclusion>
+    	<exclusion>
+    		<groupId>org.apache.james</groupId>
+    		<artifactId>apache-mime4j-core</artifactId>
+    	</exclusion>
+    	<exclusion>
+    		<groupId>org.bouncycastle</groupId>
+    		<artifactId>bcprov-jdk15on</artifactId>
+    	</exclusion>
+    </exclusions>
+</dependency>
 
 	</dependencies>
 	<build>

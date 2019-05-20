@@ -66,7 +66,6 @@ import org.apache.jena.vocabulary.DCAT;
 import org.apache.jena.vocabulary.DCTerms;
 import org.apache.logging.log4j.*;
 import org.ckan.*;
-
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
 import com.google.common.collect.Sets.SetView;
@@ -560,9 +559,10 @@ public class SPODConnector implements IODMSConnector {
 			// landingPage = d.getUrl();
 			String nodeHost = node.getHost();
 			
-			if(StringUtils.isNotBlank(d.getCkan_url()))
-				landingPage = d.getCkan_url();
-			else if(StringUtils.isNotBlank(d.getUrl()))
+//			if(StringUtils.isNotBlank(d.getCkan_url()))
+//				landingPage = d.getCkan_url();
+//			else 
+			if(StringUtils.isNotBlank(d.getUrl()))
 				landingPage = d.getUrl();
 			else
 				landingPage = nodeHost + (nodeHost.endsWith("/") ? "" : "/") + "opendata/" + d.getName();
