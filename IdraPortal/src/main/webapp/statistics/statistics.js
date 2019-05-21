@@ -23,6 +23,8 @@ angular.module("IdraPlatform").controller('StatisticsCtrl',['$scope','Statistics
 	$scope.showBackFormat=false;
 	$scope.showBackLicense=false;
 
+	var maxPieDisplay = 8;
+	
 	//Default 1 settimana
 	var end = new Date();
 	var start = new Date();
@@ -164,7 +166,7 @@ angular.module("IdraPlatform").controller('StatisticsCtrl',['$scope','Statistics
 
 			//$scope.formats.total+=x.cnt;
 
-			if($scope.formats.labels.length<10){
+			if($scope.formats.labels.length<maxPieDisplay){
 				if(x.format=="")
 					$scope.formats.labels.push("unknown");
 				else
@@ -178,7 +180,7 @@ angular.module("IdraPlatform").controller('StatisticsCtrl',['$scope','Statistics
 
 		});
 
-		if(formatsAll.labels.length >= 10 ){
+		if(formatsAll.labels.length >= maxPieDisplay ){
 			$scope.formats.labels.push("Others");
 			//$scope.formats.barChart[0].push(othCnt);
 			$scope.formats.pie.push(othCnt);
@@ -197,7 +199,7 @@ angular.module("IdraPlatform").controller('StatisticsCtrl',['$scope','Statistics
 
 			//$scope.licenses.total+=x.cnt;
 
-			if($scope.licenses.labels.length<10){
+			if($scope.licenses.labels.length<maxPieDisplay){
 				$scope.licenses.labels.push(x.license);
 				//$scope.licenses.barChart[0].push(x.cnt);
 				$scope.licenses.pie.push(x.cnt);
@@ -207,7 +209,7 @@ angular.module("IdraPlatform").controller('StatisticsCtrl',['$scope','Statistics
 
 		});
 
-		if(licensesAll.labels.length >= 10 ){
+		if(licensesAll.labels.length >= maxPieDisplay ){
 			$scope.licenses.labels.push("Others");
 			//$scope.licenses.barChart[0].push(othCnt1);
 			$scope.licenses.pie.push(othCnt1);
@@ -411,20 +413,20 @@ angular.module("IdraPlatform").controller('StatisticsCtrl',['$scope','Statistics
 
 	/*End OPTIONS*/
 
-	/*DrillDown*/
+	/*DrillDown*/	
 	$scope.showTop10=function(category){
 		if(category=='format'){
 			$scope.showBackFormat=false;
 			//$scope.formats={labels:[],pie:[]};
 			$scope.formats.labels=[];
 			$scope.formats.pie=[];
-			for(i=0; i<10; i++){
+			for(i=0; i<maxPieDisplay; i++){
 				$scope.formats.labels.push(formatsAll.labels[i]);
 				$scope.formats.pie.push(formatsAll.pie[i]);
 			}
 
 			var others=0;
-			for(i=10;i<formatsAll.labels.length;i++){
+			for(i=maxPieDisplay;i<formatsAll.labels.length;i++){
 				others+=formatsAll.pie[i];
 			}
 			$scope.formats.labels.push("Others");
@@ -436,13 +438,13 @@ angular.module("IdraPlatform").controller('StatisticsCtrl',['$scope','Statistics
 			$scope.licenses.labels=[];
 			$scope.licenses.pie=[];
 
-			for(i=0; i<10; i++){
+			for(i=0; i<maxPieDisplay; i++){
 				$scope.licenses.labels.push(licensesAll.labels[i]);
 				$scope.licenses.pie.push(licensesAll.pie[i]);
 			}
 
 			var others=0;
-			for(i=10;i<licensesAll.labels.length;i++){
+			for(i=maxPieDisplay;i<licensesAll.labels.length;i++){
 				others+=licensesAll.pie[i];
 			}
 			$scope.licenses.labels.push("Others");
@@ -458,7 +460,7 @@ angular.module("IdraPlatform").controller('StatisticsCtrl',['$scope','Statistics
 			$scope.formats.pie=[];
 	//		$scope.formats.total = formatsAll.total;
 
-			for(i=10; i<20; i++){
+			for(i=maxPieDisplay; i<20; i++){
 				$scope.formats.labels.push(formatsAll.labels[i]);
 				$scope.formats.pie.push(formatsAll.pie[i]);
 			}
@@ -478,7 +480,7 @@ angular.module("IdraPlatform").controller('StatisticsCtrl',['$scope','Statistics
 			$scope.licenses.labels=[];
 			$scope.licenses.pie=[];
 
-			for(i=10; i<20; i++){
+			for(i=maxPieDisplay; i<20; i++){
 				$scope.licenses.labels.push(licensesAll.labels[i]);
 				$scope.licenses.pie.push(licensesAll.pie[i]);
 			}
