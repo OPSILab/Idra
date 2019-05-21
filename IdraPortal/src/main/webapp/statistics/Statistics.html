@@ -42,7 +42,7 @@
 <!--  	</div>  -->
 </div>
 
-<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+<div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
 	<md-card class="md-whiteframe-3dp"> <md-card-title>
 	<md-card-title-text layout-align="center"> <span
 		class="md-headline">{{'statisticsTop10Catalogues' | translate}}</span>
@@ -69,12 +69,12 @@
 	</md-card-content> </md-card>
 </div>
 
-<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+<div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
 	<md-card class="md-whiteframe-3dp"> <md-card-title>
 	<md-card-title-text layout-align="center"> <span
 		class="md-headline">{{'statisticsMostActiveCatalogues' |
 		translate}}</span> </md-card-title-text>
-		<md-select style="margin-top:0px;margin-bottom:5px;"  ng-model="selectedPeriods"> <md-option
+		<md-select style="margin-top:0px;margin-bottom:0px;"  ng-model="selectedPeriods"> <md-option
 			ng-repeat="option in periodsSelect" ng-value="option.days">{{option.text
 		| translate}}</md-option> </md-select>
 		</md-card-title> 
@@ -85,6 +85,7 @@
 		chart-data="dataAddUpdate" chart-labels="labelsAddUpdate"
 		chart-series="seriesAddUpdate"
 		chart-options="{
+			responsive: true,   
    			title:{   
  				display:false,   
  				text:'Most Active Catalogues'   
@@ -98,7 +99,7 @@
 </canvas></md-card-content> </md-card>
 </div>
 
-<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+<div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
 	<md-card class="md-whiteframe-3dp"> <md-card-title>
 	<md-card-title-text layout-align="center"> <span
 		class="md-headline">{{'statisticsCataloguesTechnologies' |
@@ -108,7 +109,7 @@
 		</md-card-content> </md-card>
 </div>
 
-<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+<div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
 	<md-card class="md-whiteframe-3dp"> <md-card-title>
 	<md-card-title-text layout-align="center"> <span
 		class="md-headline">{{'statisticsDistributionFormats' |
@@ -124,7 +125,7 @@
 	</md-card-content> </md-card>
 </div>
 
-<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+<div class="col-lg-4 col-md-6 col-sm-12 col-xs-12">
 	<md-card class="md-whiteframe-3dp"> <md-card-title>
 	<md-card-title-text layout-align="center"> <span
 		class="md-headline">{{'statisticsDistributionLicenses' |
