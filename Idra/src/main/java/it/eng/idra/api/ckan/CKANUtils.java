@@ -370,7 +370,7 @@ public class CKANUtils {
 		}
 		
 		if(ar_contactPoint.length()>0) {
-			extras.add(new Extra("contact_point",ar_contactPoint.toString()));
+			extras.add(new Extra("contact_point",ar_contactPoint.toString().replaceAll("\\\\\"", "'").replaceAll("\"", "")));
 		}
 		
 		
@@ -389,12 +389,12 @@ public class CKANUtils {
 		}
 		
 		if(ar_conformsTo.length()>0) {
-			extras.add(new Extra("conforms_to",ar_conformsTo.toString()));
+			extras.add(new Extra("conforms_to",ar_conformsTo.toString().replaceAll("\\\\\"", "'").replaceAll("\"", "")));
 		}
 		
 		for(SKOSConceptTheme t : dataset.getTheme()){
 			List<SKOSPrefLabel> labelTmp = t.getPrefLabel().stream().filter(x -> StringUtils.isNotBlank(x.getLanguage()) || StringUtils.isNotBlank(x.getValue())).collect(Collectors.toList()); 
-			if(labelTmp.isEmpty()) {
+			if(!labelTmp.isEmpty()) {
 				JSONArray ar = new JSONArray();
 				for(SKOSPrefLabel p : labelTmp) {
 					JSONObject tmpObj = new JSONObject();
@@ -402,13 +402,13 @@ public class CKANUtils {
 					tmpObj.put("value", p.getValue());
 					ar.put(tmpObj);
 				}
-				extras.add(new Extra("theme",ar.toString()));
+				extras.add(new Extra("theme",ar.toString().replaceAll("\\\\\"", "'").replaceAll("\"", "")));
 			}
 		}
 		
 		for(SKOSConceptSubject t : dataset.getSubject()){
 			List<SKOSPrefLabel> labelTmp = t.getPrefLabel().stream().filter(x -> StringUtils.isNotBlank(x.getLanguage()) || StringUtils.isNotBlank(x.getValue())).collect(Collectors.toList()); 
-			if(labelTmp.isEmpty()) {
+			if(!labelTmp.isEmpty()) {
 				JSONArray ar = new JSONArray();
 				for(SKOSPrefLabel p : labelTmp) {
 					JSONObject tmpObj = new JSONObject();
@@ -416,7 +416,7 @@ public class CKANUtils {
 					tmpObj.put("value", p.getValue());
 					ar.put(tmpObj);
 				}
-				extras.add(new Extra("subject",ar.toString()));
+				extras.add(new Extra("subject",ar.toString().replaceAll("\\\\\"", "'").replaceAll("\"", "")));
 			}
 		}
 		
