@@ -53,7 +53,7 @@ import org.eclipse.rdf4j.rio.RDFParseException;
 import org.apache.logging.log4j.*;
 import org.apache.commons.lang3.StringUtils;
 
-import it.eng.idra.beans.ODFProperty;
+import it.eng.idra.beans.IdraProperty;
 import it.eng.idra.beans.dcat.DCATDataset;
 import it.eng.idra.beans.dcat.DCATDistribution;
 import it.eng.idra.beans.dcat.DCTLicenseDocument;
@@ -74,7 +74,7 @@ public class MetadataCacheManager {
 
 	public static Logger logger = LogManager.getLogger(MetadataCacheManager.class);
 
-	private static Boolean enableRdf = Boolean.parseBoolean(PropertyManager.getProperty(ODFProperty.ENABLE_RDF));
+	private static Boolean enableRdf = Boolean.parseBoolean(PropertyManager.getProperty(IdraProperty.ENABLE_RDF));
 	private static SolrClient server;
 
 	private MetadataCacheManager() {
@@ -1626,7 +1626,7 @@ public class MetadataCacheManager {
 	}
 
 	private static void handleORIONDistribution(CachePersistenceManager cachePersistence,ODMSCatalogue node,DCATDataset dataset) {
-		String internalAPI=PropertyManager.getProperty(ODFProperty.ORION_INTERNAL_API);
+		String internalAPI=PropertyManager.getProperty(IdraProperty.ORION_INTERNAL_API);
 		OrionCatalogueConfiguration nodeConf=(OrionCatalogueConfiguration)node.getAdditionalConfig();
 		for(DCATDistribution distribution : dataset.getDistributions()) {
 			String url="";
@@ -1643,7 +1643,7 @@ public class MetadataCacheManager {
 	}
 	
 //	private static void handleSparqlDistribution(CachePersistenceManager cachePersistence,ODMSCatalogue node,DCATDataset dataset) {
-//		String internalAPI=PropertyManager.getProperty(ODFProperty.ORION_INTERNAL_API);
+//		String internalAPI=PropertyManager.getProperty(IdraProperty.ORION_INTERNAL_API);
 //		SparqlCatalogueConfiguration nodeConf= (SparqlCatalogueConfiguration) node.getAdditionalConfig();
 //		for(DCATDistribution distribution : dataset.getDistributions()) {
 //			String url="";

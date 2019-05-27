@@ -35,7 +35,7 @@ import org.apache.logging.log4j.Logger;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import it.eng.idra.beans.ODFProperty;
+import it.eng.idra.beans.IdraProperty;
 import it.eng.idra.beans.dcat.DCATDataset;
 import it.eng.idra.beans.dcat.DCATDistribution;
 import it.eng.idra.beans.dcat.DCTLicenseDocument;
@@ -62,7 +62,7 @@ public class OrionConnector implements IODMSConnector {
 	private String nodeID;
 	private ODMSCatalogue node;
 	//The internal API used in case the query must be authenticated or if headers has to be set
-	private static String orionFilePath = PropertyManager.getProperty(ODFProperty.ORION_FILE_DUMP_PATH);
+	private static String orionFilePath = PropertyManager.getProperty(IdraProperty.ORION_FILE_DUMP_PATH);
 	private static Logger logger = LogManager.getLogger(OrionConnector.class);
 
 	public OrionConnector() {

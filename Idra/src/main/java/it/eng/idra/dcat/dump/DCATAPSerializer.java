@@ -36,12 +36,15 @@ import java.util.zip.ZipOutputStream;
 import org.apache.commons.lang.StringUtils;
 import org.apache.jena.datatypes.xsd.XSDhexBinary;
 import org.apache.jena.datatypes.xsd.impl.XSDDateType;
+import org.apache.jena.iri.IRI;
 import org.apache.jena.iri.IRIException;
 import org.apache.jena.iri.IRIFactory;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.rdf.model.ResourceRequiredException;
+import org.apache.jena.riot.system.IRIResolver;
+import org.apache.jena.shared.BadURIException;
 import org.apache.jena.sparql.vocabulary.FOAF;
 import org.apache.jena.vocabulary.DCAT;
 import org.apache.jena.vocabulary.DCTerms;
@@ -53,7 +56,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.eclipse.rdf4j.model.vocabulary.XMLSchema;
 
-import it.eng.idra.beans.ODFProperty;
+import it.eng.idra.beans.IdraProperty;
 import it.eng.idra.beans.dcat.DCATAPFormat;
 import it.eng.idra.beans.dcat.DCATAPProfile;
 import it.eng.idra.beans.dcat.DCATAPWriteType;
@@ -81,6 +84,8 @@ import it.eng.idra.utils.PropertyManager;
 public class DCATAPSerializer {
 
 	static Map<Integer, ODMSCatalogue> nodeResources = null;
+	@SuppressWarnings("deprecation")
+	static IRIFactory iriFactory = IRIFactory.jenaImplementation();
 
 	public static final String DCATAP_IT_BASE_URI = "http://dati.gov.it/onto/dcatapit#";
 	public static final String THEME_BASE_URI = "http://publications.europa.eu/resource/authority/data-theme/";
@@ -93,8 +98,8 @@ public class DCATAPSerializer {
 	public static final String LICENSE_TYPE_BASE_URI = "http://purl.org/adms/licencetype/";
 
 	protected static Logger logger = LogManager.getLogger(DCATAPSerializer.class);
-	private static String filePath = PropertyManager.getProperty(ODFProperty.DUMP_FILE_PATH);
-	private static String fileName = PropertyManager.getProperty(ODFProperty.DUMP_FILE_NAME);
+	private static String filePath = PropertyManager.getProperty(IdraProperty.DUMP_FILE_PATH);
+	private static String fileName = PropertyManager.getProperty(IdraProperty.DUMP_FILE_NAME);
 
 	static {
 
@@ -185,7 +190,13 @@ public class DCATAPSerializer {
 
 	private static Model addDatasetToModel(DCATDataset dataset, Model model) {
 
-		Resource datasetResource = model.createResource(dataset.getLandingPage().getValue(), DCAT.Dataset);
+		IRI iri = iriFactory.create(dataset.getLandingPage().getValue());
+
+		if (iri.hasViolation(false))
+			throw new BadURIException("URI for dataset: " + iri + "is not valid, skipping the dataset in the Jena Model:"
+					+ (iri.violations(false).next()).getShortMessage());
+
+		Resource datasetResource = model.createResource(iri.toString(), DCAT.Dataset);
 
 		datasetResource.addProperty(dataset.getTitle().getProperty(),
 				model.createLiteral(dataset.getTitle().getValue()));
@@ -208,7 +219,7 @@ public class DCATAPSerializer {
 		if (documentationList != null)
 			documentationList.stream().filter(item -> StringUtils.isNotBlank(item.getValue()))
 					.forEach(item -> datasetResource.addProperty(item.getProperty(), item.getValue()));
-		
+
 		List<DCATProperty> relatedResourceList = dataset.getRelatedResource();
 		if (relatedResourceList != null)
 			relatedResourceList.stream().filter(item -> StringUtils.isNotBlank(item.getValue()))
@@ -483,8 +494,9 @@ public class DCATAPSerializer {
 	 * @param model
 	 * @param parentResource
 	 */
-	
-	protected static <T extends SKOSConcept> void serializeConcept(List<T> conceptList, Model model, Resource parentResource) {
+
+	protected static <T extends SKOSConcept> void serializeConcept(List<T> conceptList, Model model,
+			Resource parentResource) {
 
 		if (conceptList != null && !conceptList.isEmpty()) {
 
@@ -751,7 +763,8 @@ public class DCATAPSerializer {
 	public static String searchResultToDCATAP(SearchResult result, DCATAPFormat format, DCATAPProfile profile,
 			DCATAPWriteType writeType) throws IOException {
 
-		nodeResources = FederationCore.getODMSCatalogues().stream().collect(Collectors.toMap(ODMSCatalogue::getId, node -> node));
+		nodeResources = FederationCore.getODMSCatalogues().stream()
+				.collect(Collectors.toMap(ODMSCatalogue::getId, node -> node));
 
 		Model model = datasetsToModel(result.getResults(), profile);
 
@@ -767,7 +780,7 @@ public class DCATAPSerializer {
 			// } else if (writeType.equals(DCATAPWriteType.ZIPFILE)) {
 			//
 			// writeModelToZipFile(model, format,
-			// PropertyManager.getProperty(ODFProperty.DUMP_FILE_PATH),
+			// PropertyManager.getProperty(IdraProperty.DUMP_FILE_PATH),
 			// "datasetDump");
 			// return "";
 		} else {
@@ -780,7 +793,8 @@ public class DCATAPSerializer {
 	public static String searchResultToDCATAPByNode(String nodeID, SearchResult result, DCATAPFormat format,
 			DCATAPProfile profile, DCATAPWriteType writeType) throws IOException {
 
-		nodeResources = FederationCore.getODMSCatalogues().stream().collect(Collectors.toMap(ODMSCatalogue::getId, node -> node));
+		nodeResources = FederationCore.getODMSCatalogues().stream()
+				.collect(Collectors.toMap(ODMSCatalogue::getId, node -> node));
 
 		Model model = datasetsToModel(result.getResults(), profile);
 
@@ -797,7 +811,7 @@ public class DCATAPSerializer {
 			// } else if (writeType.equals(DCATAPWriteType.ZIPFILE)) {
 			//
 			// writeModelToZipFile(model, format,
-			// PropertyManager.getProperty(ODFProperty.DUMP_FILE_PATH),
+			// PropertyManager.getProperty(IdraProperty.DUMP_FILE_PATH),
 			// "datasetDump");
 			// return "";
 		} else {
