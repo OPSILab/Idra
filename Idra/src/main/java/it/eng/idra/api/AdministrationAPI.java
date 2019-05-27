@@ -28,8 +28,8 @@ import it.eng.idra.beans.Datalet;
 import it.eng.idra.beans.ErrorResponse;
 import it.eng.idra.beans.Log;
 import it.eng.idra.beans.LogsRequest;
-import it.eng.idra.beans.ODFAuthenticationMethod;
-import it.eng.idra.beans.ODFProperty;
+import it.eng.idra.beans.IdraAuthenticationMethod;
+import it.eng.idra.beans.IdraProperty;
 import it.eng.idra.beans.PasswordChange;
 import it.eng.idra.beans.RdfPrefix;
 import it.eng.idra.beans.User;
@@ -110,8 +110,8 @@ public class AdministrationAPI {
 	public Response getVersion() {
 
 		JSONObject out = new JSONObject();
-		out.put("idra_version", PropertyManager.getProperty(ODFProperty.IDRA_VERSION));
-		out.put("idra_release_timestamp", PropertyManager.getProperty(ODFProperty.IDRA_RELEASE_TIMESTAMP));
+		out.put("idra_version", PropertyManager.getProperty(IdraProperty.IDRA_VERSION));
+		out.put("idra_release_timestamp", PropertyManager.getProperty(IdraProperty.IDRA_RELEASE_TIMESTAMP));
 
 		return Response.status(Response.Status.OK).entity(out.toString()).build();
 	}
@@ -736,7 +736,7 @@ public class AdministrationAPI {
 			Object token = null;
 			AuthenticationManager authInstance = AuthenticationManager.getActiveAuthenticationManager();
 
-			switch (ODFAuthenticationMethod.valueOf(PropertyManager.getProperty(ODFProperty.AUTHENTICATION_METHOD))) {
+			switch (IdraAuthenticationMethod.valueOf(PropertyManager.getProperty(IdraProperty.AUTHENTICATION_METHOD))) {
 
 			case FIWARE:
 
@@ -755,7 +755,7 @@ public class AdministrationAPI {
 					// session.setAttribute("loggedin", token);
 					// session.setAttribute("refresh_token", refresh_token);
 					// session.setAttribute("username", info.getDisplayName());
-					return Response.seeOther(URI.create(PropertyManager.getProperty(ODFProperty.IDRA_CATALOGUE_BASEPATH)))
+					return Response.seeOther(URI.create(PropertyManager.getProperty(IdraProperty.IDRA_CATALOGUE_BASEPATH)))
 							.cookie(new NewCookie("loggedin", (String) token, "/", "", "comment", 100, false))
 							.cookie(new NewCookie("refresh_token", refresh_token, "/", "", "comment", 100, false))
 							.cookie(new NewCookie("username", info.getDisplayName(), "/", "", "comment", 100, false))
@@ -791,7 +791,7 @@ public class AdministrationAPI {
 			Object token = null;
 			AuthenticationManager authInstance = AuthenticationManager.getActiveAuthenticationManager();
 
-			switch (ODFAuthenticationMethod.valueOf(PropertyManager.getProperty(ODFProperty.AUTHENTICATION_METHOD))) {
+			switch (IdraAuthenticationMethod.valueOf(PropertyManager.getProperty(IdraProperty.AUTHENTICATION_METHOD))) {
 
 			case FIWARE:
 				String code = httpRequest.getParameter("code");
@@ -813,7 +813,7 @@ public class AdministrationAPI {
 					session.setAttribute("username", info.getDisplayName());
 				}
 
-				return Response.temporaryRedirect(URI.create(httpRequest.getContextPath() + PropertyManager.getProperty(ODFProperty.IDRA_CATALOGUE_BASEPATH))).build();
+				return Response.temporaryRedirect(URI.create(httpRequest.getContextPath() + PropertyManager.getProperty(IdraProperty.IDRA_CATALOGUE_BASEPATH))).build();
 
 			default:
 				String input = IOUtils.toString(httpRequest.getInputStream(), Charset.defaultCharset());
@@ -881,7 +881,7 @@ public class AdministrationAPI {
 		try {
 
 			// switch
-			// (ODFAuthenticationMethod.valueOf(PropertyManager.getProperty(ODFProperty.AUTHENTICATION_METHOD)))
+			// (IdraAuthenticationMethod.valueOf(PropertyManager.getProperty(IdraProperty.AUTHENTICATION_METHOD)))
 			// {
 
 			// case FIWARE:
@@ -1176,7 +1176,7 @@ public class AdministrationAPI {
 	@Secured
 	@Path("/dcat-ap/dump/download")
 	@Produces(MediaType.APPLICATION_OCTET_STREAM)
-	public Response downloadDatasetDump(@Context HttpServletRequest httpRequest,
+	public Response downloadGlobalDCATAPDump(@Context HttpServletRequest httpRequest,
 			@DefaultValue("false") @QueryParam("forceDump") Boolean forceDump,
 			@DefaultValue("false") @QueryParam("zip") Boolean returnZip) {
 
@@ -1186,7 +1186,7 @@ public class AdministrationAPI {
 					.ok(DCATAPDumpManager.getDatasetDumpFromFile(null, forceDump, returnZip),
 							MediaType.APPLICATION_OCTET_STREAM)
 					.header("content-disposition",
-							"attachment; filename = " + DCATAPDumpManager.dumpFileName + (returnZip ? ".zip" : ""))
+							"attachment; filename = " + DCATAPDumpManager.globalDumpFileName + (returnZip ? ".zip" : ""))
 					.build();
 
 		} catch (Exception e) {
@@ -1199,7 +1199,7 @@ public class AdministrationAPI {
 	@Secured
 	@Path("/dcat-ap/dump")
 	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-	public Response getDatasetDump(@Context HttpServletRequest httpRequest,
+	public Response getGlobalDCATAPDump(@Context HttpServletRequest httpRequest,
 			@DefaultValue("false") @QueryParam("forceDump") Boolean forceDump) {
 
 		try {
@@ -1216,7 +1216,7 @@ public class AdministrationAPI {
 	@Secured
 	@Path("/dcat-ap/dump/download/{nodeID}")
 	@Produces(MediaType.APPLICATION_OCTET_STREAM)
-	public Response downloadDatasetDumpByODMSCatalogue(@Context HttpServletRequest httpRequest,
+	public Response downloadCatalogueDCATAPDump(@Context HttpServletRequest httpRequest,
 			@PathParam("nodeID") String nodeID, @DefaultValue("false") @QueryParam("forceDump") Boolean forceDump,
 			@DefaultValue("false") @QueryParam("zip") Boolean returnZip) {
 
@@ -1226,7 +1226,7 @@ public class AdministrationAPI {
 					.ok(DCATAPDumpManager.getDatasetDumpFromFile(nodeID, forceDump, returnZip),
 							MediaType.APPLICATION_OCTET_STREAM)
 					.header("content-disposition",
-							"attachment; filename = " + DCATAPDumpManager.dumpFileName
+							"attachment; filename = " + DCATAPDumpManager.globalDumpFileName
 									+ (StringUtils.isBlank(nodeID) ? "" : new String("_node_" + nodeID))
 									+ (returnZip ? ".zip" : ""))
 					.build();
@@ -1241,7 +1241,7 @@ public class AdministrationAPI {
 	@Secured
 	@Path("/dcat-ap/dump/{nodeID}")
 	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-	public Response getDatasetDumpByODMSCatalogue(@Context HttpServletRequest httpRequest,
+	public Response getCatalogueDCATAPDump(@Context HttpServletRequest httpRequest,
 			@DefaultValue("false") @QueryParam("forceDump") Boolean forceDump, @PathParam("nodeID") String nodeID) {
 
 		try {

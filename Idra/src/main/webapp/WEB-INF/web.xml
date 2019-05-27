@@ -34,23 +34,10 @@
 		<listener-class>it.eng.idra.management.InitServletListener</listener-class>
 	</listener>
 	<listener>
-		<listener-class>it.eng.idra.odfscheduler.CustomQuartzInitializer</listener-class>
+		<listener-class>it.eng.idra.scheduler.CustomQuartzInitializer</listener-class>
 	</listener>
 	<listener>
-		<listener-class>it.eng.idra.odfscheduler.ODFSchedulerListener</listener-class>
+		<listener-class>it.eng.idra.scheduler.IdraSchedulerListener</listener-class>
 	</listener>
-	<display-name>Driver API</display-name>
-	<servlet>
-		<servlet-name>Jersey REST Service</servlet-name>
-		<servlet-class>org.glassfish.jersey.servlet.ServletContainer</servlet-class>
-		<init-param>
-			<param-name>jersey.config.server.provider.packages</param-name>
-			<param-value>it.eng.idra.driver.api</param-value>
-		</init-param>
-		<load-on-startup>1</load-on-startup>
-	</servlet>
-	<servlet-mapping>
-		<servlet-name>Jersey REST Service</servlet-name>
-		<url-pattern>/festival/*</url-pattern>
-	</servlet-mapping>
+
 </web-app>

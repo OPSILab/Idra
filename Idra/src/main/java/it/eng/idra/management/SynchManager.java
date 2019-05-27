@@ -40,7 +40,7 @@ import org.apache.solr.client.solrj.SolrServerException;
 import org.eclipse.rdf4j.repository.RepositoryException;
 import org.eclipse.rdf4j.rio.RDFParseException;
 
-import it.eng.idra.beans.ODFProperty;
+import it.eng.idra.beans.IdraProperty;
 import it.eng.idra.beans.dcat.DCATAPFormat;
 import it.eng.idra.beans.dcat.DCATAPProfile;
 import it.eng.idra.beans.dcat.DCATAPWriteType;
@@ -61,8 +61,8 @@ import it.eng.idra.cache.CachePersistenceManager;
 import it.eng.idra.cache.LODCacheManager;
 import it.eng.idra.cache.MetadataCacheManager;
 import it.eng.idra.dcat.dump.DCATAPSerializer;
-import it.eng.idra.odfscheduler.ODFScheduler;
-import it.eng.idra.odfscheduler.SchedulerNotInitialisedException;
+import it.eng.idra.scheduler.IdraScheduler;
+import it.eng.idra.scheduler.exception.SchedulerNotInitialisedException;
 import it.eng.idra.utils.CommonUtil;
 import it.eng.idra.utils.PropertyManager;
 
@@ -235,8 +235,8 @@ public class SynchManager {
 //			try {
 //				SearchResult result = MetadataCacheManager.getAllDatasetsByODMSNodeID(node.getId());
 //				DCATAPSerializer.searchResultToDCATAPByNode(Integer.toString(node.getId()), result,
-//						DCATAPFormat.fromString(PropertyManager.getProperty(ODFProperty.DUMP_FORMAT)),
-//						DCATAPProfile.fromString(PropertyManager.getProperty(ODFProperty.DUMP_PROFILE)),
+//						DCATAPFormat.fromString(PropertyManager.getProperty(IdraProperty.DUMP_FORMAT)),
+//						DCATAPProfile.fromString(PropertyManager.getProperty(IdraProperty.DUMP_PROFILE)),
 //						DCATAPWriteType.FILE);
 //			} catch (Exception e1) {
 //				e1.printStackTrace();

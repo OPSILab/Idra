@@ -17,7 +17,7 @@
  ******************************************************************************/
 package it.eng.idra.cache;
 
-import it.eng.idra.beans.ODFProperty;
+import it.eng.idra.beans.IdraProperty;
 import it.eng.idra.beans.RdfPrefix;
 import it.eng.idra.beans.search.SparqlResultFormat;
 import it.eng.idra.management.FederationCore;
@@ -403,8 +403,8 @@ public class LODCacheManager {
 
 	private static String getRepositoryUrl() {
 		String repoUrl = "";
-		repoUrl = PropertyManager.getProperty(ODFProperty.SESAME_SERVER_URI).trim();
-		String repoName = PropertyManager.getProperty(ODFProperty.SESAME_REPO_NAME).trim();
+		repoUrl = PropertyManager.getProperty(IdraProperty.SESAME_SERVER_URI).trim();
+		String repoName = PropertyManager.getProperty(IdraProperty.SESAME_REPO_NAME).trim();
 		if (!repoUrl.endsWith("/") && !repoName.startsWith("/")) {
 			repoUrl += "/";
 		}

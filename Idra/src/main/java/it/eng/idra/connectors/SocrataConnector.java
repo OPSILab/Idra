@@ -17,7 +17,7 @@
  ******************************************************************************/
 package it.eng.idra.connectors;
 
-import it.eng.idra.beans.ODFProperty;
+import it.eng.idra.beans.IdraProperty;
 import it.eng.idra.beans.dcat.DCATDataset;
 import it.eng.idra.beans.dcat.DCATDistribution;
 import it.eng.idra.beans.dcat.DCTLicenseDocument;
@@ -732,21 +732,21 @@ public class SocrataConnector implements IODMSConnector {
 		 * http://hc.apache.org/httpcomponents-client-ga/httpclient/examples/org/apache/
 		 * http/examples/client/ClientExecuteProxy.java
 		 */
-		if (Boolean.parseBoolean(PropertyManager.getProperty(ODFProperty.HTTP_PROXY_ENABLED).trim())
-				&& StringUtils.isNotBlank(PropertyManager.getProperty(ODFProperty.HTTP_PROXY_HOST).trim())) {
+		if (Boolean.parseBoolean(PropertyManager.getProperty(IdraProperty.HTTP_PROXY_ENABLED).trim())
+				&& StringUtils.isNotBlank(PropertyManager.getProperty(IdraProperty.HTTP_PROXY_HOST).trim())) {
 
 			int port = 80;
-			if (isSet(PropertyManager.getProperty(ODFProperty.HTTP_PROXY_PORT))) {
-				port = Integer.parseInt(PropertyManager.getProperty(ODFProperty.HTTP_PROXY_PORT));
+			if (isSet(PropertyManager.getProperty(IdraProperty.HTTP_PROXY_PORT))) {
+				port = Integer.parseInt(PropertyManager.getProperty(IdraProperty.HTTP_PROXY_PORT));
 			}
-			HttpHost proxy = new HttpHost(PropertyManager.getProperty(ODFProperty.HTTP_PROXY_HOST), port, "http");
+			HttpHost proxy = new HttpHost(PropertyManager.getProperty(IdraProperty.HTTP_PROXY_HOST), port, "http");
 			httpclient.getParams().setParameter(ConnRoutePNames.DEFAULT_PROXY, proxy);
-			if (isSet(PropertyManager.getProperty(ODFProperty.HTTP_PROXY_USER))) {
+			if (isSet(PropertyManager.getProperty(IdraProperty.HTTP_PROXY_USER))) {
 				((AbstractHttpClient) httpclient).getCredentialsProvider().setCredentials(
-						new AuthScope(PropertyManager.getProperty(ODFProperty.HTTP_PROXY_HOST), port),
+						new AuthScope(PropertyManager.getProperty(IdraProperty.HTTP_PROXY_HOST), port),
 						(Credentials) new UsernamePasswordCredentials(
-								PropertyManager.getProperty(ODFProperty.HTTP_PROXY_USER),
-								PropertyManager.getProperty(ODFProperty.HTTP_PROXY_PASSWORD)));
+								PropertyManager.getProperty(IdraProperty.HTTP_PROXY_USER),
+								PropertyManager.getProperty(IdraProperty.HTTP_PROXY_PASSWORD)));
 			}
 		}
 		try {

@@ -20,8 +20,8 @@ package it.eng.idra.authentication;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.Response;
 
-import it.eng.idra.beans.ODFAuthenticationMethod;
-import it.eng.idra.beans.ODFProperty;
+import it.eng.idra.beans.IdraAuthenticationMethod;
+import it.eng.idra.beans.IdraProperty;
 import it.eng.idra.utils.PropertyManager;
 
 public abstract class AuthenticationManager {
@@ -38,7 +38,7 @@ public abstract class AuthenticationManager {
  
 	public static AuthenticationManager getActiveAuthenticationManager() {
 
-		switch (ODFAuthenticationMethod.valueOf(PropertyManager.getProperty(ODFProperty.AUTHENTICATION_METHOD))) {
+		switch (IdraAuthenticationMethod.valueOf(PropertyManager.getProperty(IdraProperty.AUTHENTICATION_METHOD))) {
 
 		case FIWARE:
 			return FiwareIDMAuthenticationManager.getInstance();

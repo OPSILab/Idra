@@ -26,6 +26,8 @@ import org.apache.jena.rdf.model.Property;
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.rdf.model.ResourceFactory;
 import org.apache.jena.rdf.model.ResourceRequiredException;
+import org.apache.jena.riot.system.IRIResolver;
+import org.apache.jena.shared.BadURIException;
 import org.apache.jena.sparql.vocabulary.FOAF;
 import org.apache.jena.vocabulary.DCAT;
 import org.apache.jena.vocabulary.DCTerms;
@@ -50,10 +52,16 @@ public class DCATAPITSerializer extends DCATAPSerializer {
 	private DCATAPITSerializer() {
 	}
 
-	protected static Model addDatasetToModel(DCATDataset dataset, Model model) {
+	protected static Model addDatasetToModel(DCATDataset dataset, Model model) throws BadURIException {
 
-		Resource datasetResource = model.createResource(dataset.getLandingPage().getValue(),
+		String landingPage = dataset.getLandingPage().getValue();
+		if (StringUtils.isBlank(landingPage) || !IRIResolver.checkIRI(landingPage))
+			throw new BadURIException(
+					"URI for dataset: " + landingPage + " is not valid, skipping the dataset in the Jena Model");
+
+		Resource datasetResource = model.createResource(landingPage,
 				model.createResource(DCATAP_IT_BASE_URI + "Dataset"));
+
 		datasetResource.addProperty(RDF.type, DCAT.Dataset);
 
 		datasetResource.addProperty(dataset.getTitle().getProperty(),
@@ -110,7 +118,7 @@ public class DCATAPITSerializer extends DCATAPSerializer {
 		if (relatedResourceList != null)
 			relatedResourceList.stream().filter(item -> StringUtils.isNotBlank(item.getValue()))
 					.forEach(item -> datasetResource.addProperty(item.getProperty(), item.getValue()));
-		
+
 		List<DCATDistribution> distributions = dataset.getDistributions();
 		for (DCATDistribution distribution : distributions) {
 			addDistributionToModel(model, datasetResource, distribution);
