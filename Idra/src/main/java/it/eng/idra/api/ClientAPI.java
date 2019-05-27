@@ -20,7 +20,7 @@ package it.eng.idra.api;
 import it.eng.idra.beans.Datalet;
 import it.eng.idra.beans.ErrorResponse;
 import it.eng.idra.beans.EuroVocLanguage;
-import it.eng.idra.beans.ODFProperty;
+import it.eng.idra.beans.IdraProperty;
 import it.eng.idra.beans.OrderBy;
 import it.eng.idra.beans.OrderType;
 import it.eng.idra.beans.dcat.DCATAPFormat;
@@ -562,7 +562,7 @@ public class ClientAPI {
 		logger.info("Download file API: "+downloadFile);
 		String compiledUri = url;
 		//client = ClientBuilder.newBuilder().readTimeout(10, TimeUnit.SECONDS).build();
-		int timeout = Integer.parseInt(PropertyManager.getProperty(ODFProperty.PREVIEW_TIMEOUT))*1000;
+		int timeout = Integer.parseInt(PropertyManager.getProperty(IdraProperty.PREVIEW_TIMEOUT))*1000;
 		client = ClientBuilder.newClient().register(RedirectFilter.class);
 		client.property(ClientProperties.CONNECT_TIMEOUT, timeout);
 	    client.property(ClientProperties.READ_TIMEOUT,    timeout);
@@ -602,7 +602,7 @@ public class ClientAPI {
 			if(isPreview) {
 				try {
 					//TO-DO: renderlo configurabile
-					long previewLimit = Integer.parseInt(PropertyManager.getProperty(ODFProperty.PREVIEW_TIMEOUT))*1024*1024; //10MB
+					long previewLimit = Integer.parseInt(PropertyManager.getProperty(IdraProperty.PREVIEW_TIMEOUT))*1024*1024; //10MB
 					long dimension=0L;
 					for (String k : keys) {
 

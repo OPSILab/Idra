@@ -26,7 +26,7 @@ import java.util.Properties;
 
 
 import it.eng.idra.authentication.fiware.configuration.IDMProperty;
-import it.eng.idra.beans.ODFProperty;
+import it.eng.idra.beans.IdraProperty;
 import it.eng.idra.utils.restclient.configuration.RestProperty;
 
 public class PropertyManager {
@@ -43,7 +43,7 @@ public class PropertyManager {
 		}
 	}
 
-	public static String getProperty(ODFProperty propName) {
+	public static String getProperty(IdraProperty propName) {
 		Optional<String> prop = Optional.ofNullable(System.getenv(propName.toString()));
 		return prop.orElse(props.getProperty(propName.toString()));
 	}

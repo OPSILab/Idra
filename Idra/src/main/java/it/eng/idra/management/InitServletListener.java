@@ -20,8 +20,8 @@ package it.eng.idra.management;
 import java.net.Authenticator;
 import java.net.PasswordAuthentication;
 
-import it.eng.idra.beans.ODFProperty;
-import it.eng.idra.odfscheduler.ODFScheduler;
+import it.eng.idra.beans.IdraProperty;
+import it.eng.idra.scheduler.IdraScheduler;
 import it.eng.idra.utils.PropertyManager;
 
 import javax.servlet.ServletContextEvent;
@@ -38,27 +38,27 @@ public class InitServletListener implements ServletContextListener {
 
 		logger.info("Welcome to Idra - Open Data Federation Platform! - Init start");
 
-		System.setProperty(ODFProperty.SESAME_REPO_NAME.toString(),
-				PropertyManager.getProperty(ODFProperty.SESAME_REPO_NAME).trim());
-		System.setProperty(ODFProperty.SESAME_SERVER_URI.toString(),
-				PropertyManager.getProperty(ODFProperty.SESAME_SERVER_URI).trim());
-		System.setProperty(ODFProperty.SESAME_ENDPOINT.toString(),
-				PropertyManager.getProperty(ODFProperty.SESAME_ENDPOINT).trim());
+		System.setProperty(IdraProperty.SESAME_REPO_NAME.toString(),
+				PropertyManager.getProperty(IdraProperty.SESAME_REPO_NAME).trim());
+		System.setProperty(IdraProperty.SESAME_SERVER_URI.toString(),
+				PropertyManager.getProperty(IdraProperty.SESAME_SERVER_URI).trim());
+		System.setProperty(IdraProperty.SESAME_ENDPOINT.toString(),
+				PropertyManager.getProperty(IdraProperty.SESAME_ENDPOINT).trim());
 		// System.setProperty("sesameDownloadDirectory",
 		// PropertyManager.getProperty("sesameDownloadDirectory").trim());
 
 		// System.setProperty("javax.net.ssl.trustStore","");
-		if (Boolean.parseBoolean(PropertyManager.getProperty(ODFProperty.HTTP_PROXY_ENABLED).trim())
-				&& StringUtils.isNotBlank(PropertyManager.getProperty(ODFProperty.HTTP_PROXY_HOST).trim())) {
+		if (Boolean.parseBoolean(PropertyManager.getProperty(IdraProperty.HTTP_PROXY_ENABLED).trim())
+				&& StringUtils.isNotBlank(PropertyManager.getProperty(IdraProperty.HTTP_PROXY_HOST).trim())) {
 
-			System.setProperty(ODFProperty.HTTP_PROXY_HOST.toString(),
-					PropertyManager.getProperty(ODFProperty.HTTP_PROXY_HOST).trim());
-			System.setProperty(ODFProperty.HTTP_PROXY_PORT.toString(),
-					PropertyManager.getProperty(ODFProperty.HTTP_PROXY_PORT).trim());
-			System.setProperty(ODFProperty.HTTP_PROXY_NONPROXYHOSTS.toString(),
-					PropertyManager.getProperty(ODFProperty.HTTP_PROXY_NONPROXYHOSTS).trim());
-			String proxyUser = PropertyManager.getProperty(ODFProperty.HTTP_PROXY_USER).trim();
-			String proxyPassword = PropertyManager.getProperty(ODFProperty.HTTP_PROXY_PASSWORD).trim();
+			System.setProperty(IdraProperty.HTTP_PROXY_HOST.toString(),
+					PropertyManager.getProperty(IdraProperty.HTTP_PROXY_HOST).trim());
+			System.setProperty(IdraProperty.HTTP_PROXY_PORT.toString(),
+					PropertyManager.getProperty(IdraProperty.HTTP_PROXY_PORT).trim());
+			System.setProperty(IdraProperty.HTTP_PROXY_NONPROXYHOSTS.toString(),
+					PropertyManager.getProperty(IdraProperty.HTTP_PROXY_NONPROXYHOSTS).trim());
+			String proxyUser = PropertyManager.getProperty(IdraProperty.HTTP_PROXY_USER).trim();
+			String proxyPassword = PropertyManager.getProperty(IdraProperty.HTTP_PROXY_PASSWORD).trim();
 			if (StringUtils.isNotBlank(proxyUser) && StringUtils.isNotBlank(proxyPassword)) {
 				Authenticator.setDefault(new Authenticator() {
 					public PasswordAuthentication getPasswordAuthentication() {
@@ -66,12 +66,12 @@ public class InitServletListener implements ServletContextListener {
 					}
 				});
 
-				System.setProperty(ODFProperty.HTTP_PROXY_USER.toString(), proxyUser);
-				System.setProperty(ODFProperty.HTTP_PROXY_PASSWORD.toString(), proxyPassword);
+				System.setProperty(IdraProperty.HTTP_PROXY_USER.toString(), proxyUser);
+				System.setProperty(IdraProperty.HTTP_PROXY_PASSWORD.toString(), proxyPassword);
 			}
 
-			String proxyHttpsUser = PropertyManager.getProperty(ODFProperty.HTTP_PROXY_USER).trim();
-			String proxyHttpsPassword = PropertyManager.getProperty(ODFProperty.HTTP_PROXY_PASSWORD).trim();
+			String proxyHttpsUser = PropertyManager.getProperty(IdraProperty.HTTP_PROXY_USER).trim();
+			String proxyHttpsPassword = PropertyManager.getProperty(IdraProperty.HTTP_PROXY_PASSWORD).trim();
 
 			if (StringUtils.isNotBlank(proxyHttpsUser) && StringUtils.isNotBlank(proxyHttpsPassword)) {
 				// Authenticator.setDefault(new Authenticator() {
@@ -81,24 +81,24 @@ public class InitServletListener implements ServletContextListener {
 				// }
 				// });
 
-				System.setProperty(ODFProperty.HTTPS_PROXY_USER.toString(), proxyHttpsUser);
-				System.setProperty(ODFProperty.HTTPS_PROXY_PASSWORD.toString(), proxyHttpsPassword);
+				System.setProperty(IdraProperty.HTTPS_PROXY_USER.toString(), proxyHttpsUser);
+				System.setProperty(IdraProperty.HTTPS_PROXY_PASSWORD.toString(), proxyHttpsPassword);
 			}
 
-			System.setProperty(ODFProperty.HTTPS_PROXY_HOST.toString(),
-					PropertyManager.getProperty(ODFProperty.HTTP_PROXY_HOST).trim());
-			System.setProperty(ODFProperty.HTTPS_PROXY_PORT.toString(),
-					PropertyManager.getProperty(ODFProperty.HTTP_PROXY_PORT).trim());
-			System.setProperty(ODFProperty.HTTPS_PROXY_NONPROXYHOSTS.toString(),
-					PropertyManager.getProperty(ODFProperty.HTTP_PROXY_NONPROXYHOSTS).trim());
+			System.setProperty(IdraProperty.HTTPS_PROXY_HOST.toString(),
+					PropertyManager.getProperty(IdraProperty.HTTP_PROXY_HOST).trim());
+			System.setProperty(IdraProperty.HTTPS_PROXY_PORT.toString(),
+					PropertyManager.getProperty(IdraProperty.HTTP_PROXY_PORT).trim());
+			System.setProperty(IdraProperty.HTTPS_PROXY_NONPROXYHOSTS.toString(),
+					PropertyManager.getProperty(IdraProperty.HTTP_PROXY_NONPROXYHOSTS).trim());
 
 		}
 		try {
 			
-			FederationCore.init((Boolean.parseBoolean(PropertyManager.getProperty(ODFProperty.LOAD_CACHE_FROM_DB))),
+			FederationCore.init((Boolean.parseBoolean(PropertyManager.getProperty(IdraProperty.LOAD_CACHE_FROM_DB))),
 					arg0.getServletContext().getRealPath("/WEB-INF/classes/solr"));
 			//Moved into a specific listener
-//			ODFScheduler.init(arg0.getServletContext(),Boolean.parseBoolean(PropertyManager.getProperty(ODFProperty.SYNCH_ON_START)));
+//			IdraScheduler.init(arg0.getServletContext(),Boolean.parseBoolean(PropertyManager.getProperty(IdraProperty.SYNCH_ON_START)));
 			
 			logger.info("Open Data Federation started");
 

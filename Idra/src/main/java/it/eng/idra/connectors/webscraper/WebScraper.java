@@ -44,7 +44,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-import it.eng.idra.beans.ODFProperty;
+import it.eng.idra.beans.IdraProperty;
 import it.eng.idra.beans.dcat.DCATDataset;
 import it.eng.idra.beans.webscraper.NavigationParameter;
 import it.eng.idra.beans.webscraper.NavigationType;
@@ -68,10 +68,10 @@ public class WebScraper {
 	
 	static {
 		PAGINATION_RETRY_NUM = Integer
-				.parseInt(PropertyManager.getProperty(ODFProperty.WEB_SCRAPER_PAGINATION_RETRY_NUM));
-		DATASET_TIMEOUT = Integer.parseInt(PropertyManager.getProperty(ODFProperty.WEB_SCRAPER_DATASET_TIMEOUT));
-		COUNTDOWN_LATCH_TIMEOUT = Long.parseLong(PropertyManager.getProperty(ODFProperty.WEB_SCRAPER_GLOBAL_TIMEOUT));
-		WEB_SCRAPER_RANGE_SCALE_NUM = Integer.parseInt(PropertyManager.getProperty(ODFProperty.WEB_SCRAPER_RANGE_SCALE_NUM));
+				.parseInt(PropertyManager.getProperty(IdraProperty.WEB_SCRAPER_PAGINATION_RETRY_NUM));
+		DATASET_TIMEOUT = Integer.parseInt(PropertyManager.getProperty(IdraProperty.WEB_SCRAPER_DATASET_TIMEOUT));
+		COUNTDOWN_LATCH_TIMEOUT = Long.parseLong(PropertyManager.getProperty(IdraProperty.WEB_SCRAPER_GLOBAL_TIMEOUT));
+		WEB_SCRAPER_RANGE_SCALE_NUM = Integer.parseInt(PropertyManager.getProperty(IdraProperty.WEB_SCRAPER_RANGE_SCALE_NUM));
 	}
 
 	public WebScraper() {
@@ -186,7 +186,7 @@ public class WebScraper {
 		List<Document> pageResult = Collections.synchronizedList(new ArrayList<Document>());
 		List<PageSelector> pageSelectors = navParam.getPageSelectors();
 		Integer startPageValue = Integer.parseInt(navParam.getStartValue());
-		Integer pagesNumber = null, skipped = 0;
+		Integer threadNumber = null, skipped = 0;
 
 		/*
 		 * ****************** PAGES NUMBER RETRIEVAL ************************Try to
@@ -198,8 +198,8 @@ public class WebScraper {
 		 */
 
 		try {
-			if ((pagesNumber = navParam.getPagesNumber()) == null || pagesNumber == 0)
-				pagesNumber = getPaginationFromStartPage(startUrl, navParam, pageSelectors);
+			if ((threadNumber = navParam.getPagesNumber()) == null || threadNumber == 0)
+				threadNumber = calculatePageThreadNumber(startUrl, navParam, pageSelectors);
 
 		} catch (PageNumberNotParseableException | IllegalArgumentException e) {
 			throw new PageNumberNotParseableException(e.getMessage());
@@ -213,16 +213,13 @@ public class WebScraper {
 		 * risultati e chiama lo scraping del dataset singolo
 		 */
 
-		Integer pageMultiplier = navParam.getDatasetsPerPage();
-		pageMultiplier = (pageMultiplier == null || pageMultiplier < 1) ? 1 : pageMultiplier;
-		pagesNumber = pagesNumber / pageMultiplier;
+		
 
-		logger.info("Starting Web Scraper PAGE retrieval: " + pagesNumber + " Threads");
+		logger.info("Starting Web Scraper PAGE retrieval: " + threadNumber + " Threads");
 
-		CountDownLatch pageLatch = new CountDownLatch(pagesNumber);
-		for (int i = startPageValue; i <= pagesNumber; i++) {
-			System.out.println(i);
-			new Thread(new PageWorker(startUrl, navParam, 0, pageResult, pageLatch)).start();
+		CountDownLatch pageLatch = new CountDownLatch(threadNumber);
+		for (int i = startPageValue; i < threadNumber; i++) {
+			new Thread(new PageWorker(startUrl, navParam, i, pageResult, pageLatch)).start();
 		}
 
 		logger.info("Waiting for threads...");
@@ -234,8 +231,9 @@ public class WebScraper {
 	}
 
 	/**
-	 * Return the last page Number, by extracting it either from the first Page
-	 * Document or explicit field of input NavigationParameter
+	 * Calculate the Thread Number for Pagination. Use the last page Number, by extracting it either from the first Page
+	 * Document or explicit field of input NavigationParameter. 
+	 * In addition, if datasetsPerPage is present, sclaes the last page Number with it (becacuse here we have an offset pagination navigation)
 	 * 
 	 * @param startUrl
 	 * @param navParam
@@ -244,12 +242,14 @@ public class WebScraper {
 	 * @return
 	 * @throws PageNumberNotParseableException
 	 */
-	private static Integer getPaginationFromStartPage(String startUrl, NavigationParameter navParam,
+	private static Integer calculatePageThreadNumber(String startUrl, NavigationParameter navParam,
 			List<PageSelector> pageSelectors) throws PageNumberNotParseableException {
-
-		int retryNum = PAGINATION_RETRY_NUM;
+	
+		
+		int retryNum = PAGINATION_RETRY_NUM, pagesNumber;
 		boolean retry = false;
-		// AUTOMATIC MODE
+		
+		/* *************** AUTOMATIC MODE **************/
 		try {
 			List<? extends WebScraperSelector> bases = pageSelectors;
 			PageSelector selector = (PageSelector) getSelectorByName(bases, "lastPage");
@@ -260,10 +260,22 @@ public class WebScraper {
 					Document firstPageDocument = Jsoup.connect(startUrl).get();
 
 					if (firstPageDocument != null) {
+				
+						/* **** Extract the pages number from the Last Page Link **********/
 						String lastPageLink = firstPageDocument.select(selector.getSelector()).attr("href");
-
-						return (startValue == 0 ? 1 : 0) + parseLastPageValueFromUrl(navParam.getName(), lastPageLink);
-
+						pagesNumber =  (startValue == 0 ? 1 : 0) + parseLastPageValueFromUrl(navParam.getName(), lastPageLink);
+				        
+						/* **** If there is a datasetsPerPage navParam > 1,
+						 *  the retrieved pagesNumber from last page represents actually
+						 *  the offset, to be scaled with the datasetsPerPage 
+						 */
+						
+						Integer pageMultiplier = navParam.getDatasetsPerPage();
+						pageMultiplier = (pageMultiplier == null || pageMultiplier < 1) ? 1 : pageMultiplier;
+	
+						int pagesQuot = Math.floorDiv(pagesNumber, pageMultiplier);
+						int pagesMod = Math.floorMod(pagesNumber, pageMultiplier);
+						return pagesMod == 0 ? pagesQuot : pagesQuot + 1;
 					}
 				} catch (IOException | PageNumberNotParseableException e) {
 					logger.info("\nThread: " + Thread.currentThread().getId() + " Error: " + e.getMessage()
@@ -282,7 +294,7 @@ public class WebScraper {
 
 		} catch (Exception e) {
 
-			// MANUAL MODE
+			/* *************** MANUAL MODE **********************/
 			if (navParam.getPagesNumber() == null)
 				throw new PageNumberNotParseableException(
 						"It was not possible to get the last Page Value neither with Automatic nor Manual mode");
@@ -415,21 +427,21 @@ public class WebScraper {
 // try {
 //
 // if
-// (Boolean.parseBoolean(PropertyManager.getProperty(ODFProperty.HTTP_PROXY_ENABLED).trim())
+// (Boolean.parseBoolean(PropertyManager.getProperty(IdraProperty.HTTP_PROXY_ENABLED).trim())
 // &&
-// StringUtils.isNotBlank(PropertyManager.getProperty(ODFProperty.HTTP_PROXY_HOST).trim()))
+// StringUtils.isNotBlank(PropertyManager.getProperty(IdraProperty.HTTP_PROXY_HOST).trim()))
 // {
 //
-// System.setProperty(ODFProperty.HTTP_PROXY_HOST.toString(),
-// PropertyManager.getProperty(ODFProperty.HTTP_PROXY_HOST).trim());
-// System.setProperty(ODFProperty.HTTP_PROXY_PORT.toString(),
-// PropertyManager.getProperty(ODFProperty.HTTP_PROXY_PORT).trim());
-// System.setProperty(ODFProperty.HTTP_PROXY_NONPROXYHOSTS.toString(),
-// PropertyManager.getProperty(ODFProperty.HTTP_PROXY_NONPROXYHOSTS).trim());
+// System.setProperty(IdraProperty.HTTP_PROXY_HOST.toString(),
+// PropertyManager.getProperty(IdraProperty.HTTP_PROXY_HOST).trim());
+// System.setProperty(IdraProperty.HTTP_PROXY_PORT.toString(),
+// PropertyManager.getProperty(IdraProperty.HTTP_PROXY_PORT).trim());
+// System.setProperty(IdraProperty.HTTP_PROXY_NONPROXYHOSTS.toString(),
+// PropertyManager.getProperty(IdraProperty.HTTP_PROXY_NONPROXYHOSTS).trim());
 // String proxyUser =
-// PropertyManager.getProperty(ODFProperty.HTTP_PROXY_USER).trim();
+// PropertyManager.getProperty(IdraProperty.HTTP_PROXY_USER).trim();
 // String proxyPassword =
-// PropertyManager.getProperty(ODFProperty.HTTP_PROXY_PASSWORD).trim();
+// PropertyManager.getProperty(IdraProperty.HTTP_PROXY_PASSWORD).trim();
 // if (StringUtils.isNotBlank(proxyUser) &&
 // StringUtils.isNotBlank(proxyPassword)) {
 // Authenticator.setDefault(new Authenticator() {
@@ -438,8 +450,8 @@ public class WebScraper {
 // }
 // });
 //
-// System.setProperty(ODFProperty.HTTP_PROXY_USER.toString(), proxyUser);
-// System.setProperty(ODFProperty.HTTP_PROXY_PASSWORD.toString(),
+// System.setProperty(IdraProperty.HTTP_PROXY_USER.toString(), proxyUser);
+// System.setProperty(IdraProperty.HTTP_PROXY_PASSWORD.toString(),
 // proxyPassword);
 // }
 //

@@ -23,12 +23,14 @@ import java.io.IOException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.text.Normalizer;
+import java.text.ParseException;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.text.SimpleDateFormat;
 import java.time.format.DateTimeParseException;
 import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
@@ -51,7 +53,7 @@ public class CommonUtil {
 	private static Logger logger = LogManager.getLogger(CommonUtil.class);
 	private static DateTimeFormatter dtFormatter = DateTimeFormatter.ISO_OFFSET_DATE_TIME.withZone(ZoneOffset.UTC);
 	private static String[] dateFormats = { "yyyy","dd/MM/yyyy", "yyyy-MM-dd", "EEE MMM dd HH:mm:ss zzz yyyy",
-			"EEEE dd MMMM yyyy", "dd MMMM yyyy", "yyyy-MM-dd'T'HH:mm:ss[XXX][X]"  };
+			"EEEE dd MMMM yyyy", "dd MMMM yyyy", "yyyy-MM-dd'T'HH:mm:ss[XXX][X]", "EEEE, dd MMMM yyyy" };
 
 	public static Ordering<ODMSCatalogue> idOrder = new Ordering<ODMSCatalogue>() {
 		public int compare(ODMSCatalogue one, ODMSCatalogue other) {
@@ -173,7 +175,7 @@ public class CommonUtil {
 	public static String fromLocalToUtcDate(String originalDateString, Locale locale) {
 
 		if (StringUtils.isNotBlank(originalDateString)) {
-			String dateString = originalDateString.toUpperCase();
+			String dateString = originalDateString.toLowerCase();
 
 			if (locale == null) {
 				Locale[] locales = Locale.getAvailableLocales();
@@ -359,4 +361,21 @@ public class CommonUtil {
 	public static String fromMillisToUtcDate(Long time) {
 		return dtFormatter.format(new Date(time*1000).toInstant());
 	}
+	
+//	
+//	public static void main(String[] args) {
+//		try {
+//			Date date = new SimpleDateFormat("EEEE, MMMM dd yyyy").parse("sabato, Luglio 14 2018");
+//			System.out.println(date.toGMTString());
+//			
+//			LocalDate lDate = LocalDate.parse("sabato, 14 luglio 2018",DateTimeFormatter.ofPattern("EEEE, dd MMMM yyyy",Locale.UK));
+//			System.out.println(lDate.format(DateTimeFormatter.ofPattern("EEEE, dd MMMM yyyy",Locale.UK)));
+//		} catch (ParseException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+//	}
+//	
+	
+	
 }
