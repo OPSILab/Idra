@@ -26,7 +26,7 @@ import javax.ws.rs.core.Application;
 import org.glassfish.jersey.media.multipart.MultiPartFeature;
 
 import it.eng.idra.authentication.AuthenticationManager;
-import it.eng.idra.beans.ODFProperty;
+import it.eng.idra.beans.IdraProperty;
 import it.eng.idra.utils.PropertyManager;
 
 //import org.glassfish.jersey.media.multipart.MultiPartFeature;

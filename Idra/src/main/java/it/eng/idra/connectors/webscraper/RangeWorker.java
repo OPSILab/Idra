@@ -27,7 +27,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jsoup.nodes.Document;
 
-import it.eng.idra.beans.ODFProperty;
+import it.eng.idra.beans.IdraProperty;
 import it.eng.idra.beans.webscraper.NavigationParameter;
 import it.eng.idra.beans.webscraper.NavigationTypeNotValidException;
 import it.eng.idra.utils.PropertyManager;
@@ -45,8 +45,8 @@ public class RangeWorker implements Runnable {
 	private Logger logger = LogManager.getLogger(RangeWorker.class);
 
 	static {
-		RANGE_RETRY_NUM = Integer.parseInt(PropertyManager.getProperty(ODFProperty.WEB_SCRAPER_RANGE_RETRY_NUM));
-		JSOUP_THROTTLING = Integer.parseInt(PropertyManager.getProperty(ODFProperty.WEB_SCRAPER_GLOBAL_THROTTILING));
+		RANGE_RETRY_NUM = Integer.parseInt(PropertyManager.getProperty(IdraProperty.WEB_SCRAPER_RANGE_RETRY_NUM));
+		JSOUP_THROTTLING = Integer.parseInt(PropertyManager.getProperty(IdraProperty.WEB_SCRAPER_GLOBAL_THROTTILING));
 
 	}
 

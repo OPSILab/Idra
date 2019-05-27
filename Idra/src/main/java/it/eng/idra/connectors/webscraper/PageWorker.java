@@ -31,7 +31,7 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 
-import it.eng.idra.beans.ODFProperty;
+import it.eng.idra.beans.IdraProperty;
 import it.eng.idra.beans.webscraper.NavigationParameter;
 import it.eng.idra.beans.webscraper.NavigationType;
 import it.eng.idra.beans.webscraper.NavigationTypeNotValidException;
@@ -54,11 +54,11 @@ public class PageWorker implements Runnable {
 	private Logger logger = LogManager.getLogger(PageWorker.class);
 
 	static {
-		PAGE_RETRY_NUM = Integer.parseInt(PropertyManager.getProperty(ODFProperty.WEB_SCRAPER_PAGE_RETRY_NUM));
-		DATASET_RETRY_NUM = Integer.parseInt(PropertyManager.getProperty(ODFProperty.WEB_SCRAPER_DATASET_RETRY_NUM));
-		PAGE_TIMEOUT = Integer.parseInt(PropertyManager.getProperty(ODFProperty.WEB_SCRAPER_PAGE_TIMEOUT));
-		DATASET_TIMEOUT = Integer.parseInt(PropertyManager.getProperty(ODFProperty.WEB_SCRAPER_DATASET_TIMEOUT));
-		JSOUP_THROTTLING = Integer.parseInt(PropertyManager.getProperty(ODFProperty.WEB_SCRAPER_GLOBAL_THROTTILING));
+		PAGE_RETRY_NUM = Integer.parseInt(PropertyManager.getProperty(IdraProperty.WEB_SCRAPER_PAGE_RETRY_NUM));
+		DATASET_RETRY_NUM = Integer.parseInt(PropertyManager.getProperty(IdraProperty.WEB_SCRAPER_DATASET_RETRY_NUM));
+		PAGE_TIMEOUT = Integer.parseInt(PropertyManager.getProperty(IdraProperty.WEB_SCRAPER_PAGE_TIMEOUT));
+		DATASET_TIMEOUT = Integer.parseInt(PropertyManager.getProperty(IdraProperty.WEB_SCRAPER_DATASET_TIMEOUT));
+		JSOUP_THROTTLING = Integer.parseInt(PropertyManager.getProperty(IdraProperty.WEB_SCRAPER_GLOBAL_THROTTILING));
 		
 	}
 	
