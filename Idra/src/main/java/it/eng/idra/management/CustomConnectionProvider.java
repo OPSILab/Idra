@@ -23,7 +23,7 @@ import java.util.Optional;
 import org.hibernate.HibernateException;
 import org.hibernate.hikaricp.internal.HikariCPConnectionProvider;
 
-import it.eng.idra.beans.ODFProperty;
+import it.eng.idra.beans.IdraProperty;
 
 public class CustomConnectionProvider extends HikariCPConnectionProvider {
 
@@ -33,14 +33,14 @@ public class CustomConnectionProvider extends HikariCPConnectionProvider {
 	@Override
 	public void configure(Map conf) throws HibernateException {
 		
-		if(Optional.ofNullable(System.getenv(ODFProperty.DB_USERNAME.toString())).isPresent())
-			conf.put("hibernate.hikari.dataSource.user", System.getenv(ODFProperty.DB_USERNAME.toString()));
+		if(Optional.ofNullable(System.getenv(IdraProperty.DB_USERNAME.toString())).isPresent())
+			conf.put("hibernate.hikari.dataSource.user", System.getenv(IdraProperty.DB_USERNAME.toString()));
 		
-		if(Optional.ofNullable(System.getenv(ODFProperty.DB_PASSWORD.toString())).isPresent())
-			conf.put("hibernate.hikari.dataSource.password", System.getenv(ODFProperty.DB_PASSWORD.toString()));
+		if(Optional.ofNullable(System.getenv(IdraProperty.DB_PASSWORD.toString())).isPresent())
+			conf.put("hibernate.hikari.dataSource.password", System.getenv(IdraProperty.DB_PASSWORD.toString()));
 		
-		if(Optional.ofNullable(System.getenv(ODFProperty.DB_HOST.toString())).isPresent())
-			conf.put("hibernate.hikari.dataSource.url", System.getenv(ODFProperty.DB_HOST.toString()));
+		if(Optional.ofNullable(System.getenv(IdraProperty.DB_HOST.toString())).isPresent())
+			conf.put("hibernate.hikari.dataSource.url", System.getenv(IdraProperty.DB_HOST.toString()));
 	
 		super.configure(conf);
 	}

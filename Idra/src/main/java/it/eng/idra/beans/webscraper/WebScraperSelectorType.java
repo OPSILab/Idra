@@ -19,6 +19,15 @@ package it.eng.idra.beans.webscraper;
 
 public enum WebScraperSelectorType {
 
-	SelectorElementAttribute, SelectorText;
-	
+	SelectorElementAttribute("SelectorElementAttribute"), SelectorText("SelectorText"), SelectorLink("SelectorLink");
+
+	private String typeName;
+
+	WebScraperSelectorType(String name) {
+		this.typeName = name;
+	}
+
+	public String typeName() {
+		return typeName;
+	}
 }
