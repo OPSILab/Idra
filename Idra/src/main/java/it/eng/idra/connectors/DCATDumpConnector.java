@@ -46,7 +46,7 @@ import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
 import com.google.common.collect.Sets.SetView;
 
-import it.eng.idra.beans.ODFProperty;
+import it.eng.idra.beans.IdraProperty;
 import it.eng.idra.beans.dcat.DCATAPFormat;
 import it.eng.idra.beans.dcat.DCATAPProfile;
 import it.eng.idra.beans.dcat.DCATDataset;
@@ -66,7 +66,7 @@ public class DCATDumpConnector implements IODMSConnector {
 	private DCATAPDeserializer deserializer;
 	private static Logger logger = LogManager.getLogger(DCATDumpConnector.class);
 
-	private static String odmsDumpFilePath = PropertyManager.getProperty(ODFProperty.ODMS_DUMP_FILE_PATH);
+	private static String odmsDumpFilePath = PropertyManager.getProperty(IdraProperty.ODMS_DUMP_FILE_PATH);
 
 	public DCATDumpConnector() {
 	}

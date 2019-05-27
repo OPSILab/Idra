@@ -36,7 +36,7 @@ import org.joda.time.DateTime;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import it.eng.idra.beans.ODFProperty;
+import it.eng.idra.beans.IdraProperty;
 import it.eng.idra.beans.odms.ODMSCatalogue;
 import it.eng.idra.beans.statistics.AggregationLevelEnum;
 import it.eng.idra.beans.statistics.KeywordStatistics;
@@ -53,7 +53,7 @@ public class StatisticsManager {
 	private static boolean enableStatistics;
 	
 	static {
-		enableStatistics = Boolean.parseBoolean(PropertyManager.getProperty(ODFProperty.ENABLE_STATISTICS).trim());
+		enableStatistics = Boolean.parseBoolean(PropertyManager.getProperty(IdraProperty.ENABLE_STATISTICS).trim());
 	}
 	
 	// method to ODMS statistics

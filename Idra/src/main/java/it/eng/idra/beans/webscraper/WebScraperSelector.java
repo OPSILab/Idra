@@ -29,7 +29,7 @@ import javax.persistence.Transient;
 import org.hibernate.annotations.GenericGenerator;
 import com.google.gson.annotations.SerializedName;
 
-import it.eng.idra.beans.ODFProperty;
+import it.eng.idra.beans.IdraProperty;
 import it.eng.idra.utils.PropertyManager;
 
 @MappedSuperclass
@@ -49,7 +49,7 @@ public abstract class WebScraperSelector {
 
 	protected List<String> stopValues;
 	private static List<String> defaultStopValues = Arrays
-			.asList(PropertyManager.getProperty(ODFProperty.WEB_CONNECTOR_DEFAULT_STOP_VALUES).split(","));
+			.asList(PropertyManager.getProperty(IdraProperty.WEB_CONNECTOR_DEFAULT_STOP_VALUES).split(","));
 
 	public WebScraperSelector() {
 	}

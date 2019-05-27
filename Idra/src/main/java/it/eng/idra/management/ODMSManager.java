@@ -17,7 +17,7 @@
  ******************************************************************************/
 package it.eng.idra.management;
 
-import it.eng.idra.beans.ODFProperty;
+import it.eng.idra.beans.IdraProperty;
 import it.eng.idra.beans.dcat.DCATAPFormat;
 import it.eng.idra.beans.odms.ODMSAlreadyPresentException;
 import it.eng.idra.beans.odms.ODMSManagerException;
@@ -383,7 +383,7 @@ public class ODMSManager {
 
 							}
 
-							String odmsDumpFilePath = PropertyManager.getProperty(ODFProperty.ODMS_DUMP_FILE_PATH);
+							String odmsDumpFilePath = PropertyManager.getProperty(IdraProperty.ODMS_DUMP_FILE_PATH);
 							try {
 								DCATAPSerializer.writeModelToFile(m, DCATAPFormat.RDFXML, odmsDumpFilePath,
 										"dumpFileString_" + assignedNodeID);
@@ -396,7 +396,7 @@ public class ODMSManager {
 						updateNode=true;
 					}else if(node.getNodeType().equals(ODMSCatalogueType.ORION)) {
 						
-						String orionDumpFilePath=PropertyManager.getProperty(ODFProperty.ORION_FILE_DUMP_PATH);
+						String orionDumpFilePath=PropertyManager.getProperty(IdraProperty.ORION_FILE_DUMP_PATH);
 						try {
 							OrionCatalogueConfiguration orionConfig = (OrionCatalogueConfiguration) node.getAdditionalConfig();
 							CommonUtil.storeFile(orionDumpFilePath,"orionDump_"+assignedNodeID,orionConfig.getOrionDatasetDumpString());
@@ -408,7 +408,7 @@ public class ODMSManager {
 						}
 					}else if(node.getNodeType().equals(ODMSCatalogueType.SPARQL)) {
 						
-						String dumpFilePath=PropertyManager.getProperty(ODFProperty.ORION_FILE_DUMP_PATH);
+						String dumpFilePath=PropertyManager.getProperty(IdraProperty.ORION_FILE_DUMP_PATH);
 						try {
 							OrionCatalogueConfiguration orionConfig = (OrionCatalogueConfiguration) node.getAdditionalConfig();
 							CommonUtil.storeFile(dumpFilePath,"sparqlDump_"+assignedNodeID,orionConfig.getOrionDatasetDumpString());
