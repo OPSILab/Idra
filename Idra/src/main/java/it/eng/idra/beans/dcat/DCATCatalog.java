@@ -63,26 +63,25 @@ public class DCATCatalog {
 
 		super();
 		this.datasets = datasets;
-		this.titles = titles.stream().map(title -> new DCATProperty("dct:title", RDFS.Literal.getURI(), title))
+		this.titles = titles.stream().map(title -> new DCATProperty("dct:title", RDFS.Literal, title))
 				.collect(Collectors.toList());
 		this.descriptions = descriptions.stream()
-				.map(description -> new DCATProperty("dct:description", RDFS.Literal.getURI(), description))
+				.map(description -> new DCATProperty("dct:description", RDFS.Literal, description))
 				.collect(Collectors.toList());
 		this.publisher = (publisher != null ? publisher
 				: new FOAFAgent(DCTerms.publisher.getURI(), "", "", "", "", "", "", String.valueOf(node.getId())));
-		this.releaseDate = new DCATProperty("dct:releaseDate", RDFS.Literal.getURI(), releaseDate);
-		this.updateDate = new DCATProperty("dct:updateDate", RDFS.Literal.getURI(), updateDate);
+		this.releaseDate = new DCATProperty("dct:releaseDate", RDFS.Literal, releaseDate);
+		this.updateDate = new DCATProperty("dct:updateDate", RDFS.Literal, updateDate);
 		this.themeTaxonomy = themeTaxonomy.stream()
-				.map(theme -> new DCATProperty("dcat:themeTaxonomy", SKOS.ConceptScheme.getURI(), theme))
+				.map(theme -> new DCATProperty("dcat:themeTaxonomy", SKOS.ConceptScheme, theme))
 				.collect(Collectors.toList());
 		this.languages = languages.stream()
-				.map(language -> new DCATProperty("dct:language", DCTerms.LinguisticSystem.getURI(), language))
+				.map(language -> new DCATProperty("dct:language", DCTerms.LinguisticSystem, language))
 				.collect(Collectors.toList());
-		this.homepage = new DCATProperty("foaf:homepage", FOAF.Document.getURI(), homepage);
-		this.license = new DCATProperty("dct:license", DCTerms.LicenseDocument.getURI(), license);
-		this.rigths = new DCATProperty("dct:rights", DCTerms.RightsStatement.getURI(), rigths);
-		this.spatials = spatials.stream()
-				.map(spatial -> new DCATProperty("dct:spatial", DCTerms.Location.getURI(), spatial))
+		this.homepage = new DCATProperty("foaf:homepage", FOAF.Document, homepage);
+		this.license = new DCATProperty("dct:license", DCTerms.LicenseDocument, license);
+		this.rigths = new DCATProperty("dct:rights", DCTerms.RightsStatement, rigths);
+		this.spatials = spatials.stream().map(spatial -> new DCATProperty("dct:spatial", DCTerms.Location, spatial))
 				.collect(Collectors.toList());
 
 	}

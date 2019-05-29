@@ -64,9 +64,9 @@ public class DCTLicenseDocument {
 
 		setUri(uri);
 		this.nodeID = nodeID;
-		setName(new DCATProperty(FOAF.name, RDFS.Literal.getURI(), name));
-		setVersionInfo(new DCATProperty(OWL.versionInfo, RDFS.Literal.getURI(), versionInfo));
-		setType(new DCATProperty(DCTerms.type, SKOS.Concept.getURI(), type));
+		setName(new DCATProperty(FOAF.name, RDFS.Literal, name));
+		setVersionInfo(new DCATProperty(OWL.versionInfo, RDFS.Literal, versionInfo));
+		setType(new DCATProperty(DCTerms.type, SKOS.Concept, type));
 	}
 
 	@Id
@@ -92,7 +92,7 @@ public class DCTLicenseDocument {
 	}
 
 	public void setName(String name) {
-		setName(new DCATProperty(FOAF.name, RDFS.Literal.getURI(), name));
+		setName(new DCATProperty(FOAF.name, RDFS.Literal, name));
 	}
 
 	@Embedded
@@ -106,7 +106,7 @@ public class DCTLicenseDocument {
 	}
 
 	public void setType(String type) {
-		setType(new DCATProperty(DCTerms.type, SKOS.Concept.getURI(), type));
+		setType(new DCATProperty(DCTerms.type, SKOS.Concept, type));
 	}
 
 	@Embedded
@@ -120,7 +120,7 @@ public class DCTLicenseDocument {
 	}
 
 	public void setVersionInfo(String versionInfo) {
-		setVersionInfo(new DCATProperty(OWL.versionInfo, RDFS.Literal.getURI(), versionInfo));
+		setVersionInfo(new DCATProperty(OWL.versionInfo, RDFS.Literal, versionInfo));
 	}
 
 	public String getUri() {
@@ -202,9 +202,5 @@ public class DCTLicenseDocument {
 			return false;
 		return true;
 	}
-
-	
-	
-	
 
 }

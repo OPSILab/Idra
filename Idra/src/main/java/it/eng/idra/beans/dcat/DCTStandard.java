@@ -82,21 +82,17 @@ public class DCTStandard implements Serializable {
 		super();
 		setUri(uri);
 		this.nodeID = nodeID;
-		setIdentifier(new DCATProperty(DCTerms.identifier, RDFS.Literal.getURI(), identifier));
-		setTitle(new DCATProperty(DCTerms.title, RDFS.Literal.getURI(), title));
-		setDescription(new DCATProperty(DCTerms.description, RDFS.Literal.getURI(), description));
-		setReferenceDocumentation(
-				referenceDocumentation != null
-						? referenceDocumentation.stream()
-								.map(item -> new DCATProperty(
-										ResourceFactory.createProperty(
-												"http://dati.gov.it/onto/dcatapit#referenceDocumentation"),
-										RDFS.Literal.getURI(), item))
-								.collect(Collectors.toList())
-						: Arrays.asList(new DCATProperty(
-								ResourceFactory
-										.createProperty("http://dati.gov.it/onto/dcatapit#referenceDocumentation"),
-								RDFS.Literal.getURI(), "")));
+		setIdentifier(new DCATProperty(DCTerms.identifier, RDFS.Literal, identifier));
+		setTitle(new DCATProperty(DCTerms.title, RDFS.Literal, title));
+		setDescription(new DCATProperty(DCTerms.description, RDFS.Literal, description));
+		setReferenceDocumentation(referenceDocumentation != null
+				? referenceDocumentation.stream()
+						.map(item -> new DCATProperty(ResourceFactory.createProperty(
+								"http://dati.gov.it/onto/dcatapit#referenceDocumentation"), RDFS.Literal, item))
+						.collect(Collectors.toList())
+				: Arrays.asList(new DCATProperty(
+						ResourceFactory.createProperty("http://dati.gov.it/onto/dcatapit#referenceDocumentation"),
+						RDFS.Literal, "")));
 
 	}
 
@@ -153,8 +149,9 @@ public class DCTStandard implements Serializable {
 
 	@LazyCollection(LazyCollectionOption.FALSE)
 	@ElementCollection
-	@CollectionTable(name = "dcat_standard_referencedocumentation", joinColumns = { @JoinColumn(name = "standard_id",referencedColumnName="standard_id"),
-			@JoinColumn(name = "nodeID", referencedColumnName="nodeID") })
+	@CollectionTable(name = "dcat_standard_referencedocumentation", joinColumns = {
+			@JoinColumn(name = "standard_id", referencedColumnName = "standard_id"),
+			@JoinColumn(name = "nodeID", referencedColumnName = "nodeID") })
 	@AttributeOverrides({ @AttributeOverride(name = "value", column = @Column(name = "referenceDocumentation")) })
 	public List<DCATProperty> getReferenceDocumentation() {
 		return referenceDocumentation;
@@ -196,8 +193,8 @@ public class DCTStandard implements Serializable {
 		String uri = DCTerms.conformsTo.getURI();
 		if (doc.containsKey("uri"))
 			uri = doc.getFieldValue("uri").toString();
-		DCTStandard s= new DCTStandard(uri, doc.getFieldValue("identifier").toString(), doc.getFieldValue("title").toString(),
-				doc.getFieldValue("description").toString(),
+		DCTStandard s = new DCTStandard(uri, doc.getFieldValue("identifier").toString(),
+				doc.getFieldValue("title").toString(), doc.getFieldValue("description").toString(),
 				(ArrayList<String>) doc.getFieldValue("referenceDocumentation"), nodeID);
 		s.setId(doc.getFieldValue("id").toString());
 		return s;
