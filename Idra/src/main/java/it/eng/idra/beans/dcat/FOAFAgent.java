@@ -93,11 +93,11 @@ public class FOAFAgent {
 		setNodeID(nodeID);
 		setPropertyUri(propertyUri);
 		setResourceUri(resourceUri);
-		setName(new DCATProperty(FOAF.name, RDFS.Literal.getURI(), name));
-		setMbox(new DCATProperty(FOAF.mbox, RDFS.Literal.getURI(), mbox));
-		setHomepage(new DCATProperty(FOAF.homepage, RDFS.Literal.getURI(), homepage));
-		setType(new DCATProperty(DCTerms.type, SKOS.Concept.getURI(), type));
-		setIdentifier(new DCATProperty(DCTerms.identifier, RDFS.Literal.getURI(), identifier));
+		setName(new DCATProperty(FOAF.name, RDFS.Literal, name));
+		setMbox(new DCATProperty(FOAF.mbox, RDFS.Literal, mbox));
+		setHomepage(new DCATProperty(FOAF.homepage, RDFS.Literal, homepage));
+		setType(new DCATProperty(DCTerms.type, SKOS.Concept, type));
+		setIdentifier(new DCATProperty(DCTerms.identifier, RDFS.Literal, identifier));
 
 	}
 

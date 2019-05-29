@@ -122,8 +122,7 @@ public class DCATDistribution implements Serializable {
 	// private List<Datalet> datalets;
 	private boolean hasDatalets = false;
 	private DistributionAdditionalConfiguration distributionAdditionalConfig;
-	
-	
+
 	public DCATDistribution() {
 	}
 
@@ -153,39 +152,34 @@ public class DCATDistribution implements Serializable {
 			String releaseDate, String updateDate, String rights, SKOSConceptStatus status, String title) {
 		super();
 		setNodeID(nodeID);
-		setAccessURL(new DCATProperty(DCAT.accessURL, RDFS.Resource.getURI(), accessURL));
-		setDescription(new DCATProperty(DCTerms.description, RDFS.Literal.getURI(), description));
-		setDownloadURL(new DCATProperty(DCAT.downloadURL, RDFS.Resource.getURI(), downloadURL));
-		setFormat(new DCATProperty(DCTerms.format, DCTerms.MediaTypeOrExtent.getURI(), format));
+		setAccessURL(new DCATProperty(DCAT.accessURL, RDFS.Resource, accessURL));
+		setDescription(new DCATProperty(DCTerms.description, RDFS.Literal, description));
+		setDownloadURL(new DCATProperty(DCAT.downloadURL, RDFS.Resource, downloadURL));
+		setFormat(new DCATProperty(DCTerms.format, DCTerms.MediaTypeOrExtent, format));
 		// setLicense(license != null ? license : new
 		// DCTLicenseDocument(DCTerms.license.getURI(), "", "", "", nodeID));
 		setLicense(license);
-		setByteSize(new DCATProperty(DCAT.byteSize, RDFS.Literal.getURI(), byteSize));
+		setByteSize(new DCATProperty(DCAT.byteSize, RDFS.Literal, byteSize));
 		// setChecksum(
 		// checksum != null ? checksum : new
 		// SPDXChecksum("http://spdx.org/rdf/terms#checksum", "", "", nodeID));
 		setChecksum(checksum);
-		setDocumentation(
-				documentation != null
-						? documentation.stream().map(item -> new DCATProperty(FOAF.page, FOAF.Document.getURI(), item))
-								.collect(Collectors.toList())
-						: Arrays.asList(new DCATProperty(FOAF.page, FOAF.Document.getURI(), "")));
-		setLanguage(
-				language != null
-						? language.stream()
-								.map(item -> new DCATProperty(DCTerms.language, DCTerms.LinguisticSystem.getURI(),
-										item))
-								.collect(Collectors.toList())
-						: Arrays.asList(new DCATProperty(DCTerms.language, DCTerms.LinguisticSystem.getURI(), "")));
+		setDocumentation(documentation != null ? documentation.stream()
+				.map(item -> new DCATProperty(FOAF.page, FOAF.Document, item)).collect(Collectors.toList())
+				: Arrays.asList(new DCATProperty(FOAF.page, FOAF.Document, "")));
+		setLanguage(language != null
+				? language.stream().map(item -> new DCATProperty(DCTerms.language, DCTerms.LinguisticSystem, item))
+						.collect(Collectors.toList())
+				: Arrays.asList(new DCATProperty(DCTerms.language, DCTerms.LinguisticSystem, "")));
 		setLinkedSchemas(linkedSchemas);
-		setMediaType(new DCATProperty(DCAT.mediaType, DCTerms.MediaType.getURI(), mediaType));
-		setReleaseDate(new DCATProperty(DCTerms.issued, RDFS.Literal.getURI(),
-				StringUtils.isNotBlank(releaseDate) ? releaseDate : ""));
-		setUpdateDate(new DCATProperty(DCTerms.modified, RDFS.Literal.getURI(),
-				StringUtils.isNotBlank(updateDate) ? updateDate : ""));
-		setRights(new DCATProperty(DCTerms.rights, DCTerms.RightsStatement.getURI(), rights));
+		setMediaType(new DCATProperty(DCAT.mediaType, DCTerms.MediaType, mediaType));
+		setReleaseDate(
+				new DCATProperty(DCTerms.issued, RDFS.Literal, StringUtils.isNotBlank(releaseDate) ? releaseDate : ""));
+		setUpdateDate(
+				new DCATProperty(DCTerms.modified, RDFS.Literal, StringUtils.isNotBlank(updateDate) ? updateDate : ""));
+		setRights(new DCATProperty(DCTerms.rights, DCTerms.RightsStatement, rights));
 		setStatus(status);
-		setTitle(new DCATProperty(DCTerms.title, RDFS.Literal.getURI(), title));
+		setTitle(new DCATProperty(DCTerms.title, RDFS.Literal, title));
 	}
 
 	@Transient
@@ -221,7 +215,7 @@ public class DCATDistribution implements Serializable {
 	}
 
 	public void setTitle(String title) {
-		setTitle(new DCATProperty(DCTerms.title, RDFS.Literal.getURI(), title));
+		setTitle(new DCATProperty(DCTerms.title, RDFS.Literal, title));
 	}
 
 	@Embedded
@@ -236,7 +230,7 @@ public class DCATDistribution implements Serializable {
 	}
 
 	public void setAccessURL(String accessURL) {
-		setAccessURL(new DCATProperty(DCAT.accessURL, RDFS.Resource.getURI(), accessURL));
+		setAccessURL(new DCATProperty(DCAT.accessURL, RDFS.Resource, accessURL));
 	}
 
 	@Embedded
@@ -251,7 +245,7 @@ public class DCATDistribution implements Serializable {
 	}
 
 	public void setDescription(String description) {
-		setDescription(new DCATProperty(DCTerms.description, RDFS.Literal.getURI(), description));
+		setDescription(new DCATProperty(DCTerms.description, RDFS.Literal, description));
 	}
 
 	@Embedded
@@ -265,7 +259,7 @@ public class DCATDistribution implements Serializable {
 	}
 
 	public void setMediaType(String mediaType) {
-		setMediaType(new DCATProperty(DCAT.mediaType, DCTerms.MediaType.getURI(), mediaType));
+		setMediaType(new DCATProperty(DCAT.mediaType, DCTerms.MediaType, mediaType));
 	}
 
 	@Embedded
@@ -286,7 +280,7 @@ public class DCATDistribution implements Serializable {
 		if (StringUtils.isBlank(format)) {
 			format = CommonUtil.extractFormatFromFileExtension(this.getDownloadURL().getValue());
 		}
-		return setFormat(new DCATProperty(DCTerms.format, DCTerms.MediaTypeOrExtent.getURI(), format));
+		return setFormat(new DCATProperty(DCTerms.format, DCTerms.MediaTypeOrExtent, format));
 	}
 
 	@OneToOne(cascade = CascadeType.ALL)
@@ -345,7 +339,7 @@ public class DCATDistribution implements Serializable {
 	}
 
 	public void setByteSize(String byteSize) {
-		setByteSize(new DCATProperty(DCAT.byteSize, RDFS.Literal.getURI(), byteSize));
+		setByteSize(new DCATProperty(DCAT.byteSize, RDFS.Literal, byteSize));
 	}
 
 	@Embedded
@@ -360,7 +354,7 @@ public class DCATDistribution implements Serializable {
 	}
 
 	public void setReleaseDate(String releaseDate) {
-		setReleaseDate(new DCATProperty(DCTerms.issued, RDFS.Literal.getURI(), releaseDate));
+		setReleaseDate(new DCATProperty(DCTerms.issued, RDFS.Literal, releaseDate));
 	}
 
 	@Embedded
@@ -375,7 +369,7 @@ public class DCATDistribution implements Serializable {
 	}
 
 	public void setUpdateDate(String updateDate) {
-		setUpdateDate(new DCATProperty(DCTerms.modified, RDFS.Literal.getURI(), updateDate));
+		setUpdateDate(new DCATProperty(DCTerms.modified, RDFS.Literal, updateDate));
 	}
 
 	// @AttributeOverrides({ @AttributeOverride(name = "value", column =
@@ -400,7 +394,7 @@ public class DCATDistribution implements Serializable {
 	}
 
 	public void setDocumentation(String documentation) {
-		setDocumentation(Arrays.asList(new DCATProperty(FOAF.page, FOAF.Document.getURI(), documentation)));
+		setDocumentation(Arrays.asList(new DCATProperty(FOAF.page, FOAF.Document, documentation)));
 	}
 
 	@Embedded
@@ -415,7 +409,7 @@ public class DCATDistribution implements Serializable {
 	}
 
 	public void setDownloadURL(String downloadURL) {
-		setDownloadURL(new DCATProperty(DCAT.downloadURL, RDFS.Resource.getURI(), downloadURL));
+		setDownloadURL(new DCATProperty(DCAT.downloadURL, RDFS.Resource, downloadURL));
 	}
 
 	@LazyCollection(LazyCollectionOption.FALSE)
@@ -433,7 +427,7 @@ public class DCATDistribution implements Serializable {
 	}
 
 	public void setLanguage(String language) {
-		setLanguage(Arrays.asList(new DCATProperty(DCTerms.language, DCTerms.LinguisticSystem.getURI(), language)));
+		setLanguage(Arrays.asList(new DCATProperty(DCTerms.language, DCTerms.LinguisticSystem, language)));
 	}
 
 	@LazyCollection(LazyCollectionOption.FALSE)
@@ -460,12 +454,12 @@ public class DCATDistribution implements Serializable {
 	}
 
 	public void setRights(String rights) {
-		setRights(new DCATProperty(DCTerms.rights, DCTerms.RightsStatement.getURI(), rights));
+		setRights(new DCATProperty(DCTerms.rights, DCTerms.RightsStatement, rights));
 	}
 
 	@OneToOne(cascade = CascadeType.ALL)
 	@JoinColumns({ @JoinColumn(name = "status_id", referencedColumnName = "concept_id") })
-	@Where(clause="type='3'")
+	@Where(clause = "type='3'")
 	public SKOSConceptStatus getStatus() {
 		return status;
 	}
@@ -510,7 +504,7 @@ public class DCATDistribution implements Serializable {
 	public void setDistributionAdditionalConfig(DistributionAdditionalConfiguration distributionAdditionalConfig) {
 		this.distributionAdditionalConfig = distributionAdditionalConfig;
 	}
-	
+
 	// @LazyCollection(LazyCollectionOption.FALSE)
 	// @OneToMany(cascade = { CascadeType.ALL },orphanRemoval=true)
 	// @JoinColumns({@JoinColumn(name = "distribution_id",
@@ -637,13 +631,13 @@ public class DCATDistribution implements Serializable {
 		if (mediaType != null)
 			doc.addField("mediaType", mediaType.getValue());
 
-		if (releaseDate!=null && StringUtils.isNotBlank(releaseDate.getValue()))
+		if (releaseDate != null && StringUtils.isNotBlank(releaseDate.getValue()))
 			doc.addField("releaseDate", releaseDate.getValue());
-		if (releaseDate!=null && StringUtils.isNotBlank(updateDate.getValue()))
+		if (releaseDate != null && StringUtils.isNotBlank(updateDate.getValue()))
 			doc.addField("updateDate", updateDate.getValue());
 		if (rights != null)
 			doc.addField("rights", rights.getValue());
-		if(title!=null)
+		if (title != null)
 			doc.addField("title", title.getValue());
 
 		if (status != null) {
@@ -709,7 +703,8 @@ public class DCATDistribution implements Serializable {
 		}
 
 		if (doc.getFieldValue("status") != null) {
-			status = SKOSConceptStatus.jsonToSKOSConcept(new JSONObject(doc.getFieldValue("status").toString()),"http://www.w3.org/ns/adms#status", nodeID);
+			status = SKOSConceptStatus.jsonToSKOSConcept(new JSONObject(doc.getFieldValue("status").toString()),
+					"http://www.w3.org/ns/adms#status", nodeID);
 		}
 
 		// try {
@@ -741,19 +736,20 @@ public class DCATDistribution implements Serializable {
 		// }
 		// }
 		String byteSize = "";
-		if(doc.getFieldValue("byteSize") !=null) {
-			byteSize=doc.getFieldValue("byteSize").toString();
+		if (doc.getFieldValue("byteSize") != null) {
+			byteSize = doc.getFieldValue("byteSize").toString();
 		}
-		
+
 		DCATDistribution distr = new DCATDistribution(doc.getFieldValue("id").toString(),
 				doc.getFieldValue("nodeID").toString(), doc.getFieldValue("accessURL").toString(),
-				doc.getFieldValue("description").toString(), doc.getFieldValue("format").toString(), license,
-				byteSize, checksum,
-				(ArrayList<String>) doc.getFieldValue("documentation"), doc.getFieldValue("downloadURL").toString(),
-				(ArrayList<String>) doc.getFieldValue("language"), linkedSchemas,
-				(doc.getFieldValue("mediaType")!=null)?doc.getFieldValue("mediaType").toString():"", distrib_issued, distrib_modified,
-				(doc.getFieldValue("rights")!=null)?doc.getFieldValue("rights").toString():"", status, doc.getFieldValue("title").toString(),
-				(Boolean) doc.getFieldValue("hasDatalets"));
+				doc.getFieldValue("description").toString(), doc.getFieldValue("format").toString(), license, byteSize,
+				checksum, (ArrayList<String>) doc.getFieldValue("documentation"),
+				doc.getFieldValue("downloadURL").toString(), (ArrayList<String>) doc.getFieldValue("language"),
+				linkedSchemas,
+				(doc.getFieldValue("mediaType") != null) ? doc.getFieldValue("mediaType").toString() : "",
+				distrib_issued, distrib_modified,
+				(doc.getFieldValue("rights") != null) ? doc.getFieldValue("rights").toString() : "", status,
+				doc.getFieldValue("title").toString(), (Boolean) doc.getFieldValue("hasDatalets"));
 		// datalets);
 		distr.setStoredRDF((Boolean) doc.getFieldValue("storedRDF"));
 		return distr;

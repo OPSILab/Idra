@@ -132,99 +132,95 @@ public class DCATDataset implements Serializable {
 	public DCATDataset() {
 	}
 
-	public DCATDataset(String nodeID,String identifier, String title, String description, List<DCATDistribution> distributions,
-			List<SKOSConceptTheme> theme, FOAFAgent publisher, List<VCardOrganization> contactPoint, List<String> keywords,
-			String accessRights, List<DCTStandard> conformsTo, List<String> documentation, String frequency,
-			List<String> hasVersion, List<String> isVersionOf, String landingPage, List<String> language,
-			List<String> provenance, String releaseDate, String updateDate, 
-			List<String> otherIdentifier, List<String> sample, List<String> source, DCTLocation spatialCoverage,
-			DCTPeriodOfTime temporalCoverage, String type, String version, List<String> versionNotes,
-			FOAFAgent rightsHolder, FOAFAgent creator, List<SKOSConceptSubject> subject, List<String> relatedResource) {
+	public DCATDataset(String nodeID, String identifier, String title, String description,
+			List<DCATDistribution> distributions, List<SKOSConceptTheme> theme, FOAFAgent publisher,
+			List<VCardOrganization> contactPoint, List<String> keywords, String accessRights,
+			List<DCTStandard> conformsTo, List<String> documentation, String frequency, List<String> hasVersion,
+			List<String> isVersionOf, String landingPage, List<String> language, List<String> provenance,
+			String releaseDate, String updateDate, List<String> otherIdentifier, List<String> sample,
+			List<String> source, DCTLocation spatialCoverage, DCTPeriodOfTime temporalCoverage, String type,
+			String version, List<String> versionNotes, FOAFAgent rightsHolder, FOAFAgent creator,
+			List<SKOSConceptSubject> subject, List<String> relatedResource) {
 
 		super();
-		setId(CommonUtil.extractSeoIdentifier(title, UUID.randomUUID().toString(),nodeID));
+		setId(CommonUtil.extractSeoIdentifier(title, UUID.randomUUID().toString(), nodeID));
 		setNodeID(nodeID);
-		
-		setIdentifier(new DCATProperty(DCTerms.identifier, RDFS.Literal.getURI(), identifier));
-		
+
+		setIdentifier(new DCATProperty(DCTerms.identifier, RDFS.Literal, identifier));
+
 		setDistributions(distributions);
-		setTitle(new DCATProperty(DCTerms.title, RDFS.Literal.getURI(), title));
-		setDescription(new DCATProperty(DCTerms.description, RDFS.Literal.getURI(), description));
+		setTitle(new DCATProperty(DCTerms.title, RDFS.Literal, title));
+		setDescription(new DCATProperty(DCTerms.description, RDFS.Literal, description));
 		setTheme(theme);
 		setPublisher(publisher);
 		setContactPoint(contactPoint);
 		setKeywords(keywords != null && keywords.size() != 0 ? keywords : new ArrayList<String>());
-		setAccessRights(new DCATProperty(DCTerms.accessRights, DCTerms.RightsStatement.getURI(), accessRights));
+		setAccessRights(new DCATProperty(DCTerms.accessRights, DCTerms.RightsStatement, accessRights));
 		setConformsTo(conformsTo);
-		setDocumentation(
-				documentation != null
-						? documentation.stream().map(item -> new DCATProperty(FOAF.page, FOAF.Document.getURI(), item))
-								.collect(Collectors.toList())
-						: Arrays.asList(new DCATProperty(FOAF.page, FOAF.Document.getURI(), "")));
-		
+		setDocumentation(documentation != null ? documentation.stream()
+				.map(item -> new DCATProperty(FOAF.page, FOAF.Document, item)).collect(Collectors.toList())
+				: Arrays.asList(new DCATProperty(FOAF.page, FOAF.Document, "")));
+
 		setRelatedResource(
 				relatedResource != null
-						? relatedResource.stream().map(item -> new DCATProperty(DCTerms.relation, RDFS.Resource.getURI(), item))
+						? relatedResource.stream().map(item -> new DCATProperty(DCTerms.relation, RDFS.Resource, item))
 								.collect(Collectors.toList())
-						: Arrays.asList(new DCATProperty(DCTerms.relation, RDFS.Resource.getURI(), "")));
+						: Arrays.asList(new DCATProperty(DCTerms.relation, RDFS.Resource, "")));
 
-		setFrequency(new DCATProperty(DCTerms.accrualPeriodicity, DCTerms.Frequency.getURI(), frequency));
-		setHasVersion(hasVersion != null
-				? hasVersion.stream().map(item -> new DCATProperty(DCTerms.hasVersion, DCAT.Dataset.getURI(), item))
+		setFrequency(new DCATProperty(DCTerms.accrualPeriodicity, DCTerms.Frequency, frequency));
+		setHasVersion(
+				hasVersion != null
+						? hasVersion.stream().map(item -> new DCATProperty(DCTerms.hasVersion, DCAT.Dataset, item))
+								.collect(Collectors.toList())
+						: Arrays.asList(new DCATProperty(DCTerms.hasVersion, DCAT.Dataset, "")));
+
+		setIsVersionOf(
+				isVersionOf != null
+						? isVersionOf.stream().map(item -> new DCATProperty(DCTerms.isVersionOf, DCAT.Dataset, item))
+								.collect(Collectors.toList())
+						: Arrays.asList(new DCATProperty(DCTerms.isVersionOf, DCAT.Dataset, "")));
+
+		setLandingPage(new DCATProperty(DCAT.landingPage, FOAF.Document, landingPage));
+
+		setLanguage(language != null
+				? language.stream().map(item -> new DCATProperty(DCTerms.language, DCTerms.LinguisticSystem, item))
 						.collect(Collectors.toList())
-				: Arrays.asList(new DCATProperty(DCTerms.hasVersion, DCAT.Dataset.getURI(), "")));
+				: Arrays.asList(new DCATProperty(DCTerms.language, DCTerms.LinguisticSystem, "")));
 
-		setIsVersionOf(isVersionOf != null
-				? isVersionOf.stream().map(item -> new DCATProperty(DCTerms.isVersionOf, DCAT.Dataset.getURI(), item))
+		setProvenance(provenance != null
+				? provenance.stream()
+						.map(item -> new DCATProperty(DCTerms.provenance, DCTerms.ProvenanceStatement, item))
 						.collect(Collectors.toList())
-				: Arrays.asList(new DCATProperty(DCTerms.isVersionOf, DCAT.Dataset.getURI(), "")));
+				: Arrays.asList(new DCATProperty(DCTerms.provenance, DCTerms.ProvenanceStatement, "")));
 
-		setLandingPage(new DCATProperty(DCAT.landingPage, FOAF.Document.getURI(), landingPage));
-
-		setLanguage(
-				language != null
-						? language.stream()
-								.map(item -> new DCATProperty(DCTerms.language, DCTerms.LinguisticSystem.getURI(),
-										item))
-								.collect(Collectors.toList())
-						: Arrays.asList(new DCATProperty(DCTerms.language, DCTerms.LinguisticSystem.getURI(), "")));
-
-		setProvenance(
-				provenance != null
-						? provenance.stream()
-								.map(item -> new DCATProperty(DCTerms.provenance, DCTerms.ProvenanceStatement.getURI(),
-										item))
-								.collect(Collectors.toList())
-						: Arrays.asList(
-								new DCATProperty(DCTerms.provenance, DCTerms.ProvenanceStatement.getURI(), "")));
-
-		setReleaseDate(new DCATProperty(DCTerms.issued, RDFS.Literal.getURI(),
+		setReleaseDate(new DCATProperty(DCTerms.issued, RDFS.Literal,
 				StringUtils.isNotBlank(releaseDate) ? releaseDate : "1970-01-01T00:00:00Z"));
-		setUpdateDate(new DCATProperty(DCTerms.modified, RDFS.Literal.getURI(),
+		setUpdateDate(new DCATProperty(DCTerms.modified, RDFS.Literal,
 				StringUtils.isNotBlank(updateDate) ? updateDate : "1970-01-01T00:00:00Z"));
-			
+
 		setOtherIdentifier(otherIdentifier != null
 				? otherIdentifier.stream()
 						.map(item -> new DCATProperty(
 								ResourceFactory.createProperty("http://www.w3.org/ns/adms#identifier"),
-								"http://www.w3.org/ns/adms#Identifier", item))
+								ResourceFactory.createResource("http://www.w3.org/ns/adms#Identifier"), item))
 						.collect(Collectors.toList())
 				: Arrays.asList(new DCATProperty(ResourceFactory.createProperty("http://www.w3.org/ns/adms#identifier"),
-						"http://www.w3.org/ns/adms#Identifier", "")));
+						ResourceFactory.createResource("http://www.w3.org/ns/adms#Identifier"), "")));
 
 		setSample(sample != null
 				? sample.stream()
 						.map(item -> new DCATProperty(
-								ResourceFactory.createProperty("http://www.w3.org/ns/adms#sample"),
-								DCAT.Distribution.getURI(), item))
+								ResourceFactory.createProperty("http://www.w3.org/ns/adms#sample"), DCAT.Distribution,
+								item))
 						.collect(Collectors.toList())
 				: Arrays.asList(new DCATProperty(ResourceFactory.createProperty("http://www.w3.org/ns/adms#sample"),
-						DCAT.Distribution.getURI(), "")));
+						DCAT.Distribution, "")));
 
-		setSource(source != null
-				? source.stream().map(item -> new DCATProperty(DCTerms.source, DCAT.Dataset.getURI(), item))
-						.collect(Collectors.toList())
-				: Arrays.asList(new DCATProperty(DCTerms.source, DCAT.Dataset.getURI(), "")));
+		setSource(
+				source != null
+						? source.stream().map(item -> new DCATProperty(DCTerms.source, DCAT.Dataset, item))
+								.collect(Collectors.toList())
+						: Arrays.asList(new DCATProperty(DCTerms.source, DCAT.Dataset, "")));
 
 		// setSpatialCoverage(spatialCoverage != null ? spatialCoverage
 		// : new DCTLocation(DCTerms.spatial.getURI(), "", "", "", nodeID));
@@ -232,17 +228,16 @@ public class DCATDataset implements Serializable {
 		// setTemporalCoverage(temporalCoverage != null ? temporalCoverage
 		// : new DCTPeriodOfTime(DCTerms.temporal.getURI(), "", "", nodeID));
 		setTemporalCoverage(temporalCoverage);
-		setType(new DCATProperty(DCTerms.type, SKOS.Concept.getURI(), type));
-		setVersion(new DCATProperty(OWL.versionInfo, RDFS.Literal.getURI(), version));
+		setType(new DCATProperty(DCTerms.type, SKOS.Concept, type));
+		setVersion(new DCATProperty(OWL.versionInfo, RDFS.Literal, version));
 		setVersionNotes(versionNotes != null
 				? versionNotes.stream()
 						.map(item -> new DCATProperty(
-								ResourceFactory.createProperty("http://www.w3.org/ns/adms#versionNotes"),
-								RDFS.Literal.getURI(), item))
+								ResourceFactory.createProperty("http://www.w3.org/ns/adms#versionNotes"), RDFS.Literal,
+								item))
 						.collect(Collectors.toList())
-				: Arrays.asList(
-						new DCATProperty(ResourceFactory.createProperty("http://www.w3.org/ns/adms#versionNotes"),
-								RDFS.Literal.getURI(), "")));
+				: Arrays.asList(new DCATProperty(
+						ResourceFactory.createProperty("http://www.w3.org/ns/adms#versionNotes"), RDFS.Literal, "")));
 
 		// setRightsHolder(rightsHolder != null ? rightsHolder
 		// : new FOAFAgent(DCTerms.rightsHolder.getURI(), "", "", "", "", "",
@@ -259,47 +254,56 @@ public class DCATDataset implements Serializable {
 		// : Arrays.asList(new DCATProperty(DCTerms.subject, SKOS.Concept.getURI(),
 		// "")));
 		setSubject(subject);
-		
+
 //		this.setSeoIdentifier(CommonUtil.extractSeoIdentifier(title, identifier));
 	}
 
-	public DCATDataset(String id,String nodeID,String identifier, String title, String description, List<DCATDistribution> distributions,
-			List<SKOSConceptTheme> theme, FOAFAgent publisher, List<VCardOrganization> contactPoint, List<String> keywords,
-			String accessRights, List<DCTStandard> conformsTo, List<String> documentation, String frequency,
-			List<String> hasVersion, List<String> isVersionOf, String landingPage, List<String> language,
-			List<String> provenance, String releaseDate, String updateDate, 
-			List<String> otherIdentifier, List<String> sample, List<String> source, DCTLocation spatialCoverage,
-			DCTPeriodOfTime temporalCoverage, String type, String version, List<String> versionNotes,
-			FOAFAgent rightsHolder, FOAFAgent creator, List<SKOSConceptSubject> subject, List<String> relatedResource,boolean hasStoredRDF) {
-		
-		this(nodeID,identifier, title, description, distributions, theme, publisher, contactPoint, keywords, accessRights,
-				conformsTo, documentation, frequency, hasVersion, isVersionOf, landingPage, language, provenance,
-				releaseDate, updateDate, otherIdentifier, sample, source, spatialCoverage, temporalCoverage,
-				type, version, versionNotes, rightsHolder, creator, subject,relatedResource);
-		
+	public DCATDataset(String id, String nodeID, String identifier, String title, String description,
+			List<DCATDistribution> distributions, List<SKOSConceptTheme> theme, FOAFAgent publisher,
+			List<VCardOrganization> contactPoint, List<String> keywords, String accessRights,
+			List<DCTStandard> conformsTo, List<String> documentation, String frequency, List<String> hasVersion,
+			List<String> isVersionOf, String landingPage, List<String> language, List<String> provenance,
+			String releaseDate, String updateDate, List<String> otherIdentifier, List<String> sample,
+			List<String> source, DCTLocation spatialCoverage, DCTPeriodOfTime temporalCoverage, String type,
+			String version, List<String> versionNotes, FOAFAgent rightsHolder, FOAFAgent creator,
+			List<SKOSConceptSubject> subject, List<String> relatedResource, boolean hasStoredRDF) {
+
+		this(nodeID, identifier, title, description, distributions, theme, publisher, contactPoint, keywords,
+				accessRights, conformsTo, documentation, frequency, hasVersion, isVersionOf, landingPage, language,
+				provenance, releaseDate, updateDate, otherIdentifier, sample, source, spatialCoverage, temporalCoverage,
+				type, version, versionNotes, rightsHolder, creator, subject, relatedResource);
+
 		this.setId(id);
 		this.setHasStoredRDF(hasStoredRDF);
-		
+
 	}
-	
-	/*public DCATDataset(String nodeID, String title, String description, List<DCATDistribution> distributions,
-			List<SKOSConceptTheme> theme, FOAFAgent publisher, List<VCardOrganization> contactPoint, List<String> keywords,
-			String accessRights, List<DCTStandard> conformsTo, List<String> documentation, String frequency,
-			List<String> hasVersion, List<String> isVersionOf, String landingPage, List<String> language,
-			List<String> provenance, String releaseDate, String updateDate, String identifier,
-			List<String> otherIdentifier, List<String> sample, List<String> source, DCTLocation spatialCoverage,
-			DCTPeriodOfTime temporalCoverage, String type, String version, List<String> versionNotes,
-			FOAFAgent rightsHolder, FOAFAgent creator, List<SKOSConceptSubject> subject, String legacyIdentifier) {
 
-		this(nodeID, title, description, distributions, theme, publisher, contactPoint, keywords, accessRights,
-				conformsTo, documentation, frequency, hasVersion, isVersionOf, landingPage, language, provenance,
-				releaseDate, updateDate, identifier, otherIdentifier, sample, source, spatialCoverage, temporalCoverage,
-				type, version, versionNotes, rightsHolder, creator, subject);
-
-		this.setLegacyIdentifier(legacyIdentifier);
-		this.setSeoIdentifier(CommonUtil.extractSeoIdentifier(title, getId(),getNodeID()));
-
-	}*/
+	/*
+	 * public DCATDataset(String nodeID, String title, String description,
+	 * List<DCATDistribution> distributions, List<SKOSConceptTheme> theme, FOAFAgent
+	 * publisher, List<VCardOrganization> contactPoint, List<String> keywords,
+	 * String accessRights, List<DCTStandard> conformsTo, List<String>
+	 * documentation, String frequency, List<String> hasVersion, List<String>
+	 * isVersionOf, String landingPage, List<String> language, List<String>
+	 * provenance, String releaseDate, String updateDate, String identifier,
+	 * List<String> otherIdentifier, List<String> sample, List<String> source,
+	 * DCTLocation spatialCoverage, DCTPeriodOfTime temporalCoverage, String type,
+	 * String version, List<String> versionNotes, FOAFAgent rightsHolder, FOAFAgent
+	 * creator, List<SKOSConceptSubject> subject, String legacyIdentifier) {
+	 * 
+	 * this(nodeID, title, description, distributions, theme, publisher,
+	 * contactPoint, keywords, accessRights, conformsTo, documentation, frequency,
+	 * hasVersion, isVersionOf, landingPage, language, provenance, releaseDate,
+	 * updateDate, identifier, otherIdentifier, sample, source, spatialCoverage,
+	 * temporalCoverage, type, version, versionNotes, rightsHolder, creator,
+	 * subject);
+	 * 
+	 * this.setLegacyIdentifier(legacyIdentifier);
+	 * this.setSeoIdentifier(CommonUtil.extractSeoIdentifier(title,
+	 * getId(),getNodeID()));
+	 * 
+	 * }
+	 */
 
 //	public DCATDataset(String nodeID, String title, String description, List<DCATDistribution> distributions,
 //			List<SKOSConceptTheme> theme, FOAFAgent publisher, List<VCardOrganization> contactPoint, List<String> keywords,
@@ -412,7 +416,9 @@ public class DCATDataset implements Serializable {
 
 	@LazyCollection(LazyCollectionOption.FALSE)
 	@ElementCollection
-	@CollectionTable(name = "dcat_otherIdentifier", joinColumns = { @JoinColumn(name = "dataset_id",referencedColumnName="dataset_id"),	@JoinColumn(name = "nodeID",referencedColumnName="nodeID") })
+	@CollectionTable(name = "dcat_otherIdentifier", joinColumns = {
+			@JoinColumn(name = "dataset_id", referencedColumnName = "dataset_id"),
+			@JoinColumn(name = "nodeID", referencedColumnName = "nodeID") })
 	@AttributeOverrides({ @AttributeOverride(name = "value", column = @Column(name = "otherIdentifier")) })
 	public List<DCATProperty> getOtherIdentifier() {
 		return otherIdentifier;
@@ -454,7 +460,9 @@ public class DCATDataset implements Serializable {
 
 	@LazyCollection(LazyCollectionOption.FALSE)
 	@ElementCollection
-	@CollectionTable(name = "dcat_versionNotes", joinColumns = { @JoinColumn(name = "dataset_id",referencedColumnName="dataset_id"),	@JoinColumn(name = "nodeID",referencedColumnName="nodeID") })
+	@CollectionTable(name = "dcat_versionNotes", joinColumns = {
+			@JoinColumn(name = "dataset_id", referencedColumnName = "dataset_id"),
+			@JoinColumn(name = "nodeID", referencedColumnName = "nodeID") })
 	@AttributeOverrides({ @AttributeOverride(name = "value", column = @Column(name = "versionNotes")) })
 	public List<DCATProperty> getVersionNotes() {
 		return versionNotes;
@@ -524,7 +532,9 @@ public class DCATDataset implements Serializable {
 
 	@LazyCollection(LazyCollectionOption.FALSE)
 	@ElementCollection
-	@CollectionTable(name = "dcat_language", joinColumns = { @JoinColumn(name = "dataset_id",referencedColumnName="dataset_id"),	@JoinColumn(name = "nodeID",referencedColumnName="nodeID") })
+	@CollectionTable(name = "dcat_language", joinColumns = {
+			@JoinColumn(name = "dataset_id", referencedColumnName = "dataset_id"),
+			@JoinColumn(name = "nodeID", referencedColumnName = "nodeID") })
 	@AttributeOverrides({ @AttributeOverride(name = "value", column = @Column(name = "language")) })
 	public List<DCATProperty> getLanguage() {
 		return language;
@@ -566,7 +576,7 @@ public class DCATDataset implements Serializable {
 	@OneToMany(cascade = { CascadeType.ALL })
 	@JoinColumns({ @JoinColumn(name = "dataset_id", referencedColumnName = "dataset_id"),
 			@JoinColumn(name = "nodeID", referencedColumnName = "nodeID") })
-	@Where(clause="type='1'")
+	@Where(clause = "type='1'")
 	public List<SKOSConceptTheme> getTheme() {
 		return theme;
 	}
@@ -609,7 +619,9 @@ public class DCATDataset implements Serializable {
 
 	@LazyCollection(LazyCollectionOption.FALSE)
 	@ElementCollection
-	@CollectionTable(name = "dcat_keyword", joinColumns = { @JoinColumn(name = "dataset_id",referencedColumnName="dataset_id"),	@JoinColumn(name = "nodeID",referencedColumnName="nodeID") })
+	@CollectionTable(name = "dcat_keyword", joinColumns = {
+			@JoinColumn(name = "dataset_id", referencedColumnName = "dataset_id"),
+			@JoinColumn(name = "nodeID", referencedColumnName = "nodeID") })
 	public List<String> getKeywords() {
 		return this.keywords;
 	}
@@ -650,7 +662,9 @@ public class DCATDataset implements Serializable {
 
 	@LazyCollection(LazyCollectionOption.FALSE)
 	@ElementCollection
-	@CollectionTable(name = "dcat_documentation", joinColumns = { @JoinColumn(name = "dataset_id",referencedColumnName="dataset_id"),	@JoinColumn(name = "nodeID",referencedColumnName="nodeID") })
+	@CollectionTable(name = "dcat_documentation", joinColumns = {
+			@JoinColumn(name = "dataset_id", referencedColumnName = "dataset_id"),
+			@JoinColumn(name = "nodeID", referencedColumnName = "nodeID") })
 	@AttributeOverrides({
 			@AttributeOverride(name = "value", column = @Column(name = "documentation", columnDefinition = "LONGTEXT")) })
 	public List<DCATProperty> getDocumentation() {
@@ -663,7 +677,9 @@ public class DCATDataset implements Serializable {
 
 	@LazyCollection(LazyCollectionOption.FALSE)
 	@ElementCollection
-	@CollectionTable(name = "dcat_relatedResource", joinColumns = { @JoinColumn(name = "dataset_id",referencedColumnName="dataset_id"),	@JoinColumn(name = "nodeID",referencedColumnName="nodeID") })
+	@CollectionTable(name = "dcat_relatedResource", joinColumns = {
+			@JoinColumn(name = "dataset_id", referencedColumnName = "dataset_id"),
+			@JoinColumn(name = "nodeID", referencedColumnName = "nodeID") })
 	@AttributeOverrides({
 			@AttributeOverride(name = "value", column = @Column(name = "relatedResource", columnDefinition = "LONGTEXT")) })
 	public List<DCATProperty> getRelatedResource() {
@@ -676,7 +692,9 @@ public class DCATDataset implements Serializable {
 
 	@LazyCollection(LazyCollectionOption.FALSE)
 	@ElementCollection
-	@CollectionTable(name = "dcat_hasVersion", joinColumns = { @JoinColumn(name = "dataset_id",referencedColumnName="dataset_id"),	@JoinColumn(name = "nodeID",referencedColumnName="nodeID") })
+	@CollectionTable(name = "dcat_hasVersion", joinColumns = {
+			@JoinColumn(name = "dataset_id", referencedColumnName = "dataset_id"),
+			@JoinColumn(name = "nodeID", referencedColumnName = "nodeID") })
 	@AttributeOverrides({
 			@AttributeOverride(name = "value", column = @Column(name = "hasVersion", columnDefinition = "LONGTEXT")) })
 	public List<DCATProperty> getHasVersion() {
@@ -689,7 +707,9 @@ public class DCATDataset implements Serializable {
 
 	@LazyCollection(LazyCollectionOption.FALSE)
 	@ElementCollection
-	@CollectionTable(name = "dcat_isVersionOf", joinColumns = { @JoinColumn(name = "dataset_id",referencedColumnName="dataset_id"),	@JoinColumn(name = "nodeID",referencedColumnName="nodeID") })
+	@CollectionTable(name = "dcat_isVersionOf", joinColumns = {
+			@JoinColumn(name = "dataset_id", referencedColumnName = "dataset_id"),
+			@JoinColumn(name = "nodeID", referencedColumnName = "nodeID") })
 	@AttributeOverrides({
 			@AttributeOverride(name = "value", column = @Column(name = "isVersionOf", columnDefinition = "LONGTEXT")) })
 	public List<DCATProperty> getIsVersionOf() {
@@ -702,7 +722,9 @@ public class DCATDataset implements Serializable {
 
 	@LazyCollection(LazyCollectionOption.FALSE)
 	@ElementCollection
-	@CollectionTable(name = "dcat_provenance", joinColumns = { @JoinColumn(name = "dataset_id",referencedColumnName="dataset_id"),	@JoinColumn(name = "nodeID",referencedColumnName="nodeID") })
+	@CollectionTable(name = "dcat_provenance", joinColumns = {
+			@JoinColumn(name = "dataset_id", referencedColumnName = "dataset_id"),
+			@JoinColumn(name = "nodeID", referencedColumnName = "nodeID") })
 	@AttributeOverrides({ @AttributeOverride(name = "value", column = @Column(name = "provenance")) })
 	public List<DCATProperty> getProvenance() {
 		return provenance;
@@ -714,7 +736,9 @@ public class DCATDataset implements Serializable {
 
 	@LazyCollection(LazyCollectionOption.FALSE)
 	@ElementCollection
-	@CollectionTable(name = "dcat_sample", joinColumns = { @JoinColumn(name = "dataset_id",referencedColumnName="dataset_id"),	@JoinColumn(name = "nodeID",referencedColumnName="nodeID") })
+	@CollectionTable(name = "dcat_sample", joinColumns = {
+			@JoinColumn(name = "dataset_id", referencedColumnName = "dataset_id"),
+			@JoinColumn(name = "nodeID", referencedColumnName = "nodeID") })
 	@AttributeOverrides({ @AttributeOverride(name = "value", column = @Column(name = "sample")) })
 	public List<DCATProperty> getSample() {
 		return sample;
@@ -726,7 +750,9 @@ public class DCATDataset implements Serializable {
 
 	@LazyCollection(LazyCollectionOption.FALSE)
 	@ElementCollection
-	@CollectionTable(name = "dcat_source", joinColumns = { @JoinColumn(name = "dataset_id",referencedColumnName="dataset_id"),	@JoinColumn(name = "nodeID",referencedColumnName="nodeID") })
+	@CollectionTable(name = "dcat_source", joinColumns = {
+			@JoinColumn(name = "dataset_id", referencedColumnName = "dataset_id"),
+			@JoinColumn(name = "nodeID", referencedColumnName = "nodeID") })
 	@AttributeOverrides({ @AttributeOverride(name = "value", column = @Column(name = "source")) })
 	public List<DCATProperty> getSource() {
 		return source;
@@ -750,7 +776,7 @@ public class DCATDataset implements Serializable {
 	@OneToMany(cascade = { CascadeType.ALL })
 	@JoinColumns({ @JoinColumn(name = "dataset_id", referencedColumnName = "dataset_id"),
 			@JoinColumn(name = "nodeID", referencedColumnName = "nodeID") })
-	@Where(clause="type='2'")
+	@Where(clause = "type='2'")
 	public List<SKOSConceptSubject> getSubject() {
 		return subject;
 	}
@@ -779,7 +805,6 @@ public class DCATDataset implements Serializable {
 		this.creator = creator;
 	}
 
-	
 //	public String getLegacyIdentifier() {
 //		return legacyIdentifier;
 //	}
@@ -795,13 +820,11 @@ public class DCATDataset implements Serializable {
 //	public void setSeoIdentifier(String seoIdentifier) {
 //		this.seoIdentifier = seoIdentifier;
 //	}
-	
+
 	/*
 	 * Defines equality principle for a Dataset based on dcatIdentifier + its own
 	 * nodeID Alternatively is used otherIdentifier + nodeID
 	 */
-
-	
 
 	@Override
 	public boolean equals(Object obj) {
@@ -834,7 +857,7 @@ public class DCATDataset implements Serializable {
 		doc.addField("content_type", CacheContentType.dataset.toString());
 		doc.addField("nodeID", nodeID);
 		doc.addField("hasStoredRDF", hasStoredRDF);
-		
+
 		String desc_tmp = description.getValue();
 		try {
 			while (desc_tmp.getBytes("UTF-8").length >= 32766) {
@@ -852,14 +875,14 @@ public class DCATDataset implements Serializable {
 			theme.stream().filter(item -> item != null)
 					.forEach(item -> doc.addChildDocument(item.toDoc(CacheContentType.theme)));
 			List<String> datasetThemes = new ArrayList<>();
-			for(SKOSConceptTheme c : theme) {
-				for(SKOSPrefLabel p : c.getPrefLabel()) {
-					if(StringUtils.isNotBlank(p.getValue()) && FederationCore.isDcatTheme(p.getValue())) {
+			for (SKOSConceptTheme c : theme) {
+				for (SKOSPrefLabel p : c.getPrefLabel()) {
+					if (StringUtils.isNotBlank(p.getValue()) && FederationCore.isDcatTheme(p.getValue())) {
 						datasetThemes.add(p.getValue());
 					}
 				}
 			}
-			
+
 			doc.addField("datasetThemes", datasetThemes);
 		}
 
@@ -878,7 +901,7 @@ public class DCATDataset implements Serializable {
 		if (documentation != null && !documentation.isEmpty())
 			doc.addField("documentation", documentation.stream().filter(item -> item != null)
 					.map(item -> item.getValue()).collect(Collectors.toList()));
-		
+
 		if (relatedResource != null && !relatedResource.isEmpty())
 			doc.addField("relatedResource", relatedResource.stream().filter(item -> item != null)
 					.map(item -> item.getValue()).collect(Collectors.toList()));
@@ -927,7 +950,7 @@ public class DCATDataset implements Serializable {
 		if (versionNotes != null && !versionNotes.isEmpty())
 			doc.addField("versionNotes", versionNotes.stream().filter(item -> item != null).map(item -> item.getValue())
 					.collect(Collectors.toList()));
-	
+
 		if (subject != null && !subject.isEmpty())
 			subject.stream().forEach(item -> doc.addChildDocument(item.toDoc(CacheContentType.subject)));
 
@@ -947,22 +970,21 @@ public class DCATDataset implements Serializable {
 
 		if (distributions != null && !distributions.isEmpty()) {
 			distributions.stream().filter(item -> item != null).forEach(item -> doc.addChildDocument(item.toDoc()));
-								
-			doc.addField("distributionFormats", distributions.stream().filter(x -> x!=null)
-					.map(x -> { 
-						if(x.getFormat() != null && StringUtils.isNotBlank(x.getFormat().getValue())) { 
-							return x.getFormat().getValue().replaceFirst("\\.", "").toLowerCase();
-						}else if(x.getMediaType() != null && StringUtils.isNotBlank(x.getMediaType().getValue())) {
-							if(x.getMediaType().getValue().contains("/")) {
-								return x.getMediaType().getValue().split("/")[1].toLowerCase();	
-							}else {
-								return x.getMediaType().getValue().toLowerCase();
-							}
-						}else {
-							return null;
-						}
-					}).distinct().collect(Collectors.toList()));
-			
+
+			doc.addField("distributionFormats", distributions.stream().filter(x -> x != null).map(x -> {
+				if (x.getFormat() != null && StringUtils.isNotBlank(x.getFormat().getValue())) {
+					return x.getFormat().getValue().replaceFirst("\\.", "").toLowerCase();
+				} else if (x.getMediaType() != null && StringUtils.isNotBlank(x.getMediaType().getValue())) {
+					if (x.getMediaType().getValue().contains("/")) {
+						return x.getMediaType().getValue().split("/")[1].toLowerCase();
+					} else {
+						return x.getMediaType().getValue().toLowerCase();
+					}
+				} else {
+					return null;
+				}
+			}).distinct().collect(Collectors.toList()));
+
 			doc.addField("distributionLicenses",
 					distributions.stream()
 							.filter(x -> x != null && x.getLicense() != null && x.getLicense().getName() != null
@@ -972,7 +994,7 @@ public class DCATDataset implements Serializable {
 		}
 		if (keywords != null && !keywords.isEmpty())
 			doc.addField("keywords", keywords);
-		
+
 //		try {
 //			if(StringUtils.isNotBlank(seoIdentifier))
 //				doc.addField("seoIdentifier",seoIdentifier);
@@ -981,7 +1003,7 @@ public class DCATDataset implements Serializable {
 //		} catch (Exception e) {
 //			e.printStackTrace();
 //		}
-		
+
 		return doc;
 	}
 
@@ -1063,25 +1085,26 @@ public class DCATDataset implements Serializable {
 		String dataset_modified = doc.getOrDefault("updateDate", "").toString();
 		if (StringUtils.isNotBlank(dataset_modified))
 			dataset_modified = CommonUtil.toUtcDate(doc.getFieldValue("updateDate").toString());
-	
-		DCATDataset d= new DCATDataset(doc.getFieldValue("id").toString(),nodeID, doc.getFieldValue("identifier").toString(), doc.getFieldValue("title").toString(),
+
+		DCATDataset d = new DCATDataset(doc.getFieldValue("id").toString(), nodeID,
+				doc.getFieldValue("identifier").toString(), doc.getFieldValue("title").toString(),
 				doc.getFieldValue("description").toString(), distrList, themeList, publisher, contactPointList,
 				(ArrayList<String>) doc.getFieldValue("keywords"), doc.getFieldValue("accessRights").toString(),
 				conformsToList, (ArrayList<String>) doc.getFieldValue("documentation"),
 				doc.getFieldValue("frequency").toString(), (ArrayList<String>) doc.getFieldValue("hasVersion"),
 				(ArrayList<String>) doc.getFieldValue("isVersionOf"), doc.getFieldValue("landingPage").toString(),
 				(ArrayList<String>) doc.getFieldValue("language"), (ArrayList<String>) doc.getFieldValue("provenance"),
-				dataset_issued, dataset_modified,
-				(ArrayList<String>) doc.getFieldValue("otherIdentifier"),
+				dataset_issued, dataset_modified, (ArrayList<String>) doc.getFieldValue("otherIdentifier"),
 				(ArrayList<String>) doc.getFieldValue("sample"), (ArrayList<String>) doc.getFieldValue("source"),
 				spatialCoverage, temporalCoverage, doc.getFieldValue("type").toString(),
 				doc.getFieldValue("version").toString(), (ArrayList<String>) doc.getFieldValue("versionNotes"),
-				rightsHolder, creator, subjectList,(ArrayList<String>) doc.getFieldValue("relatedResource"),(Boolean) doc.getFieldValue("hasStoredRDF"));
-		
+				rightsHolder, creator, subjectList, (ArrayList<String>) doc.getFieldValue("relatedResource"),
+				(Boolean) doc.getFieldValue("hasStoredRDF"));
+
 		return d;
 
 	}
-	
+
 	@Override
 	public String toString() {
 		return "DCATDataset [id=" + id + ", nodeID=" + nodeID + ", title=" + title.getValue() + "identifier="

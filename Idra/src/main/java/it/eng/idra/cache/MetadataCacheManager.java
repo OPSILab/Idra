@@ -255,7 +255,7 @@ public class MetadataCacheManager {
 		for (SolrDocument doc : rsp.getResults()) {
 			idList.add((String) doc.getFieldValue("id"));
 		}
-		System.out.println(idList.size());
+		
 		return idList;
 	}
 	

@@ -24,6 +24,7 @@ import it.eng.idra.beans.odms.ODMSManagerException;
 import it.eng.idra.beans.odms.ODMSCatalogue;
 import it.eng.idra.beans.odms.ODMSCatalogueFederationLevel;
 import it.eng.idra.beans.odms.ODMSCatalogueForbiddenException;
+import it.eng.idra.beans.odms.ODMSCatalogueImage;
 import it.eng.idra.beans.odms.ODMSCatalogueMessage;
 import it.eng.idra.beans.odms.ODMSCatalogueNotFoundException;
 import it.eng.idra.beans.odms.ODMSCatalogueOfflineException;
@@ -80,7 +81,8 @@ public class ODMSManager {
 			logger.info("Federated Nodes: " + federatedNodes.size());
 			ODMSConnectorsList.put(ODMSCatalogueType.CKAN, "it.eng.idra.connectors.CKanConnector");
 			ODMSConnectorsList.put(ODMSCatalogueType.SOCRATA, "it.eng.idra.connectors.SocrataConnector");
-			ODMSConnectorsList.put(ODMSCatalogueType.NATIVE, "it.eng.idra.connectors.OpenDataFederationNativeConnector");
+			ODMSConnectorsList.put(ODMSCatalogueType.NATIVE,
+					"it.eng.idra.connectors.OpenDataFederationNativeConnector");
 			ODMSConnectorsList.put(ODMSCatalogueType.WEB, "it.eng.idra.connectors.WebConnector");
 			ODMSConnectorsList.put(ODMSCatalogueType.DCATDUMP, "it.eng.idra.connectors.DCATDumpConnector");
 			ODMSConnectorsList.put(ODMSCatalogueType.DKAN, "it.eng.idra.connectors.DkanConnector");
@@ -197,8 +199,7 @@ public class ODMSManager {
 	 *
 	 * Forwards the request to the underlying JDBC layer
 	 *
-	 * @param id
-	 *            Id of requested federated node
+	 * @param id Id of requested federated node
 	 * @throws ODMSCatalogueNotFoundException
 	 * @throws ODMSManagerException
 	 * @throws SQLException
@@ -239,8 +240,7 @@ public class ODMSManager {
 	 * Federation by using Java Reflection
 	 * 
 	 *
-	 * @param data.id
-	 *            Id of requested federated node
+	 * @param data.id Id of requested federated node
 	 * @throws ODMSManagerException
 	 * 
 	 * @returns the connector instance of federated ODMS node
@@ -269,13 +269,12 @@ public class ODMSManager {
 	 * 
 	 * Forwards the request to the underlying JDBC layer
 	 *
-	 * @param integrationGrade
-	 *            The integration grade
+	 * @param integrationGrade The integration grade
 	 * @throws SQLException
 	 * @returns the list of the federated ODMS nodes
 	 */
-	public static List<ODMSCatalogue> getODMSCataloguesbyFederationLevel(ODMSCatalogueFederationLevel integrationLevel_first,
-			ODMSCatalogueFederationLevel integrationLevel_second) {
+	public static List<ODMSCatalogue> getODMSCataloguesbyFederationLevel(
+			ODMSCatalogueFederationLevel integrationLevel_first, ODMSCatalogueFederationLevel integrationLevel_second) {
 
 		return federatedNodes.stream().filter(node -> node.getFederationLevel().equals(integrationLevel_first)
 				|| node.getFederationLevel().equals(integrationLevel_second)).collect(Collectors.toList());
@@ -308,18 +307,17 @@ public class ODMSManager {
 	 * Updates the dataset count of the node Forwards the request to the underlying
 	 * JDBC layer
 	 *
-	 * @param node
-	 *            The ODMSCatalogue object to add
+	 * @param node The ODMSCatalogue object to add
 	 * 
 	 * @throws ODMSAlreadyPresentException
 	 * @throws ODMSCatalogueNotFoundException
 	 * @throws ODMSManagerException
 	 * @returns Node itself with assigned Dataset Count and id
-	 * @throws An
-	 *             Exception if the request fails
+	 * @throws An Exception if the request fails
 	 */
-	public static int addODMSCatalogue(ODMSCatalogue node) throws ODMSAlreadyPresentException, ODMSCatalogueNotFoundException,
-			ODMSCatalogueOfflineException, ODMSCatalogueForbiddenException, ODMSManagerException {
+	public static int addODMSCatalogue(ODMSCatalogue node)
+			throws ODMSAlreadyPresentException, ODMSCatalogueNotFoundException, ODMSCatalogueOfflineException,
+			ODMSCatalogueForbiddenException, ODMSManagerException {
 
 		// Sets the lock true, in order to avoid node retrieval until the new
 		// node is created
@@ -341,9 +339,11 @@ public class ODMSManager {
 						node.setSynchLock(ODMSSynchLock.NONE);
 					}
 
-					// Socrata does not support initial datasets count, it is
-					// provided during
-					// the first synchronization.
+					/*
+					 * Socrata and DKAN do not support initial datasets count, it is provided during
+					 * the first synchronization.
+					 */
+
 					if (!node.getNodeType().equals(ODMSCatalogueType.SOCRATA)
 							&& !node.getNodeType().equals(ODMSCatalogueType.DKAN))
 						datasetsCount = getODMSCatalogueConnector(node).countDatasets();
@@ -353,13 +353,27 @@ public class ODMSManager {
 
 					node.setDatasetCount(datasetsCount);
 
+					/*
+					 * If there is no Catalogue image fill the Catalogue with an empty one
+					 */
+					if (node.getImage() == null || StringUtils.isBlank(node.getImage().getImageData()))
+						node.setImage(new ODMSCatalogueImage("data:image/png;base64,"));
+
+					/*
+					 * Persist the node and return the ID assigned by the Entity Manager
+					 */
 					assignedNodeID = jpa.jpaInsertODMSCatalogue(node);
 					node.setId(assignedNodeID);
 
+					/*
+					 * Unlock the Get nodes and add the persisted Node in the global Federated Nodes
+					 * list
+					 */
 					getNodesLock = false;
 					federatedNodes.add(node);
 
 					return assignedNodeID;
+
 				} else {
 
 					node.setNodeState(ODMSCatalogueState.OFFLINE);
@@ -367,7 +381,7 @@ public class ODMSManager {
 					node.setDatasetCount(0);
 
 					assignedNodeID = jpa.jpaInsertODMSCatalogue(node);
-					boolean updateNode=false;
+					boolean updateNode = false;
 					if (node.getNodeType().equals(ODMSCatalogueType.DCATDUMP)) {
 						if (StringUtils.isNotBlank(node.getDumpString())) {
 							Model m = null;
@@ -393,40 +407,45 @@ public class ODMSManager {
 							}
 
 						}
-						updateNode=true;
-					}else if(node.getNodeType().equals(ODMSCatalogueType.ORION)) {
-						
-						String orionDumpFilePath=PropertyManager.getProperty(IdraProperty.ORION_FILE_DUMP_PATH);
+						updateNode = true;
+					} else if (node.getNodeType().equals(ODMSCatalogueType.ORION)) {
+
+						String orionDumpFilePath = PropertyManager.getProperty(IdraProperty.ORION_FILE_DUMP_PATH);
 						try {
-							OrionCatalogueConfiguration orionConfig = (OrionCatalogueConfiguration) node.getAdditionalConfig();
-							CommonUtil.storeFile(orionDumpFilePath,"orionDump_"+assignedNodeID,orionConfig.getOrionDatasetDumpString());
-							orionConfig.setOrionDatasetFilePath(orionDumpFilePath+"orionDump_"+assignedNodeID);
+							OrionCatalogueConfiguration orionConfig = (OrionCatalogueConfiguration) node
+									.getAdditionalConfig();
+							CommonUtil.storeFile(orionDumpFilePath, "orionDump_" + assignedNodeID,
+									orionConfig.getOrionDatasetDumpString());
+							orionConfig.setOrionDatasetFilePath(orionDumpFilePath + "orionDump_" + assignedNodeID);
 							node.setAdditionalConfig(orionConfig);
-							updateNode=true;
-						}catch(IOException e) {
+							updateNode = true;
+						} catch (IOException e) {
 							e.printStackTrace();
 						}
-					}else if(node.getNodeType().equals(ODMSCatalogueType.SPARQL)) {
-						
-						String dumpFilePath=PropertyManager.getProperty(IdraProperty.ORION_FILE_DUMP_PATH);
+					} else if (node.getNodeType().equals(ODMSCatalogueType.SPARQL)) {
+
+						String dumpFilePath = PropertyManager.getProperty(IdraProperty.ORION_FILE_DUMP_PATH);
 						try {
-							OrionCatalogueConfiguration orionConfig = (OrionCatalogueConfiguration) node.getAdditionalConfig();
-							CommonUtil.storeFile(dumpFilePath,"sparqlDump_"+assignedNodeID,orionConfig.getOrionDatasetDumpString());
-							orionConfig.setOrionDatasetFilePath(dumpFilePath+"sparqlDump_"+assignedNodeID);
+							OrionCatalogueConfiguration orionConfig = (OrionCatalogueConfiguration) node
+									.getAdditionalConfig();
+							CommonUtil.storeFile(dumpFilePath, "sparqlDump_" + assignedNodeID,
+									orionConfig.getOrionDatasetDumpString());
+							orionConfig.setOrionDatasetFilePath(dumpFilePath + "sparqlDump_" + assignedNodeID);
 							node.setAdditionalConfig(orionConfig);
-							updateNode=true;
-						}catch(IOException e) {
+							updateNode = true;
+						} catch (IOException e) {
 							e.printStackTrace();
 						}
 					}
-					if(updateNode)
+					if (updateNode)
 						updateInactiveODMSCatalogue(node);
 					getNodesLock = false;
 					federatedNodes.add(node);
 
 					return assignedNodeID;
 				}
-			} catch (ODMSCatalogueNotFoundException | ODMSCatalogueOfflineException | ODMSCatalogueForbiddenException e) {
+			} catch (ODMSCatalogueNotFoundException | ODMSCatalogueOfflineException
+					| ODMSCatalogueForbiddenException e) {
 				throw e;
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -497,15 +516,15 @@ public class ODMSManager {
 	 *
 	 * Forwards the request to the underlying JDBC layer
 	 *
-	 * @param node
-	 *            The ODMSCatalogue object to remove
+	 * @param node The ODMSCatalogue object to remove
 	 * @throws ODMSManagerException
 	 * @throws ODMSCatalogueNotFoundException
 	 * @throws SQLException
 	 * @returns void
 	 * 
 	 */
-	public static void deleteODMSCatalogue(ODMSCatalogue node) throws ODMSManagerException, ODMSCatalogueNotFoundException {
+	public static void deleteODMSCatalogue(ODMSCatalogue node)
+			throws ODMSManagerException, ODMSCatalogueNotFoundException {
 
 		PersistenceManager jpa = new PersistenceManager();
 		try {
@@ -529,16 +548,13 @@ public class ODMSManager {
 	 * Forwards the request to the underlying JDBC layer for all specified values to
 	 * change
 	 *
-	 * @param node
-	 *            ODMSCatalogue to change
-	 * @param persist
-	 *            Flag to propagate or not the changed node to
+	 * @param node    ODMSCatalogue to change
+	 * @param persist Flag to propagate or not the changed node to
 	 * @throws SQLException
 	 * @throws ODMSCatalogueNotFoundException
 	 * @throws ODMSManagerException
 	 * @returns void
-	 * @throws An
-	 *             Exception if the request fails
+	 * @throws An Exception if the request fails
 	 */
 	public static void updateODMSCatalogue(ODMSCatalogue node, boolean persist)
 			throws ODMSCatalogueNotFoundException, ODMSManagerException {
@@ -562,7 +578,8 @@ public class ODMSManager {
 
 	}
 
-	public static void updateInactiveODMSCatalogue(ODMSCatalogue node) throws ODMSCatalogueNotFoundException, ODMSManagerException {
+	public static void updateInactiveODMSCatalogue(ODMSCatalogue node)
+			throws ODMSCatalogueNotFoundException, ODMSManagerException {
 
 		PersistenceManager jpa = new PersistenceManager();
 		try {
@@ -615,8 +632,7 @@ public class ODMSManager {
 	 *
 	 * Forwards the request to the appropriate ODMS Connector
 	 *
-	 * @param node
-	 *            the ODMSCatalogue to be verified
+	 * @param node the ODMSCatalogue to be verified
 	 * @throws SQLException
 	 * @throws ClassNotFoundException
 	 * @throws SecurityException
@@ -628,10 +644,10 @@ public class ODMSManager {
 	 * @throws ODMSCatalogueNotFoundException
 	 * @throws ODMSManagerException
 	 * @returns {@link ODMSCatalogueState}
-	 * @throws An
-	 *             Exception if the request fails
+	 * @throws An Exception if the request fails
 	 */
-	public static ODMSCatalogueState checkODMSCatalogue(ODMSCatalogue node) throws ODMSCatalogueNotFoundException, ODMSManagerException {
+	public static ODMSCatalogueState checkODMSCatalogue(ODMSCatalogue node)
+			throws ODMSCatalogueNotFoundException, ODMSManagerException {
 
 		try {
 			/*
@@ -640,33 +656,39 @@ public class ODMSManager {
 			 * interface?
 			 */
 
-			return getODMSCatalogueConnector(node).countDatasets() != 0 ? ODMSCatalogueState.ONLINE : ODMSCatalogueState.OFFLINE;
+			return getODMSCatalogueConnector(node).countDatasets() != 0 ? ODMSCatalogueState.ONLINE
+					: ODMSCatalogueState.OFFLINE;
 
 		} catch (Exception e) {
 			e.printStackTrace();
-			if (e.getClass().equals(ODMSCatalogueOfflineException.class) || e.getClass().equals(ODMSCatalogueNotFoundException.class)) {
+			if (e.getClass().equals(ODMSCatalogueOfflineException.class)
+					|| e.getClass().equals(ODMSCatalogueNotFoundException.class)) {
 
 				logger.info("Check node: Setting node state to OFFLINE");
 				node.setNodeState(ODMSCatalogueState.OFFLINE);
 				ODMSManager.updateODMSCatalogue(node, true);
 				return ODMSCatalogueState.OFFLINE;
 
-			} 
-			//Since the this method is used during the synchronization, the node is already federated
-			//and it must not be removed
-			/*else if (e.getClass().equals(ODMSCatalogueNotFoundException.class)) {
-
-				logger.info("Check Node: The node host was not found");
-				federatedNodes.remove(federatedNodes.indexOf(node));
-				throw new ODMSCatalogueNotFoundException("The node host was not found");
-
-			}*/ 
+			}
+			// Since the this method is used during the synchronization, the node is already
+			// federated
+			// and it must not be removed
+			/*
+			 * else if (e.getClass().equals(ODMSCatalogueNotFoundException.class)) {
+			 * 
+			 * logger.info("Check Node: The node host was not found");
+			 * federatedNodes.remove(federatedNodes.indexOf(node)); throw new
+			 * ODMSCatalogueNotFoundException("The node host was not found");
+			 * 
+			 * }
+			 */
 			else
 				throw new ODMSManagerException("There was an error while checking the ODMS Node: " + e.getMessage());
 		}
 	}
 
-	public static int countODMSCatalogueDatasets(ODMSCatalogue node) throws ODMSCatalogueNotFoundException, ODMSManagerException {
+	public static int countODMSCatalogueDatasets(ODMSCatalogue node)
+			throws ODMSCatalogueNotFoundException, ODMSManagerException {
 
 		try {
 			/*
@@ -679,23 +701,27 @@ public class ODMSManager {
 
 		} catch (Exception e) {
 
-			if (e.getClass().equals(ODMSCatalogueOfflineException.class) || e.getClass().equals(ODMSCatalogueNotFoundException.class)) {
+			if (e.getClass().equals(ODMSCatalogueOfflineException.class)
+					|| e.getClass().equals(ODMSCatalogueNotFoundException.class)) {
 
 				logger.info("Check node: Setting node state to OFFLINE");
 				node.setNodeState(ODMSCatalogueState.OFFLINE);
 				ODMSManager.updateODMSCatalogue(node, true);
 				return 0;
 
-			} 
-			//Since the this method is used during the synchronization, the node is already federated
-			//and it must not be removed
-			/*else if (e.getClass().equals(ODMSCatalogueNotFoundException.class)) {
-
-				logger.info("Check Node: The node host was not found");
-				federatedNodes.remove(federatedNodes.indexOf(node));
-				throw new ODMSCatalogueNotFoundException("The node host was not found");
-
-			}*/ 
+			}
+			// Since the this method is used during the synchronization, the node is already
+			// federated
+			// and it must not be removed
+			/*
+			 * else if (e.getClass().equals(ODMSCatalogueNotFoundException.class)) {
+			 * 
+			 * logger.info("Check Node: The node host was not found");
+			 * federatedNodes.remove(federatedNodes.indexOf(node)); throw new
+			 * ODMSCatalogueNotFoundException("The node host was not found");
+			 * 
+			 * }
+			 */
 			else
 				throw new ODMSManagerException("There was an error while checking the ODMS Node: " + e.getMessage());
 		}
