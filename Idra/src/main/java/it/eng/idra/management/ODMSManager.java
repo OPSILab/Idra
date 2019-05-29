@@ -407,10 +407,12 @@ public class ODMSManager {
 							}
 
 						}
+
 						updateNode = true;
 					} else if (node.getNodeType().equals(ODMSCatalogueType.ORION)) {
 
 						String orionDumpFilePath = PropertyManager.getProperty(IdraProperty.ORION_FILE_DUMP_PATH);
+
 						try {
 							OrionCatalogueConfiguration orionConfig = (OrionCatalogueConfiguration) node
 									.getAdditionalConfig();
@@ -422,9 +424,11 @@ public class ODMSManager {
 						} catch (IOException e) {
 							e.printStackTrace();
 						}
+
 					} else if (node.getNodeType().equals(ODMSCatalogueType.SPARQL)) {
 
 						String dumpFilePath = PropertyManager.getProperty(IdraProperty.ORION_FILE_DUMP_PATH);
+
 						try {
 							OrionCatalogueConfiguration orionConfig = (OrionCatalogueConfiguration) node
 									.getAdditionalConfig();

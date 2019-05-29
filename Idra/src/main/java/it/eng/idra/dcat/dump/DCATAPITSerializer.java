@@ -64,6 +64,7 @@ public class DCATAPITSerializer extends DCATAPSerializer {
 
 		Resource datasetResource = model.createResource(iri.toString(),
 				model.createResource(DCATAP_IT_BASE_URI + "Dataset"));
+
 		datasetResource.addProperty(RDF.type, DCAT.Dataset);
 
 		addDCATPropertyAsLiteral(dataset.getTitle(), datasetResource, model);
