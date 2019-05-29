@@ -63,13 +63,13 @@ public class DCTLocation {
 		setUri(uri);
 		this.nodeID = nodeID;
 		setGeographicalIdentifier(new DCATProperty(
-				ResourceFactory.createProperty("http://dati.gov.it/onto/dcatapit#geographicalIdentifier"),
-				RDFS.Literal.getURI(), geographicalIdentifier));
+				ResourceFactory.createProperty("http://dati.gov.it/onto/dcatapit#geographicalIdentifier"), RDFS.Literal,
+				geographicalIdentifier));
 		setGeographicalName(
 				new DCATProperty(ResourceFactory.createProperty("http://www.w3.org/ns/locn#geographicalName"),
-						SKOS.Concept.getURI(), geographicalName));
+						SKOS.Concept, geographicalName));
 		setGeometry(new DCATProperty(ResourceFactory.createProperty("http://www.w3.org/ns/locn#geometry"),
-				"https://www.w3.org/ns/locn#Geometry", geometry));
+				ResourceFactory.createResource("https://www.w3.org/ns/locn#Geometry"), geometry));
 
 	}
 

@@ -34,6 +34,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.jena.datatypes.RDFDatatype;
 import org.apache.jena.datatypes.xsd.XSDhexBinary;
 import org.apache.jena.datatypes.xsd.impl.XSDDateType;
 import org.apache.jena.iri.IRI;
@@ -41,7 +42,9 @@ import org.apache.jena.iri.IRIException;
 import org.apache.jena.iri.IRIFactory;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
+import org.apache.jena.rdf.model.Property;
 import org.apache.jena.rdf.model.Resource;
+import org.apache.jena.rdf.model.ResourceFactory;
 import org.apache.jena.rdf.model.ResourceRequiredException;
 import org.apache.jena.riot.system.IRIResolver;
 import org.apache.jena.shared.BadURIException;
@@ -54,6 +57,7 @@ import org.apache.jena.vocabulary.SKOS;
 import org.apache.jena.vocabulary.VCARD4;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.poi.ss.formula.ptg.AddPtg;
 import org.eclipse.rdf4j.model.vocabulary.XMLSchema;
 
 import it.eng.idra.beans.IdraProperty;
@@ -63,6 +67,7 @@ import it.eng.idra.beans.dcat.DCATAPWriteType;
 import it.eng.idra.beans.dcat.DCATDataset;
 import it.eng.idra.beans.dcat.DCATDistribution;
 import it.eng.idra.beans.dcat.DCATProperty;
+import it.eng.idra.beans.dcat.DCTFrequency;
 import it.eng.idra.beans.dcat.DCTLicenseDocument;
 import it.eng.idra.beans.dcat.DCTLocation;
 import it.eng.idra.beans.dcat.DCTPeriodOfTime;
@@ -84,8 +89,9 @@ import it.eng.idra.utils.PropertyManager;
 public class DCATAPSerializer {
 
 	static Map<Integer, ODMSCatalogue> nodeResources = null;
+
 	@SuppressWarnings("deprecation")
-	static IRIFactory iriFactory = IRIFactory.jenaImplementation();
+	protected static final IRIFactory iriFactory = IRIFactory.jenaImplementation();
 
 	public static final String DCATAP_IT_BASE_URI = "http://dati.gov.it/onto/dcatapit#";
 	public static final String THEME_BASE_URI = "http://publications.europa.eu/resource/authority/data-theme/";
@@ -190,68 +196,64 @@ public class DCATAPSerializer {
 
 	private static Model addDatasetToModel(DCATDataset dataset, Model model) {
 
-		IRI iri = iriFactory.create(dataset.getLandingPage().getValue());
-
+		String landingPage = dataset.getLandingPage().getValue();
+		IRI iri = iriFactory.create(landingPage);
 		if (iri.hasViolation(false))
-			throw new BadURIException("URI for dataset: " + iri + "is not valid, skipping the dataset in the Jena Model:"
-					+ (iri.violations(false).next()).getShortMessage());
+			throw new BadURIException(
+					"URI for dataset: " + iri + "is not valid, skipping the dataset in the Jena Model:"
+							+ (iri.violations(false).next()).getShortMessage());
 
 		Resource datasetResource = model.createResource(iri.toString(), DCAT.Dataset);
 
-		datasetResource.addProperty(dataset.getTitle().getProperty(),
-				model.createLiteral(dataset.getTitle().getValue()));
-		datasetResource.addProperty(dataset.getDescription().getProperty(), dataset.getDescription().getValue());
+		addDCATPropertyAsLiteral(dataset.getTitle(), datasetResource, model);
+
+		addDCATPropertyAsLiteral(dataset.getDescription(), datasetResource, model);
 
 		serializeConcept(dataset.getTheme(), model, datasetResource);
-
-		serializeFOAFAgent(dataset.getPublisher(), model, datasetResource);
 
 		serializeContactPoint(dataset.getContactPoint(), model, datasetResource);
 
 		dataset.getKeywords().stream().filter(keyword -> StringUtils.isNotBlank(keyword))
 				.forEach(keyword -> datasetResource.addLiteral(DCAT.keyword, keyword));
 
-		datasetResource.addProperty(dataset.getAccessRights().getProperty(), dataset.getAccessRights().getValue());
+		addDCATPropertyAsLiteral(dataset.getAccessRights(), datasetResource, model);
 
 		serializeDCTStandard(dataset.getConformsTo(), datasetResource, model);
 
 		List<DCATProperty> documentationList = dataset.getDocumentation();
 		if (documentationList != null)
-			documentationList.stream().filter(item -> StringUtils.isNotBlank(item.getValue()))
-					.forEach(item -> datasetResource.addProperty(item.getProperty(), item.getValue()));
+			documentationList.stream().filter(item -> !isValidURI(item.getValue()))
+					.forEach(item -> addDCATPropertyAsResource(item, datasetResource, model, true));
 
 		List<DCATProperty> relatedResourceList = dataset.getRelatedResource();
 		if (relatedResourceList != null)
-			relatedResourceList.stream().filter(item -> StringUtils.isNotBlank(item.getValue()))
-					.forEach(item -> datasetResource.addProperty(item.getProperty(), item.getValue()));
+			relatedResourceList.stream().filter(item -> !isValidURI(item.getValue()))
+					.forEach(item -> addDCATPropertyAsResource(item, datasetResource, model, true));
 
 		serializeFrequency(dataset.getFrequency(), model, datasetResource);
 
 		List<DCATProperty> hasVersion = dataset.getHasVersion();
 		if (hasVersion != null)
-			hasVersion.stream().filter(item -> StringUtils.isNotBlank(item.getValue()))
-					.forEach(item -> datasetResource.addProperty(item.getProperty(), item.getValue()));
+			hasVersion.stream().filter(item -> !isValidURI(item.getValue()))
+					.forEach(item -> addDCATPropertyAsResource(item, datasetResource, model, true));
 
 		List<DCATProperty> isVersionOf = dataset.getIsVersionOf();
 		if (isVersionOf != null)
-			isVersionOf.stream().filter(item -> StringUtils.isNotBlank(item.getValue()))
-					.forEach(item -> datasetResource.addProperty(item.getProperty(), item.getValue()));
+			isVersionOf.stream().filter(item -> !isValidURI(item.getValue()))
+					.forEach(item -> addDCATPropertyAsResource(item, datasetResource, model, true));
 
-		datasetResource.addProperty(dataset.getLandingPage().getProperty(),
-				model.createResource(dataset.getLandingPage().getValue()));
+		addDCATPropertyAsResource(dataset.getLandingPage(), datasetResource, model, false);
 
 		serializeLanguage(dataset.getLanguage(), model, datasetResource);
 
 		List<DCATProperty> provenance = dataset.getProvenance();
 		if (provenance != null)
-			provenance.stream().filter(item -> StringUtils.isNotBlank(item.getValue()))
-					.forEach(item -> datasetResource.addProperty(item.getProperty(), item.getValue()));
+			provenance.stream().forEach(item -> addDCATPropertyAsLiteral(item, datasetResource, model));
 
-		datasetResource.addProperty(dataset.getReleaseDate().getProperty(), dataset.getReleaseDate().getValue(),
-				XSDDateType.XSDdateTime);
-		datasetResource.addProperty(dataset.getUpdateDate().getProperty(), dataset.getUpdateDate().getValue(),
-				XSDDateType.XSDdateTime);
-		datasetResource.addProperty(dataset.getIdentifier().getProperty(), dataset.getIdentifier().getValue());
+		addDCATPropertyAsTypedLiteral(dataset.getReleaseDate(), XSDDateType.XSDdateTime, datasetResource, model);
+		addDCATPropertyAsTypedLiteral(dataset.getUpdateDate(), XSDDateType.XSDdateTime, datasetResource, model);
+
+		addDCATPropertyAsLiteral(dataset.getIdentifier(), datasetResource, model);
 
 		List<DCATProperty> otherIdentifier = dataset.getOtherIdentifier();
 		if (otherIdentifier != null)
@@ -262,46 +264,72 @@ public class DCATAPSerializer {
 
 		List<DCATProperty> sample = dataset.getSample();
 		if (sample != null)
-			sample.stream().filter(item -> StringUtils.isNotBlank(item.getValue()))
-					.forEach(item -> datasetResource.addProperty(item.getProperty(), item.getValue()));
+			sample.stream().filter(item -> isValidURI(item.getValue()))
+					.forEach(item -> addDCATPropertyAsResource(item, datasetResource, model, true));
 
 		List<DCATProperty> source = dataset.getSource();
 		if (source != null)
-			source.stream().filter(item -> StringUtils.isNotBlank(item.getValue()))
-					.forEach(item -> datasetResource.addProperty(item.getProperty(), item.getValue()));
+			source.stream().filter(item -> isValidURI(item.getValue()))
+					.forEach(item -> addDCATPropertyAsResource(item, datasetResource, model, true));
 
 		serializeSpatialCoverage(dataset.getSpatialCoverage(), model, datasetResource);
 
 		serializeTemporalCoverage(dataset.getTemporalCoverage(), model, datasetResource);
 
-		datasetResource.addProperty(dataset.getType().getProperty(), dataset.getType().getValue());
-		datasetResource.addProperty(dataset.getVersion().getProperty(), dataset.getVersion().getValue());
+		addDCATPropertyAsLiteral(dataset.getType(), datasetResource, model);
+		addDCATPropertyAsLiteral(dataset.getVersion(), datasetResource, model);
 
 		List<DCATProperty> versionNotes = dataset.getVersionNotes();
 		if (versionNotes != null)
-			versionNotes.stream().filter(item -> StringUtils.isNotBlank(item.getValue()))
-					.forEach(item -> datasetResource.addProperty(item.getProperty(), item.getValue()));
+			versionNotes.stream().forEach(item -> addDCATPropertyAsLiteral(item, datasetResource, model));
 
 		for (DCATDistribution distribution : dataset.getDistributions()) {
 			addDistributionToModel(model, datasetResource, distribution);
 		}
 
 		ODMSCatalogue node = nodeResources.get(new Integer(dataset.getNodeID()));
-		// catalogModel.getResource(DCAT.Catalog.getURI()).addProperty(DCAT.dataset,
-		// datasetResource);
 
-		Resource publisherNode = model.createResource(FOAF.Agent).addProperty(FOAF.name, node.getPublisherName());
-		if (StringUtils.isNotBlank(node.getPublisherEmail()))
-			publisherNode.addProperty(FOAF.mbox, node.getPublisherEmail());
-		if (StringUtils.isNotBlank(node.getPublisherUrl()))
-			addDCATPropertyAsResource(new DCATProperty(FOAF.homepage, FOAF.page.getURI(), node.getPublisherUrl()),
-					publisherNode, model);
-
+		/*
+		 * Add the Catalogue with the Dataset to the global Model
+		 */
 		model.createResource(node.getHost(), DCAT.Catalog).addLiteral(DCTerms.title, node.getName())
-				.addLiteral(DCTerms.description, node.getDescription()).addProperty(DCTerms.publisher, publisherNode)
+				.addLiteral(DCTerms.description, node.getDescription())// .addProperty(DCTerms.publisher, publisherNode)
 				.addProperty(DCAT.dataset, datasetResource)
 				.addProperty(DCTerms.issued, node.getRegisterDate().toString(), XSDDateType.XSDdateTime)
 				.addProperty(DCTerms.modified, node.getLastUpdateDate().toString(), XSDDateType.XSDdateTime);
+
+		/*
+		 * ** Create the Publisher for the DCATCatalogue as a new FOAFAgent with info
+		 * from the federated Catalogue
+		 */
+
+		String publisherResourceUri = node.getPublisherUrl();
+		if (StringUtils.isBlank(publisherResourceUri) || !isValidURI(publisherResourceUri)) {
+
+			if (!node.getHomepage().equalsIgnoreCase(node.getHost()))
+				publisherResourceUri = node.getHomepage();
+			else
+				publisherResourceUri = node.getHomepage() + "/" + node.getId();
+		}
+
+		/*
+		 * Check if the publisher is already present in the global Model and if any
+		 * create it, either or both for dataset and catalog
+		 */
+
+		serializeFOAFAgent(
+				new FOAFAgent(DCTerms.publisher.getURI(), publisherResourceUri, node.getPublisherName(),
+						node.getPublisherEmail(), node.getPublisherUrl(), "", "", String.valueOf(node.getId())),
+				model, model.getResource(node.getHost()));
+
+		FOAFAgent datasetPublisher = dataset.getPublisher();
+		if (StringUtils.isNotBlank(datasetPublisher.getResourceUri()) && isValidURI(datasetPublisher.getResourceUri()))
+			serializeFOAFAgent(datasetPublisher, model, datasetResource);
+		else {
+			// Set blank URI for Dataset Publisher in order to create a blank node
+			datasetPublisher.setResourceUri("");
+			serializeFOAFAgent(datasetPublisher, model, datasetResource);
+		}
 
 		return model;
 
@@ -348,7 +376,7 @@ public class DCATAPSerializer {
 			addDCATPropertyAsLiteral(spatialCoverage.getGeometry(), spatialResource, model);
 
 			// TODO Geographical Name as SKOS CONCEPT
-			addDCATPropertyAsResource(spatialCoverage.getGeographicalName(), spatialResource, model);
+			addDCATPropertyAsResource(spatialCoverage.getGeographicalName(), spatialResource, model, false);
 
 			parentResource.addProperty(model.createProperty(spatialCoverage.getUri()), spatialResource);
 
@@ -366,8 +394,8 @@ public class DCATAPSerializer {
 		if (language != null)
 			language.stream().filter(lang -> StringUtils.isNotBlank(lang.getValue())).forEach(lang -> {
 				try {
-					datasetResource.addProperty(lang.getProperty(), model.createResource(
-							IRIFactory.jenaImplementation().construct(lang.getValue()).toURI().toString()));
+					datasetResource.addProperty(lang.getProperty(),
+							model.createResource(iriFactory.construct(lang.getValue()).toURI().toString()));
 				} catch (IRIException | URISyntaxException e) {
 					datasetResource.addProperty(lang.getProperty(),
 							model.createResource(LANGUAGE_BASE_URI + lang.getValue()));
@@ -382,16 +410,17 @@ public class DCATAPSerializer {
 	 */
 	protected static void serializeFrequency(DCATProperty frequency, Model model, Resource datasetResource) {
 
-		if (StringUtils.isNotBlank(frequency.getValue()))
-			try {
-				datasetResource.addProperty(frequency.getProperty(), model.createResource(
-						IRIFactory.jenaImplementation().construct(frequency.getValue()).toURI().toString()));
-			} catch (IRIException | URISyntaxException e) {
-				datasetResource.addProperty(frequency.getProperty(),
-						model.createResource(FREQUENCY_BASE_URI + frequency.getValue()));
-			}
-		else
-			datasetResource.addProperty(frequency.getProperty(), model.createResource(FREQUENCY_BASE_URI + "UNKNOWN"));
+		try {
+			// Check if the value is a valid Frequency enum value
+			DCTFrequency.valueOf(frequency.getValue());
+			datasetResource.addProperty(frequency.getProperty(),
+					model.createResource(FREQUENCY_BASE_URI + frequency.getValue()));
+
+		} catch (Exception e) {
+
+			datasetResource.addProperty(frequency.getProperty(),
+					model.createResource(FREQUENCY_BASE_URI + DCTFrequency.UNKNOWN));
+		}
 	}
 
 	/**
@@ -421,10 +450,10 @@ public class DCATAPSerializer {
 					if (StringUtils.isNotBlank(hasEmailValue) && CommonUtil.checkIfIsEmail(hasEmailValue)) {
 						if (!hasEmailValue.startsWith("mailto:"))
 							contactPoint.getHasEmail().setValue("mailto:" + hasEmailValue);
-						addDCATPropertyAsResource(contactPoint.getHasEmail(), contactPointR, model);
+						addDCATPropertyAsResource(contactPoint.getHasEmail(), contactPointR, model, false);
 					}
 
-					addDCATPropertyAsResource(contactPoint.getHasURL(), contactPointR, model);
+					addDCATPropertyAsResource(contactPoint.getHasURL(), contactPointR, model, false);
 
 					// Add contactPoint property to dataset Resource;
 					datasetResource.addProperty(model.createProperty(contactPoint.getPropertyUri()), contactPointR);
@@ -432,36 +461,6 @@ public class DCATAPSerializer {
 				} catch (Exception ignore) {
 				}
 
-	}
-
-	/*
-	 * Helper method used to add a Property, which should have a Resource as its
-	 * Object, to a passed Resource e.g. hasUrl, hasEmail or hasTelephone -> type
-	 */
-	protected static void addDCATPropertyAsResource(DCATProperty property, Resource parentResource, Model model) {
-
-		try {
-			parentResource.addProperty(property.getProperty(), model
-					.createResource(IRIFactory.jenaImplementation().construct(property.getValue()).toURI().toString()));
-
-		} catch (ResourceRequiredException | IRIException | URISyntaxException e) {
-
-			// Add anyway the property as string value
-			if (StringUtils.isNotBlank(property.getValue()))
-				parentResource.addProperty(property.getProperty(), property.getValue());
-
-		}
-	}
-
-	/*
-	 * Helper method used to add a Property, which should have a Literal as its
-	 * Object, to a passed Resource
-	 */
-	protected static void addDCATPropertyAsLiteral(DCATProperty property, Resource parentResource, Model model) {
-
-		// Add the property as literal value
-		if (StringUtils.isNotBlank(property.getValue()))
-			parentResource.addProperty(property.getProperty(), property.getValue());
 	}
 
 	/**
@@ -474,7 +473,7 @@ public class DCATAPSerializer {
 		if (agent != null) {
 			Resource agentResource = null;
 
-			if (StringUtils.isNotBlank(agent.getResourceUri()))
+			if (StringUtils.isNotBlank(agent.getResourceUri()) && isValidURI(agent.getResourceUri()))
 				agentResource = model.createResource(agent.getResourceUri(), FOAFAgent.getRDFClass());
 			else
 				agentResource = model.createResource(FOAFAgent.getRDFClass());
@@ -483,9 +482,10 @@ public class DCATAPSerializer {
 			addDCATPropertyAsLiteral(agent.getMbox(), agentResource, model);
 			addDCATPropertyAsLiteral(agent.getType(), agentResource, model);
 			addDCATPropertyAsLiteral(agent.getIdentifier(), agentResource, model);
-			addDCATPropertyAsResource(agent.getHomepage(), agentResource, model);
+			addDCATPropertyAsResource(agent.getHomepage(), agentResource, model, false);
 
 			parentResource.addProperty(model.createProperty(agent.getPropertyUri()), agentResource);
+
 		}
 	}
 
@@ -542,9 +542,9 @@ public class DCATAPSerializer {
 
 		Resource distResource = model.createResource(DCATDistribution.getRDFClass());
 
-		addDCATPropertyAsResource(distribution.getAccessURL(), distResource, model);
+		addDCATPropertyAsResource(distribution.getAccessURL(), distResource, model, false);
 
-		distResource.addProperty(distribution.getDescription().getProperty(), distribution.getDescription().getValue());
+		addDCATPropertyAsLiteral(distribution.getDescription(), distResource, model);
 
 		serializeFormat(distribution.getFormat(), model, distResource);
 
@@ -561,22 +561,22 @@ public class DCATAPSerializer {
 			distDocumentation.stream().filter(item -> StringUtils.isNotBlank(item.getValue()))
 					.forEach(item -> distResource.addProperty(item.getProperty(), item.getValue()));
 
-		addDCATPropertyAsResource(distribution.getDownloadURL(), distResource, model);
+		addDCATPropertyAsResource(distribution.getDownloadURL(), distResource, model, false);
 
 		serializeDCTStandard(distribution.getLinkedSchemas(), distResource, model);
 
-		distResource.addProperty(distribution.getMediaType().getProperty(), distribution.getMediaType().getValue());
+		addDCATPropertyAsLiteral(distribution.getMediaType(), distResource, model);
 
 		distResource.addProperty(distribution.getReleaseDate().getProperty(), distribution.getReleaseDate().getValue(),
 				XSDDateType.XSDdateTime);
 		distResource.addProperty(distribution.getUpdateDate().getProperty(), distribution.getUpdateDate().getValue(),
 				XSDDateType.XSDdateTime);
 
-		distResource.addProperty(distribution.getRights().getProperty(), distribution.getRights().getValue());
+		addDCATPropertyAsLiteral(distribution.getRights(), distResource, model);
 
 		serializeConcept(Arrays.asList(distribution.getStatus()), model, distResource);
 
-		distResource.addProperty(distribution.getTitle().getProperty(), distribution.getTitle().getValue());
+		addDCATPropertyAsLiteral(distribution.getTitle(), distResource, model);
 
 		datasetResource.addProperty(DCAT.distribution, distResource);
 	}
@@ -631,7 +631,7 @@ public class DCATAPSerializer {
 				licenseResource = model.createResource(DCTLicenseDocument.getRDFClass());
 
 			try {
-				licenseTypeURI = IRIFactory.jenaImplementation().construct(license.getType().getValue()).toString();
+				licenseTypeURI = iriFactory.construct(license.getType().getValue()).toString();
 			} catch (Exception e) {
 				licenseTypeURI = LICENSE_TYPE_BASE_URI + license.getType().getValue();
 			}
@@ -639,7 +639,7 @@ public class DCATAPSerializer {
 
 			addDCATPropertyAsLiteral(license.getName(), licenseResource, model);
 			addDCATPropertyAsLiteral(license.getVersionInfo(), licenseResource, model);
-			addDCATPropertyAsResource(license.getType(), licenseResource, model);
+			addDCATPropertyAsResource(license.getType(), licenseResource, model, false);
 
 			// Add license Resource as property object of the parent Resource
 			distResource.addProperty(model.createProperty(DCTerms.license.getURI()), licenseResource);
@@ -655,14 +655,10 @@ public class DCATAPSerializer {
 	 */
 	protected static void serializeFormat(DCATProperty format, Model model, Resource distResource) {
 
-		if (format != null)
-			try {
-				distResource.addProperty(format.getProperty(), model.createResource(
-						IRIFactory.jenaImplementation().construct(format.getValue()).toURI().toString()));
-			} catch (IRIException | URISyntaxException e) {
-				distResource.addProperty(format.getProperty(),
-						model.createResource(FORMAT_BASE_URI + format.getValue()));
-			}
+		if (format != null && StringUtils.isNotBlank(format.getValue())) {
+			format.setValue(FORMAT_BASE_URI + format.getValue());
+			addDCATPropertyAsResource(format, distResource, model, false);
+		}
 	}
 
 	protected static void serializeDCTStandard(List<DCTStandard> standardList, Resource parentResource, Model model) {
@@ -689,6 +685,55 @@ public class DCATAPSerializer {
 
 			});
 
+	}
+
+	/*
+	 * Helper method used to add a Property, which should have a Resource as its
+	 * Object, to a passed Resource e.g. hasUrl, hasEmail or hasTelephone -> type
+	 * Optionally use the DCATProperty Range to create a typed Resource
+	 */
+	protected static void addDCATPropertyAsResource(DCATProperty property, Resource parentResource, Model model,
+			boolean useRange) {
+
+		if (StringUtils.isNotBlank(property.getValue())) {
+			try {
+				if (useRange)
+
+					parentResource.addProperty(property.getProperty(), model.createResource(
+							iriFactory.construct(property.getValue()).toURI().toString(), property.getRange()));
+				else
+					parentResource.addProperty(property.getProperty(),
+							model.createResource(iriFactory.construct(property.getValue()).toURI().toString()));
+			} catch (ResourceRequiredException | IRIException | URISyntaxException e) {
+
+				// Add anyway the property as string value
+
+				parentResource.addProperty(property.getProperty(), model.createLiteral(property.getValue()));
+			}
+		}
+	}
+
+	/*
+	 * Helper method used to add a Property, which should have a Literal as its
+	 * Object, to a passed Resource
+	 */
+	protected static void addDCATPropertyAsLiteral(DCATProperty property, Resource parentResource, Model model) {
+
+		// Add the property as literal value
+		if (StringUtils.isNotBlank(property.getValue()))
+			parentResource.addProperty(property.getProperty(), model.createLiteral(property.getValue()));
+	}
+
+	/*
+	 * Helper method used to add a Property, which should have a Typed Literal as
+	 * its Object, to a passed Resource
+	 */
+	protected static void addDCATPropertyAsTypedLiteral(DCATProperty property, RDFDatatype dataType,
+			Resource parentResource, Model model) {
+
+		// Add the property as literal value
+		if (StringUtils.isNotBlank(property.getValue()))
+			parentResource.addProperty(property.getProperty(), property.getValue(), dataType);
 	}
 
 	private static String writeModelToString(Model model, DCATAPFormat format) {
@@ -819,6 +864,11 @@ public class DCATAPSerializer {
 			return writeModelToString(model, format);
 		}
 
+	}
+
+	protected static boolean isValidURI(String uri) {
+
+		return !iriFactory.create(uri).hasViolation(false);
 	}
 
 }

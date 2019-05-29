@@ -61,9 +61,9 @@ public class SPDXChecksum {
 		this.nodeID = nodeID;
 		setUri(uri);
 		setAlgorithm(new DCATProperty(ResourceFactory.createProperty("http://spdx.org/rdf/terms#algorithm"),
-				"http://spdx.org/rdf/terms#checksumAlgorithm_sha1", algorithm));
+				ResourceFactory.createResource("http://spdx.org/rdf/terms#checksumAlgorithm_sha1"), algorithm));
 		setChecksumValue(new DCATProperty(ResourceFactory.createProperty("http://spdx.org/rdf/terms#checksumValue"),
-				RDFS.Literal.getURI(), checksumValue));
+				RDFS.Literal, checksumValue));
 	}
 
 	@Id
