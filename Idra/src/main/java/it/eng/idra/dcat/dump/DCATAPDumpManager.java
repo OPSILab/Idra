@@ -29,7 +29,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.solr.client.solrj.SolrServerException;
 
-import it.eng.idra.beans.ODFProperty;
+import it.eng.idra.beans.IdraProperty;
 import it.eng.idra.beans.dcat.DCATAPFormat;
 import it.eng.idra.beans.dcat.DCATAPProfile;
 import it.eng.idra.beans.dcat.DCATAPWriteType;
@@ -42,56 +42,31 @@ public class DCATAPDumpManager {
 
 	public static Logger logger = LogManager.getLogger(DCATAPDumpManager.class);
 
-	private static Boolean dumpOnStart = Boolean.parseBoolean(PropertyManager.getProperty(ODFProperty.DUMP_ON_START));
-	private static Long dumpPeriod = Long.parseLong(PropertyManager.getProperty(ODFProperty.DUMP_PERIOD)) * 1000;
+	private static final Boolean dumpOnStart = Boolean.parseBoolean(PropertyManager.getProperty(IdraProperty.DUMP_ON_START));
+	private static final Long dumpPeriod = Long.parseLong(PropertyManager.getProperty(IdraProperty.DUMP_PERIOD)) * 1000;
 	private static DCATAPFormat dumpFormat = DCATAPFormat
-			.fromString(PropertyManager.getProperty(ODFProperty.DUMP_FORMAT));
+			.fromString(PropertyManager.getProperty(IdraProperty.DUMP_FORMAT));
 	private static DCATAPProfile dumpProfile = DCATAPProfile
-			.fromString(PropertyManager.getProperty(ODFProperty.DUMP_PROFILE));
-	private static Boolean dumpZip = Boolean.parseBoolean(PropertyManager.getProperty(ODFProperty.DUMP_ZIP_FILE));
-	private static String dumpFilePath = PropertyManager.getProperty(ODFProperty.DUMP_FILE_PATH);
-	public static String dumpFileName = PropertyManager.getProperty(ODFProperty.DUMP_FILE_NAME);
+			.fromString(PropertyManager.getProperty(IdraProperty.DUMP_PROFILE));
+	private static  Boolean dumpZip = Boolean.parseBoolean(PropertyManager.getProperty(IdraProperty.DUMP_ZIP_FILE));
+	private static final String globalDumpFilePath = PropertyManager.getProperty(IdraProperty.DUMP_FILE_PATH);
+	public static final String globalDumpFileName = PropertyManager.getProperty(IdraProperty.DUMP_FILE_NAME);
 
-	private static Timer timer;
 	
 	private DCATAPDumpManager() {
 	}
 
-	public static void initDumpScheduler() {
-		timer = new Timer(true);
-		timer.scheduleAtFixedRate(new TimerTask() {
-			public void run() {
-				try {
-
-					// Perform global search, save its dump file, then do the same separately for
-					// each node (by using the global result)
-					SearchResult globalResult = MetadataCacheManager.searchAllDatasets();
-					DCATAPSerializer.searchResultToDCATAP(globalResult, dumpFormat, dumpProfile, DCATAPWriteType.FILE);
-
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-
-			}
-		}, dumpOnStart ? 0 : dumpPeriod, dumpPeriod);
-
-	}
-
-	public static void stopScheduler() {
-		timer.cancel();
-	}
-	
 	public static byte[] getDatasetDumpFromFile(String nodeID, Boolean forceDump, Boolean returnZip)
 			throws IOException, NumberFormatException, DatasetNotFoundException, SolrServerException {
 		/*
 		 * Non necessario unzippare perchè ci teniamo entrambe le versioni del dump
 		 * 
 		 */
-		// ZipFile zipFile = new ZipFile(dumpFilePath + dumpFileName + ".zip");
+		// ZipFile zipFile = new ZipFile(globalDumpFilePath + globalDumpFileName + ".zip");
 		// InputStream in = null;
 		// ByteArrayOutputStream out = null;
 		// try {
-		// in = zipFile.getInputStream(zipFile.getEntry(dumpFileName));
+		// in = zipFile.getInputStream(zipFile.getEntry(globalDumpFileName));
 		// out = new ByteArrayOutputStream();
 		// IOUtils.copy(in, out);
 		// return out.toByteArray();
@@ -112,7 +87,7 @@ public class DCATAPDumpManager {
 							dumpProfile, DCATAPWriteType.FILE).getBytes();
 			} else
 				return Files.readAllBytes(Paths.get(
-						dumpFilePath + dumpFileName + (StringUtils.isBlank(nodeID) ? "" : new String("_node_" + nodeID))
+						globalDumpFilePath + globalDumpFileName + (StringUtils.isBlank(nodeID) ? "" : new String("_node_" + nodeID))
 								+ (returnZip ? ".zip" : "")));
 
 		} catch (NoSuchFileException e) {

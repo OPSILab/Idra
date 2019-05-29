@@ -77,6 +77,8 @@ public class WebConnector implements IODMSConnector {
 
 	private static Pattern staticPattern = Pattern.compile("(distribution_)(\\d)_(\\w+)");
 	private static Pattern dinamicPattern = Pattern.compile("(distribution_)((?!((\\d+)_)).*)$");
+	private static Pattern shiftPattern = Pattern.compile("div:nth-of-type\\((\\d+)\\)");
+	private static Pattern downloadUrlPattern = Pattern.compile("\\w*\\(([^)]+)\\);*");
 
 	public WebConnector() {
 	}
@@ -116,8 +118,8 @@ public class WebConnector implements IODMSConnector {
 	public DCATDataset datasetToDCAT(Object dataset, ODMSCatalogue node) throws DatasetNotValidException {
 
 		DCATDataset mapped;
-		List<DatasetSelector> selectors = new ArrayList<DatasetSelector>();
-		List<DatasetSelector> distrSelectors = new ArrayList<DatasetSelector>();
+		List<DatasetSelector> selectors = new ArrayList<DatasetSelector>(),
+				distrSelectors = new ArrayList<DatasetSelector>();
 
 		String title = null, description = null, accessRights = null, frequency = null, landingPage = null,
 				releaseDate = null, updateDate = null, identifier = null, type = null, version = null;
@@ -151,10 +153,10 @@ public class WebConnector implements IODMSConnector {
 		Document doc = (Document) dataset;
 
 		/*
-		 * Divide Dataset selectors from that of Distribution. Scrape first
-		 * Distributions -> If they are > 1 -> Increments by one the N value of all the
-		 * Dataset selectors of type
-		 * "div:nth-of-type(N). In order to manage the DIV shifting caused by the Distribution ones"
+		 * Divide Dataset selectors from the ones related to the Distribution. Scrape
+		 * first Distributions -> If they are > 1 -> Increments by one the N value of
+		 * all the Dataset selectors of type
+		 * "div:nth-of-type(N). In order to manage the DIV shifting caused by the Distribution divs"
 		 */
 
 		Map<Boolean, List<DatasetSelector>> partitions = node.getSitemap().getDatasetSelectors().stream()
@@ -162,18 +164,23 @@ public class WebConnector implements IODMSConnector {
 		distrSelectors.addAll(partitions.get(true));
 		selectors.addAll(partitions.get(false));
 
-		// First fetch all the Distributions. Its number is used to manage a possible
+		/*
+		 * ** First fetch all the Distributions. Its number is used to manage a possible
+		 * DIV shifting
+		 */
 		// DIV shifting
 		distributionList.addAll(manageDistributionSelectors(distrSelectors, null, doc));
 		int distrNumber = distributionList.size();
 		int shift = distrNumber > 1 ? distrNumber - 1 : distrNumber == 0 ? -1 : 0;
 
-		for (DatasetSelector sel : selectors) {
+		for (DatasetSelector selector : selectors) {
 
-			// Apply the shift if needed
-			String cssSelector = sel.getSelector().replaceAll("'", "");
+			/*
+			 * ** Apply the shift if needed
+			 */
+			String cssSelector = selector.getSelector().replaceAll("'", "");
 			if (shift != 0) {
-				Matcher shiftMatcher = Pattern.compile("div:nth-of-type\\((\\d+)\\)").matcher(cssSelector);
+				Matcher shiftMatcher = shiftPattern.matcher(cssSelector);
 				String argument = null;
 				if (shiftMatcher.find() && (argument = shiftMatcher.group(1)) != null) {
 					int argValue = Integer.parseInt(argument);
@@ -182,201 +189,197 @@ public class WebConnector implements IODMSConnector {
 
 			}
 
-			// Extract the HTML element by CSS Selector
-			Elements extractedElem = doc.select(cssSelector);
+			/*
+			 * ** Extract the values from the HTML document using the Dataset Selector
+			 */
 
-			// Extract the text from the HTML element with Regex if any in the selector
-			String extractedText = extractedElem.text();
-			String regex = sel.getRegex();
-			if (StringUtils.isNotBlank(regex)) {
-				Matcher regexMatcher = Pattern.compile(regex).matcher(extractedText);
-				if (regexMatcher.find()) {
-					extractedText = regexMatcher.group();
-				}
-			}
+			List<String> extractedValues = fetchMultipleValuesBySelector(doc, selector);
 
-			switch (sel.getName()) {
+			/*
+			 * If there are extracted values, map them to the corresponding dataset field,
+			 * otherwise go to the next selector iteration
+			 */
+			if (extractedValues.size() == 0)
+				continue;
+
+			switch (selector.getName()) {
 
 			case "title":
-				title = extractedText;
+				title = extractedValues.get(0);
 				if (StringUtils.isBlank(title) || WebScraperSelector.getDefaultStopValues().contains(title)
-						|| (sel.getStopValues() != null && sel.getStopValues().contains(title))) {
-					throw new DatasetNotValidException("The value " + title + " for the selector: " + sel.getName()
+						|| (selector.getStopValues() != null && selector.getStopValues().contains(title))) {
+					throw new DatasetNotValidException("The value " + title + " for the selector: " + selector.getName()
 							+ " is a stopValue or is empty then not valid and dataset with URL: " + doc.baseUri()
 							+ " was skipped");
 				}
 				if ("Referente :".equals(title)) {
-					throw new DatasetNotValidException("The value " + title + " for the selector: " + sel.getName()
+					throw new DatasetNotValidException("The value " + title + " for the selector: " + selector.getName()
 							+ " is not a valid title since it is the next div label, dataset with URL: " + doc.baseUri()
 							+ " was skipped");
 				}
 				break;
 			case "description":
-				description = extractedText;
+				description = extractedValues.get(0);
 				break;
 			case "publisher_name":
-				publisherName = extractedText;
+				publisherName = extractedValues.get(0);
 				break;
 			case "publisher_mbox":
-				publisherMbox = extractedText;
+				publisherMbox = extractedValues.get(0);
 				break;
 			case "publisher_homepage":
-				publisherHomepage = extractedText;
+				publisherHomepage = extractedValues.get(0);
 				break;
 			case "publisher_type":
-				publisherType = extractedText;
+				publisherType = extractedValues.get(0);
 				break;
 			case "publisher_identifier":
-				publisherIdentifier = extractedText;
+				publisherIdentifier = extractedValues.get(0);
 				break;
 			case "publisher_uri":
-				publisherUri = extractedText;
+				publisherUri = extractedValues.get(0);
 				break;
 			case "contact_fn":
-				vCardFn = extractedText;
+				vCardFn = extractedValues.get(0);
 				break;
 			case "contact_email":
-				vCardHasEmail = extractedText;
+				vCardHasEmail = extractedValues.get(0);
 				break;
 			case "contact_telephone":
-				vCardHasTelephone = extractedText;
+				vCardHasTelephone = extractedValues.get(0);
 				break;
 			case "contact_url":
-				vCardHasURL = extractedText;
+				vCardHasURL = extractedValues.get(0);
 				break;
 			case "keywords":
-				extractedElem.stream().filter(x -> StringUtils.isNoneBlank(x.text())).forEach(x -> {
-
-					Arrays.stream(x.text().trim().split(",")).forEach(k -> keywords.add(k));
-				});
+				extractedValues.stream().filter(StringUtils::isNoneBlank)
+						.forEach(x -> Arrays.stream(x.trim().split(",")).forEach(k -> keywords.add(k)));
 				break;
 			case "accessRights":
-				accessRights = extractedText;
+				accessRights = extractedValues.get(0);
 				break;
 			case "conformsTo_identifier":
-				conformsToIdentifier = extractedText;
+				conformsToIdentifier = extractedValues.get(0);
 				break;
 			case "conformsTo_title":
-				conformsToTitle = extractedText;
+				conformsToTitle = extractedValues.get(0);
 				break;
 			case "conformsTo_description":
-				conformsToDescription = extractedText;
+				conformsToDescription = extractedValues.get(0);
 				break;
 			case "conformsTo_referenceDocumentation":
-				conformsToReferenceDocumentation = extractedText;
+				conformsToReferenceDocumentation = extractedValues.get(0);
 				break;
 			case "documentation":
-				documentation.add(extractedText);
+				documentation.add(extractedValues.get(0));
 				break;
 			case "frequency":
-				frequency = extractedText;
+				frequency = extractedValues.get(0);
 				break;
 			case "hasVersion":
-				hasVersion.add(extractedText);
+				hasVersion.add(extractedValues.get(0));
 				break;
 			case "isVersionOf":
-				isVersionOf.add(extractedText);
+				isVersionOf.add(extractedValues.get(0));
 				break;
 			case "landingPage":
-				landingPage = extractedText;
+				landingPage = extractedValues.get(0);
 				break;
 			case "language":
-				language.add(extractedText);
+				language.add(extractedValues.get(0));
 				break;
 			case "provenance":
-				provenance.add(extractedText);
+				provenance.add(extractedValues.get(0));
 				break;
 			case "releaseDate":
 				try {
-					releaseDate = CommonUtil.fromLocalToUtcDate(extractedText, null);
+					releaseDate = CommonUtil.fromLocalToUtcDate(extractedValues.get(0), null);
 				} catch (IllegalArgumentException ignore) {
 				}
 				break;
 			case "updateDate":
 				try {
-					updateDate = CommonUtil.fromLocalToUtcDate(extractedText, null);
+					updateDate = CommonUtil.fromLocalToUtcDate(extractedValues.get(0), null);
 				} catch (IllegalArgumentException ignore) {
 				}
 				break;
 			case "source":
-				source.add(extractedText);
+				source.add(extractedValues.get(0));
 				break;
 			case "sample":
-				sample.add(extractedText);
+				sample.add(extractedValues.get(0));
 				break;
 			case "spatialCoverage_geographicalIdentifier":
-				geographicalIdentifier = extractedText;
+				geographicalIdentifier = extractedValues.get(0);
 				break;
 			case "spatialCoverage_geographicalName":
-				geographicalName = extractedText;
+				geographicalName = extractedValues.get(0);
 				break;
 			case "spatialCoverage_geometry":
-				geometry = extractedText;
+				geometry = extractedValues.get(0);
 				break;
 			case "temporalCoverage_startDate":
 				try {
-					startDate = CommonUtil.fromLocalToUtcDate(extractedText, null);
+					startDate = CommonUtil.fromLocalToUtcDate(extractedValues.get(0), null);
 				} catch (IllegalArgumentException ignore) {
 				}
 				break;
 			case "temporalCoverage_endDate":
 				try {
-					endDate = CommonUtil.fromLocalToUtcDate(extractedText, null);
+					endDate = CommonUtil.fromLocalToUtcDate(extractedValues.get(0), null);
 				} catch (IllegalArgumentException ignore) {
 				}
 				break;
 			case "type":
-				type = extractedText;
+				type = extractedValues.get(0);
 				break;
 			case "version":
-				version = extractedText;
+				version = extractedValues.get(0);
 				break;
 			case "versionNotes":
-				versionNotes.add(extractedText);
+				versionNotes.add(extractedValues.get(0));
 				break;
 			case "rightsHolder_name":
-				holderName = extractedText;
+				holderName = extractedValues.get(0);
 				break;
 			case "rightsHolder_mbox":
-				holderMbox = extractedText;
+				holderMbox = extractedValues.get(0);
 				break;
 			case "rightsHolder_homepage":
-				holderName = extractedText;
+				holderName = extractedValues.get(0);
 				break;
 			case "rightsHolder_type":
-				holderType = extractedText;
+				holderType = extractedValues.get(0);
 				break;
 			case "rightsHolder_uri":
-				holderUri = extractedText;
+				holderUri = extractedValues.get(0);
 				break;
 			case "rightsHolder_identifier":
-				holderIdentifier = extractedText;
+				holderIdentifier = extractedValues.get(0);
 				break;
 			case "creator_name":
-				creatorName = extractedText;
+				creatorName = extractedValues.get(0);
 				break;
 			case "creator_mbox":
-				creatorMbox = extractedText;
+				creatorMbox = extractedValues.get(0);
 				break;
 			case "creator_homepage":
-				creatorHomepage = extractedText;
+				creatorHomepage = extractedValues.get(0);
 				break;
 			case "creator_type":
-				creatorType = extractedText;
+				creatorType = extractedValues.get(0);
 				break;
 			case "creator_uri":
-				creatorUri = extractedText;
+				creatorUri = extractedValues.get(0);
 				break;
 			case "creator_identifier":
-				creatorIdentifier = extractedText;
+				creatorIdentifier = extractedValues.get(0);
 				break;
 			case "subject":
-				subject.add(extractedText);
+				subject.add(extractedValues.get(0));
 				break;
 			case "theme":
-				themeList.addAll(extractConceptList(DCAT.theme.getURI(),
-						extractedElem.stream().map(t -> t.text()).collect(Collectors.toList()),
-						SKOSConceptTheme.class));
+				themeList.addAll(extractConceptList(DCAT.theme.getURI(), extractedValues, SKOSConceptTheme.class));
 				break;
 			default:
 				break;
@@ -439,6 +442,15 @@ public class WebConnector implements IODMSConnector {
 
 		return mapped;
 	}
+
+	/**
+	 * Extract one or more values from the HTML document, using the input Selector
+	 * and depending on its type (text, Link, ecc)
+	 * 
+	 * @param DatasetSelector sel - The Selector to be used to extract values from
+	 *                        the document
+	 * @return
+	 */
 
 	/*
 	 * Extract the distribution from dataset page either through a list of
@@ -631,11 +643,11 @@ public class WebConnector implements IODMSConnector {
 				counter.getAndIncrement();
 				return null;
 			}
-		//}).filter(item -> item != null).filter(distinctByKey(p -> p.getTitle())).collect(Collectors.toList());
+			// }).filter(item -> item != null).filter(distinctByKey(p ->
+			// p.getTitle())).collect(Collectors.toList());
 		}).filter(item -> item != null).collect(Collectors.toList());
-			
-			
-			// totalDatasets.stream().forEach(d -> System.out
+
+		// totalDatasets.stream().forEach(d -> System.out
 		// .println("IDENTIFIER: " + d.getIdentifier().getValue() + " URL: " +
 		// d.getLandingPage().getValue()));
 		logger.info("Skipped Web datasets when mapping: " + counter.get() + "/" + docs.size());
@@ -699,28 +711,70 @@ public class WebConnector implements IODMSConnector {
 	}
 
 	private static List<String> fetchMultipleValuesBySelector(Document document, DatasetSelector sel) {
-		Elements extractedElements = document.select(sel.getSelector());
+		Elements extractedElements = document.select(sel.getSelector().replaceAll("'", ""));
 		List<String> extractedValues = null;
-		if (sel.getType().equals(WebScraperSelectorType.SelectorElementAttribute))
-			extractedValues = extractedElements.stream().map(e -> e.attr(sel.getExtractAttribute()))
-					.collect(Collectors.toList());
-		else
-			extractedValues = extractedElements.stream().map(e -> e.text()).collect(Collectors.toList());
 
-		if (sel.getName().contains("downloadURL")) {
-			return extractedValues.stream().map(value -> {
-				Matcher downloadMatcher = Pattern.compile("\\w*\\(([^)]+)\\);*").matcher(value);
-				if (downloadMatcher.find()) {
-					String argument = null;
-					if ((argument = downloadMatcher.group(1)) != null)
-						value = argument.replaceAll("'", "");
-				}
-				return value;
+		switch (sel.getType()) {
+
+		case SelectorElementAttribute:
+			extractedValues = extractedElements.stream().map(e -> {
+
+				String extractedAttr = e.attr(sel.getExtractAttribute());
+				/*
+				 * If the selector is downloadURL, extract the url
+				 */
+				if (sel.getName().contains("downloadURL"))
+					extractedAttr = extractDownloadUrl(extractedAttr);
+
+				return extractedAttr;
 			}).collect(Collectors.toList());
+
+			break;
+		case SelectorText:
+			extractedValues = extractedElements.stream().map(e -> {
+
+				/*
+				 * ** Extract the text from the HTML element with Regex if any in the selector
+				 */
+				String extractedText = e.text();
+				String regex = sel.getRegex();
+				if (StringUtils.isNotBlank(regex)) {
+					Matcher regexMatcher = Pattern.compile(regex).matcher(extractedText);
+					if (regexMatcher.find()) {
+						extractedText = regexMatcher.group();
+					}
+				}
+
+				/*
+				 * If the selector is downloadURL, extract the url
+				 */
+				if (sel.getName().contains("downloadURL"))
+					extractedText = extractDownloadUrl(extractedText);
+
+				return extractedText;
+			}).collect(Collectors.toList());
+
+			break;
+		case SelectorLink:
+			// TODO Manage specific link selector fields
+			break;
+
+		default:
+			break;
+
 		}
 
 		return extractedValues;
+	}
 
+	private static String extractDownloadUrl(String extractedText) {
+		Matcher downloadMatcher = downloadUrlPattern.matcher(extractedText);
+		if (downloadMatcher.find()) {
+			String argument = null;
+			if ((argument = downloadMatcher.group(1)) != null)
+				extractedText = argument.replaceAll("'", "");
+		}
+		return extractedText;
 	}
 
 	private static String fetchValueBySelector(Document document, DatasetSelector sel) {

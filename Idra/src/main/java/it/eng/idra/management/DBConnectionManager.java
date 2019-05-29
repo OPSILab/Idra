@@ -23,7 +23,7 @@ import org.apache.logging.log4j.*;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 
-import it.eng.idra.beans.ODFProperty;
+import it.eng.idra.beans.IdraProperty;
 import it.eng.idra.utils.PropertyManager;
 
 import java.sql.Connection;
@@ -60,16 +60,16 @@ public class DBConnectionManager {
 		// }
 
 		HikariConfig config = new HikariConfig();
-		config.setJdbcUrl(PropertyManager.getProperty(ODFProperty.DB_HOST_MIN));
+		config.setJdbcUrl(PropertyManager.getProperty(IdraProperty.DB_HOST_MIN));
 		
-		config.setUsername(PropertyManager.getProperty(ODFProperty.DB_USERNAME));
-		config.setPassword(PropertyManager.getProperty(ODFProperty.DB_PASSWORD));
+		config.setUsername(PropertyManager.getProperty(IdraProperty.DB_USERNAME));
+		config.setPassword(PropertyManager.getProperty(IdraProperty.DB_PASSWORD));
 		config.setDataSourceClassName("com.mysql.jdbc.jdbc2.optional.MysqlDataSource");
 		config.setIdleTimeout(30000);
 		config.setMinimumIdle(5);
 		config.setMaximumPoolSize(10);
 		
-		config.addDataSourceProperty("databaseName", PropertyManager.getProperty(ODFProperty.DB_NAME));
+		config.addDataSourceProperty("databaseName", PropertyManager.getProperty(IdraProperty.DB_NAME));
 		config.addDataSourceProperty("cachePrepStmts", "true");
 		config.addDataSourceProperty("prepStmtCacheSize", "250");
 		config.addDataSourceProperty("prepStmtCacheSqlLimit", "2048");
@@ -91,9 +91,9 @@ public class DBConnectionManager {
 //			e.printStackTrace();
 //		}
 //
-//		cpds.setJdbcUrl(PropertyManager.getProperty(ODFProperty.DB_HOST));
-//		cpds.setUser(PropertyManager.getProperty(ODFProperty.DB_USERNAME));
-//		cpds.setPassword(PropertyManager.getProperty(ODFProperty.DB_PASSWORD));
+//		cpds.setJdbcUrl(PropertyManager.getProperty(IdraProperty.DB_HOST));
+//		cpds.setUser(PropertyManager.getProperty(IdraProperty.DB_USERNAME));
+//		cpds.setPassword(PropertyManager.getProperty(IdraProperty.DB_PASSWORD));
 ////		cpds.setDataSourceName(PropertyManager.getProperty("DB_NAME"));
 //		// cpds.setMaxIdleTime(15);
 //		cpds.setMaxConnectionAge(27500);

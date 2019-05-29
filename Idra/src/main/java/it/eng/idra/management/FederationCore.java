@@ -38,8 +38,8 @@ import it.eng.idra.beans.odms.ODMSCatalogueType;
 import it.eng.idra.beans.odms.ODMSSynchLock;
 import it.eng.idra.cache.CachePersistenceManager;
 import it.eng.idra.cache.MetadataCacheManager;
-import it.eng.idra.odfscheduler.ODFScheduler;
-import it.eng.idra.odfscheduler.SchedulerNotInitialisedException;
+import it.eng.idra.scheduler.IdraScheduler;
+import it.eng.idra.scheduler.exception.SchedulerNotInitialisedException;
 import it.eng.idra.search.EuroVocTranslator;
 import it.eng.idra.utils.CommonUtil;
 
@@ -257,13 +257,13 @@ public class FederationCore {
 	}
 
 	/**
-	 * Gets the List of the federated ODMS nodes present in the Federation
+	 * Gets the List of the federated ODMS Catalogues present in the Federation
 	 *
 	 * Forwards the request to the underlying JDBC layer
 	 *
 	 * @param none
 	 * @throws ODMSManagerException
-	 * @returns ArrayList<ODMSCatalogue> the list of the federated ODMS nodes
+	 * @returns ArrayList<ODMSCatalogue> the list of the federated ODMS Catalogues
 	 * 
 	 */
 
@@ -280,7 +280,7 @@ public class FederationCore {
 	}
 
 	/**
-	 * Gets a federated ODMS node present in the Federation
+	 * Gets a federated ODMS Catalogue present in the Federation
 	 *
 	 * Forwards the request to the underlying ODMSManager
 	 *
@@ -289,7 +289,7 @@ public class FederationCore {
 	 * @throws ODMSCatalogueNotFoundException
 	 * @throws ODMSManagerException
 	 * @throws SQLException
-	 * @returns ODMSCatalogue the resulting federated ODMS node
+	 * @returns ODMSCatalogue the resulting federated ODMS Catalogue
 	 * 
 	 */
 	public static ODMSCatalogue getODMSCatalogue(int id) throws ODMSCatalogueNotFoundException {
@@ -306,7 +306,7 @@ public class FederationCore {
 	}
 
 	/**
-	 * Gets the List of federated ODMS nodes with a specific federation grade
+	 * Gets the List of federated ODMS Catalogues with a specific federation grade
 	 * present in the Federation
 	 * 
 	 * Forwards the request to the underlying JDBC layer
@@ -314,7 +314,7 @@ public class FederationCore {
 	 * @param integrationLevel
 	 *            The integration grade
 	 * @throws SQLException
-	 * @returns ArrayList<ODMSCatalogue> The list of the federated ODMS nodes with
+	 * @returns ArrayList<ODMSCatalogue> The list of the federated ODMS Catalogues with
 	 *          specific federation grade
 	 */
 	public static List<ODMSCatalogue> getODMSCataloguesbyFederationLevel(ODMSCatalogueFederationLevel level_first,
@@ -325,7 +325,7 @@ public class FederationCore {
 	}
 
 	/**
-	 * Performs the registration of a new ODMS Node passed by API module
+	 * Performs the registration of a new ODMS Catalogue passed by API module
 	 *
 	 * Depending on Federation Level performs further operations such as
 	 * availability and first synchronization
@@ -339,43 +339,64 @@ public class FederationCore {
 	 * @throws ODMSCatalogueSSLException
 	 * @throws InvocationTargetException
 	 * @throws ODMSCatalogueOfflineException
+	 * @throws SchedulerNotInitialisedException 
+	 * @throws SQLException 
 	 * @returns void
-	 * @throws An
-	 *             Exception if the request fails
+	 * @throws An Exception if the request fails
 	 */
 	public static void registerODMSCatalogue(final ODMSCatalogue node)
 			throws ODMSAlreadyPresentException, ODMSManagerException, ODMSCatalogueNotFoundException,
-			ODMSCatalogueForbiddenException, ODMSCatalogueSSLException, InvocationTargetException, ODMSCatalogueOfflineException {
+			ODMSCatalogueForbiddenException, ODMSCatalogueSSLException, InvocationTargetException, ODMSCatalogueOfflineException, SchedulerNotInitialisedException, SQLException {
 
+		/* ************************************************************
+		 * The Catalogue is created in the Persistence
+		 * the PostCreate is triggered after the line below
+		 **************************************************************/
 		final int assignedNodeID = ODMSManager.addODMSCatalogue(node);
 
-		// If node has federation level 2 o 3, are loaded all its datasets to
-		// Persistence and SOLR Cache
+		/* ************************************************************
+		 * If the Catalogue has Federation Level 2 o 3, 
+		 * all its datasets are loaded to Persistence and SOLR Cache
+		 **************************************************************/
+		
 		if (node.isCacheable()) {
 
 			node.setId(assignedNodeID);
 			node.setSynchLock(ODMSSynchLock.FIRST);
 			ODMSManager.updateODMSCatalogue(node, false);
 
-			// Loads datasets of the node
+			/* ************************************************************
+			 *  1. Gather datasets from the Catalogue, then persist and cache them
+			 *  2. Start all the Jobs needed after Catalogue registration
+			 *  3. Manage ODMS Statistics and Messages 
+			 * ***********************************************************/
 			try {
+				/* 
+				 * 1. Gather datasets from the Catalogue, then persist and cache them
+				 */
 				MetadataCacheManager.loadCacheFromODMSCatalogue(node);
 
 				node.setSynchLock(ODMSSynchLock.NONE);
 				ODMSManager.updateODMSCatalogue(node, false);
 
-				// Registration of new node completed, starting quartz job
-				ODFScheduler.getSingletonInstance().startCataloguesSynchJob(node, false);
-
+				
+				/*
+				 * 2. Start all the Jobs after Catalogue registration
+				 */
+				IdraScheduler.getSingletonInstance().startCataloguesSynchJob(node, false);
 				// Everything fine reload list of nodes without images
 				ODMSManager.updateODMSCatalogueList();
 
-				// Insert the statistic of the new node
+				
+				/*
+				 * 3. Insert the statistic of the new node
+				 */
 				StatisticsManager.odmsStatistics(node, node.getDatasetCount(), 0, 0, node.getRdfCount(), 0, 0);
-				logger.info("--------- The ODMS Node with host " + node.getHost()
+				logger.info("--------- The ODMS Catalogue with host " + node.getHost()
 						+ " was successfully registered ----------");
 				ODMSManager.insertODMSMessage(node.getId(), "Node successfully registered");
 
+				
 			} catch (InvocationTargetException e) {
 				e.printStackTrace();
 				Throwable target = null;
@@ -385,7 +406,7 @@ public class FederationCore {
 						Class targetClass = target.getClass();
 						if (targetClass.equals(ODMSCatalogueOfflineException.class)) {
 							e.printStackTrace();
-							logger.error("Problem during registration of catalogue " + node.getName()
+							logger.error("Problem during registration of Catalogue " + node.getName()
 									+ ": Setting state to OFFLINE");
 							ODMSManager.insertODMSMessage(node.getId(), "Unreacheble, setting state to OFFLINE");
 							node.setNodeState(ODMSCatalogueState.OFFLINE);
@@ -394,7 +415,7 @@ public class FederationCore {
 							node.setSynchLock(ODMSSynchLock.NONE);
 
 							try {
-								ODFScheduler.getSingletonInstance().startCataloguesSynchJob(node, false);
+								IdraScheduler.getSingletonInstance().startCataloguesSynchJob(node, false);
 							} catch (SchedulerNotInitialisedException e1) {
 								e1.printStackTrace();
 
@@ -407,24 +428,24 @@ public class FederationCore {
 							throw new ODMSCatalogueNotFoundException("The node " + node.getHost() + " host was not found");
 						} else if (targetClass.equals(ODMSCatalogueForbiddenException.class)) {
 							e.printStackTrace();
-							logger.error("The ODMS node " + node.getHost() + " is forbidden");
+							logger.error("The ODMS Catalogue " + node.getHost() + " is forbidden");
 							ODMSManager.deleteODMSCatalogue(node);
-							throw new ODMSCatalogueForbiddenException("The ODMS node " + node.getHost() + " is forbidden");
+							throw new ODMSCatalogueForbiddenException("The ODMS Catalogue " + node.getHost() + " is forbidden");
 						} else if (targetClass.equals(SSLHandshakeException.class)) {
 							e.printStackTrace();
-							logger.error("The ODMS node " + node.getHost()
+							logger.error("The ODMS Catalogue " + node.getHost()
 									+ " requested SSL handshake, import its certificate into java keystore");
 							ODMSManager.deleteODMSCatalogue(node);
 							throw new ODMSCatalogueSSLException(
-									"The ODMS node " + node.getHost() + " requested SSL handshake and failed");
+									"The ODMS Catalogue " + node.getHost() + " requested SSL handshake and failed");
 						} else {
-							logger.error("There was an error while registering ODMS Node " + node.getHost()
+							logger.error("There was an error while registering ODMS Catalogue " + node.getHost()
 									+ ": operation deleted " + e.getMessage());
 							ODMSManager.deleteODMSCatalogue(node);
 							throw e;
 						}
 					} else {
-						logger.error("There was an error while registering ODMS Node " + node.getHost()
+						logger.error("There was an error while registering ODMS Catalogue " + node.getHost()
 								+ ": operation deleted " + e.getMessage());
 						ODMSManager.deleteODMSCatalogue(node);
 						throw e;
@@ -432,12 +453,14 @@ public class FederationCore {
 				}
 
 			} catch (SchedulerNotInitialisedException e) {
-				e.printStackTrace();
+				
 				logger.error("Scheduler not initialised, skipped synchronization thread for " + node.getHost() + ":"
 						+ e.getLocalizedMessage());
+				throw e;
 			} catch (SQLException e) {
-				e.printStackTrace();
+				
 				logger.error("SqlException while updating node list: " + e.getLocalizedMessage());
+				throw e;
 			}
 
 		}
@@ -468,7 +491,7 @@ public class FederationCore {
 	// }
 
 	/**
-	 * Performs the unregister operation of a Federated ODMS Node passed by API
+	 * Performs the unregister operation of a Federated ODMS Catalogue passed by API
 	 * module
 	 *
 	 * Depending on Federation Level performs further operations such as
@@ -501,14 +524,14 @@ public class FederationCore {
 			manageBeansJpa.removeODMSStatistics(node.getId());
 			// remove node synch timer from timers list
 			// SynchManager.deleteODMSNodeSynchTimer(node.getId());
-			ODFScheduler odfScheduler = ODFScheduler.getSingletonInstance();
+			IdraScheduler odfScheduler = IdraScheduler.getSingletonInstance();
 			if (odfScheduler.isJobRunning(Integer.toString(node.getId()))) {
 				odfScheduler.interruptJob(Integer.toString(node.getId()));
 			}
 			odfScheduler.deleteJob(Integer.toString(node.getId()));
 
 			System.gc();
-			logger.info("The ODMS Node with name: " + node.getName() + " and ID: " + node.getId()
+			logger.info("The ODMS Catalogue with name: " + node.getName() + " and ID: " + node.getId()
 					+ " was successfully deleted");
 
 		} finally {
@@ -518,7 +541,7 @@ public class FederationCore {
 	}
 
 	/**
-	 * Performs the update operation of a Federated ODMS Node passed by API module
+	 * Performs the update operation of a Federated ODMS Catalogue passed by API module
 	 *
 	 * Depending on previous and current Federation Level performs further
 	 * operations such as caching datasets for a node with a new Federation level
@@ -548,7 +571,7 @@ public class FederationCore {
 				MetadataCacheManager.loadCacheFromODMSCatalogue(node);
 				// SynchManager.addODMSNodeSynchTimer(node, false);
 
-				ODFScheduler.getSingletonInstance().startCataloguesSynchJob(node, false);
+				IdraScheduler.getSingletonInstance().startCataloguesSynchJob(node, false);
 
 			}
 
@@ -560,13 +583,13 @@ public class FederationCore {
 					MetadataCacheManager.deleteAllDatasetsByODMSCatalogue(node);
 					// SynchManager.deleteODMSNodeSynchTimer(node.getId());
 
-					ODFScheduler.getSingletonInstance().deleteJob(Integer.toString(node.getId()));
+					IdraScheduler.getSingletonInstance().deleteJob(Integer.toString(node.getId()));
 					// this is used to avoid problems on future federation level grown
 					node.setDatasetStart(0);
 				} else {
 					// Rescheduling the job
 					if (rescheduleJob)
-						ODFScheduler.getSingletonInstance().rescheduleJob(Integer.toString(node.getId()), node);
+						IdraScheduler.getSingletonInstance().rescheduleJob(Integer.toString(node.getId()), node);
 				}
 
 			}
@@ -582,7 +605,7 @@ public class FederationCore {
 		}
 		ODMSManager.updateODMSCatalogue(node, true);
 		ODMSManager.insertODMSMessage(node.getId(), "Node successfully updated");
-		logger.info("The ODMS Node with name: " + node.getName() + " and ID: " + node.getId()
+		logger.info("The ODMS Catalogue with name: " + node.getName() + " and ID: " + node.getId()
 				+ " was successfully updated");
 
 		// Everything fine reload list of nodes without images
@@ -607,7 +630,7 @@ public class FederationCore {
 	public static void startODMSCatalogueSynch(final int nodeId) throws ODMSCatalogueNotFoundException, ODMSManagerException {
 
 		try {
-			ODFScheduler.getSingletonInstance().triggerNow(Integer.toString(nodeId));
+			IdraScheduler.getSingletonInstance().triggerNow(Integer.toString(nodeId));
 		} catch (SchedulerNotInitialisedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -637,7 +660,7 @@ public class FederationCore {
 		ODMSManager.updateODMSCatalogue(node, true);
 		// remove node synch timer from timers list
 		try {
-			ODFScheduler odfScheduler = ODFScheduler.getSingletonInstance();
+			IdraScheduler odfScheduler = IdraScheduler.getSingletonInstance();
 			if (odfScheduler.isJobRunning(Integer.toString(node.getId()))) {
 				logger.info("Interrupting job for catalogue: "+node.getId());
 				odfScheduler.interruptJob(Integer.toString(node.getId()));
@@ -672,7 +695,7 @@ public class FederationCore {
 			System.gc();
 		}
 
-		logger.info("The ODMS Node with name: " + node.getName() + " and ID: " + node.getId()
+		logger.info("The ODMS Catalogue with name: " + node.getName() + " and ID: " + node.getId()
 				+ " was successfully deactivated " + ((keepDatasets) ? "keeping datasets" : "deleting datasets"));
 	}
 
@@ -690,7 +713,7 @@ public class FederationCore {
 
 		if(!node.getFederationLevel().equals(ODMSCatalogueFederationLevel.LEVEL_4)) {
 			try {
-				ODFScheduler.getSingletonInstance().startCataloguesSynchJob(node, startNow);
+				IdraScheduler.getSingletonInstance().startCataloguesSynchJob(node, startNow);
 			} catch (SchedulerNotInitialisedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

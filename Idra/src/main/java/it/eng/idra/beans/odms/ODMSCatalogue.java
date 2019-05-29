@@ -48,8 +48,8 @@ import it.eng.idra.beans.dcat.DCATAPProfile;
 import it.eng.idra.beans.orion.OrionCatalogueConfiguration;
 import it.eng.idra.beans.sparql.SparqlCatalogueConfiguration;
 import it.eng.idra.beans.webscraper.WebScraperSitemap;
-import it.eng.idra.odfscheduler.ODFScheduler;
-import it.eng.idra.odfscheduler.SchedulerNotInitialisedException;
+import it.eng.idra.scheduler.IdraScheduler;
+import it.eng.idra.scheduler.exception.SchedulerNotInitialisedException;
 import it.eng.idra.utils.CommonUtil;
 import it.eng.idra.utils.JsonRequired;
 import it.eng.idra.utils.ODMSCatalogueAdditionalConfigurationDeserializer;
@@ -620,13 +620,17 @@ public class ODMSCatalogue {
 			OrionCatalogueConfiguration cf = (OrionCatalogueConfiguration) this.additionalConfig;
 			if(cf.isAuthenticated()) {
 				try {
-					ODFScheduler.getSingletonInstance().startOAUTHTokenSynchJob(this);
+					IdraScheduler.getSingletonInstance().startOAUTHTokenSynchJob(this);
 				} catch (SchedulerNotInitialisedException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			}
 		}
+		
+		
+		
+		
 	}
 
 	@PostUpdate
@@ -640,7 +644,7 @@ public class ODMSCatalogue {
 			OrionCatalogueConfiguration cf = (OrionCatalogueConfiguration) this.additionalConfig;
 			if(cf.isAuthenticated()) {
 				try {
-					ODFScheduler.getSingletonInstance().deleteJob("synchToken_"+Integer.toString(this.id));
+					IdraScheduler.getSingletonInstance().deleteJob("synchToken_"+Integer.toString(this.id));
 				} catch (SchedulerNotInitialisedException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
