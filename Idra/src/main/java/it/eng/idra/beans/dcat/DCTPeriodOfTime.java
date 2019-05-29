@@ -59,10 +59,10 @@ public class DCTPeriodOfTime {
 		super();
 		setUri(uri);
 		this.nodeID = nodeID;
-		setStartDate(new DCATProperty(ResourceFactory.createProperty("http://schema.org#startDate"),
-				RDFS.Literal.getURI(), startDate));
-		setEndDate(new DCATProperty(ResourceFactory.createProperty("http://schema.org#endDate"), RDFS.Literal.getURI(),
-				endDate));
+		setStartDate(new DCATProperty(ResourceFactory.createProperty("http://schema.org#startDate"), RDFS.Literal,
+				startDate));
+		setEndDate(
+				new DCATProperty(ResourceFactory.createProperty("http://schema.org#endDate"), RDFS.Literal, endDate));
 	}
 
 	public DCTPeriodOfTime(String uri, DCATProperty startDate, DCATProperty endDate, String nodeID) {
@@ -72,11 +72,7 @@ public class DCTPeriodOfTime {
 		setStartDate(startDate);
 		setEndDate(endDate);
 	}
-	
-	
-	
-	
-	
+
 	@Id
 	@GeneratedValue(generator = "uuid")
 	@GenericGenerator(name = "uuid", strategy = "uuid2")
@@ -136,7 +132,7 @@ public class DCTPeriodOfTime {
 		DCTPeriodOfTime p = new DCTPeriodOfTime(uri, doc.getFieldValue("startDate").toString(),
 				doc.getFieldValue("endDate").toString(), nodeID);
 		p.setId(doc.getFieldValue("id").toString());
-		return p; 
+		return p;
 
 	}
 
