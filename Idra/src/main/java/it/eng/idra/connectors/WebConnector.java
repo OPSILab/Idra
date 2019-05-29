@@ -271,7 +271,7 @@ public class WebConnector implements IODMSConnector {
 				conformsToReferenceDocumentation = extractedValues.get(0);
 				break;
 			case "documentation":
-				documentation.add(extractedValues.get(0));
+				documentation.addAll(extractedValues);
 				break;
 			case "frequency":
 				frequency = extractedValues.get(0);
@@ -420,15 +420,10 @@ public class WebConnector implements IODMSConnector {
 			releaseDate = "";
 		if (StringUtils.isBlank(updateDate))
 			updateDate = releaseDate;
-		// if (StringUtils.isBlank(landingPage))
-		// landingPage = doc.baseUri();
-		// MOD robcalla 17/09 -> adding explicit legacyIdentifier as the landingPage of
-		// the dataset
-		// legacyIdentifier = landingPage;
-		// identifier = title.replaceAll(":|\\s", "-") + "_" +
-		// CommonUtil.parseDate(releaseDate).toEpochSecond();
+		if (StringUtils.isBlank(landingPage))
+			landingPage = doc.baseUri();
+
 		identifier = landingPage;
-		// Adding legacy identifier for WebConnector
 
 		mapped = new DCATDataset(nodeID, identifier, title, description, distributionList, themeList, publisher,
 				contactPointList, keywords, accessRights, conformsTo, documentation, frequency, hasVersion, isVersionOf,
@@ -618,20 +613,16 @@ public class WebConnector implements IODMSConnector {
 
 	@Override
 	public DCATDataset getDataset(String datasetId) throws Exception {
-		// TODO Chiamata al webscraper, passandogli la configurazione presa dal
-		// nodo
+
 		return null;
 	}
 
 	@Override
 	public List<DCATDataset> getAllDatasets() throws Exception {
 
-		// TODO Chiamata al webscraper, passandogli la configurazione presa dal
-		// nodo
-		// List<DCATDataset> totalDatasets = new ArrayList<DCATDataset>();
-
-		// Get dataset page to be scraped
-		// Document doc = WebScraper.getDatasetDocument(node.getSitemap(), 0);
+		/*
+		 * Call the WebScraper to get the Dataset Documents to be mapped
+		 */
 		List<Document> docs = WebScraper.getDatasetsDocument(node.getSitemap());
 
 		AtomicInteger counter = new AtomicInteger(0);
@@ -647,9 +638,6 @@ public class WebConnector implements IODMSConnector {
 			// p.getTitle())).collect(Collectors.toList());
 		}).filter(item -> item != null).collect(Collectors.toList());
 
-		// totalDatasets.stream().forEach(d -> System.out
-		// .println("IDENTIFIER: " + d.getIdentifier().getValue() + " URL: " +
-		// d.getLandingPage().getValue()));
 		logger.info("Skipped Web datasets when mapping: " + counter.get() + "/" + docs.size());
 		logger.info("Final mapped and returned datasets: " + totalDatasets.size() + "/" + docs.size());
 
@@ -813,7 +801,6 @@ public class WebConnector implements IODMSConnector {
 						new SKOSConcept(propertyUri, "", Arrays.asList(new SKOSPrefLabel("", label, nodeID)), nodeID)));
 			} catch (InstantiationException | IllegalAccessException | IllegalArgumentException
 					| InvocationTargetException | NoSuchMethodException | SecurityException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
