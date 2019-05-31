@@ -70,12 +70,12 @@ public class VCardOrganization {
 		setResourceUri(resourceUri);
 		setNodeID(nodeID);
 		setPropertyUri(propertyUri);
-		setFn(new DCATProperty(VCARD4.fn, RDFS.Literal.getURI(), fn));
+		setFn(new DCATProperty(VCARD4.fn, RDFS.Literal, fn));
 		hasEmail = (hasEmail != null) ? hasEmail.trim() : hasEmail;
-		setHasEmail(new DCATProperty(VCARD4.hasEmail, RDFS.Literal.getURI(), hasEmail));
-		setHasURL(new DCATProperty(VCARD4.hasURL, RDFS.Literal.getURI(), hasURL));
-		setHasTelephoneValue(new DCATProperty(VCARD4.value, RDFS.Literal.getURI(), hasTelephoneValue));
-		setHasTelephoneType(new DCATProperty(RDF.type, RDFS.Literal.getURI(), hasTelephoneType));
+		setHasEmail(new DCATProperty(VCARD4.hasEmail, RDFS.Literal, hasEmail));
+		setHasURL(new DCATProperty(VCARD4.hasURL, RDFS.Literal, hasURL));
+		setHasTelephoneValue(new DCATProperty(VCARD4.value, RDFS.Literal, hasTelephoneValue));
+		setHasTelephoneType(new DCATProperty(RDF.type, RDFS.Literal, hasTelephoneType));
 	}
 
 	public VCardOrganization(String id, String propertyUri, String resourceUri, String fn, String hasEmail,
@@ -128,7 +128,7 @@ public class VCardOrganization {
 	}
 
 	@Embedded
-	@AttributeOverrides({ @AttributeOverride(name = "value", column = @Column(name = "fn",length=500)) })
+	@AttributeOverrides({ @AttributeOverride(name = "value", column = @Column(name = "fn", length = 500)) })
 	public DCATProperty getFn() {
 		return fn;
 	}

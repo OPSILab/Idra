@@ -23,6 +23,8 @@ import javax.persistence.Embeddable;
 import javax.persistence.Transient;
 
 import org.apache.jena.rdf.model.Property;
+import org.apache.jena.rdf.model.Resource;
+import org.apache.jena.rdf.model.ResourceFactory;
 import org.apache.solr.common.SolrInputDocument;
 
 import it.eng.idra.cache.CacheContentType;
@@ -34,7 +36,7 @@ public class DCATProperty {
 
 	private transient String uri;
 	private transient Property property;
-	private transient String range;
+	private transient Resource range;
 
 	private String value;
 	// @LazyCollection(LazyCollectionOption.FALSE)
@@ -60,7 +62,7 @@ public class DCATProperty {
 	//// setValues(values);
 	// }
 
-	public DCATProperty(Property property, String range, String value) {
+	public DCATProperty(Property property, Resource range, String value) {
 		// values = null;
 		setProperty(property);
 		setURI(property.getURI());
@@ -68,7 +70,7 @@ public class DCATProperty {
 		setValue(value);
 	}
 
-	public DCATProperty(String uri, String range, String value) {
+	public DCATProperty(String uri, Resource range, String value) {
 		// values = null;
 		setURI(uri);
 		setRange(range);
@@ -100,12 +102,12 @@ public class DCATProperty {
 	}
 
 	@Transient
-	public String getRange() {
+	public Resource getRange() {
 		return range;
 	}
 
-	public void setRange(String range) {
-		this.range = range != null ? range : "";
+	public void setRange(Resource range) {
+		this.range = range != null ? range : ResourceFactory.createResource();
 	}
 
 	public String getValue() {
@@ -134,7 +136,6 @@ public class DCATProperty {
 		return "DCATProperty [uri=" + uri + ", property=" + property + ", range=" + range + ", value=" + value + "]";
 	}
 
-	
 	@Transient
 	public Property getProperty() {
 		return property;
@@ -176,7 +177,5 @@ public class DCATProperty {
 			return false;
 		return true;
 	}
-	
-	
 
 }
