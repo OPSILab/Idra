@@ -51,6 +51,7 @@ import it.eng.idra.beans.webscraper.NavigationType;
 import it.eng.idra.beans.webscraper.NavigationTypeNotValidException;
 import it.eng.idra.beans.webscraper.PageNumberNotParseableException;
 import it.eng.idra.beans.webscraper.PageSelector;
+import it.eng.idra.beans.webscraper.SitemapNotValidException;
 import it.eng.idra.beans.webscraper.WebScraperSelector;
 import it.eng.idra.beans.webscraper.WebScraperSelectorNotFoundException;
 import it.eng.idra.beans.webscraper.WebScraperSitemap;
@@ -65,16 +66,17 @@ public class WebScraper {
 	private static final int DATASET_TIMEOUT;
 	private static final long COUNTDOWN_LATCH_TIMEOUT;
 	private static final int WEB_SCRAPER_RANGE_SCALE_NUM;
-	
+
 	static {
 		PAGINATION_RETRY_NUM = Integer
 				.parseInt(PropertyManager.getProperty(IdraProperty.WEB_SCRAPER_PAGINATION_RETRY_NUM));
 		DATASET_TIMEOUT = Integer.parseInt(PropertyManager.getProperty(IdraProperty.WEB_SCRAPER_DATASET_TIMEOUT));
 		COUNTDOWN_LATCH_TIMEOUT = Long.parseLong(PropertyManager.getProperty(IdraProperty.WEB_SCRAPER_GLOBAL_TIMEOUT));
-		WEB_SCRAPER_RANGE_SCALE_NUM = Integer.parseInt(PropertyManager.getProperty(IdraProperty.WEB_SCRAPER_RANGE_SCALE_NUM));
+		WEB_SCRAPER_RANGE_SCALE_NUM = Integer
+				.parseInt(PropertyManager.getProperty(IdraProperty.WEB_SCRAPER_RANGE_SCALE_NUM));
 	}
 
-	public WebScraper() {
+	private WebScraper() {
 	}
 
 	/**
@@ -110,10 +112,13 @@ public class WebScraper {
 	 * @return
 	 * @throws InterruptedException
 	 * @throws PageNumberNotParseableException
+	 * @throws SitemapNotValidException
 	 */
 	public static List<Document> getDatasetsDocument(WebScraperSitemap sitemap)
-			throws InterruptedException, PageNumberNotParseableException {
+			throws InterruptedException, PageNumberNotParseableException, SitemapNotValidException {
 		NavigationParameter navParam = sitemap.getNavigationParameter();
+
+		validateSitemap(sitemap);
 
 		switch (navParam.getType()) {
 		case QUERY_RANGE:
@@ -127,6 +132,39 @@ public class WebScraper {
 		default:
 			return null;
 		}
+
+	}
+
+	/**
+	 * Validate the input Sitemap
+	 * 
+	 * @param sitemap
+	 * @return
+	 * @throws SitemapNotValidException
+	 */
+	private static void validateSitemap(WebScraperSitemap sitemap) throws SitemapNotValidException {
+		NavigationParameter navParam = sitemap.getNavigationParameter();
+
+		if (navParam != null) {
+
+			try {
+				NavigationType.valueOf(navParam.getType().toString());
+			} catch (IllegalArgumentException | NullPointerException e) {
+				throw new SitemapNotValidException("The input Sitemap is not valid: The Navigation Type is not valid");
+			}
+
+			if (StringUtils.isBlank(navParam.getName()))
+				throw new SitemapNotValidException(
+						"The input Sitemap is not valid: The Navigation Param Name is not valid");
+
+			if (navParam.getPagesNumber() == null || StringUtils.isBlank(navParam.getPagesNumber().toString())) {
+				if (navParam.getPageSelectors() == null || navParam.getPageSelectors().size() != 2)
+					throw new SitemapNotValidException(
+							"The input Sitemap is not valid: Both PagesNumber and PagesSelectors are empty.");
+			}
+
+		} else
+			throw new SitemapNotValidException("The input Sitemap is not valid: The Navigation Type is empty");
 
 	}
 
@@ -213,8 +251,6 @@ public class WebScraper {
 		 * risultati e chiama lo scraping del dataset singolo
 		 */
 
-		
-
 		logger.info("Starting Web Scraper PAGE retrieval: " + threadNumber + " Threads");
 
 		CountDownLatch pageLatch = new CountDownLatch(threadNumber);
@@ -231,9 +267,11 @@ public class WebScraper {
 	}
 
 	/**
-	 * Calculate the Thread Number for Pagination. Use the last page Number, by extracting it either from the first Page
-	 * Document or explicit field of input NavigationParameter. 
-	 * In addition, if datasetsPerPage is present, sclaes the last page Number with it (becacuse here we have an offset pagination navigation)
+	 * Calculate the Thread Number for Pagination. Use the last page Number, by
+	 * extracting it either from the first Page Document or explicit field of input
+	 * NavigationParameter. In addition, if datasetsPerPage is present, sclaes the
+	 * last page Number with it (becacuse here we have an offset pagination
+	 * navigation)
 	 * 
 	 * @param startUrl
 	 * @param navParam
@@ -244,11 +282,10 @@ public class WebScraper {
 	 */
 	private static Integer calculatePageThreadNumber(String startUrl, NavigationParameter navParam,
 			List<PageSelector> pageSelectors) throws PageNumberNotParseableException {
-	
-		
+
 		int retryNum = PAGINATION_RETRY_NUM, pagesNumber;
 		boolean retry = false;
-		
+
 		/* *************** AUTOMATIC MODE **************/
 		try {
 			List<? extends WebScraperSelector> bases = pageSelectors;
@@ -260,19 +297,21 @@ public class WebScraper {
 					Document firstPageDocument = Jsoup.connect(startUrl).get();
 
 					if (firstPageDocument != null) {
-				
+
 						/* **** Extract the pages number from the Last Page Link **********/
 						String lastPageLink = firstPageDocument.select(selector.getSelector()).attr("href");
-						pagesNumber =  (startValue == 0 ? 1 : 0) + parseLastPageValueFromUrl(navParam.getName(), lastPageLink);
-				        
-						/* **** If there is a datasetsPerPage navParam > 1,
-						 *  the retrieved pagesNumber from last page represents actually
-						 *  the offset, to be scaled with the datasetsPerPage 
+						pagesNumber = (startValue == 0 ? 1 : 0)
+								+ parseLastPageValueFromUrl(navParam.getName(), lastPageLink);
+
+						/*
+						 * **** If there is a datasetsPerPage navParam > 1, the retrieved pagesNumber
+						 * from last page represents actually the offset, to be scaled with the
+						 * datasetsPerPage
 						 */
-						
+
 						Integer pageMultiplier = navParam.getDatasetsPerPage();
 						pageMultiplier = (pageMultiplier == null || pageMultiplier < 1) ? 1 : pageMultiplier;
-	
+
 						int pagesQuot = Math.floorDiv(pagesNumber, pageMultiplier);
 						int pagesMod = Math.floorMod(pagesNumber, pageMultiplier);
 						return pagesMod == 0 ? pagesQuot : pagesQuot + 1;
@@ -388,83 +427,4 @@ public class WebScraper {
 			throw new NavigationTypeNotValidException("The input navigation Type is not valid");
 	}
 
-	/* ***************************************/
-
-	// TEST
-
-	public static void main(String[] args) {
-
-		// Pattern pattern = Pattern.compile("(P=\\w*\\b)");
-		// // Matcher matcher =
-		// //
-		// pattern.matcher("https://data.grandlyon.com/search/?Q=&P=118#searchResult");
-		// Integer res;
-		// try {
-		// res = parseLastPageValueFromUrl("", "javascript:cambiaPagina(30)");
-		// System.out.print(res);
-		// } catch (PageNumberNotParseableException e) {
-		// // TODO Auto-generated catch block
-		// e.printStackTrace();
-		// }
-
-		try {
-			// String docString = new
-			// String(Files.readAllBytes(Paths.get("C:\\Users\\erman\\Desktop\\milano_page.html")));
-			// Document doc = Jsoup.parse(docString);
-			// System.out.println(doc);
-			// String cssQuery = "div.cerca_td_nome a";
-			String cssQuery = "div:nth-of-type(28) a";
-			Document doc = Jsoup.connect("https://www.comune.palermo.it/opendata_dld.php?id=855").timeout(20000).get();
-			Elements e = doc.select(cssQuery);
-			System.out.println(e.text());
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-	}
 }
-// try {
-//
-// if
-// (Boolean.parseBoolean(PropertyManager.getProperty(IdraProperty.HTTP_PROXY_ENABLED).trim())
-// &&
-// StringUtils.isNotBlank(PropertyManager.getProperty(IdraProperty.HTTP_PROXY_HOST).trim()))
-// {
-//
-// System.setProperty(IdraProperty.HTTP_PROXY_HOST.toString(),
-// PropertyManager.getProperty(IdraProperty.HTTP_PROXY_HOST).trim());
-// System.setProperty(IdraProperty.HTTP_PROXY_PORT.toString(),
-// PropertyManager.getProperty(IdraProperty.HTTP_PROXY_PORT).trim());
-// System.setProperty(IdraProperty.HTTP_PROXY_NONPROXYHOSTS.toString(),
-// PropertyManager.getProperty(IdraProperty.HTTP_PROXY_NONPROXYHOSTS).trim());
-// String proxyUser =
-// PropertyManager.getProperty(IdraProperty.HTTP_PROXY_USER).trim();
-// String proxyPassword =
-// PropertyManager.getProperty(IdraProperty.HTTP_PROXY_PASSWORD).trim();
-// if (StringUtils.isNotBlank(proxyUser) &&
-// StringUtils.isNotBlank(proxyPassword)) {
-// Authenticator.setDefault(new Authenticator() {
-// public PasswordAuthentication getPasswordAuthentication() {
-// return new PasswordAuthentication(proxyUser, proxyPassword.toCharArray());
-// }
-// });
-//
-// System.setProperty(IdraProperty.HTTP_PROXY_USER.toString(), proxyUser);
-// System.setProperty(IdraProperty.HTTP_PROXY_PASSWORD.toString(),
-// proxyPassword);
-// }
-//
-// }
-//
-// System.out.println(getDatasetDocument("https://www.comune.palermo.it/opendata_dld.php",
-// new NavigationParameter("id", NavigationType.QUERY_RANGE, "8", "853"), 0));
-//
-// // getDatasetsRange("https://www.comune.palermo.it/opendata_dld.php",new
-// // NavigationParameter("id", NavigationType.QUERY_RANGE, "8",
-// // "853"));
-// } catch (IOException | NavigationTypeNotValidException e) {
-//
-// e.printStackTrace();
-// }
-// }

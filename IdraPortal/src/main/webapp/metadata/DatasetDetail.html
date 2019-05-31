@@ -194,14 +194,14 @@
 										<tr ng-show="distribution.accessURL!=''">
 											<td><span style="font-weight: bold;">{{'accessURL'
 													| translate}}</span></td>
-											<td><a href='{{distribution.downloadURL}}'
-												target="_blank">{{distribution.downloadURL}}</a></td>
+											<td><a href='{{distribution.accessURL}}'
+												target="_blank">{{distribution.accessURL}}</a></td>
 										</tr>
 										<tr
-											ng-show="distribution.license.name!='' && distribution.license.uri!=''">
+											ng-show="distribution.license.name!='' || distribution.license.uri!=''">
 											<td><span style="font-weight: bold;">{{'license'
 													| translate}}:</span></td>
-											<td>{{distribution.license.name}} <a
+											<td>{{distribution.license.name || distribution.license.uri}}<a
 												ng-show="distribution.license.license.uri!=''"
 												href="{{distribution.license.uri}}" class="btn-flat "
 												target="_blank"><i class="mdi-action-open-in-new"

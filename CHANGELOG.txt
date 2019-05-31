@@ -1,3 +1,14 @@
+v2.0.1
+- New feature: Implemented explicit Sitemap validation in the WebScraper.
+- Fix: Refactored and cleaned DCAT-AP Dump se/deserialization in general according to the EU DCAT-AP validator (http://dcat-ap.semic.eu/dcat-ap_validator.html)
+- Fix: Fixed DCAT Catalogue publisher serialization
+- Fix: Now DCAT Serializator uses Range to create typed Resources where needed from the single DCATProperty
+- Fix: Fixed documentation and landingPage fetching in the WebConnector
+- Fix: Fixed bug when federating via API a Catalogue with no image.
+- Fix: Idra portal - accessUrl/downloadUrl visualization
+- Fix: Idra portal - License Uri visualization
+- Idra Sitemap Creator: Plugin Release 2.0.1 available here: https://github.com/OPSILab/web-scraper-chrome-extension/releases/tag/v2.0.1
+
 v2.0.0
 - New Feature: Implementation of CKAN API
 - New Feature: Provisioning of RESTful version of Idra API
