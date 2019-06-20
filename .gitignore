@@ -1,5 +1,7 @@
 
 # Created by https://www.gitignore.io/api/git,java,maven,bower,eclipse,java-web
+
+configuration.properties
 #### Data Folder ####
 opt/
 ### Bower ###
@@ -7,7 +9,7 @@ bower_components
 .bower-cache
 .bower-registry
 .bower-tmp
-
+.bowerrc
 ### Eclipse ###
 
 .metadata
