@@ -18,7 +18,7 @@ any time.
 ## Short term
 
 The following list of features are planned to be addressed in the short term,
-and incorporated in the next release of the product planned for **June 2019**:
+and incorporated in the next release of the product planned for **July 2019**:
 
 - DCAT-AP metadata will be accessible also through Idra SPARQL endpoint
 - Upgrade of Solr component and decouple from the Idra core
