@@ -11,8 +11,8 @@ softwareType: standalone/web
 roadmap: 'https://github.com/OPSILab/Idra/blob/master/roadmap.md'
 platforms:
   - web
-logo: 'https://www.gravatar.com/avatar/78a3bb96d2bdda688ff42cd070a5e06d?s=400.png'
-monochromeLogo: 'https://www.gravatar.com/avatar/78a3bb96d2bdda688ff42cd070a5e06d?s=400.png'
+logo: 'https://github.com/OPSILab/Idra/blob/master/idra_logo.svg'
+monochromeLogo: 'https://github.com/OPSILab/Idra/blob/master/idra_logo.svg'
 categories:
   - data-visualization
   - data-collection
@@ -62,7 +62,7 @@ description:
         Possibilità di effettuare ricerche su linked open data attraverso un
         editor SPARQL
       - >-
-        Tecnologia basata su web scraping per poter federare generici portali
+        Tecnologia basata su web scraping per federare portali
         open data che non forniscono API
       - >-
         Conforme alle linea guida di Dati.gov.it e European Data Portal per la
