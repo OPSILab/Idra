@@ -12,7 +12,6 @@ roadmap: 'https://github.com/OPSILab/Idra/blob/master/roadmap.md'
 platforms:
   - web
 logo: 'https://github.com/OPSILab/Idra/blob/master/idra_logo.svg'
-monochromeLogo: 'https://github.com/OPSILab/Idra/blob/master/idra_logo.svg'
 categories:
   - data-visualization
   - data-collection
