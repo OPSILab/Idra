@@ -11,7 +11,7 @@ softwareType: standalone/web
 roadmap: 'https://github.com/OPSILab/Idra/blob/master/roadmap.md'
 platforms:
   - web
-logo: 'https://github.com/OPSILab/Idra/blob/master/idra_logo.svg'
+logo: 'https://raw.githubusercontent.com/OPSILab/Idra/master/idra_logo.png'
 categories:
   - data-visualization
   - data-collection
