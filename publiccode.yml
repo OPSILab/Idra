@@ -1,0 +1,114 @@
+# This repository adheres to the publiccode.yml standard by including this 
+# metadata file that makes public software easily discoverable.
+# More info at https://github.com/italia/publiccode.yml
+
+publiccodeYmlVersion: '0.2'
+name: Idra
+releaseDate: '2019-06-04'
+url: 'https://github.com/OPSILab/Idra.git'
+developmentStatus: stable
+softwareType: standalone/web
+roadmap: 'https://github.com/OPSILab/Idra/blob/master/roadmap.md'
+platforms:
+  - web
+logo: 'https://raw.githubusercontent.com/OPSILab/Idra/master/idra_logo.png'
+categories:
+  - data-visualization
+  - data-collection
+maintenance:
+  type: internal
+  contacts:
+    - name: Martino Maggio
+      email: martino.maggio@eng.it
+      affiliation: Engineering Ingegneria Informatica S.p.A.
+legal:
+  license: AGPL-3.0-or-later
+  mainCopyrightOwner: Engineering Ingegneria Informatica S.p.A.
+  repoOwner: Engineering Ingegneria Informatica S.p.A.
+localisation:
+  localisationReady: true
+  availableLanguages:
+    - it
+    - en
+description:
+  it:
+    genericName: Open Data Platform
+    shortDescription: >-
+      Idra federa open data provenienti da portali basati su tecnologie
+      eterogenee armonizzando i metadati e rendendoli disponibili attraverso API
+      aperte
+    longDescription: >
+      Idra è un'applicazione web capace di federare portali Open Data, basati su
+      tecnologie eterogenee, fornendo un unico punto di accesso per la ricerca e
+      la fruizione dei dataset. Idra armonizza i metadati dei dataset federati
+      secondo standard internazionali (DCAT-AP) fornendo un set di API RESTful
+      che possono essere utilizzate da applicazioni di terze parti. Idra
+      supporta nativamente sorgenti open data basate su
+      [CKAN](https://ckan.org/), [DKAN](https://getdkan.org/),
+      [Socrata](https://socrata.com/), Orion Context Broker ([NGSI
+      v2](https://swagger.lab.fiware.org/?url=https://raw.githubusercontent.com/Fiware/specifications/master/OpenAPI/ngsiv2/ngsiv2-openapi.json))
+      e molte altre tecnologie. E' inoltre possibile federare portali generici,
+      che non espongono API, attraverso funzionalità di web scraping. Idra fa
+      parte dell'iniziativa [FIWARE](https://www.fiware.org/).
+    documentation: 'https://idra.readthedocs.io'
+    apiDocumentation: 'https://idraopendata.docs.apiary.io/'
+    features:
+      - Interfaccia web per la ricerca dei dataset federata e multilingua
+      - >-
+        Accesso univoco a open data provenienti da portali basati su tecnologie
+        eterogenee
+      - >-
+        Possibilità di effettuare ricerche su linked open data attraverso un
+        editor SPARQL
+      - >-
+        Tecnologia basata su web scraping per federare portali
+        open data che non forniscono API
+      - >-
+        Conforme alle linea guida di Dati.gov.it e European Data Portal per la
+        federazione dei portali
+      - Conformità con gli standard DCAT-AP e DCAT-AP_IT
+  en:
+    genericName: Open Data Platform
+    shortDescription: >-
+      Idra is a web application that federates existing Open Data Management
+      Systems based on different technologies providing a unique access point
+      and API
+    longDescription: >
+      Idra is a web application that federates existing Open Data Management
+      Systems (ODMS) based on different technologies providing a unique access
+      point to search and discover open datasets coming from heterogeneous
+      sources. Idra uniforms the metadata of collected open datasets, thanks to
+      the adoption of international standards (DCAT-AP) and provides a set of
+      RESTful APIs to be used by third party applications. Idra supports
+      natively ODMS based on [CKAN](https://ckan.org/),
+      [DKAN](https://getdkan.org/), [Socrata](https://socrata.com/), Orion
+      Context Broker ([NGSI
+      v2](https://swagger.lab.fiware.org/?url=https://raw.githubusercontent.com/Fiware/specifications/master/OpenAPI/ngsiv2/ngsiv2-openapi.json))
+      and many other technologies. It is also possible to federate generic open
+      data portals, that don't expose API, using the web scraping functionality.
+      This project is part of [FIWARE](https://www.fiware.org/).
+    documentation: 'https://idra.readthedocs.io'
+    apiDocumentation: 'https://idraopendata.docs.apiary.io'
+    features:
+      - >-
+        Easy to use web interface to search for open data in a federated and
+        multilanguage way
+      - >-
+        Unique access to open data provided by web portals based on different
+        technologies
+      - Ease of performing SPARQL queries on 5 stars RDF linked open data
+      - Functionalities exposed through public and open APIs
+      - >-
+        Web scraping technology to federate open data portals that don’t provide
+        API
+      - >-
+        Compliance with Dati.gov.it and European Data Portal federation
+        guidelines
+      - Compliance with DCAT-AP and DCAT-AP_IT standards
+landingURL: 'https://github.com/OPSILab/Idra'
+softwareVersion: 2.0.1
+intendedAudience:
+  scope:
+    - government
+    - local-authorities
+    - research
