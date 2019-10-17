@@ -39,7 +39,6 @@ import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrQuery.SortClause;
 import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.client.solrj.embedded.EmbeddedSolrServer;
-import org.apache.solr.client.solrj.impl.HttpSolrClient;
 import org.apache.solr.client.solrj.response.FacetField;
 import org.apache.solr.client.solrj.response.QueryResponse;
 import org.apache.solr.client.solrj.response.UpdateResponse;
@@ -1324,7 +1323,7 @@ public class MetadataCacheManager {
 	 * @throws ProxoolException
 	 * @returns void
 	 */
-	public static void loadCacheFromODMSCatalogue(ODMSCatalogue node) throws InvocationTargetException {
+	public static void loadCacheFromODMSCatalogue(ODMSCatalogue node,boolean isProtocolChange) throws InvocationTargetException {
 
 		LocalTime startTime = LocalTime.now();
 
@@ -1341,7 +1340,7 @@ public class MetadataCacheManager {
 		 *
 		 * 
 		 */
-		int datasetCount = 0;
+		int datasetCount = 0,initialDatasetsCount=0;
 
 		// Iteration variables
 		List<DCATDataset> currentDatasets = null;
@@ -1359,8 +1358,16 @@ public class MetadataCacheManager {
 			 * been retrieved
 			 * 
 			 */
-			// while(node.getDatasetStart() < node.getDatasetCount() ||
-			// node.getNodeType().equals(ODMSCatalogueType.SOCRATA ) ){
+			if (!node.getNodeType().equals(ODMSCatalogueType.SOCRATA)
+					&& !node.getNodeType().equals(ODMSCatalogueType.DKAN)) {
+				initialDatasetsCount = ODMSManager.getODMSCatalogueConnector(node).countDatasets();
+				if (!(initialDatasetsCount > 0)) {
+					node.setNodeState(ODMSCatalogueState.OFFLINE);
+				}
+				
+				node.setDatasetCount(initialDatasetsCount);
+				ODMSManager.updateODMSCatalogue(node, true);
+			}
 
 			while (!stop) {
 
@@ -1553,10 +1560,19 @@ public class MetadataCacheManager {
 			StatisticsManager.odmsStatistics(node, node.getDatasetCount(), 0, 0, node.getRdfCount(), 0, 0);
 
 			System.gc();
-
+						
 		} catch (Exception e) {
-			e.printStackTrace();
-			throw new InvocationTargetException(e, e.getMessage());
+			if(!isProtocolChange) {
+				
+				node = ODMSManager.returnChangedProtocol(node);
+				
+				loadCacheFromODMSCatalogue(node, true);
+				
+				}else {
+					e.printStackTrace();
+					throw new InvocationTargetException(e, e.getMessage());
+				}
+			
 		} finally {
 			cachePersistence.jpaClose();
 			cachePersistence = null;
