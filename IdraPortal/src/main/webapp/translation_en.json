@@ -214,7 +214,7 @@
 	"last": "Last Update",
 	"searchHost": "Search Host",
 	"catalogueNameError": "Catalogue name exists",
-	"cataloguehostError": "Catalogue host exists",
+	"catalogueHostError": "Catalogue host exists",
 	"messageDatasource": "Message Data Source",
 	"nodeSuccessfullySync": "Data Source succesfully synchronized",
 	"nodeSuccessfullyReg": "Data Source successfully registered",

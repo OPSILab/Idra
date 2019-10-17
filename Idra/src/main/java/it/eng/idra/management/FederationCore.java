@@ -374,7 +374,7 @@ public class FederationCore {
 				/* 
 				 * 1. Gather datasets from the Catalogue, then persist and cache them
 				 */
-				MetadataCacheManager.loadCacheFromODMSCatalogue(node);
+				MetadataCacheManager.loadCacheFromODMSCatalogue(node,false);
 
 				node.setSynchLock(ODMSSynchLock.NONE);
 				ODMSManager.updateODMSCatalogue(node, false);
@@ -568,7 +568,7 @@ public class FederationCore {
 			if ((newLevel.equals(ODMSCatalogueFederationLevel.LEVEL_2) || newLevel.equals(ODMSCatalogueFederationLevel.LEVEL_3))
 					&& ((oldLevel.equals(ODMSCatalogueFederationLevel.LEVEL_1)
 							|| oldLevel.equals(ODMSCatalogueFederationLevel.LEVEL_0)))) {
-				MetadataCacheManager.loadCacheFromODMSCatalogue(node);
+				MetadataCacheManager.loadCacheFromODMSCatalogue(node,false);
 				// SynchManager.addODMSNodeSynchTimer(node, false);
 
 				IdraScheduler.getSingletonInstance().startCataloguesSynchJob(node, false);
@@ -596,7 +596,7 @@ public class FederationCore {
 			
 			if(newLevel.equals(ODMSCatalogueFederationLevel.LEVEL_4) && rescheduleJob) {
 				MetadataCacheManager.deleteAllDatasetsByODMSCatalogue(node);
-				MetadataCacheManager.loadCacheFromODMSCatalogue(node);
+				MetadataCacheManager.loadCacheFromODMSCatalogue(node,false);
 			}
 
 		} catch (SchedulerNotInitialisedException e) {
@@ -721,7 +721,7 @@ public class FederationCore {
 		}else {
 			if(startNow)
 				try {
-					MetadataCacheManager.loadCacheFromODMSCatalogue(node);
+					MetadataCacheManager.loadCacheFromODMSCatalogue(node,false);
 				} catch (InvocationTargetException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();

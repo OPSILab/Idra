@@ -344,12 +344,12 @@ public class ODMSManager {
 					 * the first synchronization.
 					 */
 
-					if (!node.getNodeType().equals(ODMSCatalogueType.SOCRATA)
-							&& !node.getNodeType().equals(ODMSCatalogueType.DKAN))
-						datasetsCount = getODMSCatalogueConnector(node).countDatasets();
-
-					if (!(datasetsCount > 0))
-						node.setNodeState(ODMSCatalogueState.OFFLINE);
+//					if (!node.getNodeType().equals(ODMSCatalogueType.SOCRATA)
+//							&& !node.getNodeType().equals(ODMSCatalogueType.DKAN))
+//						datasetsCount = getODMSCatalogueConnector(node).countDatasets();
+//
+//					if (!(datasetsCount > 0))
+//						node.setNodeState(ODMSCatalogueState.OFFLINE);
 
 					node.setDatasetCount(datasetsCount);
 
@@ -448,8 +448,10 @@ public class ODMSManager {
 
 					return assignedNodeID;
 				}
-			} catch (ODMSCatalogueNotFoundException | ODMSCatalogueOfflineException
-					| ODMSCatalogueForbiddenException e) {
+			} catch (ODMSCatalogueNotFoundException 
+//					| ODMSCatalogueOfflineException
+//					| ODMSCatalogueForbiddenException 
+					e) {
 				throw e;
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -664,16 +666,16 @@ public class ODMSManager {
 					: ODMSCatalogueState.OFFLINE;
 
 		} catch (Exception e) {
-			e.printStackTrace();
-			if (e.getClass().equals(ODMSCatalogueOfflineException.class)
-					|| e.getClass().equals(ODMSCatalogueNotFoundException.class)) {
-
+			//e.printStackTrace();
+//			if (e.getClass().equals(ODMSCatalogueOfflineException.class)
+//					|| e.getClass().equals(ODMSCatalogueNotFoundException.class)) {
+			    logger.error("Check catalogue raiser: "+e.getLocalizedMessage());
 				logger.info("Check node: Setting node state to OFFLINE");
 				node.setNodeState(ODMSCatalogueState.OFFLINE);
 				ODMSManager.updateODMSCatalogue(node, true);
 				return ODMSCatalogueState.OFFLINE;
 
-			}
+//			}
 			// Since the this method is used during the synchronization, the node is already
 			// federated
 			// and it must not be removed
@@ -686,8 +688,8 @@ public class ODMSManager {
 			 * 
 			 * }
 			 */
-			else
-				throw new ODMSManagerException("There was an error while checking the ODMS Node: " + e.getMessage());
+//			else
+//				throw new ODMSManagerException("There was an error while checking the ODMS Node: " + e.getMessage());
 		}
 	}
 
@@ -812,6 +814,20 @@ public class ODMSManager {
 		}
 	}
 
+	public static ODMSCatalogue returnChangedProtocol(ODMSCatalogue node) {
+		
+		String host = node.getHost();
+		String[] protocol = host.split("://");
+		if("http".equals(protocol[0])) {
+			protocol[0]="https";
+			node.setHost(StringUtils.join(protocol,"://"));
+		}else if("https".equals(protocol[0])) {
+			protocol[0]="http";
+			node.setHost(StringUtils.join(protocol,"://"));
+		}
+		return node;
+	}
+	
 	class getNodesMonitor extends Thread {
 		int total;
 

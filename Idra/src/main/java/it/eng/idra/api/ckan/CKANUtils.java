@@ -102,14 +102,16 @@ public class CKANUtils {
 		if(dataset.getDistributions().size()>0) {
 
 			Optional<DCTLicenseDocument> lic = dataset.getDistributions().stream().map(x -> x.getLicense()).findFirst();
-
+			
 			if(lic.isPresent()) {
 				if(lic.get().getType()!=null)
 					d.setLicense_id(StringUtils.isNotBlank(lic.get().getType().getValue())?lic.get().getType().getValue():null);
 				if(lic.get().getName()!=null)
 					d.setLicense_title(StringUtils.isNotBlank(lic.get().getName().getValue())?lic.get().getName().getValue():null);
-				if(lic.get().getUri()!=null)
+				if(lic.get().getUri()!=null) {
 					d.setLicense_url(StringUtils.isNotBlank(lic.get().getUri())?lic.get().getUri():null);
+					d.setLicense_id(getLicenseID(StringUtils.isNotBlank(lic.get().getUri())?lic.get().getUri():null));
+				}
 			}
 		}
 
@@ -447,7 +449,41 @@ public class CKANUtils {
 		return d;
 
 	}
-
+	
+	public static String getLicenseID(String url) {
+		/*
+		 * 
+		id = "notspecified"
+		id = "other-open"
+		id = "other-pd"
+		id = "other-at"
+		id = "other-nc"
+		id = "other-closed"
+		 * */
+		if(url==null) return null;
+		else {
+			if(url.contains("creativecommons.org/licenses/by-sa") || url.contains("opendefinition.org/licenses/cc-by-sa"))
+				return "cc-by-sa";
+			else if(url.contains("creativecommons.org/licenses/by-nc"))
+				return "cc-nc";
+			else if(url.contains("creativecommons.org/licenses/by") || url.contains("opendefinition.org/licenses/cc-by"))
+				return "cc-by";
+			else if(url.contains("opendatacommons.org/licenses/pddl") || url.contains("https://opendefinition.org/licenses/odc-pddl"))
+				return "odc-pddl";
+			else if(url.contains("opendatacommons.org/licenses/odbl") || url.contains("https://opendefinition.org/licenses/odc-odbl"))
+				return "odc-odbl";
+			else if(url.contains("opendatacommons.org/licenses/by") || url.contains("https://opendefinition.org/licenses/odc-by"))
+				return "odc-by";
+			else if(url.contains("creativecommons.org/publicdomain/zero") || url.contains("https://opendefinition.org/licenses/cc-zero"))
+				return "cc-zero";
+			else if(url.contains("www.gnu.org/licenses/fdl") || url.contains("https://opendefinition.org/licenses/gfdl"))
+				return "gfdl";
+			else if(url.contains("reference.data.gov.uk/id/open-government-licence"))
+				return "uk-ogl";
+			else return "notspecified";
+		}
+	}
+	
 	public static CKANSearchResult toCkanSearchResult(SearchResult res){
 		CKANSearchResult result = new CKANSearchResult();
 		result.setCount(res.getCount());

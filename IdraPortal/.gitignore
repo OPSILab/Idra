@@ -1,5 +1,14 @@
 
 # Created by https://www.gitignore.io/api/git,java,maven,bower,eclipse,java-web
+<<<<<<< HEAD
+
+### Bower ###
+bower_components
+.bower-cache
+.bower-registry
+.bower-tmp
+
+=======
 configuration.properties
 ### Bower ###
 bower_components
@@ -7,6 +16,7 @@ bower_components
 .bower-registry
 .bower-tmp
 .bowerrc
+>>>>>>> branch 'master' of https://github.com/OPSILab/Idra.git
 ### Eclipse ###
 
 .metadata
