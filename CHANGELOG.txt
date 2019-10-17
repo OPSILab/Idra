@@ -1,3 +1,10 @@
+v2.1.0
+- New feature: Idra automatically tests catalogue's host protocol (http/https) on federation or synchronization errors.
+- New feature: Idra, on Ckan catalogue federation, manages its api with or without the explicit /3/ version on path
+- New feature: If not present, Idra's ckan client now add the license id compliant with CKAN definitions.
+- Fix: Idra portal - removed target="_blank" on several links on dataset's detail page
+- Fix: Idra portal - fixed error on english traslation
+
 v2.0.1
 - New feature: Implemented explicit Sitemap validation in the WebScraper.
 - Fix: Refactored and cleaned DCAT-AP Dump se/deserialization in general according to the EU DCAT-AP validator (http://dcat-ap.semic.eu/dcat-ap_validator.html)
