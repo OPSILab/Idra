@@ -1,6 +1,6 @@
 var configs = {
 	"odfURL" : "http://localhost:8080/",
-	"deepBaseUrl" : "http://localhost:8082/deep/"
+	"deepBaseUrl" : "http://localhost:80/deep/"
 };
 
 function getODFUrl() {

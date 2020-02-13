@@ -45,7 +45,7 @@ services :
     deep:
             image: idraopendata/deep
             ports:
-                - 8082:80
+                - 80:80
             volumes:
                 - ./deep/configuration.js:/var/www/app/deep/deep-components/configuration.js
             networks:
@@ -89,7 +89,7 @@ services :
                 - idm.logout.callback=http://IDRA_HOST/IdraPortal
                 - idm.admin.role.name=Admin
                 - DATALET_ENABLED=true
-                - DATALET_URL=http://localhost:8082/deep/deep-components/demo.html
+                - DATALET_URL=http://localhost:80/deep/deep-components/demo.html
                 - JAVA_OPTS=-Xms1024m -Xmx3g -XX:PermSize=1024m -XX:MaxPermSize=2048m
             volumes:
                 - ./opt/idra/dump:/opt/idra/dump
