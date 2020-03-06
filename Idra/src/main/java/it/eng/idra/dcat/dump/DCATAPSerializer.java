@@ -323,12 +323,14 @@ public class DCATAPSerializer {
 				model, model.getResource(node.getHost()));
 
 		FOAFAgent datasetPublisher = dataset.getPublisher();
-		if (StringUtils.isNotBlank(datasetPublisher.getResourceUri()) && isValidURI(datasetPublisher.getResourceUri()))
-			serializeFOAFAgent(datasetPublisher, model, datasetResource);
-		else {
-			// Set blank URI for Dataset Publisher in order to create a blank node
-			datasetPublisher.setResourceUri("");
-			serializeFOAFAgent(datasetPublisher, model, datasetResource);
+		if(datasetPublisher!=null) {
+			if (StringUtils.isNotBlank(datasetPublisher.getResourceUri()) && isValidURI(datasetPublisher.getResourceUri()))
+				serializeFOAFAgent(datasetPublisher, model, datasetResource);
+			else {
+				// Set blank URI for Dataset Publisher in order to create a blank node
+				datasetPublisher.setResourceUri("");
+				serializeFOAFAgent(datasetPublisher, model, datasetResource);
+			}
 		}
 
 		return model;
