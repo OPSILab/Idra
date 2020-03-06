@@ -33,13 +33,6 @@
 		</md-select>
  		</md-input-container> 
 	</div>
-<!--  	<div class="col-lg-3 col-md-3 col-xs-6">  -->
-<!--  		<label class="control-label">{{'statisticsPeriod' |  -->
-<!--  			translate}}</label>  -->
-<!--  		<md-select style="margin-top:0px;margin-bottom:5px;"  ng-model="selectedPeriods"> <md-option  -->
-<!--  			ng-repeat="option in periodsSelect" ng-value="option.days">{{option.text  -->
-<!--  		| translate}}</md-option> </md-select>  -->
-<!--  	</div>  -->
 </div>
 
 <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
@@ -99,9 +92,6 @@
 </canvas></md-card-content> </md-card>
 </div>
 
-
-<div class="col-lg-3 col-md-3" show-gt-sm></div>
-
 <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
 	<md-card class="md-whiteframe-3dp"> <md-card-title>
 	<md-card-title-text layout-align="center"> <span
@@ -109,6 +99,16 @@
 		translate}}</span> </md-card-title-text> </md-card-title> <md-card-content>
 	<canvas id="pie" class="chart chart-pie" chart-data="dataPolar"
 		chart-labels="labelsPolar" chart-options="optionsTechnologies"></canvas> 
+		</md-card-content> </md-card>
+</div>
+
+<div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+	<md-card class="md-whiteframe-3dp"> <md-card-title>
+	<md-card-title-text layout-align="center"> <span
+		class="md-headline">{{'themesStat' |
+		translate}}</span> </md-card-title-text> </md-card-title> <md-card-content>
+	<canvas id="pie" class="chart chart-pie" chart-data="dataThemes"
+		chart-labels="labelsThemes" chart-options="optionsThemes"></canvas> 
 		</md-card-content> </md-card>
 </div>
 
