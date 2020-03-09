@@ -22,8 +22,16 @@
   <li class="breadcrumb-item active">{{'DataSources'|translate}}</li>
 </ul>
 <!--  -->
-<div class="row" hide-xs visible-gt-xs>
-<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+<div class="row">
+<div class="col-lg-4 col-md-4 col-sm-4 col-xs-4" hide-xs visible-gt-xs></div>
+		<div class="col-lg-4 col-md-4 col-sm-4 col-xs-12 text-center">
+			<pagination max-size="4" class="pagination-sm"
+				ng-change="pageChanged()" boundary-links="true" previous-text="<"
+				next-text=">" first-text="<<" last-text=">>"
+				total-items="totalItems" items-per-page="10"
+				ng-model="currentPage" ng-click="gotoTop()"></pagination>
+		</div>
+<div class="col-lg-4 col-md-4 col-sm-4 col-xs-4" hide-xs visible-gt-xs>
 	<a href="javascript:void(0)" class="btn-flat pull-right" ng-click="enableCardVisualization = !enableCardVisualization">
 	<i ng-show="enableCardVisualization" class="mdi-action-list"><md-tooltip>{{'table'|translate}}</md-tooltip></i>
 	<i ng-show="!enableCardVisualization" class="mdi-action-dashboard"><md-tooltip>{{'cards'|translate}}</md-tooltip></i>
@@ -44,26 +52,26 @@
 								<th st-sort="lastUpdate">{{'lastUpdate'|translate}}</th>
 								<th ></th>
 							</tr>
-							<tr>
-					<th><input placeholder="{{'searchName' | translate}}" class="form-control"
-						st-search="name" /></th>
-						<th><select st-search="country" class="form-control">
-							<option value=""></option>
-							<option ng-repeat="t in nodeCountries | orderBy:'toString()'"
-								value="{{t}}">{{t}}</option>
-					</select></th>
-					<th><select st-search="category" class="form-control">
-							<option value=""></option>
-							<option ng-repeat="t in categories | orderBy:'toString()'"
-								value="{{t.value}}">{{t.text | translate}}</option>
-					</select></th>
+<!-- 							<tr> -->
+<!-- 					<th><input placeholder="{{'searchName' | translate}}" class="form-control" -->
+<!-- 						st-search="name" /></th> -->
+<!-- 						<th><select st-search="country" class="form-control"> -->
+<!-- 							<option value=""></option> -->
+<!-- 							<option ng-repeat="t in nodeCountries | orderBy:'toString()'" -->
+<!-- 								value="{{t}}">{{t}}</option> -->
+<!-- 					</select></th> -->
+<!-- 					<th><select st-search="category" class="form-control"> -->
+<!-- 							<option value=""></option> -->
+<!-- 							<option ng-repeat="t in categories | orderBy:'toString()'" -->
+<!-- 								value="{{t.value}}">{{t.text | translate}}</option> -->
+<!-- 					</select></th> -->
 					
-					<th></th>
-					<th></th>
-					<th><a st-reset-search href="javascript:void(0)"
-						class="btn-flat "><i class="mdi-content-clear"></i> <md-tooltip>
-							{{'clearFilters'|translate}}</md-tooltip></a></th>
-				</tr>
+<!-- 					<th></th> -->
+<!-- 					<th></th> -->
+<!-- 					<th><a st-reset-search href="javascript:void(0)" -->
+<!-- 						class="btn-flat "><i class="mdi-content-clear"></i> <md-tooltip> -->
+<!-- 							{{'clearFilters'|translate}}</md-tooltip></a></th> -->
+<!-- 				</tr> -->
 			</thead>
 						<tbody>
 							<tr ng-repeat="node in displayedCollection track by node.id">

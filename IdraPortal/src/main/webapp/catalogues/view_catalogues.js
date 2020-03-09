@@ -28,12 +28,12 @@ angular.module("IdraPlatform").controller('ViewCataloguesController',["$scope","
 	$scope.displayedCollection=[];
 	$scope.nodesLeft=[];
 	$scope.nodesRight=[];
-	$scope.nodeNames=[];
+//	$scope.nodeNames=[];
 	$scope.nodesForResult=[];
-	$rootScope.startSpin();
+	//$rootScope.startSpin();
 	
 	$rootScope.nodeForResults = angular.copy($scope.nodesForResult);
-	$rootScope.stopSpin();
+	//$rootScope.stopSpin();
 	
 	$scope.categories = [{text:'Municipality',value:'Municipality'},{text:'Province',value:'Province'},{text:'Private Institution',value:'Private Institution'},{text:'Public Body',value:'Public Body'},{text:'Region',value:'Region'}];
 	
@@ -73,47 +73,14 @@ angular.module("IdraPlatform").controller('ViewCataloguesController',["$scope","
 	 * */
 	$scope.rows=10;
 	$scope.offset=0;
+	$scope.totalItems = 0;
+	$scope.currentPage = 1;
 	$scope.orderBy="name";
 	$scope.orderType="asc";
 	$scope.name="";
 	$scope.country="";
 	$scope.nodeCountries=[]
 	$rootScope.startSpin();
-	ODMSNodesAPI.clientCataloguesAPI(true,$scope.rows,$scope.offset,$scope.orderBy,$scope.orderType,$scope.name,$scope.country).then(function(value){
-		var count=0;
-		for(i=0; i<value.data.catalogues.length; i++){
-			var node=value.data.catalogues[i];
-			$scope.nodesForResult.push({id: node.id, name: node.name, federationLevel:node.federationLevel});
-			$scope.nodeNames.push(node.name);
-				
-			node.descriptionIsCollapsible=false;
-			if(node.description.length>250){
-				spaceIndex = node.description.substring(247,node.description.length).indexOf(' ');
-				node.tmpDesc=node.description.substring(0,spaceIndex+247);
-				node.descriptionIsCollapsible=true;
-				node.descCollapse=true;
-			}
-				
-			if(count%2==0){
-				$scope.nodesLeft.push(node);
-			}else{
-				$scope.nodesRight.push(node);
-			}
-			$scope.nodes.push(node);
-			count++;
-		}
-		
-		$scope.nodes.forEach(n=>{
-			if($scope.nodeCountries.indexOf(n.country)<0 && n.country!='')
-				$scope.nodeCountries.push(n.country);
-		});
-		
-		$scope.displayedCollection = [].concat($scope.nodes);
-		$rootScope.nodeForResults = angular.copy($scope.nodesForResult);
-		$rootScope.stopSpin();
-	}, function(){
-
-	});	
 	
 	var defaultSearchRequestData = {
 			method: 'POST',
@@ -166,5 +133,74 @@ angular.module("IdraPlatform").controller('ViewCataloguesController',["$scope","
 		});
 	};
 
+	$scope.$watch('currentPage', function(newPage){
+		
+		$scope.nodesLeft=[];
+		$scope.nodesRight=[];
+		$scope.nodes=[];
+		$rootScope.startSpin();
+		ODMSNodesAPI.clientCataloguesAPI(true,$scope.rows,$scope.offset+$scope.rows*(newPage-1),$scope.orderBy,$scope.orderType,$scope.name,$scope.country).then(function(value){
+			var count=0;
+			$scope.totalItems = value.data.count; 
+			for(i=0; i<value.data.catalogues.length; i++){
+				var node=value.data.catalogues[i];
+				
+				if($scope.nodesForResult.filter(x=> x.id == node.id).length == 0){
+					$scope.nodesForResult.push({id: node.id, name: node.name, federationLevel:node.federationLevel});
+				}
+//				$scope.nodeNames.push(node.name);
+					
+				node.descriptionIsCollapsible=false;
+				if(node.description.length>250){
+					spaceIndex = node.description.substring(247,node.description.length).indexOf(' ');
+					node.tmpDesc=node.description.substring(0,spaceIndex+247);
+					node.descriptionIsCollapsible=true;
+					node.descCollapse=true;
+				}
+					
+				if(count%2==0){
+					$scope.nodesLeft.push(node);
+				}else{
+					$scope.nodesRight.push(node);
+				}
+				$scope.nodes.push(node);
+				count++;
+			}
+			
+			$scope.nodes.forEach(n=>{
+				if($scope.nodeCountries.indexOf(n.country)<0 && n.country!='')
+					$scope.nodeCountries.push(n.country);
+			});
+			
+			$scope.displayedCollection = [].concat($scope.nodes);
+			$rootScope.nodeForResults = angular.copy($scope.nodesForResult);
+			$rootScope.stopSpin();
+		}, function(){
+
+		});	
+//		if(newPage == 1 && $rootScope.foundDatasets!=undefined && firstTime){
+//			$scope.watchPage = newPage;
+//			$rootScope.datasets = $rootScope.foundDatasets.results;
+//			displayResults();
+//			firstTime=false;
+//			return;
+//		}
+//			
+//		$rootScope.currentPageGlobal = newPage;
+//		$rootScope.reqDataset.url = config.CLIENT_SERVICES_BASE_URL+config.SEARCH_SERVICE;
+//		$rootScope.reqDataset.data.start = ((newPage-1)*$scope.rows).toString();
+//		
+//		$rootScope.startSpin();
+//		$http($rootScope.reqDataset).then(function(value){
+//			$rootScope.foundDatasets=value.data;
+//			$rootScope.datasets=value.data.results;
+//			$scope.watchPage = newPage;
+//			displayResults();
+//			$rootScope.stopSpin();
+//		},function(value){
+//
+//		});
+////		$scope.gotoTop();
+	});
 
 }]);
