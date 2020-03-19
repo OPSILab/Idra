@@ -17,7 +17,6 @@
  ******************************************************************************/
 angular.module("IdraPlatform").controller('DatasetDetailCtrl',['$scope','$rootScope','$http','config','$anchorScroll','$location','$modal','$sce','$window','dataletsAPI','dialogs','$routeParams','Papa','$translate',function($scope,$rootScope,$http,config,$anchorScroll,$location,$modal,$sce,$window,dataletsAPI,dialogs,$routeParams,Papa,$translate){
 	
-	console.log($routeParams.id);	
 	var checkDistributionFormat = function(distribution){
 		
 		
@@ -135,7 +134,6 @@ angular.module("IdraPlatform").controller('DatasetDetailCtrl',['$scope','$rootSc
 		}
 	};
 	
-	//if($rootScope.datasetDetail==undefined || $rootScope.datasetDetail.seoIdentifier != $routeParams.id){
 	if($rootScope.datasetDetail==undefined || $rootScope.datasetDetail.id != $routeParams.id){
 		var req = {
 			method: 'GET',
@@ -146,7 +144,6 @@ angular.module("IdraPlatform").controller('DatasetDetailCtrl',['$scope','$rootSc
 		};
 		$rootScope.startSpin();
 		$http(req).then(function(value){
-			console.log(value);
 			$rootScope.datasetDetail = value.data;
 			$scope.dataset = value.data;
 			manageLicense();
