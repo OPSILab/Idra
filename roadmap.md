@@ -18,14 +18,11 @@ any time.
 ## Short term
 
 The following list of features are planned to be addressed in the short term,
-<<<<<<< HEAD
-and incorporated in the next release of the product planned for **June 2019**:
-=======
-and incorporated in the next release of the product planned for **July 2019**:
->>>>>>> branch 'master' of https://github.com/OPSILab/Idra.git
+and incorporated in the next release of the product planned for **April 2020**:
 
-- DCAT-AP metadata will be accessible also through Idra SPARQL endpoint
-- Upgrade of Solr component and decouple from the Idra core
+- DCAT-AP metadata will be accessible through Idra SPARQL endpoint
+- Support for NGSI-LD based dataset
+- Support for new datalet (deep2 component project)
 
 ## Medium term
 
@@ -34,10 +31,10 @@ typically within the subsequent release(s) generated in the next **9 months**
 after next planned release:
 - Subscription and notification for dataset updates through Orion Context Broker
 - Support for DCAT-AP representation using NGSI-LD
+- Upgrade of Solr component and decouple from the Idra core
 - Automatic evaluation of a dataset quality index
 - Integration with Wirecloud for visualisation of dataset distributions
-- Improvement of overall Idra performance 
-
+- Integration with Knowage suite
 
 ## Long term
 
@@ -46,8 +43,6 @@ of the product even though development of these features has not yet been
 scheduled for a release in the near future. Please feel free to contact us if
 you wish to get involved in the implementation or influence the roadmap.
 
-- Personal Area for custom search and dataset analysis 
+- Support of the IDS Open Data Ecosystem architecture 
 - Support for geographical data:  INSPIRE, GEODCAT, GEOSPARQL
 - Plugin manager for open data connectors, and third party visualisation apps
-
-
