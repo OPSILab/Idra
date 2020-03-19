@@ -52,7 +52,8 @@ Catalogue entry for
 -   [Usage](#usage)
 -   [API](#api)
 -   [Idra Sandbox](#idra-sandbox)
--   [Support / Contact / Contribution](#support)
+-   [Contribution](#contribution)
+-   [Support / Contact](#support)
 -   [License](#license)
 
 ## Install
@@ -79,9 +80,13 @@ following link:
 
 -   [`https://idra-sandbox.eng.it`](https://idra-sandbox.eng.it)
 
+## Contribution
+
+Before start to contribute, please read and sign the [Contributor License Agreement](https://www.clahub.com/agreements/OPSILab/Idra).
+
 <a name="support"></a>
 
-## Support / Contact / Contribution
+## Support / Contact
 
 Any feedback on this documentation is highly welcome, including bugs, typos and
 suggestions. You can use GitHub [issues](https://github.com/OPSILab/Idra/issues)
