@@ -34,7 +34,9 @@ import it.eng.idra.beans.dcat.DCATAPFormat;
 import it.eng.idra.beans.dcat.DCATAPProfile;
 import it.eng.idra.beans.dcat.DCATAPWriteType;
 import it.eng.idra.beans.exception.DatasetNotFoundException;
+import it.eng.idra.beans.odms.ODMSCatalogue;
 import it.eng.idra.beans.search.SearchResult;
+import it.eng.idra.cache.LODCacheManager;
 import it.eng.idra.cache.MetadataCacheManager;
 import it.eng.idra.utils.PropertyManager;
 
@@ -108,5 +110,12 @@ public class DCATAPDumpManager {
 
 		}
 
+	}
+	
+	public static void sendDumpToRepository(ODMSCatalogue node) throws Exception{
+		byte[] file = Files.readAllBytes(Paths.get(globalDumpFilePath + globalDumpFileName + "_node_" + node.getId()));
+		//Context of the RDF equals the catalogue's host
+		LODCacheManager.deleteRDF(node.getHost());
+		LODCacheManager.addCatalogueDump(node,file);
 	}
 }

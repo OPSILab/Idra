@@ -19,6 +19,7 @@ package it.eng.idra.cache;
 
 import it.eng.idra.beans.IdraProperty;
 import it.eng.idra.beans.RdfPrefix;
+import it.eng.idra.beans.odms.ODMSCatalogue;
 import it.eng.idra.beans.search.SparqlResultFormat;
 import it.eng.idra.management.FederationCore;
 import it.eng.idra.management.RdfPrefixManager;
@@ -185,6 +186,33 @@ public class LODCacheManager {
 		return rdfAdded;
 	}
 
+	/**
+	 * Public method to add a Catalogue's dump file into RDF4J repository.
+	 * 
+	 * @param node the Catalogue
+	 * @param file the byte representation of its dump
+	 */
+	public static void addCatalogueDump(ODMSCatalogue node,byte[] file) {
+		RepositoryConnection repoConnection = getRepository().getConnection();
+		try {
+			InputStream rdfStream = new ByteArrayInputStream(file);
+			InputStream rdfStream1 = new ByteArrayInputStream(file);
+			
+			ValueFactory f = repoConnection.getValueFactory();
+			IRI context = f.createIRI(node.getHost());
+			repoConnection.add(rdfStream, node.getHost(), RDFFormat.RDFXML, context);
+
+			getPrefixes(rdfStream1);
+			logger.info("RDF file: " + node.getHost() + " loading completed successfully!");
+			
+		}catch(Exception e) {
+			e.printStackTrace();
+		}finally {
+			repoConnection.close();
+		}
+	}
+	
+	
 	/**
 	 * Public method to add a list of new RDF datasets into RDF4J repository.
 	 * 
