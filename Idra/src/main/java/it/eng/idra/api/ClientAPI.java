@@ -1087,8 +1087,8 @@ public class ClientAPI {
 				
 				OrionCatalogueConfiguration catalogueConfig = (OrionCatalogueConfiguration) catalogue.getAdditionalConfig();
 				OrionDistributionConfig distributionConfig = MetadataCacheManager.getOrionDistributionConfig(queryID);
-				
-				String compiledUri=catalogue.getHost()+"?"+distributionConfig.getQuery();
+								
+				String compiledUri=(!catalogue.getHost().endsWith("/")?catalogue.getHost():catalogue.getHost().substring(0, catalogue.getHost().length()-1))+(!catalogueConfig.isNgsild()?"/v2/entities":"/ngsi-ld/v1/entities")+"?"+distributionConfig.getQuery();
 				
 				client = ClientBuilder.newClient();
 

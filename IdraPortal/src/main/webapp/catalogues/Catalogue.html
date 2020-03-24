@@ -152,6 +152,12 @@
 						<input type="text" name="apikey" class="form-control" ng-model="node.APIKey" />
 					</div> 
 				</div>
+				<div class="col-md-12 form-group" ng-if="node.nodeType=='ORION'">
+				<div class="col-md-4" style="padding-left: 0px;">
+							<md-checkbox ng-model="node.additionalConfig.ngsild"> 
+							<label	class="control-label">NGSI-LD API</label></md-checkbox>
+						</div>
+				</div>
  				<div class="col-md-12 form-group" ng-if="node.nodeType=='ORION'">
 					<div class="col-md-3" style="padding-left: 0px;">
 							<md-checkbox ng-model="node.additionalConfig.isAuthenticated"> 

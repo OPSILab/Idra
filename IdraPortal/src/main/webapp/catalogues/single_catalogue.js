@@ -254,6 +254,7 @@ angular.module("IdraPlatform").controller('CatalogueCtrl',['$scope','$http','con
 		$scope.$watch('node.nodeType',function(newVal,old){
 			if(newVal.toLowerCase()=='orion'){
 				$scope.node.additionalConfig={
+					ngsild:false,
 					isAuthenticated:false,
 					authToken:"",
 					refreshToken:"",
@@ -470,6 +471,7 @@ angular.module("IdraPlatform").controller('CatalogueCtrl',['$scope','$http','con
 			if(node1.additionalConfig.clientID!=node2.additionalConfig.clientID) return false;
 			if(node1.additionalConfig.clientSecret!=node2.additionalConfig.clientSecret) return false;
 			if(node1.additionalConfig.oauth2Endpoint!=node2.additionalConfig.oauth2Endpoint) return false;
+			if(node1.additionalConfig.ngsild!=node2.additionalConfig.ngsild) return false;
 		}
 		else return true;		
 	}
