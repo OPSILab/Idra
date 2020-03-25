@@ -420,7 +420,7 @@ public class FederationCore {
 					DCATAPDumpManager.sendDumpToRepository(node);
 					
 				} catch (Exception e1) {
-					e1.printStackTrace();
+					//e1.printStackTrace();
 					logger.error(
 							"Error: " + e1.getMessage() + " in creation of the dump file for node " + node.getId());
 				}
@@ -541,7 +541,11 @@ public class FederationCore {
 		// Persistence and SOLR Cache
 		if (node.isCacheable()) {
 			MetadataCacheManager.deleteAllDatasetsByODMSCatalogue(node);
-			LODCacheManager.deleteRDF(node.getHost());
+			try {
+				LODCacheManager.deleteRDF(node.getHost());
+			}catch(Exception e) {
+				logger.error("Error while deleting catalogue's "+ node.getName() +"rdf");
+			}
 		}
 
 		ODMSManager.deleteAllODMSMessage(node.getId());
@@ -709,7 +713,11 @@ public class FederationCore {
 			
 			if (node.isCacheable()) {
 				MetadataCacheManager.deleteAllDatasetsByODMSCatalogue(node);
-				LODCacheManager.deleteRDF(node.getHost());
+				try {
+					LODCacheManager.deleteRDF(node.getHost());
+				}catch(Exception e) {
+					logger.error("Error while deleting catalogue's "+ node.getName() +"rdf");
+				}
 			}
 
 			ODMSManager.deleteAllODMSMessage(node.getId());
