@@ -147,9 +147,16 @@
 								ng-click="synchroNode(node)"
 								a-disabled="node.synchLock!='NONE' || node.federationLevel=='LEVEL_0' || node.federationLevel=='LEVEL_1' || node.federationLevel=='LEVEL_4' || node.isActive==false "><i
 								class="mdi-action-autorenew"></i> <md-tooltip>
-								{{'synchronize' | translate}}</md-tooltip></a> <a href="javascript:void(0)" class="btn-flat "
-								ng-click="updateNode(node)" a-disabled="node.synchLock!='NONE'"><i
+								{{'synchronize' | translate}}</md-tooltip></a> 
+								
+<!-- 								<a href="javascript:void(0)" class="btn-flat " -->
+<!-- 								ng-click="updateNode(node)" a-disabled="node.synchLock!='NONE'"><i -->
+<!-- 								class="mdi-content-create"></i> <md-tooltip> {{'edit' | translate}}</md-tooltip></a> -->
+								
+								<a ng-href="#/catalogue/{{node.id}}" class="btn-flat "
+								a-disabled="node.synchLock!='NONE'"><i
 								class="mdi-content-create"></i> <md-tooltip> {{'edit' | translate}}</md-tooltip></a>
+								
 							<a href="javascript:void(0)" class="btn-flat "
 								ng-click="deleteNode(node)" a-disabled="node.synchLock!='NONE'"><i
 								class="mdi-content-clear"></i> <md-tooltip> {{'delete' | translate}}</md-tooltip></a>

@@ -220,6 +220,15 @@
 				}
 			}
 		}).
+		when('/catalogue/:id',{
+			templateUrl:'catalogues/Catalogue.html',
+			controller: 'CatalogueCtrl',
+			resolve:{
+				checkLogin: function( $rootScope,$http,config,$cookies,$window ) {
+					return checkLogin($rootScope,$http,config,$cookies,$window);
+				}
+			}
+		}).
 		when('/dataletsManagement',{
 			templateUrl:'datalets/DataletAdmin.html',
 			controller:'DataletAdminCtrl',

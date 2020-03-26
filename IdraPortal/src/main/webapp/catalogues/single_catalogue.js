@@ -15,12 +15,67 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-angular.module("IdraPlatform").controller('CatalogueCtrl',['$scope','$http','config','$rootScope','dialogs','$timeout','$modal','$window','ODMSNodesAPI','$translate',function($scope,$http,config,$rootScope,dialogs,$timeout,$modal,$window,ODMSNodesAPI,$translate){
+angular.module("IdraPlatform").controller('CatalogueCtrl',['$scope','$http','config','$rootScope','dialogs','$timeout','$modal','$window','ODMSNodesAPI','$translate','$routeParams',function($scope,$http,config,$rootScope,dialogs,$timeout,$modal,$window,ODMSNodesAPI,$translate,$routeParams){
 
-	if($rootScope.mode == undefined || ($rootScope.mode!="create" && $rootScope.nodeToUpdate == undefined)){
+	if($rootScope.mode!="create" && ($routeParams.id==null || $routeParams.id==undefined)){
 		$window.location.assign('#/catalogues');
 		return;
 	}
+	
+	/**/
+	if($routeParams.id!=null){
+		
+		var getODMSNodeReq = {
+				method: 'GET',
+				url: config.ADMIN_SERVICES_BASE_URL+config.NODES_SERVICE+"/"+$routeParams.id.toString() + "?withImage=true",
+				headers: {
+					'Authorization': "Bearer "+$rootScope.token
+				}
+		};
+		$rootScope.startSpin();
+		$http(getODMSNodeReq).then(function(value){
+			
+			$rootScope.nodeToUpdate = value.data;
+			$rootScope.mode = "update";
+			
+			$scope.node = angular.copy($rootScope.nodeToUpdate);
+			//$scope.pageTitle='Update Catalogue: '+$scope.node.name;
+			$scope.node.nameInvalid=false;
+			$scope.node.pubNameInvalid=false;
+			$scope.node.hostInvalid=false;
+			$scope.node.refreshPeriod = $rootScope.nodeToUpdate.refreshPeriod.toString();
+			if($rootScope.nodeToUpdate.nodeType=='DCATDUMP')
+				$scope.node.dcatProfile = $rootScope.nodeToUpdate.dcatProfile.toString();
+			else
+				$scope.node.dcatProfile='';
+			
+			if($rootScope.names==undefined || $rootScope.urls==undefined){
+				$rootScope.names=[];
+				$rootScope.urls=[];
+				
+				var req = {
+						method: 'GET',
+						url: config.ADMIN_SERVICES_BASE_URL+config.NODES_SERVICE + "?withImage=false",
+						headers: {
+							'Content-Type': 'application/json',
+							'Authorization': "Bearer " +$rootScope.token
+						}};
+				
+				$http(req).then(function(value){
+					$rootScope.names = value.data.map(a=>a.name.toLowerCase());
+					$rootScope.urls = value.data.map(a=>a.host.toLowerCase());
+				},function(){
+					
+				});
+			}
+			
+			$rootScope.stopSpin();
+		},function(){
+			console.log("ERRORE")
+			$window.location.assign('#/catalogues');
+		});
+	}
+	/**/
 	
 	$scope.pageTitle="";
 	$scope.catalogueUpdated="";
@@ -121,11 +176,7 @@ angular.module("IdraPlatform").controller('CatalogueCtrl',['$scope','$http','con
     });
 	
 	getTranlsatedValue();
-	
-	
-	
-	
-	
+		
 	$scope.types=config.NODE_TYPES.split(',');
 	$scope.grades=config.FEDERATION_LEVEL.split(',');
 	$scope.updatePeriods=[{text:'-',value:'0'},{text:'1 hour',value:'3600'},{text:'1 day',value:'86400'},{text:'1 week',value:'604800'}];
@@ -331,18 +382,6 @@ angular.module("IdraPlatform").controller('CatalogueCtrl',['$scope','$http','con
 			}
 		});
 			
-	}else{
-		
-		$scope.node = angular.copy($rootScope.nodeToUpdate);
-		//$scope.pageTitle='Update Catalogue: '+$scope.node.name;
-		$scope.node.nameInvalid=false;
-		$scope.node.pubNameInvalid=false;
-		$scope.node.hostInvalid=false;
-		$scope.node.refreshPeriod = $rootScope.nodeToUpdate.refreshPeriod.toString();
-		if($rootScope.nodeToUpdate.nodeType=='DCATDUMP')
-			$scope.node.dcatProfile = $rootScope.nodeToUpdate.dcatProfile.toString();
-		else
-			$scope.node.dcatProfile='';
 	}
 	
 	$scope.resetNode= function(){
@@ -444,36 +483,38 @@ angular.module("IdraPlatform").controller('CatalogueCtrl',['$scope','$http','con
 
 
 	$scope.isEqual = function(node1, node2){
-		if(node1.federationLevel != node2.federationLevel) return false;
-		else if(node1.name != node2.name) return false;
-		else if(node1.nodeType != node2.nodeType) return false;
-		else if(node1.host != node2.host) return false;
-		else if(node1.description != node2.description) return false;
-		else if(node1.refreshPeriod != node2.refreshPeriod) return false;
-		else if($scope.imageRead!='') return false;
-		else if(node1.location != node2.location) return false;
-		else if(node1.homepage != node2.homepage) return false;
-		else if(node1.publisherName != node2.publisherName) return false;
-		else if(node1.locationDescription != node2.locationDescription) return false;
-		else if(node1.category != node2.category) return false;
-		else if(node1.country != node2.country) return false;
-		else if( (node1.nodeType == node2.nodeType && node1.nodeType == "DCATDUMP") && node1.dumpURL != node2.dumpURL) return false;
-		else if( (node1.nodeType == node2.nodeType && node1.nodeType == "DCATDUMP") && node1.dcatProfile != node2.dcatProfile) return false;
-		else if( (node1.nodeType == node2.nodeType && node1.nodeType == "DCATDUMP") && node1.dumpString != node2.dumpString) return false;
-		else if( (node1.nodeType == node2.nodeType && node1.nodeType == "WEB") && node1.sitemap != node2.sitemap) return false;
-		else if( (node1.nodeType == node2.nodeType && node1.nodeType == "SPARQL") && node1.additionalConfig.sparqlDatasetDumpString != node2.additionalConfig.sparqlDatasetDumpString) return false;
-		else if(node1.nodeType == node2.nodeType && node1.nodeType == "ORION"){
-			if(node1.additionalConfig.orionDatasetDumpString!=node2.additionalConfig.orionDatasetDumpString) return false;
-			if(node1.additionalConfig.isAuthenticated!=node2.additionalConfig.isAuthenticated) return false;
-			if(node1.additionalConfig.authToken!=node2.additionalConfig.authToken) return false;
-			if(node1.additionalConfig.refreshToken!=node2.additionalConfig.refreshToken) return false;
-			if(node1.additionalConfig.refreshToken!=node2.additionalConfig.refreshToken) return false;
-			if(node1.additionalConfig.clientID!=node2.additionalConfig.clientID) return false;
-			if(node1.additionalConfig.clientSecret!=node2.additionalConfig.clientSecret) return false;
-			if(node1.additionalConfig.oauth2Endpoint!=node2.additionalConfig.oauth2Endpoint) return false;
-			if(node1.additionalConfig.ngsild!=node2.additionalConfig.ngsild) return false;
-		}
-		else return true;		
+		if(node1!=undefined && node2!=undefined){
+			if(node1.federationLevel != node2.federationLevel) return false;
+			else if(node1.name != node2.name) return false;
+			else if(node1.nodeType != node2.nodeType) return false;
+			else if(node1.host != node2.host) return false;
+			else if(node1.description != node2.description) return false;
+			else if(node1.refreshPeriod != node2.refreshPeriod) return false;
+			else if($scope.imageRead!='') return false;
+			else if(node1.location != node2.location) return false;
+			else if(node1.homepage != node2.homepage) return false;
+			else if(node1.publisherName != node2.publisherName) return false;
+			else if(node1.locationDescription != node2.locationDescription) return false;
+			else if(node1.category != node2.category) return false;
+			else if(node1.country != node2.country) return false;
+			else if( (node1.nodeType == node2.nodeType && node1.nodeType == "DCATDUMP") && node1.dumpURL != node2.dumpURL) return false;
+			else if( (node1.nodeType == node2.nodeType && node1.nodeType == "DCATDUMP") && node1.dcatProfile != node2.dcatProfile) return false;
+			else if( (node1.nodeType == node2.nodeType && node1.nodeType == "DCATDUMP") && node1.dumpString != node2.dumpString) return false;
+			else if( (node1.nodeType == node2.nodeType && node1.nodeType == "WEB") && node1.sitemap != node2.sitemap) return false;
+			else if( (node1.nodeType == node2.nodeType && node1.nodeType == "SPARQL") && node1.additionalConfig.sparqlDatasetDumpString != node2.additionalConfig.sparqlDatasetDumpString) return false;
+			else if(node1.nodeType == node2.nodeType && node1.nodeType == "ORION"){
+				if(node1.additionalConfig.orionDatasetDumpString!=node2.additionalConfig.orionDatasetDumpString) return false;
+				if(node1.additionalConfig.isAuthenticated!=node2.additionalConfig.isAuthenticated) return false;
+				if(node1.additionalConfig.authToken!=node2.additionalConfig.authToken) return false;
+				if(node1.additionalConfig.refreshToken!=node2.additionalConfig.refreshToken) return false;
+				if(node1.additionalConfig.refreshToken!=node2.additionalConfig.refreshToken) return false;
+				if(node1.additionalConfig.clientID!=node2.additionalConfig.clientID) return false;
+				if(node1.additionalConfig.clientSecret!=node2.additionalConfig.clientSecret) return false;
+				if(node1.additionalConfig.oauth2Endpoint!=node2.additionalConfig.oauth2Endpoint) return false;
+				if(node1.additionalConfig.ngsild!=node2.additionalConfig.ngsild) return false;
+			}
+			else return true;		
+			}
 	}
 	
 	function isEqualField(f1,f2){
@@ -517,9 +558,10 @@ angular.module("IdraPlatform").controller('CatalogueCtrl',['$scope','$http','con
 				return true;
 			}
 		}else if($rootScope.mode=='update'){
-			if($rootScope.names.indexOf($scope.node.name.toLowerCase())>=0 && $scope.node.name!=$rootScope.nodeToUpdate.name ){
-				return true;
-			}
+			if($scope.node != undefined && $rootScope.names!=undefined)
+				if($rootScope.names.indexOf($scope.node.name.toLowerCase())>=0 && $scope.node.name!=$rootScope.nodeToUpdate.name ){
+					return true;
+				}
 		}
 		return false;
 	}

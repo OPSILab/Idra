@@ -97,6 +97,9 @@ angular.module("IdraPlatform").controller('CataloguesController',["$scope","$htt
 		$rootScope.urls=[];
 		
 		var updatedNodes=[];
+		if(isFirst){
+			$rootScope.startSpin();
+		}
 		$http(req).then(function(value){
 
 			$scope.nodes=value.data;
@@ -116,6 +119,7 @@ angular.module("IdraPlatform").controller('CataloguesController',["$scope","$htt
 						$scope.nodeCountries.push(n.country);
 				});
 				isFirst=false;
+				$rootScope.stopSpin();
 			}else{
 				var toRemove = [];
 				safeSrcNodesID = $scope.nodesSafeSrc.map(a=> a.id);

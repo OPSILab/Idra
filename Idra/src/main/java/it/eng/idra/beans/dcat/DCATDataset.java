@@ -17,6 +17,7 @@
  ******************************************************************************/
 package it.eng.idra.beans.dcat;
 
+import it.eng.idra.beans.odms.ODMSCatalogueNotFoundException;
 import it.eng.idra.cache.CacheContentType;
 import it.eng.idra.management.FederationCore;
 import it.eng.idra.utils.CommonUtil;
@@ -79,6 +80,7 @@ public class DCATDataset implements Serializable {
 	// Custom fields
 	private String id;
 	private String nodeID;
+	private String nodeName;
 	private boolean hasStoredRDF = false;
 	private transient static final Resource RDFClass = DCAT.Dataset;
 
@@ -145,7 +147,14 @@ public class DCATDataset implements Serializable {
 		super();
 		setId(CommonUtil.extractSeoIdentifier(title, UUID.randomUUID().toString(), nodeID));
 		setNodeID(nodeID);
-
+		
+		try {
+			setNodeName(FederationCore.getODMSCatalogue(Integer.parseInt(nodeID)).getName());
+		} catch (NumberFormatException | ODMSCatalogueNotFoundException e) {
+			e.printStackTrace();
+			setNodeName("");
+		} 
+		
 		setIdentifier(new DCATProperty(DCTerms.identifier, RDFS.Literal, identifier));
 
 		setDistributions(distributions);
@@ -368,6 +377,15 @@ public class DCATDataset implements Serializable {
 		this.nodeID = nodeID;
 	}
 
+	@Transient
+	public String getNodeName() {
+		return nodeName;
+	}
+	
+	public void setNodeName(String nodeName) {
+		this.nodeName = nodeName;
+	}
+	
 	@Transient
 	public static Resource getRDFClass() {
 		return RDFClass;
