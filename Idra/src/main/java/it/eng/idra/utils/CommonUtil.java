@@ -238,6 +238,7 @@ public class CommonUtil {
 		Pattern pattern4 = Pattern.compile("([0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}\\+[0-9]{2}:[0-9]{2})$");
 		Pattern pattern5 = Pattern.compile("([0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}.[0-9]{3}Z)$");
 		Pattern pattern6 = Pattern.compile("([0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2})(.[0-9]*)?$");
+		Pattern pattern7 = Pattern.compile("([0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2})(.*)?$");
 		
 		if(pattern1.matcher(date).find())
 			return date.substring(0, date.length() - 7) + "Z";
@@ -257,6 +258,11 @@ public class CommonUtil {
 		Matcher m6 = pattern6.matcher(date);
 		if(m6.find()) {
 			return m6.group(1)+"Z";
+		}
+		
+		Matcher m7 = pattern7.matcher(date);
+		if(m7.find()) {
+			return m7.group(1)+"Z";
 		}
 		
 		return date;
