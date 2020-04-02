@@ -22,7 +22,7 @@ by third party applications.
 Idra supports natively ODMS based on [CKAN](https://ckan.org/),
 [DKAN](https://getdkan.org/), [Socrata](https://socrata.com/), Orion Context
 Broker
-([NGSI v2](https://swagger.lab.fiware.org/?url=https://raw.githubusercontent.com/Fiware/specifications/master/OpenAPI/ngsiv2/ngsiv2-openapi.json))
+([NGSI v2](https://swagger.lab.fiware.org/?url=https://raw.githubusercontent.com/Fiware/specifications/master/OpenAPI/ngsiv2/ngsiv2-openapi.json), [NGSI-LD](https://www.etsi.org/deliver/etsi_gs/CIM/001_099/009/01.01.01_60/gs_CIM009v010101p.pdf))
 and many other technologies: Idra provides also a set of APIs to federate ODMS
 not natively supported. In addition, it is possible to federate generic open
 data portals, that don't expose API, using the web scraping functionality or
