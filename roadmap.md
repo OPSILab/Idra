@@ -18,11 +18,10 @@ any time.
 ## Short term
 
 The following list of features are planned to be addressed in the short term,
-and incorporated in the next release of the product planned for **April 2020**:
+and incorporated in the next release of the product planned for **June 2020**:
 
-- DCAT-AP metadata will be accessible through Idra SPARQL endpoint
-- Support for NGSI-LD based dataset
-- Support for new datalet (deep2 component project)
+- Upgrade of Solr component and decouple from the Idra core
+- Redesign of open data license management
 
 ## Medium term
 
@@ -31,7 +30,6 @@ typically within the subsequent release(s) generated in the next **9 months**
 after next planned release:
 - Subscription and notification for dataset updates through Orion Context Broker
 - Support for DCAT-AP representation using NGSI-LD
-- Upgrade of Solr component and decouple from the Idra core
 - Automatic evaluation of a dataset quality index
 - Integration with Wirecloud for visualisation of dataset distributions
 - Integration with Knowage suite
