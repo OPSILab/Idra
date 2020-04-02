@@ -34,7 +34,7 @@ queries on 5 stars RDF
 [linked open data](https://dvcs.w3.org/hg/gld/raw-file/default/glossary/index.html)
 collected from federated ODMS and allows to easily create charts based on
 federated open datasets (through DatalEt-Ecosystem Provider
-[DEEP](https://github.com/routetopa/deep-components) )
+[DEEP](https://github.com/routetopa/deep2-components) )
 
 Idra is an open source software developed by
 [Engineering Ingegneria Informatica SpA](http://www.eng.it) inside the EU
