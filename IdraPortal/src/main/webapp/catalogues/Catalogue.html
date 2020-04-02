@@ -154,8 +154,12 @@
 				</div>
 				<div class="col-md-12 form-group" ng-if="node.nodeType=='ORION'">
 				<div class="col-md-4" style="padding-left: 0px;">
-							<md-checkbox ng-model="node.additionalConfig.ngsild"> 
-							<label	class="control-label">NGSI-LD API</label></md-checkbox>
+						<label for="additionalConfig.ngsild">API:</label> <select
+						class="form-control" 
+						ng-model="node.additionalConfig.ngsild"
+						ng-options="option.value as option.text for option in NgsiAPI"
+						>
+					</select>
 						</div>
 				</div>
  				<div class="col-md-12 form-group" ng-if="node.nodeType=='ORION'">

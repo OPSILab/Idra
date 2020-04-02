@@ -184,7 +184,7 @@ angular.module("IdraPlatform").controller('CatalogueCtrl',['$scope','$http','con
 	$scope.dcatProfiles = [{text:'DCATAP',value:'DCATAP'},{text:'DCATAP_IT',value:'DCATAP_IT'}];
 	$scope.ODMSCategories = [{text:'Municipality',value:'Municipality'},{text:'Province',value:'Province'},{text:'Private Institution',value:'Private Institution'},{text:'Public Body',value:'Public Body'},{text:'Region',value:'Region'}];
 	$scope.activeMode = [{text:'Yes',value:true},{text:'No',value:false}];
-	
+	$scope.NgsiAPI = [{text:'NGSIv2',value:false},{text:'NGSI-LD',value:true}];
 	$scope.showMessageUrl = false;
 	$scope.showMessageName = false;
 
