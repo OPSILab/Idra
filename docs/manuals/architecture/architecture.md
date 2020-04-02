@@ -47,7 +47,7 @@ federation through the scraping of its web portal.
 
 The following table shows the technologies currently supported by Idra:
 
-| Connector | Supported version | Description |
+| Connector | Supported API/version | Description |
 | ------ | ------ |------ |
 | CKAN |[API v3](https://docs.ckan.org/en/ckan-2.7.3/api/) | Connector for [CKAN](https://ckan.org/) portals |
 | DCATDUMP | [DCAT_AP v1.1](https://joinup.ec.europa.eu/release/dcat-ap/11) ,  [DCAT-AP_IT v1.0](https://www.dati.gov.it/content/dcat-ap-it-v10-profilo-italiano-dcat-ap-0) | Connector to import metadata via dump file compliant with DCAT-AP or DCAT-AP_IT |
@@ -55,7 +55,7 @@ The following table shows the technologies currently supported by Idra:
 | JUNAR | [API v2.0](https://junar.github.io/docs/en/_sections/01-index.html) | Connector for [Junar](http://www.junar.com/) portals |
 | NATIVE | [API v1.0](https://idraopendata.docs.apiary.io/#reference/federation-api) | Connector for Idra Federation API |
 | OPENDATASOFT | [Search API v2](https://help.opendatasoft.com/apis/ods-search-v2/#search-api-v2) | Connector for [OpenDataSoft](https://www.opendatasoft.com/) portals |
-| ORION | [NGSI v2](https://swagger.lab.fiware.org/?url=https://raw.githubusercontent.com/Fiware/specifications/master/OpenAPI/ngsiv2/ngsiv2-openapi.json) | Connector that allows to create datasets with NGSI query-based distributions |
+| ORION | [NGSIv2](https://swagger.lab.fiware.org/?url=https://raw.githubusercontent.com/Fiware/specifications/master/OpenAPI/ngsiv2/ngsiv2-openapi.json), [NGSI-LD](https://www.etsi.org/deliver/etsi_gs/CIM/001_099/009/01.01.01_60/gs_CIM009v010101p.pdf) | Connector that allows to create datasets with NGSIv2/NGSI-LD query-based distributions |
 | SOCRATA | DCAT Catalog endpoint | Connector for [Socrata](https://socrata.com/) portals |
 | SPARQL | [v1.1](https://www.w3.org/TR/sparql11-query/) | Connector that allows to create datasets with SPAQRL query-based distributions|
 | SPOD | [CKAN API v1&2](https://docs.ckan.org/en/ckan-1.7.4/api-v2.html) | Connector for [Stat Portal Open Data](http://www.statportal.it/open-data) (SPOD)|
