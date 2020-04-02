@@ -28,7 +28,7 @@
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<maven.compiler.target>1.8</maven.compiler.target>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<rdf4j.version>2.2.1</rdf4j.version>
+		<rdf4j.version>2.4.0</rdf4j.version>
 	</properties>
 
 	<repositories>
