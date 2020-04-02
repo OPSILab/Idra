@@ -1,6 +1,6 @@
 /*******************************************************************************
  * Idra - Open Data Federation Platform
- *  Copyright (C) 2018 Engineering Ingegneria Informatica S.p.A.
+ *  Copyright (C) 2020 Engineering Ingegneria Informatica S.p.A.
  *  
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -27,42 +27,34 @@ public class OrionCatalogueConfiguration extends ODMSCatalogueAdditionalConfigur
 	
 	private boolean isAuthenticated;
 	private String authToken;
-	//private String refreshToken;
 	private String oauth2Endpoint;
 	private String clientID;
 	private String clientSecret;
 	private String orionDatasetDumpString;
 	private String orionDatasetFilePath;
+	private boolean ngsild=false;
 	
 	public OrionCatalogueConfiguration() {
 		this.setType("ORION");
 	}
 	
-	public OrionCatalogueConfiguration(boolean isAuthenticated, String authToken,String oauth2Endpoint,String client_id,String client_secret, String datasets) {
+	public OrionCatalogueConfiguration(boolean isAuthenticated, String authToken,String oauth2Endpoint,String client_id,String client_secret, String datasets, boolean ngsild) {
 		super();
 		this.isAuthenticated = isAuthenticated;
 		this.authToken = authToken;
-//		this.refreshToken=refreshToken;
 		this.oauth2Endpoint=oauth2Endpoint;
 		this.clientID=client_id;
 		this.clientSecret=client_secret;
 		this.orionDatasetDumpString = datasets;
+		this.ngsild = ngsild;
 		this.setType("ORION");
 	}
 	
-	public OrionCatalogueConfiguration(boolean isAuthenticated, String authToken,String oauth2Endpoint,String client_id,String client_secret, String datasets,String dumpPath) {
-		this(isAuthenticated, authToken, oauth2Endpoint,client_id,client_secret,datasets);
+	public OrionCatalogueConfiguration(boolean isAuthenticated, String authToken,String oauth2Endpoint,String client_id,String client_secret, String datasets,String dumpPath, boolean ngsild) {
+		this(isAuthenticated, authToken, oauth2Endpoint,client_id,client_secret,datasets,ngsild);
 		this.orionDatasetFilePath=dumpPath;
 	}
-	
-	
-//	public String getId() {
-//		return id;
-//	}
-//	public void setId(String id) {
-//		this.id = id;
-//	}
-	
+		
 	public boolean isAuthenticated() {
 		return isAuthenticated;
 	}
@@ -93,14 +85,6 @@ public class OrionCatalogueConfiguration extends ODMSCatalogueAdditionalConfigur
 		this.orionDatasetFilePath = orionDatasetFilePath;
 	}
 	
-//	public String getRefreshToken() {
-//		return refreshToken;
-//	}
-//
-//	public void setRefreshToken(String refreshToken) {
-//		this.refreshToken = refreshToken;
-//	}
-
 	public String getOauth2Endpoint() {
 		return oauth2Endpoint;
 	}
@@ -124,6 +108,14 @@ public class OrionCatalogueConfiguration extends ODMSCatalogueAdditionalConfigur
 	public void setClientSecret(String client_secret) {
 		this.clientSecret = client_secret;
 	}
+	
+	public boolean isNgsild() {
+		return ngsild;
+	}
+
+	public void setNgsild(boolean ngsild) {
+		this.ngsild = ngsild;
+	}
 
 	@Override
 	public int hashCode() {
@@ -136,7 +128,6 @@ public class OrionCatalogueConfiguration extends ODMSCatalogueAdditionalConfigur
 		result = prime * result + ((oauth2Endpoint == null) ? 0 : oauth2Endpoint.hashCode());
 		result = prime * result + ((orionDatasetDumpString == null) ? 0 : orionDatasetDumpString.hashCode());
 		result = prime * result + ((orionDatasetFilePath == null) ? 0 : orionDatasetFilePath.hashCode());
-		//result = prime * result + ((refreshToken == null) ? 0 : refreshToken.hashCode());
 		return result;
 	}
 
@@ -181,11 +172,6 @@ public class OrionCatalogueConfiguration extends ODMSCatalogueAdditionalConfigur
 				return false;
 		} else if (!orionDatasetFilePath.equals(other.orionDatasetFilePath))
 			return false;
-//		if (refreshToken == null) {
-//			if (other.refreshToken != null)
-//				return false;
-//		} else if (!refreshToken.equals(other.refreshToken))
-//			return false;
 		return true;
 	}
 		

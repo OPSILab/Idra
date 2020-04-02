@@ -1,6 +1,6 @@
 /*******************************************************************************
  * Idra - Open Data Federation Platform
- *  Copyright (C) 2018 Engineering Ingegneria Informatica S.p.A.
+ *  Copyright (C) 2020 Engineering Ingegneria Informatica S.p.A.
  *  
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -22,7 +22,6 @@ angular.module("IdraPlatform").controller('StatisticsCtrl',['$scope','Statistics
 
 	$scope.showBackFormat=false;
 	$scope.showBackLicense=false;
-
 	var maxPieDisplay = 8;
 	
 	//Default 1 settimana
@@ -93,7 +92,6 @@ angular.module("IdraPlatform").controller('StatisticsCtrl',['$scope','Statistics
 			start.setSeconds(0);
 			start.setMilliseconds(0);
 			StatisticsAPI.getGlobalStatistics($scope.selectedCatalogues.join(','),start.toISOString(),end.toISOString()).then(function(response){
-				console.log("DC1")
 				drawCharts(response.data);
 			})
 		}		
@@ -109,6 +107,7 @@ angular.module("IdraPlatform").controller('StatisticsCtrl',['$scope','Statistics
 
 	var formatsAll = {labels:[],pie:[],total:0};
 	var licensesAll = {labels:[],pie:[],total:0};
+	var themesAll = {total:0};
 
 	var drawCharts = function(res){
 		$scope.labels =[];
@@ -116,6 +115,9 @@ angular.module("IdraPlatform").controller('StatisticsCtrl',['$scope','Statistics
 
 		$scope.labelsPolar =[];
 		$scope.dataPolar =[];
+		
+		$scope.labelsThemes =[];
+		$scope.dataThemes =[];
 
 		$scope.labelsAddUpdate=[];
 		$scope.seriesAddUpdate=["New Datasets","Updated Datasets"]; //Non vengono tradotti al momento
@@ -136,7 +138,12 @@ angular.module("IdraPlatform").controller('StatisticsCtrl',['$scope','Statistics
 			$scope.labelsPolar.push(x.type);
 			$scope.dataPolar.push(x.count);
 		});
-		
+				
+		res.facetsStatistics.themesStatistics.sort((a, b) => b.cnt-a.cnt).forEach(x=>{	
+			$scope.labelsThemes.push(x.theme);
+			$scope.dataThemes.push(x.cnt);
+			themesAll.total +=x.cnt;
+		})
 //		res.cataloguesStatistics.technologiesStat.sort((a, b) => (a.type > b.type) - (a.type < b.type)).forEach(x=>{
 //			$scope.labelsPolar.push(x.type);
 //			$scope.dataPolar.push(x.count);
@@ -208,7 +215,7 @@ angular.module("IdraPlatform").controller('StatisticsCtrl',['$scope','Statistics
 			}
 
 		});
-
+		
 		if(licensesAll.labels.length >= maxPieDisplay ){
 			$scope.licenses.labels.push("Others");
 			//$scope.licenses.barChart[0].push(othCnt1);
@@ -289,6 +296,64 @@ angular.module("IdraPlatform").controller('StatisticsCtrl',['$scope','Statistics
 						var currentValue = dataset.data[tooltipItem.index];
 						var percentage = Math.floor(((currentValue/total) * 100)+0.5);         
 						return data.labels[tooltipItem.index] + " ( "+currentValue+" / "+$scope.cataloguesSelect.length+" ) " + percentage + "%" ;
+					}
+				}			    	  
+			}
+	};
+	
+	$scope.optionsThemes = {
+			responsive: true,
+			legend:{
+				display:true,
+				position:"right",
+				labels:{
+					boxWidth:15,
+					generateLabels: function(chart) {
+	                    var data = chart.data;
+	                    if (data.labels.length && data.datasets.length) {
+	                        return data.labels.map(function(label, i) {
+	                            var meta = chart.getDatasetMeta(0);
+	                            var ds = data.datasets[0];
+	                            var arc = meta.data[i];
+	                            var custom = arc && arc.custom || {};
+	                            var getValueAtIndexOrDefault = Chart.helpers.getValueAtIndexOrDefault;
+	                            var arcOpts = chart.options.elements.arc;
+	                            var fill = custom.backgroundColor ? custom.backgroundColor : getValueAtIndexOrDefault(ds.backgroundColor, i, arcOpts.backgroundColor);
+	                            var stroke = custom.borderColor ? custom.borderColor : getValueAtIndexOrDefault(ds.borderColor, i, arcOpts.borderColor);
+	                            var bw = custom.borderWidth ? custom.borderWidth : getValueAtIndexOrDefault(ds.borderWidth, i, arcOpts.borderWidth);
+
+								// We get the value of the current label
+								var value = chart.config.data.datasets[arc._datasetIndex].data[arc._index];
+
+	                            return {
+	                                // Instead of `text: label,`
+	                                // We add the value to the string
+	                                text: ((label.length>12)?label.substring(0,12)+"...":label) + ' '+Math.floor(((value/themesAll.total) * 100)+0.5) +'%',
+	                                fillStyle: fill,
+	                                strokeStyle: stroke,
+	                                lineWidth: bw,
+	                                hidden: isNaN(ds.data[i]) || meta.data[i].hidden,
+	                                index: i
+	                            };
+	                        });
+	                    } else {
+	                        return [];
+	                    }
+	                }
+			}
+			},
+			title:{
+				display:false,
+				text:"Themes"
+			},
+			tooltips: {
+				callbacks: {
+					label: function(tooltipItem, data) {
+						var dataset = data.datasets[tooltipItem.datasetIndex];
+						var total = themesAll.total;
+						var currentValue = dataset.data[tooltipItem.index];
+						var percentage = Math.floor(((currentValue/total) * 100)+0.5);         
+						return data.labels[tooltipItem.index] + " ( "+currentValue+" / "+total+" ) " + percentage + "%" ;
 					}
 				}			    	  
 			}

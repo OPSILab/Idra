@@ -61,6 +61,10 @@ public class PlatformStatisticsManager {
 					
 					resultForFacets.getFacets().stream().
 					filter(x->x.getSearch_parameter().equals("distributionLicenses")).
+					map(x-> x.getValues()).findFirst().get(),
+					
+					resultForFacets.getFacets().stream().
+					filter(x->x.getSearch_parameter().equals("datasetThemes")).
 					map(x-> x.getValues()).findFirst().get()
 					);
 			

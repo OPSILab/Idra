@@ -1,6 +1,6 @@
 <!--
   Idra - Open Data Federation Platform
-   Copyright (C) 2018 Engineering Ingegneria Informatica S.p.A.
+   Copyright (C) 2020 Engineering Ingegneria Informatica S.p.A.
    
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published by
@@ -118,8 +118,10 @@
 				<md-card-title style="padding-top: 5px;padding-bottom: 2px;">
 				<md-card-title-text md-truncate > 
 				<h4 md-truncate class="md-headline" style="margin: 0px 0px 0px 0px; font-size:16px">
-				<a href="javascript:void(0)" ng-click="openDatasetDetails(dataset)" ng-bind-html="dataset.title"></a></h4> 
-				<span class="md-subhead" style="color: #6a6b68; padding-top:0px; font-size: 12px;" ><strong>{{getRealName(dataset.nodeID)}}</strong></span>
+<!-- 				<a href="javascript:void(0)" ng-click="openDatasetDetails(dataset)" ng-bind-html="dataset.title"></a> -->
+				<a ng-href="#/dataset/{{dataset.id}}" ng-bind-html="dataset.title"></a>
+				</h4> 
+				<span class="md-subhead" style="color: #6a6b68; padding-top:0px; font-size: 12px;" ><strong>{{dataset.nodeName}}</strong></span>
 				</md-card-title-text> </md-card-title> 
 				<md-card-content style="padding-bottom:8px">
 					<p md-truncate style="line-height: 1.75em; margin-bottom:0px">
@@ -129,7 +131,8 @@
 <!-- 					<div style="max-height: 10px;"> -->
 					<ul class="list-inline list" style="margin-bottom: 0px;">
                		 <li class="list-inline-item" ng-repeat="format in dataset.distributionFormats">
-                 		 <a href="javascript:void(0)" ng-click="openDatasetDetails(dataset)" class="label" data-format="{{format.format.toLowerCase()}}" style="border-radius: 5px">{{format.format}} ({{format.count}})</a>
+<!--                  		 <a href="javascript:void(0)" ng-click="openDatasetDetails(dataset)" class="label" data-format="{{format.format.toLowerCase()}}" style="border-radius: 5px">{{format.format}} ({{format.count}})</a> -->
+                 		 <a ng-href="#/dataset/{{dataset.id}}" class="label" data-format="{{format.format.toLowerCase()}}" style="border-radius: 5px">{{format.format}} ({{format.count}})</a>
                		 </li>
            		 </ul>
 <!--            		 </div> -->

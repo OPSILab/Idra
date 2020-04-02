@@ -1,6 +1,6 @@
 /*******************************************************************************
  * Idra - Open Data Federation Platform
- *  Copyright (C) 2018 Engineering Ingegneria Informatica S.p.A.
+ *  Copyright (C) 2020 Engineering Ingegneria Informatica S.p.A.
  *  
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -97,6 +97,9 @@ angular.module("IdraPlatform").controller('CataloguesController',["$scope","$htt
 		$rootScope.urls=[];
 		
 		var updatedNodes=[];
+		if(isFirst){
+			$rootScope.startSpin();
+		}
 		$http(req).then(function(value){
 
 			$scope.nodes=value.data;
@@ -116,6 +119,7 @@ angular.module("IdraPlatform").controller('CataloguesController',["$scope","$htt
 						$scope.nodeCountries.push(n.country);
 				});
 				isFirst=false;
+				$rootScope.stopSpin();
 			}else{
 				var toRemove = [];
 				safeSrcNodesID = $scope.nodesSafeSrc.map(a=> a.id);

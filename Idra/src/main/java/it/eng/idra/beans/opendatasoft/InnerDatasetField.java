@@ -1,5 +1,8 @@
 package it.eng.idra.beans.opendatasoft;
 
+import com.google.gson.annotations.JsonAdapter;
+
+@JsonAdapter(InnerDatasetFieldDeserializer.class)
 public class InnerDatasetField {
 
 	private String label;
@@ -8,6 +11,15 @@ public class InnerDatasetField {
 	private String name;
 	private String description;
 	
+	public InnerDatasetField(String label, String type, InnerDatasetFieldAnnotations annotations, String name,
+			String description) {
+		super();
+		this.label = label;
+		this.type = type;
+		this.annotations = annotations;
+		this.name = name;
+		this.description = description;
+	}
 	public String getLabel() {
 		return label;
 	}

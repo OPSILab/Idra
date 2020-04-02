@@ -1,6 +1,6 @@
 /*******************************************************************************
  * Idra - Open Data Federation Platform
- *  Copyright (C) 2018 Engineering Ingegneria Informatica S.p.A.
+ *  Copyright (C) 2020 Engineering Ingegneria Informatica S.p.A.
  *  
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -212,6 +212,15 @@
 			controller: 'LoginCtrl'
 		}).
 		when('/catalogue',{
+			templateUrl:'catalogues/Catalogue.html',
+			controller: 'CatalogueCtrl',
+			resolve:{
+				checkLogin: function( $rootScope,$http,config,$cookies,$window ) {
+					return checkLogin($rootScope,$http,config,$cookies,$window);
+				}
+			}
+		}).
+		when('/catalogue/:id',{
 			templateUrl:'catalogues/Catalogue.html',
 			controller: 'CatalogueCtrl',
 			resolve:{

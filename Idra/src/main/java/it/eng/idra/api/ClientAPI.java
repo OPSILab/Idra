@@ -1,6 +1,6 @@
 /*******************************************************************************
  * Idra - Open Data Federation Platform
- *  Copyright (C) 2018 Engineering Ingegneria Informatica S.p.A.
+ *  Copyright (C) 2020 Engineering Ingegneria Informatica S.p.A.
  *  
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -873,7 +873,7 @@ public class ClientAPI {
 			}
 
 			//TODO: enable pagination
-			/* 
+			 
 			int row=CommonUtil.ROWSDEFAULT;
 			int off=CommonUtil.OFFSETDEFAULT;
 			
@@ -895,7 +895,7 @@ public class ClientAPI {
 				}
 				nodes = nodes.subList(off, row);
 			}
-			*/
+			
 			JSONArray array = new JSONArray(GsonUtil.obj2JsonWithExclude(nodes, GsonUtil.nodeListType));
 			JSONObject result = new JSONObject();
 			result.put("count", count);
@@ -1087,8 +1087,8 @@ public class ClientAPI {
 				
 				OrionCatalogueConfiguration catalogueConfig = (OrionCatalogueConfiguration) catalogue.getAdditionalConfig();
 				OrionDistributionConfig distributionConfig = MetadataCacheManager.getOrionDistributionConfig(queryID);
-				
-				String compiledUri=catalogue.getHost()+"?"+distributionConfig.getQuery();
+								
+				String compiledUri=(!catalogue.getHost().endsWith("/")?catalogue.getHost():catalogue.getHost().substring(0, catalogue.getHost().length()-1))+(!catalogueConfig.isNgsild()?"/v2/entities":"/ngsi-ld/v1/entities")+"?"+distributionConfig.getQuery();
 				
 				client = ClientBuilder.newClient();
 

@@ -1,6 +1,6 @@
 <!--
   Idra - Open Data Federation Platform
-   Copyright (C) 2018 Engineering Ingegneria Informatica S.p.A.
+   Copyright (C) 2020 Engineering Ingegneria Informatica S.p.A.
    
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published by
@@ -151,6 +151,16 @@
 						<label for="junarapikey">APIKEY:</label> 
 						<input type="text" name="apikey" class="form-control" ng-model="node.APIKey" />
 					</div> 
+				</div>
+				<div class="col-md-12 form-group" ng-if="node.nodeType=='ORION'">
+				<div class="col-md-4" style="padding-left: 0px;">
+						<label for="additionalConfig.ngsild">API:</label> <select
+						class="form-control" 
+						ng-model="node.additionalConfig.ngsild"
+						ng-options="option.value as option.text for option in NgsiAPI"
+						>
+					</select>
+						</div>
 				</div>
  				<div class="col-md-12 form-group" ng-if="node.nodeType=='ORION'">
 					<div class="col-md-3" style="padding-left: 0px;">

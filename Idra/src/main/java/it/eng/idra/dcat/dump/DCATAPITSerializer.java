@@ -1,6 +1,6 @@
 /*******************************************************************************
  * Idra - Open Data Federation Platform
- *  Copyright (C) 2018 Engineering Ingegneria Informatica S.p.A.
+ *  Copyright (C) 2020 Engineering Ingegneria Informatica S.p.A.
  *  
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -159,12 +159,14 @@ public class DCATAPITSerializer extends DCATAPSerializer {
 				model, model.getResource(node.getHost()));
 
 		FOAFAgent datasetPublisher = dataset.getPublisher();
-		if (StringUtils.isNotBlank(datasetPublisher.getResourceUri()) && isValidURI(datasetPublisher.getResourceUri()))
-			serializeFOAFAgent(datasetPublisher, model, datasetResource);
-		else {
-			// Set blank URI for Dataset Publisher in order to create a blank node
-			datasetPublisher.setResourceUri("");
-			serializeFOAFAgent(datasetPublisher, model, datasetResource);
+		if(datasetPublisher != null) {
+			if (StringUtils.isNotBlank(datasetPublisher.getResourceUri()) && isValidURI(datasetPublisher.getResourceUri()))
+				serializeFOAFAgent(datasetPublisher, model, datasetResource);
+			else {
+				// Set blank URI for Dataset Publisher in order to create a blank node
+				datasetPublisher.setResourceUri("");
+				serializeFOAFAgent(datasetPublisher, model, datasetResource);
+			}
 		}
 		return model;
 

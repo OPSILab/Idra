@@ -1,6 +1,6 @@
 /*******************************************************************************
  * Idra - Open Data Federation Platform
- *  Copyright (C) 2018 Engineering Ingegneria Informatica S.p.A.
+ *  Copyright (C) 2020 Engineering Ingegneria Informatica S.p.A.
  *  
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -61,6 +61,7 @@ import it.eng.idra.beans.search.SearchResult;
 import it.eng.idra.cache.CachePersistenceManager;
 import it.eng.idra.cache.LODCacheManager;
 import it.eng.idra.cache.MetadataCacheManager;
+import it.eng.idra.dcat.dump.DCATAPDumpManager;
 import it.eng.idra.dcat.dump.DCATAPSerializer;
 import it.eng.idra.management.ODMSManager;
 import it.eng.idra.management.StatisticsManager;
@@ -299,11 +300,16 @@ public class ODMSSynchJob implements InterruptableJob {
 							DCATAPFormat.fromString(PropertyManager.getProperty(IdraProperty.DUMP_FORMAT)),
 							DCATAPProfile.fromString(PropertyManager.getProperty(IdraProperty.DUMP_PROFILE)),
 							DCATAPWriteType.FILE);
+					
+					// Write Catalogue's DCAT Dump into RDF4J
+					DCATAPDumpManager.sendDumpToRepository(node);
+					
 				} catch (Exception e1) {
 					e1.printStackTrace();
 					logger.error(
 							"Error: " + e1.getMessage() + " in creation of the dump file for node " + node.getId());
 				}
+				
 			}
 			return true;
 		} else {

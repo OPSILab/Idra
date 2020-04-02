@@ -1,6 +1,6 @@
 /*******************************************************************************
  * Idra - Open Data Federation Platform
- *  Copyright (C) 2018 Engineering Ingegneria Informatica S.p.A.
+ *  Copyright (C) 2020 Engineering Ingegneria Informatica S.p.A.
  *  
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -1648,7 +1648,7 @@ public class MetadataCacheManager {
 			String url="";
 			OrionDistributionConfig distroConf = (OrionDistributionConfig) distribution.getDistributionAdditionalConfig();
 			if(!nodeConf.isAuthenticated() && StringUtils.isBlank(distroConf.getFiwareService()) && (StringUtils.isBlank(distroConf.getFiwareServicePath()) || distroConf.getFiwareServicePath().equals("/"))) {
-				url=node.getHost()+"?"+distroConf.getQuery();
+				url=(!node.getHost().endsWith("/")?node.getHost():node.getHost().substring(0, node.getHost().length()-1))+(!nodeConf.isNgsild()?"/v2/entities":"/ngsi-ld/v1/entities")+"?"+distroConf.getQuery();
 			}else {
 				url= internalAPI+"/"+distroConf.getId()+"/catalogue/"+node.getId(); //dovrei mettere l'id della query -> dovrebbe già esserci in quanto la persistenza viene fatta con il nodo,
 			}

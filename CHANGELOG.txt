@@ -1,3 +1,13 @@
+v2.1.0
+- New feature: DCAT-AP metadata will be accessible through Idra SPARQL endpoint
+- New feature: Support for NGSI-LD based dataset
+- New feature: Support for Deep2 (https://github.com/routetopa/deep2-components)
+- New feature: Idra portal - Added DCAT Themes pie chart in statistics
+- New feature: Idra portal - Manage pagination in Catalogues detail page
+- New feature: Idra portal - Management of dataset's REST urls
+- Fix: DCATAP and DCATAP_IT serialization fix
+- Fix: OpenDataSoft connector bug fix
+
 v2.0.2
 - Fix: Idra automatically tests catalogue's host protocol (http/https) on federation or synchronization errors.
 - Fix: Idra, on CKAN catalogue federation, manages its api with or without the explicit /3/ version on path

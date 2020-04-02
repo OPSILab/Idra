@@ -1,6 +1,6 @@
 /*******************************************************************************
  * Idra - Open Data Federation Platform
- *  Copyright (C) 2018 Engineering Ingegneria Informatica S.p.A.
+ *  Copyright (C) 2020 Engineering Ingegneria Informatica S.p.A.
  *  
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -338,10 +338,7 @@ angular.module("IdraPlatform").controller('DataSetCtrl',['$scope','$rootScope','
 	
 	$scope.openDatasetDetails = function(dataset){
 		dataset.nodeName = $scope.getRealName(dataset.nodeID);
-//		//console.log(JSON.stringify(dataset));
 		$rootScope.datasetDetail=dataset;					
-//		$window.location.assign('#/showDatasetDetail');
-		//$window.location.assign('./#/dataset/'+dataset.seoIdentifier);
 		$window.location.assign('./#/dataset/'+dataset.id);
 	}
 

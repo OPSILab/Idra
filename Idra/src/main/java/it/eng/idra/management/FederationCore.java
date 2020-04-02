@@ -1,6 +1,6 @@
 /*******************************************************************************
  * Idra - Open Data Federation Platform
- *  Copyright (C) 2018 Engineering Ingegneria Informatica S.p.A.
+ *  Copyright (C) 2020 Engineering Ingegneria Informatica S.p.A.
  *  
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -20,8 +20,12 @@ package it.eng.idra.management;
 import it.eng.idra.authentication.basic.LoggedUser;
 import it.eng.idra.beans.ConfigurationParameter;
 import it.eng.idra.beans.DCATThemes;
+import it.eng.idra.beans.IdraProperty;
 import it.eng.idra.beans.Log;
 import it.eng.idra.beans.User;
+import it.eng.idra.beans.dcat.DCATAPFormat;
+import it.eng.idra.beans.dcat.DCATAPProfile;
+import it.eng.idra.beans.dcat.DCATAPWriteType;
 import it.eng.idra.beans.exception.DatasetNotFoundException;
 import it.eng.idra.beans.exception.InvalidPasswordException;
 import it.eng.idra.beans.odms.ODMSAlreadyPresentException;
@@ -36,12 +40,17 @@ import it.eng.idra.beans.odms.ODMSCatalogueSSLException;
 import it.eng.idra.beans.odms.ODMSCatalogueState;
 import it.eng.idra.beans.odms.ODMSCatalogueType;
 import it.eng.idra.beans.odms.ODMSSynchLock;
+import it.eng.idra.beans.search.SearchResult;
 import it.eng.idra.cache.CachePersistenceManager;
+import it.eng.idra.cache.LODCacheManager;
 import it.eng.idra.cache.MetadataCacheManager;
+import it.eng.idra.dcat.dump.DCATAPDumpManager;
+import it.eng.idra.dcat.dump.DCATAPSerializer;
 import it.eng.idra.scheduler.IdraScheduler;
 import it.eng.idra.scheduler.exception.SchedulerNotInitialisedException;
 import it.eng.idra.search.EuroVocTranslator;
 import it.eng.idra.utils.CommonUtil;
+import it.eng.idra.utils.PropertyManager;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
@@ -396,6 +405,25 @@ public class FederationCore {
 						+ " was successfully registered ----------");
 				ODMSManager.insertODMSMessage(node.getId(), "Node successfully registered");
 
+				/*
+				 * 4. Create Catalogue's dump file
+				 */
+				
+				try {
+					SearchResult result = MetadataCacheManager.getAllDatasetsByODMSCatalogueID(node.getId());
+					DCATAPSerializer.searchResultToDCATAPByNode(Integer.toString(node.getId()), result,
+							DCATAPFormat.fromString(PropertyManager.getProperty(IdraProperty.DUMP_FORMAT)),
+							DCATAPProfile.fromString(PropertyManager.getProperty(IdraProperty.DUMP_PROFILE)),
+							DCATAPWriteType.FILE);
+					
+					// Write Catalogue's DCAT Dump into RDF4J
+					DCATAPDumpManager.sendDumpToRepository(node);
+					
+				} catch (Exception e1) {
+					//e1.printStackTrace();
+					logger.error(
+							"Error: " + e1.getMessage() + " in creation of the dump file for node " + node.getId());
+				}
 				
 			} catch (InvocationTargetException e) {
 				e.printStackTrace();
@@ -511,8 +539,14 @@ public class FederationCore {
 
 		// If node has federation level 2 o 3, are deleted all its datasets from
 		// Persistence and SOLR Cache
-		if (node.isCacheable())
+		if (node.isCacheable()) {
 			MetadataCacheManager.deleteAllDatasetsByODMSCatalogue(node);
+			try {
+				LODCacheManager.deleteRDF(node.getHost());
+			}catch(Exception e) {
+				logger.error("Error while deleting catalogue's "+ node.getName() +"rdf");
+			}
+		}
 
 		ODMSManager.deleteAllODMSMessage(node.getId());
 
@@ -676,8 +710,15 @@ public class FederationCore {
 		if (!keepDatasets) {
 			node.setSynchLock(ODMSSynchLock.PERIODIC);
 			ODMSManager.updateODMSCatalogue(node, false);
-			if (node.isCacheable())
+			
+			if (node.isCacheable()) {
 				MetadataCacheManager.deleteAllDatasetsByODMSCatalogue(node);
+				try {
+					LODCacheManager.deleteRDF(node.getHost());
+				}catch(Exception e) {
+					logger.error("Error while deleting catalogue's "+ node.getName() +"rdf");
+				}
+			}
 
 			ODMSManager.deleteAllODMSMessage(node.getId());
 
