@@ -106,7 +106,7 @@ description:
         guidelines
       - Compliance with DCAT-AP and DCAT-AP_IT standards
 landingURL: 'https://github.com/OPSILab/Idra'
-softwareVersion: 2.0.2
+softwareVersion: 2.1.0
 intendedAudience:
   scope:
     - government
