@@ -4,7 +4,7 @@
 
 publiccodeYmlVersion: '0.2'
 name: Idra
-releaseDate: '2019-10-17'
+releaseDate: '2020-04-02'
 url: 'https://github.com/OPSILab/Idra.git'
 developmentStatus: stable
 softwareType: standalone/web
