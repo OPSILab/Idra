@@ -13,13 +13,13 @@ The following sections describe each installation method in detail.
 Idra has the following requirements that must be correctly installed and
 configured
 
-| Framework                                                                                                      | Version         | Licence                                                                                  |
-| -------------------------------------------------------------------------------------------------------------- | --------------- | ---------------------------------------------------------------------------------------- |
-| [Java SE Development Kit](http://docs.oracle.com/javase/8/docs/technotes/guides/install/install_overview.html) | 8.0             | Oracle Binary Code License                                                               |
-| [Apache Tomcat](https://tomcat.apache.org/tomcat-8.5-doc/setup.html)                                           | 8.5             | Apache License v.2.0                                                                     |
-| [MySQL](https://dev.mysql.com/doc/refman/5.7/en/)                                                              | 5.7.5 Community | GNU General Public License Version 2.0                                                   |
-| [RDF4J Server](http://rdf4j.org/download/)                                                                     | 2.2.1           | [EDL 1.0 (Eclipse Distribution License) ](https://eclipse.org/org/documents/edl-v10.php) |
-| [RDF4J Workbench](http://rdf4j.org/download/))                                                                 | 2.2.1           | [EDL 1.0 (Eclipse Distribution License) ](https://eclipse.org/org/documents/edl-v10.php) |
+| Framework                                                                                                      | Version         | Licence                                 |
+| -------------------------------------------------------------------------------------------------------------- | --------------- |---------------------------------------- |
+| [Java SE Development Kit](http://docs.oracle.com/javase/8/docs/technotes/guides/install/install_overview.html) | 8.0             | Oracle Binary Code License              |
+| [Apache Tomcat](https://tomcat.apache.org/tomcat-8.5-doc/setup.html)                                           | 8.5             | Apache License v.2.0                    |
+| [MySQL](https://dev.mysql.com/doc/refman/5.7/en/)                                                              | 5.7.5 Community | GNU General Public License Version 2.0  |
+| [RDF4J Server](http://rdf4j.org/download/)                                                                     | 2.2.1           | EDL 1.0 (Eclipse Distribution License)  |
+| [RDF4J Workbench](http://rdf4j.org/download/)                                                                 | 2.2.1           | [EDL 1.0 (Eclipse Distribution License) |
 
 ## Libraries
 
@@ -48,7 +48,7 @@ Idra is based on the following software libraries and frameworks.
 | [JTS Topology Suite](https://sourceforge.net/projects/jts-topo-suite/)                                           | 1.13         | LGPL 2.0 (GNU Lesser General Public License) |
 | [Mysql connector (Community Release)](https://www.mysql.it/products/connector/)                                  | 5.1.39       | GPL 2.0 (GNU General Public License Version) |
 | [Quartz Enterprise Job Scheduler](http://www.quartz-scheduler.org/)                                              | 2.3.0        | Apache License 2.0                           |
-| [RDF4J-Runtime](http://rdf4j.org/download/)                                                                      | 2.2.1        | [EDL 1.0 (Eclipse Distribution License) ]    |
+| [RDF4J-Runtime](http://rdf4j.org/download/)                                                                      | 2.2.1        | EDL 1.0 (Eclipse Distribution License)       |
 | [Ace Editor](https://ace.c9.io)                                                                                  | 1.2.0        | BSD License                                  |
 | [AngularJS](https://angularjs.org/)                                                                              | 1.5.9        | MIT License                                  |
 | [Angular-Chart.js](https://github.com/jtblin/angular-chart.js)                                                   | 1.1.1        | BSD License                                  |
@@ -86,7 +86,7 @@ Idra is based on the following software libraries and frameworks.
 
 ## External Components
 
-Idra supports a customized version of the [_DatalEt-Ecosystem Provider (DEEP)_](https://github.com/routetopa/deep) as an external and optional component. The following repositories must be installed to use the latest version of DEEP:
+Idra supports a customized version of the [_DatalEt-Ecosystem Provider (DEEP)_](https://github.com/routetopa/deep) as an external and optional component. The following repositories must be installed to use the latest version of DEEP with Idra:
 
 | Repository                                                                                                       | Version      | Licence                                      |
 | ---------------------------------------------------------------------------------------------------------------- | ------------ | -------------------------------------------- |
