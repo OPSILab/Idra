@@ -25,14 +25,14 @@
 <!-- 		<JPA name="jpaAppender" persistenceUnitName="loggingPersistenceUnit" -->
 <!--         	 entityClassName="it.eng.idra.beans.JpaLogEntity" /> -->
 
-<!-- 		<JDBC name="databaseAppender" tableName="logs"> -->
-<!-- 			<ConnectionFactory class="it.eng.idra.management.DBConnectionManager" -->
-<!-- 				method="getDbConnection" /> -->
-<!-- 			<Column name="dated" isEventTimestamp="true" /> -->
-<!-- 			<Column name="level" pattern="%level" /> -->
-<!-- 			<Column name="logger" pattern="%logger" /> -->
-<!-- 			<Column name="message" pattern="%message" /> -->
-<!-- 		</JDBC> -->
+		<JDBC name="databaseAppender" tableName="logs">
+			<ConnectionFactory class="it.eng.idra.management.DBConnectionManager"
+				method="getDbConnection" />
+			<Column name="dated" isEventTimestamp="true" />
+			<Column name="level" pattern="%level" />
+			<Column name="logger" pattern="%logger" />
+			<Column name="message" pattern="%message" />
+		</JDBC>
 
 	</Appenders>
 
@@ -56,7 +56,7 @@
 		<!-- </Logger> -->
 		<Root level="INFO">
 			<AppenderRef ref="STDOUT" />
-<!--  			<appender-ref ref="databaseAppender" /> -->
+ 			<appender-ref ref="databaseAppender" />
 <!--  			<AppenderRef ref="jpaAppender"/>  -->
 		</Root>
 	</Loggers>
