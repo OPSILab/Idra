@@ -1,3 +1,6 @@
+v2.1.1
+- Fix: CKANClient-J updated to v0.7 to fix bug with proxy
+
 v2.1.0
 - New feature: DCAT-AP metadata will be accessible through Idra SPARQL endpoint
 - New feature: Support for NGSI-LD based dataset
