@@ -56,7 +56,7 @@
 		<!-- </Logger> -->
 		<Root level="INFO">
 			<AppenderRef ref="STDOUT" />
- 			<appender-ref ref="databaseAppender" />
+<!--  			<appender-ref ref="databaseAppender" /> -->
 <!--  			<AppenderRef ref="jpaAppender"/>  -->
 		</Root>
 	</Loggers>
