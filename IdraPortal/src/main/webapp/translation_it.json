@@ -257,6 +257,13 @@
 	"createNewPrefix": "Crea nuovo prefisso",
 	"insertPrefix": "Inserisci prefisso",
 	
+	"catalogueName": "Nome Catalogo",
+	"url": "URL",
+	"addCatalogueName": "Inserisci Nome",
+	"addURL": "Inserisci URL",
+	"searchURL": "Cerca URL",
+	"createNewRemoteCatalogue": "Crea nuovo catalogo remoto",
+	
 	"registered":"Registrato",
 	"views" :"Accessi",
 	"lastSeen":"Ultimo Accesso",

@@ -27,8 +27,13 @@
 					ng-click="returnToCatalogues()">{{'back' | translate}}</button>
 			</div>
 		</div>
+		<div class="col-sm-5 col-md-5 form-inline">
+			<label class="control-label">{{'remoteCatalogues' | translate}}</label>
+				<select ng-model="selected" ng-change="selCatalogue()" ng-options="c.catalogueName for c in displayedCollection2 track by c.URL" class="form-control">
+			    </select>
+		</div>
 	</div>
-	
+
 		<div class="table-responsive" >
 					<table st-table="remote_displayedCollection" st-safe-src="remote_nodes"
 						class="table table-striped">

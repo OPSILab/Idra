@@ -68,6 +68,7 @@ import it.eng.idra.beans.statistics.KeywordStatistics;
 import it.eng.idra.beans.statistics.KeywordStatisticsResult;
 import it.eng.idra.beans.statistics.StatisticsRequest;
 import it.eng.idra.statistics.PlatformStatistcs;
+import it.eng.idra.beans.RemoteCatalogue;
 
 public final class GsonUtil {
 
@@ -105,6 +106,13 @@ public final class GsonUtil {
 
 	public static Type prefixType = new TypeToken<RdfPrefix>() {
 	}.getType();
+
+	public static Type remCatType = new TypeToken<RemoteCatalogue>() {
+	}.getType();
+	public static Type remCatListType = new TypeToken<List<RemoteCatalogue>>() {
+	}.getType();
+	
+	
 
 	public static Type userType = new TypeToken<User>() {
 	}.getType();

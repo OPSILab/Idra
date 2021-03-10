@@ -17,17 +17,15 @@
  ******************************************************************************/
 package it.eng.idra.management;
 
-import it.eng.idra.authentication.basic.LoggedUser;
 import it.eng.idra.beans.ConfigurationParameter;
 import it.eng.idra.beans.DCATThemes;
 import it.eng.idra.beans.IdraProperty;
 import it.eng.idra.beans.Log;
-import it.eng.idra.beans.User;
+import it.eng.idra.beans.RemoteCatalogue;
 import it.eng.idra.beans.dcat.DCATAPFormat;
 import it.eng.idra.beans.dcat.DCATAPProfile;
 import it.eng.idra.beans.dcat.DCATAPWriteType;
 import it.eng.idra.beans.exception.DatasetNotFoundException;
-import it.eng.idra.beans.exception.InvalidPasswordException;
 import it.eng.idra.beans.odms.ODMSAlreadyPresentException;
 import it.eng.idra.beans.odms.ODMSManagerException;
 import it.eng.idra.beans.odms.ODMSCatalogue;
@@ -49,25 +47,17 @@ import it.eng.idra.dcat.dump.DCATAPSerializer;
 import it.eng.idra.scheduler.IdraScheduler;
 import it.eng.idra.scheduler.exception.SchedulerNotInitialisedException;
 import it.eng.idra.search.EuroVocTranslator;
-import it.eng.idra.utils.CommonUtil;
 import it.eng.idra.utils.PropertyManager;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
-import java.math.BigInteger;
-import java.security.NoSuchAlgorithmException;
-import java.security.SecureRandom;
 import java.sql.SQLException;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
 import java.util.stream.Collectors;
-import java.util.Random;
-
 import javax.net.ssl.SSLHandshakeException;
 
 import org.apache.solr.client.solrj.SolrServerException;
@@ -87,6 +77,7 @@ public class FederationCore {
 	static Logger logger = LogManager.getLogger(FederationCore.class);
 
 	private static HashMap<String, String> settings = new HashMap<String, String>();
+	//private static HashMap<String, String> remoteCatalogues = new HashMap<String, String>();
 	private static List<DCATThemes> dcatThemes = new ArrayList<DCATThemes>();
 	// private static Timer deleteLogsTimer;
 
@@ -96,6 +87,7 @@ public class FederationCore {
 		try {
 			jpa = new CachePersistenceManager();
 			settings = manageBeansJpa.getConfiguration();
+			//remoteCatalogues = manageBeansJpa.getRemoteCatalogues();
 			dcatThemes = manageBeansJpa.getDCATThems();
 
 			MetadataCacheManager.init(loadCacheFromDB, solrPath);
@@ -151,6 +143,65 @@ public class FederationCore {
 		}
 	}
 
+		
+	
+	//public static HashMap<String, String> getRemoteCatalogues() {
+		//return remoteCatalogues;
+	//}
+	
+	
+	public static RemoteCatalogue getRemCat(int id) throws SQLException {
+		PersistenceManager manageBeansJpa = new PersistenceManager();
+		try {
+			return manageBeansJpa.getRemCatID(id);
+		} finally {
+			manageBeansJpa.jpaClose();
+		}
+	}
+	
+	public static boolean setRemoteCatalogue(RemoteCatalogue rem) throws SQLException {
+		PersistenceManager manageBeansJpa = new PersistenceManager();
+		try {
+			if (!manageBeansJpa.checkRemCatExists(rem))
+				return manageBeansJpa.addRemoteCat(rem);
+		} finally {
+			//remoteCatalogues = manageBeansJpa.getRemoteCatalogues();
+			manageBeansJpa.jpaClose();
+		}
+	 
+		return false;
+	}
+	
+	public static boolean deleteRemCat(int id) throws SQLException {
+		PersistenceManager manageBeansJpa = new PersistenceManager();
+		try {
+			return manageBeansJpa.deleteRemCat(id);
+		} finally {
+			manageBeansJpa.jpaClose();
+		}
+	}
+	
+	public static boolean updateRemCat(RemoteCatalogue rem) throws SQLException {
+		PersistenceManager manageBeansJpa = new PersistenceManager();
+		try {
+			return manageBeansJpa.updateRemCat(rem);
+		} finally {
+			manageBeansJpa.jpaClose();
+		}
+	}
+	
+	public static List<RemoteCatalogue> getAllRemCatalogues() throws SQLException {
+		PersistenceManager manageBeansJpa = new PersistenceManager();
+		try {
+			return manageBeansJpa.getremoteCataloguesList();
+		} finally {
+			manageBeansJpa.jpaClose();
+		}
+	}
+
+	
+	
+	
 	public static List<Log> getLogs(List<String> levelList, ZonedDateTime from, ZonedDateTime to) throws SQLException {
 
 		PersistenceManager manageBeansJpa = new PersistenceManager();

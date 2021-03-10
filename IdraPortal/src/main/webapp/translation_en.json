@@ -265,6 +265,13 @@
 	"createNewPrefix": "Create new prefix",
 	"insertPrefix": "Insert Prefix",
 	
+	"catalogueName": "Catalogue Name",
+	"url": "URL",
+	"addCatalogueName": "Insert Name",
+	"addURL": "Insert URL",
+	"searchURL": "search URL",
+	"createNewRemoteCatalogue": "Create new remote catalogue",
+	
 	"registered":"Registerd",
 	"views" :"Views",
 	"lastSeen":"Last Seen",

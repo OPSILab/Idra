@@ -56,6 +56,7 @@ import it.eng.idra.management.StatisticsManager;
 import it.eng.idra.utils.GsonUtil;
 import it.eng.idra.utils.GsonUtilException;
 import it.eng.idra.utils.PropertyManager;
+import it.eng.idra.beans.RemoteCatalogue;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -68,6 +69,7 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.ws.rs.Consumes;
@@ -594,7 +596,6 @@ public class AdministrationAPI {
 		} catch (Exception e) {
 			return handleErrorResponse500(e);
 		}
-
 	}
 
 	@GET
@@ -608,6 +609,95 @@ public class AdministrationAPI {
 
 			return Response.status(Response.Status.OK).entity(GsonUtil.obj2Json(conf, GsonUtil.configurationType))
 					.build();
+
+		} catch (Exception e) {
+			return handleErrorResponse500(e);
+		}
+
+	}
+
+	@POST
+	@Secured
+	@Path("/remoteCatalogue")
+	@Consumes({ MediaType.APPLICATION_JSON })
+	@Produces("application/json")
+	public Response setRemoteCatalogues(final String input) {
+
+		try {
+			RemoteCatalogue remCat = GsonUtil.json2Obj(input, GsonUtil.remCatType);
+			FederationCore.setRemoteCatalogue(remCat);
+
+			return Response.status(Response.Status.OK).build();
+
+		} catch (GsonUtilException e) {
+			return handleBadRequestErrorResponse(e);
+		} catch (Exception e) {
+			return handleErrorResponse500(e);
+		}
+
+	}
+
+	@GET
+	@Secured
+	@Path("/remoteCatalogue")
+	@Produces("application/json")
+	public Response getRemoteCatalogue() {
+		try {
+			List<RemoteCatalogue> conf = FederationCore.getAllRemCatalogues();
+			return Response.status(Response.Status.OK).entity(GsonUtil.obj2Json(conf, GsonUtil.remCatListType))
+					.build();
+
+		} catch (Exception e) {
+			return handleErrorResponse500(e);
+		}
+
+	}
+
+	@DELETE
+	@Secured
+	@Path("/remoteCatalogue/{rmId}")
+	public Response deleteRemCat(@PathParam("rmId") String rmID) {
+
+		try {
+
+			FederationCore.deleteRemCat(Integer.parseInt(rmID));
+
+			return Response.status(Response.Status.OK).build();
+
+		} catch (NumberFormatException e) {
+			return handleBadRequestErrorResponse(e);
+
+		} catch (NullPointerException e) {
+			return handlePrefixNotFoundErrorResponse(e, rmID);
+
+		} catch (Exception e) {
+			return handleErrorResponse500(e);
+
+		}
+
+	}
+	
+	@PUT
+	@Secured
+	@Path("/remoteCatalogue/{rmId}")
+	@Consumes({ MediaType.APPLICATION_JSON })
+	@Produces("application/json")
+	public Response updateRemoteCat(@PathParam("rmId") String rmID, final String input) {
+
+		try {
+
+			RemoteCatalogue rm = GsonUtil.json2Obj(input, GsonUtil.remCatType);
+			rm.setId(Integer.parseInt(rmID));
+
+			FederationCore.updateRemCat(rm);
+
+			return Response.status(Response.Status.OK).build();
+
+		} catch (NumberFormatException e) {
+			return handleBadRequestErrorResponse(e);
+
+		} catch (NullPointerException e) {
+			return handlePrefixNotFoundErrorResponse(e, rmID);
 
 		} catch (Exception e) {
 			return handleErrorResponse500(e);

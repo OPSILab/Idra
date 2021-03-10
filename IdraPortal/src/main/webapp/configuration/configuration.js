@@ -133,6 +133,255 @@ angular.module("IdraPlatform").controller('PrefixCtrl',['$scope','config','$root
 
 }]);
 
+
+
+
+
+angular.module("IdraPlatform").controller('RemCatCtrl',['$scope','config','$rootScope','$http','$modal',function($scope,config,$rootScope,$http,$modal){
+
+	$scope.itemsByPage = 6;
+
+	$scope.allRemCat=[];
+
+	$scope.getAllRemCat = function(){
+
+		var req = {
+				method: 'GET',
+				url: config.ADMIN_SERVICES_BASE_URL + config.REMOTE_CAT_SERVICE,
+				headers: {
+					'Content-Type': 'application/json',
+					'Authorization': "Bearer "+$rootScope.token
+				}
+
+		};
+
+		$rootScope.startSpin();
+		$http(req).then(function(value){
+			$rootScope.stopSpin();
+			console.log(value.data);
+			$scope.allRemCat = value.data;	
+			$scope.displayedCollection = [].concat($scope.allRemCat);
+		}, function(value){
+			console.log(value.status);
+			if(value.status==401){
+				$rootScope.token=undefined;
+			}
+			$rootScope.stopSpin();
+			return null;
+		});
+	}
+
+
+	$scope.getAllRemCat();
+	
+	$scope.addRemCat = function() {
+		$scope.inserted = {
+				URL: '',
+				catalogueName: ''
+		};
+		$scope.allRemCat.unshift($scope.inserted);
+	};
+
+		$scope.openModal = function (c) {
+
+		var catalogue;
+		var title="";
+		if(c==''){
+			catalogue={
+					id: '-1',
+					URL: '',
+					catalogueName: ''
+			}
+			mode="create";
+		}else{
+			catalogue=c;
+			mode="update";
+		}
+
+		var modalInstance = $modal.open({
+			animation: true,
+			templateUrl: 'RemCatModalContent.html',
+			controller: 'RemoteModalInstanceCtrl',
+			size: 'md',
+			resolve: {
+				catalogue: function () {
+					return catalogue;
+				},
+				mode: function(){
+					return mode;
+				},
+				message: function(){
+					return "Please select a node";
+				},
+				allRemCat: function(){
+					return $scope.allRemCat;
+				}
+			}
+		});
+
+		modalInstance.result.then(function () {
+			$scope.getAllRemCat();
+		});
+
+	};
+
+	$scope.deleteCatalogue = function(c){
+
+		var req = {
+				method: 'DELETE',
+				url: config.ADMIN_SERVICES_BASE_URL+config.REMOTE_CAT_SERVICE+'/' + c.id,
+				headers: {
+					'Authorization': "Bearer "+$rootScope.token
+				}
+		};
+
+		$rootScope.startSpin();
+		$http(req).then(function(value){
+			console.log(value);
+			$scope.getAllRemCat();
+			$rootScope.stopSpin();
+		}, function(value){
+
+			if(value.status==401){
+				$rootScope.token=undefined;
+			}
+
+			$scope.getAllRemCat();
+			$rootScope.stopSpin();
+			$rootScope.showAlert('danger',value.data.userMessage);
+		}); 
+	}
+}]);
+
+
+
+
+angular.module('IdraPlatform').controller('RemoteModalInstanceCtrl',["$scope","$modalInstance", "catalogue","mode",'config','$rootScope','$http','allRemCat', function ($scope, $modalInstance, catalogue,mode,config,$rootScope,$http,allRemCat) {
+
+	$scope.tmp = angular.copy(catalogue);
+	$scope.oldRemCat = angular.copy(catalogue); //oldPrefix
+	
+	console.log($scope.oldRemCat.catalogueName == $scope.tmp.catalogueName && $scope.oldRemCat.URL == $scope.tmp.URL);
+
+	console.log($scope.tmp);
+	
+	$scope.mode=mode;
+
+	if(mode=="create"){
+		$scope.title = "Create new Remote Catalogue";
+	}else{
+		$scope.title = "Update Remote Catalogue";
+	}
+
+	$scope.textAlertModal="";
+	$scope.alertModal=false;
+	
+	$scope.closeAlertModal = function(){
+		$scope.alertModal=false;
+	}
+
+	$scope.showAlertModal = function(){
+		$scope.alertModal=true;
+	}
+
+	function checkRemcat(tmp,mode){
+
+		if(tmp.URL=='' || tmp.catalogueName==''){
+			$scope.alertModal=true;
+			$scope.textAlertModal="All fields required";
+			return false;
+		}
+		
+		for(i=0; i<allRemCat.length; i++){
+			if(allRemCat[i].URL == tmp.URL && tmp.id != allRemCat[i].id){
+				$scope.alertModal=true;
+				$scope.textAlertModal="Remote Catalogue already exists";
+				return false;
+			}else if(allRemCat[i].catalogueName == tmp.catalogueName && tmp.id != allRemCat[i].id){
+				$scope.alertModal=true;
+				$scope.textAlertModal="Remote Catalogue Name already exists";
+				return false;
+			}
+		}
+		
+		//var reg = /^<(http|https):\/\/[^ "]+>$/;
+		//if(!reg.test(tmp.URL)){
+			//$scope.alertModal=true;
+			//$scope.textAlertModal="Wrong URL format";
+			//return false;
+		//}
+
+		return true;
+	}
+
+	$scope.addRemCat=function(){
+
+		if(checkRemcat($scope.tmp,$scope.mode)){
+
+			var req = {
+					method: 'POST',
+					url: config.ADMIN_SERVICES_BASE_URL + config.REMOTE_CAT_SERVICE,
+					headers: {
+						'Content-Type': 'application/json',
+						'Authorization': "Bearer "+$rootScope.token
+					},
+					data:{
+						'URL': $scope.tmp.URL,
+						'catalogueName': $scope.tmp.catalogueName
+					}
+			};
+
+			$rootScope.startSpin();
+			$http(req).then(function(value){
+				$rootScope.stopSpin();
+				$scope.cancel();
+			}, function(value){
+				$rootScope.stopSpin();
+				$scope.cancel();
+				$rootScope.showAlert('danger',value.data.userMessage);
+			});
+		}
+
+	}
+
+	$scope.updateRemCat=function(){
+
+		if(checkRemcat($scope.tmp,$scope.mode)){
+
+			var req = {
+					method: 'PUT',
+					url: config.ADMIN_SERVICES_BASE_URL+config.REMOTE_CAT_SERVICE+"/"+$scope.tmp.id.toString(),
+					headers: {
+						'Content-Type': 'application/json',
+						'Authorization': "Bearer "+$rootScope.token
+					},
+					data:{
+						'URL': $scope.tmp.URL,
+						'catalogueName': $scope.tmp.catalogueName
+					}
+			};
+
+			$rootScope.startSpin();
+			$http(req).then(function(value){
+				$rootScope.stopSpin();
+				$scope.cancel();
+			}, function(value){
+				$rootScope.stopSpin();
+				$scope.cancel();
+				$rootScope.showAlert('danger',value.data.userMessage);
+			});
+		}
+	}
+
+	$scope.cancel = function () {
+		$modalInstance.close();
+	};
+
+}]);
+
+
+
+
 angular.module("IdraPlatform").controller('UpdatePasswordCtrl',['$scope','config','$rootScope','$http','md5',function($scope,config,$rootScope,$http,md5){
 
 	$scope.oldPassword="";

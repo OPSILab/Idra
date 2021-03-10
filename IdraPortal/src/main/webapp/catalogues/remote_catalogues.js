@@ -17,25 +17,80 @@
  ******************************************************************************/
 angular.module("IdraPlatform").controller('RemoteCataloguesController',["$scope","$http",'$filter','config','$rootScope','dialogs','$interval','$timeout','$modal','FileSaver','Blob','$window','ODMSNodesAPI',function($scope,$http,$filter,config,$rootScope,dialogs,$interval,$timeout,$modal,FileSaver,Blob,$window,ODMSNodesAPI){
 
+$scope.allRemCat=[];
+$scope.sel = "";
+
+
+	$scope.getAllRemCat = function(){
+
+		var req = {
+				method: 'GET',
+				url: config.ADMIN_SERVICES_BASE_URL + config.REMOTE_CAT_SERVICE,
+				headers: {
+					'Content-Type': 'application/json',
+					'Authorization': "Bearer "+$rootScope.token
+				}
+
+		};
+
+		$rootScope.startSpin();
+		$http(req).then(function(value){
+			$rootScope.stopSpin();
+			console.log(value.data);
+			$scope.allRemCat = value.data;	
+			$scope.displayedCollection2 = [].concat($scope.allRemCat);
+			$scope.selected = $scope.displayedCollection2[1];
+			$scope.sel = $scope.selected.URL;
+			$scope.getRemoteNodes();
+			
+		}, function(value){
+			console.log(value.status);
+			if(value.status==401){
+				$rootScope.token=undefined;
+			}
+			$rootScope.stopSpin();
+			return null;
+		});
+	}
+	
+	$scope.getAllRemCat();
+	
+	
+	$scope.selCatalogue = function(){
+			$scope.sel = $scope.selected.URL;
+			$scope.getRemoteNodes();
+		};
+
+
 	$scope.updatePeriods=[{text:'1 hour',value:'3600'},{text:'1 day',value:'86400'},{text:'1 week',value:'604800'}];
 	$scope.nodeTypes = config.NODE_TYPES.split(',');
 	$scope.returnToCatalogues = function(){
 		$window.location.assign('#/catalogues');
 	}
-	
-	var req = {
-			method: 'GET',
-			url: config.REMOTE_NODES_SERVICE,
-			headers: {
-				'Content-Type': 'application/json'
-			}};
+
+
 
 	$scope.dateFormat="MMM - dd - yyyy";
 	
 	$scope.getRemoteNodes = function(){
+		
+			var req = {
+					method: 'GET',
+					url: $scope.sel,
+					headers: {
+						'Content-Type': 'application/json'
+					}};
+		
+		
 		$rootScope.startSpin();
 		$http(req).then(function(value){
+			
+			if(value.data.catalogues!=null || value.data.catalogues!=undefined){
+				$rootScope.remote_nodes=value.data.catalogues; 
+			}
+			else{
 			$rootScope.remote_nodes=value.data; 
+			}
 			checkCatalogues();
 			$rootScope.stopSpin();
 		}, function(e){
@@ -149,10 +204,14 @@ angular.module("IdraPlatform").controller('RemoteCataloguesController',["$scope"
 	
 	
 	if($rootScope.remote_nodes==undefined || $rootScope.remote_nodes.length==0 ){
-		$rootScope.remote_nodes=[];		
-		$scope.getRemoteNodes();
+		$rootScope.remote_nodes=[];	
 	}else{
 		checkCatalogues();
 	}
 	
+
+	
+	
+	
 }]);
+
