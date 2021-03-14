@@ -20,7 +20,7 @@ This project is released with [Contributor Code of Conduct](./CODE_OF_CONDUCT.md
 
 “Engineering” (ENGINEERING Ingegneria Informatica S.p.A.) is the entity owner of the copyright of Idra software and documentation.
 
-“Idra Project” or “Project” shall mean every organization, procedure, mean, practice, term, condition and license, used by ENGINEERING Ingegneria Informatica S.p.A. for the aim of the free/open source Idra project development by means of all its software components and documentation which are pointed out on the project site: www.Idra-suite.com
+“Idra Project” or “Project” shall mean every organization, procedure, mean, practice, term, condition and license, used by ENGINEERING Ingegneria Informatica S.p.A. for the aim of the free/open source Idra project development by means of all its software components and documentation which are pointed out on the project site: https://github.com/OPSILab/Idra
 
 “Contribution” shall mean any original work of authorship, including any modifications or additions to an existing work, which is intentionally submitted by the Contributor to ENGINEERING for inclusion in Idra software or documentation. For the purpose of this definition, “submitted” means any form of electronic, verbal or written communication sent to ENGINEERING, including but not limited to communication on electronic mailing lists, source code control systems and issue tracking systems that are managed by ENGINEERING for the purpose of discussing and improving Idra software and documentation, but excluding the communication that is conspicuously marked or otherwise designated in writing by the Contributor as “Not a Contribution”.
 

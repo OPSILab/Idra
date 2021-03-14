@@ -4,7 +4,7 @@
 
 publiccodeYmlVersion: '0.2'
 name: Idra
-releaseDate: '2020-04-02'
+releaseDate: '2020-08-27'
 url: 'https://github.com/OPSILab/Idra.git'
 developmentStatus: stable
 softwareType: standalone/web
@@ -106,7 +106,7 @@ description:
         guidelines
       - Compliance with DCAT-AP and DCAT-AP_IT standards
 landingURL: 'https://github.com/OPSILab/Idra'
-softwareVersion: 2.1.0
+softwareVersion: 2.1.1
 intendedAudience:
   scope:
     - government
