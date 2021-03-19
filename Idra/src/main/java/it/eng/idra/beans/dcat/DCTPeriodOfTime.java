@@ -17,8 +17,6 @@
  ******************************************************************************/
 package it.eng.idra.beans.dcat;
 
-import java.util.UUID;
-
 import javax.persistence.AttributeOverride;
 import javax.persistence.AttributeOverrides;
 import javax.persistence.Column;

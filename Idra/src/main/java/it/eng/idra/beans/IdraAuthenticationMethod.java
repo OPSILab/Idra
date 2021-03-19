@@ -20,7 +20,8 @@ package it.eng.idra.beans;
 public enum IdraAuthenticationMethod {
 	
 	BASIC("BASIC"),
-	FIWARE("FIWARE");
+	FIWARE("FIWARE"), 
+	KEYCLOAK("KEYCLOAK");
 	
 	private final String text;
 

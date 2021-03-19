@@ -472,7 +472,7 @@
 		$scope.loginType=config["idra.authentication.method"];
 		
 		$scope.signIn = function(){
-			if ($scope.loginType === "FIWARE")
+			if ($scope.loginType === "FIWARE" || $scope.loginType === "KEYCLOAK")
 				$('#loginform').submit();
 			else
 				$window.location.assign('#/login');

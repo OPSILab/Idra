@@ -17,10 +17,7 @@
  ******************************************************************************/
 package it.eng.idra.beans.sparql;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.Lob;
-
 import it.eng.idra.beans.DistributionAdditionalConfiguration;
 
 @Entity

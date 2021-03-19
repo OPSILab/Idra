@@ -30,7 +30,8 @@ public enum IDMProperty {
 	IDM_PATH_USER("idm.path.user"),
 	IDM_FIWARE_KEYSTONE_HOST("idm.fiware.keystone.host"),
 	IDM_FIWARE_KEYSTONE_PORT("idm.fiware.keystone.port"),
-	IDM_FIWARE_KEYSTONE_PATH_TOKENS("idm.fiware.keystone.path.tokens");
+	IDM_FIWARE_KEYSTONE_PATH_TOKENS("idm.fiware.keystone.path.tokens"),
+	IDM_AUTH_PATH("idm.auth_path");
 	
 
 	private final String text;

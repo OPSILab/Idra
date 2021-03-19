@@ -18,6 +18,11 @@
 package it.eng.idra.beans.odms;
 
 public class ODMSCatalogueOfflineException  extends Exception {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	public ODMSCatalogueOfflineException(String message) {
         super(message);
     }

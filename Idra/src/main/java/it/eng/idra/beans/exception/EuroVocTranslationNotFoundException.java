@@ -18,6 +18,11 @@
 package it.eng.idra.beans.exception;
 
 public class EuroVocTranslationNotFoundException extends Exception {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	public EuroVocTranslationNotFoundException(String message) {
         super(message);
     }
