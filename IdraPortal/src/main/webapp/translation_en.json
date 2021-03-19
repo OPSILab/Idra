@@ -271,6 +271,12 @@
 	"addURL": "Insert URL",
 	"searchURL": "search URL",
 	"createNewRemoteCatalogue": "Create new remote catalogue",
+	"searchCatalogueName":"search name",
+	"catalogueType": "Catalogue Type",
+	"idraCredentials": "Idra credentials",
+	"portalCredentials": "IDM credentials",
+	"deleteCredentials": "Delete credentials",
+	"portalURL": "Portal URL",
 	
 	"registered":"Registerd",
 	"views" :"Views",

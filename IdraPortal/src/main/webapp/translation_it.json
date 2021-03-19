@@ -263,6 +263,12 @@
 	"addURL": "Inserisci URL",
 	"searchURL": "Cerca URL",
 	"createNewRemoteCatalogue": "Crea nuovo catalogo remoto",
+	"searchCatalogueName":"Cerca nome",
+	"catalogueType": "Tipo di Catalogo",
+	"idraCredentials": "Credenziali Idra",
+	"portalCredentials": "Credenziali IDM",
+	"deleteCredentials": "Elimina Credenziali",
+	"portalURL": "URL Portale",
 	
 	"registered":"Registrato",
 	"views" :"Accessi",

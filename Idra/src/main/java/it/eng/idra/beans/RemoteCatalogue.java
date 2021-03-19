@@ -38,7 +38,29 @@ public class RemoteCatalogue {
 
 	@Column(name = "URL", unique = false)
 	private String URL;
-
+	
+	
+	@Column(name = "editable", unique = false)
+	private boolean editable;
+	
+	@Column(name = "username", unique = false)
+	private String username;
+	
+	@Column(name = "password", unique = false)
+	private String password;
+	
+	@Column(name = "clientID", unique = false)
+	private String clientID;
+	
+	@Column(name = "clientSecret", unique = false)
+	private String clientSecret;
+	
+	@Column(name = "portal", unique = false)
+	private String portal;
+	
+	@Column(name = "isIdra", unique = false)
+	private boolean isIdra;
+    
 	public RemoteCatalogue() {
 
 	}
@@ -66,10 +88,60 @@ public class RemoteCatalogue {
 	public void setURL(String newURL) {
 		this.URL = newURL;
 	}
-
+	
+	public boolean getEditable() {
+		return editable;
+	}
+	
+	public void setEditable(boolean editable) {
+		this.editable = editable;
+	}
+	
+	public String getUsername() {
+		return username;
+	}
+	
+	public void setUsername(String username) {
+		this.username = username;
+	}
+	
+	public String getPassword() {
+		return password;
+	}
+	
+	public void setPassword(String password) {
+		this.password = password;
+	}
+	
+	public String getClientID() {
+		return clientID;
+	}
+	
+	public void setClientID(String clientID) {
+		this.clientID = clientID;
+	}
+	
+	public String getClientSecret() {
+		return clientSecret;
+	}
+	
+	public void setClientSecret(String clientSecret) {
+		this.clientSecret = clientSecret;
+	}
+	
+	public String getPortal() {
+		return portal;
+	}
+	
+	public void setPortal(String portal) {
+		this.portal = portal;
+	}
+	
 	@Override
 	public String toString() {
-		return "\nRemoteCatalogue [id=" + id + ", catalogueName=" + catalogueName + ", URL=" + URL + "]";
+		return "\nRemoteCatalogue [id=" + id + ", catalogueName=" + catalogueName + ", URL=" + URL + ", editable=" + editable  
+				+ ", isIdra=" + isIdra + ", username=" + username +  ", password=" + password + ", clientID=" + clientID + ", clientSecret=" + clientSecret 
+				+ ", portal=" + portal +"]";
 	}
 
 }

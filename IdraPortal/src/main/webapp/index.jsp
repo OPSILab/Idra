@@ -667,7 +667,7 @@ div.m-app-loading p {
 
 <!-- END PREVIEW TEMPLATES -->
 
-	<script type="text/javascript" src="bower_components/jquery/jquery.js"></script>
+	<script type="text/javascript" src="bower_components/jquery/dist/jquery.js"></script>
 	<script type="text/javascript"
 		src="bower_components/angular/angular.js"></script>
 	<script type="text/javascript"

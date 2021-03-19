@@ -53,6 +53,7 @@ import it.eng.idra.management.FederationCore;
 import it.eng.idra.management.ODMSManager;
 import it.eng.idra.management.RdfPrefixManager;
 import it.eng.idra.management.StatisticsManager;
+import it.eng.idra.utils.CommonUtil;
 import it.eng.idra.utils.GsonUtil;
 import it.eng.idra.utils.GsonUtilException;
 import it.eng.idra.utils.PropertyManager;
@@ -60,6 +61,7 @@ import it.eng.idra.beans.RemoteCatalogue;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.URI;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
@@ -67,9 +69,9 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.HashMap;
 import java.util.List;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.ws.rs.Consumes;
@@ -82,10 +84,21 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
+import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.client.Client;
+import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.client.Entity;
+import javax.ws.rs.client.Invocation;
+import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.MultivaluedHashMap;
+import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.NewCookie;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.StreamingOutput;
+import javax.ws.rs.core.Response.ResponseBuilder;
+import javax.ws.rs.core.Response.StatusType;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -100,6 +113,7 @@ import com.google.gson.JsonObject;
 public class AdministrationAPI {
 
 	private static Logger logger = LogManager.getLogger(AdministrationAPI.class);
+	private static Client client;
 
 	@GET
 	@Path("/version")
@@ -606,6 +620,7 @@ public class AdministrationAPI {
 		try {
 
 			HashMap<String, String> conf = FederationCore.getSettings();
+			
 
 			return Response.status(Response.Status.OK).entity(GsonUtil.obj2Json(conf, GsonUtil.configurationType))
 					.build();
@@ -625,6 +640,12 @@ public class AdministrationAPI {
 
 		try {
 			RemoteCatalogue remCat = GsonUtil.json2Obj(input, GsonUtil.remCatType);
+			if(remCat.getPassword()!=null) {
+				//encrypt pssw
+				String ecrPassword = CommonUtil.encrypt(remCat.getPassword());
+				remCat.setPassword(ecrPassword);
+			}
+			
 			FederationCore.setRemoteCatalogue(remCat);
 
 			return Response.status(Response.Status.OK).build();
@@ -687,6 +708,17 @@ public class AdministrationAPI {
 		try {
 
 			RemoteCatalogue rm = GsonUtil.json2Obj(input, GsonUtil.remCatType);
+			
+			RemoteCatalogue oldRem  = FederationCore.getRemCat(Integer.parseInt(rmID));
+			System.out.println("passw old: "+oldRem.getPassword()+" pssw dopo la update del nome: "+rm.getPassword());
+			if( ((oldRem.getPassword()!=null && rm.getPassword()!=null) && (!(oldRem.getPassword().equals(rm.getPassword()))))
+					|| (oldRem.getPassword()==null && rm.getPassword()!=null) ) {
+				//encrypt pssw
+				System.out.println("encrypt password");
+					String ecrPassword = CommonUtil.encrypt(rm.getPassword());
+					rm.setPassword(ecrPassword);
+			}
+
 			rm.setId(Integer.parseInt(rmID));
 
 			FederationCore.updateRemCat(rm);
@@ -704,6 +736,194 @@ public class AdministrationAPI {
 		}
 
 	}
+	
+	
+	@GET
+	@Path("/remoteCatalogue/auth/{id}")
+	@Consumes({ MediaType.APPLICATION_JSON })
+	@Produces("text/plain")
+	public Response authRemoteCatalogue(@PathParam("id") String id) {
+
+		try {
+			//-------------------------- Utenze in Idra
+			RemoteCatalogue remCatalogue = FederationCore.getRemCat(Integer.parseInt(id));
+			String username = remCatalogue.getUsername();
+			//decrypt
+			String password = CommonUtil.decrypt(remCatalogue.getPassword());
+			String basePath = remCatalogue.getURL();
+			
+			client = ClientBuilder.newClient();
+			String compiledUri = basePath + "Idra/api/v1/administration/login";
+			WebTarget webTarget = client.target(compiledUri);
+			Invocation.Builder builderLogin = webTarget.request();
+			
+			builderLogin = builderLogin.header("Content-Type","application/json");
+
+		    Response responseLogin = builderLogin.post(Entity.entity("{username: "+username+", password: "+password+"}", MediaType.APPLICATION_JSON_TYPE));
+		    
+			StatusType statusLogin = responseLogin.getStatusInfo();
+			if(statusLogin.getStatusCode() == 200){
+				System.out.println("Status POST LOGIN: 200 OK");
+			}else{
+					throw new Exception("Status code POST LOGIN: "+statusLogin.getStatusCode());
+			}
+			
+			System.out.println(responseLogin);
+			ResponseBuilder responseBuilder = Response.status(responseLogin.getStatus());
+			final InputStream responseStream = (InputStream) responseLogin.getEntity();
+			StreamingOutput output = new StreamingOutput() {
+				@Override
+				public void write(OutputStream out) throws IOException, WebApplicationException {
+					int length;
+					byte[] buffer = new byte[1024];
+					while ((length = responseStream.read(buffer)) != -1) {
+						out.write(buffer, 0, length);
+					}
+					out.flush();
+					responseStream.close();
+				}
+			};
+
+			System.out.println("Response Login: "+ responseBuilder.entity(output).build());
+
+			// --------------------------------------------------------------------
+			client = ClientBuilder.newClient();
+			compiledUri = basePath + "Idra/api/v1/administration/catalogues?withImage=true";
+			webTarget = client.target(compiledUri);
+			Invocation.Builder builder = webTarget.request();
+			//builder = builder.header("Authorization"," Bearer "+token);
+			
+			Response response = builder.get();
+			final InputStream responseStream2 = (InputStream) response.getEntity();
+			ResponseBuilder responseBuilder2 = Response.status(response.getStatus());
+			
+			StatusType status = response.getStatusInfo();
+			if(status.getStatusCode() == 200){
+				System.out.println("200 OK");
+			}else{
+					throw new Exception("Status code: "+status.getStatusCode());
+			} 
+
+			StreamingOutput output2 = new StreamingOutput() {
+				@Override
+				public void write(OutputStream out) throws IOException, WebApplicationException {
+					int length;
+					byte[] buffer = new byte[1024];
+					while ((length = responseStream2.read(buffer)) != -1) {
+						out.write(buffer, 0, length);
+					}
+					out.flush();
+					responseStream.close();
+				}
+			};
+
+			return responseBuilder2.entity(output2).build();
+
+		} catch (GsonUtilException e) {
+			return handleBadRequestErrorResponse(e);
+		} catch (NullPointerException e) {
+			return handleErrorResponseLogin(e);
+		} catch (Exception e) {
+			return handleErrorResponse500(e);
+		}
+
+	}
+	
+	
+	@GET
+	@Path("/remoteCatalogue/authIDM/{id}")
+	@Consumes({ MediaType.APPLICATION_JSON })
+	@Produces("text/plain")
+	public Response authRemoteCatalogueIDM(@PathParam("id") String id) {
+		try {
+			System.out.println(" -------------------------- Caso Login IDM FIWARE");
+			RemoteCatalogue remCatalogue = FederationCore.getRemCat(Integer.parseInt(id));
+			String clientId = remCatalogue.getClientID();
+			String clientSecret = remCatalogue.getClientSecret();
+			String username = remCatalogue.getUsername();
+			//decrypt
+			String password = CommonUtil.decrypt(remCatalogue.getPassword());
+			String basePath = remCatalogue.getURL();
+			String portalURL = remCatalogue.getPortal();
+			
+			client = ClientBuilder.newClient();	
+			String compiledUri=portalURL+"oauth2/token";	
+			WebTarget webTarget = client.target(compiledUri);
+			
+			String auth = "Basic " + new String(Base64.getEncoder().encode((clientId + ":" + clientSecret).getBytes()));
+			Invocation.Builder builder = webTarget.request();
+			
+			MultivaluedMap<String, Object> head = new MultivaluedHashMap<String, Object>();
+			head.add("Content-Type", "application/x-www-form-urlencoded");
+			head.add("Authorization", auth);
+			builder.headers(head);
+			
+			MultivaluedMap<String, String> formData = new MultivaluedHashMap<String, String>();
+		    formData.add("grant_type", "password");
+		    formData.add("username", username);
+		    formData.add("password", password);
+			
+		    Response response = builder.post(Entity.form(formData));
+			
+		    String entity = response.readEntity(String.class);
+			JSONObject resJson = new JSONObject(entity);
+			String accessToken = resJson.get("access_token").toString();
+	
+			StatusType status = response.getStatusInfo();
+			if(status.getStatusCode() == 200){
+				System.out.println("Status POST: 200 OK");
+			}else{
+					throw new Exception("Status code POST: "+status.getStatusCode());
+			}
+
+			//------------------------------------------------------------------
+			
+			client = ClientBuilder.newClient();
+			String compiledUri2=basePath+"Idra/api/v1/administration/catalogues?withImage=true";
+			WebTarget webTarget2 = client.target(compiledUri2);
+
+			Invocation.Builder builder2 = webTarget2.request();
+			builder2 = builder2.header("Authorization"," Bearer "+accessToken);
+	
+			Response response2 = builder2.get();
+			
+			final InputStream responseStream = (InputStream) response2.getEntity();
+			ResponseBuilder responseBuilder = Response.status(response2.getStatus());
+			
+			StatusType status2 = response2.getStatusInfo();
+			if(status2.getStatusCode() == 200){
+				System.out.println("Status GET: 200 OK");
+			}else{
+					throw new Exception("Status code GET: "+status2.getStatusCode());
+			}
+
+			StreamingOutput output = new StreamingOutput() {
+				@Override
+				public void write(OutputStream out) throws IOException, WebApplicationException {
+					int length;
+					byte[] buffer = new byte[1024];
+					while ((length = responseStream.read(buffer)) != -1) {
+						out.write(buffer, 0, length);
+					}
+					out.flush();
+					responseStream.close();
+				}
+			};
+
+			responseBuilder.entity(output);
+			return responseBuilder.build();
+
+		} catch (GsonUtilException e) {
+			return handleBadRequestErrorResponse(e);
+		} catch (NullPointerException e) {
+			return handleErrorResponseLogin(e);
+		} catch (Exception e) {
+			return handleErrorResponse500(e);
+		}
+
+	}
+	
+	
 
 	@GET
 	@Path("/prefixes")
@@ -833,7 +1053,7 @@ public class AdministrationAPI {
 			switch (IdraAuthenticationMethod.valueOf(PropertyManager.getProperty(IdraProperty.AUTHENTICATION_METHOD))) {
 
 			case FIWARE:
-
+			
 				if (StringUtils.isBlank(code))
 					return Response.status(Response.Status.BAD_REQUEST).build();
 

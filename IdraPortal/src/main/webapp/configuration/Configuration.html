@@ -223,20 +223,20 @@
 									<th st-sort="URL" st-sort-default="true">{{'url' | translate}}</th>
 									<th>{{'edit' | translate}}</th>
 								</tr>
-								<tr>
-									<th><input placeholder="search name"
+								<tr> 
+									<th><input placeholder="{{'searchCatalogueName' | translate}}"
 										st-search="catalogueName" /></th>
-									<th><input placeholder="search URL" st-search="URL" />
+									<th><input placeholder="{{'searchURL' | translate}}" st-search="URL" />
 									</th>
 									<th></th>
-								</tr>
+								</tr>  
 							</thead>
 							<tbody>
 								<tr ng-repeat="c in displayedCollection track by $index">
 									<td>{{c.catalogueName}}</td>
 									<td>{{c.URL}}</td>
 									<td>
-										<div class="buttons">
+										<div class="buttons" ng-if="c.editable">
 											<a class="btn-flat "
 												ng-click="openModal(c)"><i class="mdi-content-create"></i></a>
 											<a class="btn-flat "
@@ -273,27 +273,74 @@
 	<alert type='danger' style="text-align:center"
 		ng-show="alertModal" close="closeAlertModal()" dismiss-on-timeout="3000">
 	{{textAlertModal}} </alert>
-
+	<div class="col-md-12">
+	<div class="row form-inline" ng-if=" mode=='create' ">
+			<label class="control-label">{{'catalogueType' | translate}}</label>
+				<select ng-model="selected" class="form-control" ng-click="catalogueType(selected); setPlaceholder()">
+				<option value="json">JSON</option>
+				<option value="idra">Idra</option>
+			    </select>
+	</div>
+	</div>
 	<div class="col-md-12">
 		<div class="row form-inline">
 		<label class="control-label">{{'catalogueName' | translate}}</label>
-			<input type="text" class="form-control" style="width:60%" name="catalogueName"
+			<input type="text" class="form-control" name="catalogueName"
 							placeholder="{{'addCatalogueName' | translate}}"
 							ng-model="tmp.catalogueName">
 	</div>
 	<div class="row form-inline" name="formPrefix">
 		<label class="control-label">{{'url' | translate}}</label>
 			<input type="text" class="form-control" name="URL"
-							placeholder="{{'addURL' | translate}}" autofocus
+							placeholder="{{somePlaceholder}}" 
 							ng-model="tmp.URL">
 	</div>
+			
+			<div class="row form-inline" ng-if=" (tmp.isIdra || isIdra)" >
+				<label for="refresh" class="control-label">{{'idraCredentials' | translate}}</label> <input type="checkbox" class="form-control"
+							ng-model="checkValue" ng-click="checkedValue(checkValue)" ng-checked="ckeck()">
+				<label for="refresh" class="control-label">{{'portalCredentials' | translate}}</label> <input type="checkbox" class="form-control"
+							ng-model="checkValueIDM" ng-click="checkedValueIDM(checkValueIDM)" ng-checked="ckeckIDM()">
+				<div class="row form-inline" ng-show=" (mode=='update' && tmp.username!=null) && (checkValueIDM==false && checkValue==false)" >
+				<label for="refresh" class="control-label">{{'deleteCredentials' | translate}}</label> <input type="checkbox" class="form-control"
+							ng-model="deleteCred" ng-click="checkedDeleteCred(deleteCred)" >
+				</div>		
+			</div>
+			<div class="row form-inline" ng-if=" ((tmp.isIdra) || isIdra) && (checkValueIDM==false)" ng-show="checkValue">
+				<label for="refresh" class="control-label">Username</label> <input type="text" placeholder="Insert Username" class="form-control"
+							ng-model="tmp.username">
+			
+				</br>
+				<label for="refresh" class="control-label">Password</label> <input type="password" placeholder="Insert Password" class="form-control"
+							ng-model="tmp.password">
+				</br>
+			</div>
+			<div class="row form-inline" ng-if=" (checkValue==false) && ((tmp.isIdra) || isIdra)" ng-show="checkValueIDM">
+				<label for="refresh" class="control-label">Username</label> <input type="text" placeholder="Insert Username" class="form-control"
+							ng-model="tmp.username">
+				</br>
+				<label for="refresh" class="control-label">Password</label> <input type="password" placeholder="Insert Password" class="form-control"
+							ng-model="tmp.password">
+				</br>
+				<label for="refresh" class="control-label">Client ID</label> <input type="text" placeholder="Insert Client ID" class="form-control"
+							ng-model="tmp.clientID">
+				</br>
+				<label for="refresh" class="control-label">Client Secret</label> <input type="text" placeholder="Insert Client secret" class="form-control"
+							ng-model="tmp.clientSecret">
+								</br>
+				<label for="refresh" class="control-label">{{'portalURL' | translate}}</label> <input type="text" placeholder="{{'addURL' | translate}}" class="form-control"
+							ng-model="tmp.portal">
+			</div>
+	
+	
+	
 	</div>
 </div>
 
 <div class="modal-footer">
 	<button class="btn btn-default btn-raised" type="button" ng-click="cancel()">{{'cancel' | translate}}</button>
 	<button class="btn btn-primary btn-raised" type="button" ng-if=" mode=='create' " ng-click="addRemCat()" ng-disabled="tmp.URL=='' && tmp.catalogueName==''">{{'create' | translate}}</button>
-	<button class="btn btn-primary btn-raised" type="button" ng-if=" mode=='update' " ng-click="updateRemCat()" ng-disabled="tmp.URL==oldRemCat.URL && tmp.catalogueName==oldRemCat.catalogueName">{{'update' | translate}}</button>
+	<button class="btn btn-primary btn-raised" type="button" ng-if=" mode=='update' " ng-click="updateRemCat()" ng-disabled="tmp.URL==oldRemCat.URL && tmp.catalogueName==oldRemCat.catalogueName && !deleteCred">{{'update' | translate}}</button>
 </div>
 </script>
 

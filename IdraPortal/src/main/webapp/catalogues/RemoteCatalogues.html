@@ -84,13 +84,14 @@
             							style="border-style: solid;border-width: 1px;border-color: rgba(0,0,0,0.1)" class="flag-icon " 
            								 ng-class="'flag-icon-'+node.country.toLowerCase()"></span></td>
 								<td>{{node.nodeType}}</td>
-								<td>{{node.federationLevel.split("_")[1]}}</td>
+								<!-- <td>{{node.federationLevel.split("_")[1]}}</td> -->
+								<td>{{setLevel(node)}}</td>
 								<td>{{node.host}}</td>
 								<td>
 									<div class="buttons">
 										<a href="javascript:void(0)"
 											class="btn-flat "
-											a-disabled="node.alreadyLocal"
+											a-disabled="node.alreadyLocal || ((node.nodeType=='ORION' || node.nodeType=='SPARQL') && (selIsAuth==false))"
 											ng-click="addRemoteNode(node)"> <i
 											class="mdi-content-add-circle-outline"> <md-tooltip ng-show="!node.alreadyLocal">
 												{{'addCatalogue' | translate}}</md-tooltip></i>

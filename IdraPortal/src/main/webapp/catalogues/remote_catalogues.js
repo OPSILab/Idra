@@ -15,14 +15,14 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-angular.module("IdraPlatform").controller('RemoteCataloguesController',["$scope","$http",'$filter','config','$rootScope','dialogs','$interval','$timeout','$modal','FileSaver','Blob','$window','ODMSNodesAPI',function($scope,$http,$filter,config,$rootScope,dialogs,$interval,$timeout,$modal,FileSaver,Blob,$window,ODMSNodesAPI){
+angular.module("IdraPlatform").controller('RemoteCataloguesController',["$scope","$http",'$filter','config','$rootScope','dialogs','$interval','$timeout','$modal','FileSaver','Blob','$window','ODMSNodesAPI','md5',function($scope,$http,$filter,config,$rootScope,dialogs,$interval,$timeout,$modal,FileSaver,Blob,$window,ODMSNodesAPI,md5){
 
 $scope.allRemCat=[];
 $scope.sel = "";
+$scope.selIsAuth = false;
 
-
+	//Visualizzazione della lista di cataloghi remoti
 	$scope.getAllRemCat = function(){
-
 		var req = {
 				method: 'GET',
 				url: config.ADMIN_SERVICES_BASE_URL + config.REMOTE_CAT_SERVICE,
@@ -39,9 +39,17 @@ $scope.sel = "";
 			console.log(value.data);
 			$scope.allRemCat = value.data;	
 			$scope.displayedCollection2 = [].concat($scope.allRemCat);
-			$scope.selected = $scope.displayedCollection2[1];
+			//if($scope.displayedCollection2.length != 0)
+				$scope.selected = $scope.displayedCollection2[0];
 			$scope.sel = $scope.selected.URL;
-			$scope.getRemoteNodes();
+			//$scope.getRemoteNodes();
+			
+			//$scope.sel = $scope.selected.URL;
+			$scope.selID = $scope.selected.id;
+			$scope.selIsAuth = ($scope.selected.username!=null)?true:false;
+			
+			//$scope.getRemoteNodes();
+			$scope.selCatalogue();
 			
 		}, function(value){
 			console.log(value.status);
@@ -58,7 +66,100 @@ $scope.sel = "";
 	
 	$scope.selCatalogue = function(){
 			$scope.sel = $scope.selected.URL;
-			$scope.getRemoteNodes();
+			$scope.selID = $scope.selected.id;
+			$scope.selIsAuth = ($scope.selected.username!=null)?true:false;
+
+			// 3 CASI
+			if( ($scope.selected.username==null) && ($scope.selected.isIdra==false)){
+				console.log("Visualizzazione catalogo JSON");
+				console.log("endpoint: "+$scope.sel);
+				$scope.getRemoteNodes();
+			}
+			else if( ($scope.selected.username!=null) && ($scope.selected.clientID==null) && ($scope.selected.isIdra==true)){
+				console.log("Visualizzazione catalogo IDRA AUTENTICATO in IDRA");
+
+				var req = {
+						method: 'GET',
+						url: config.ADMIN_SERVICES_BASE_URL + config.REMOTE_CAT_SERVICE + "/auth/" + $scope.selID,
+						dataType: 'json',
+						headers: {
+							'Content-Type': 'application/json'
+						}};	
+		$rootScope.startSpin();
+		$http(req).then(function(value){
+			
+			if(value.data.catalogues!=null || value.data.catalogues!=undefined){
+				$rootScope.remote_nodes=value.data.catalogues; 
+			}
+			else{
+			$rootScope.remote_nodes=value.data; 
+			}
+			checkCatalogues();
+			$rootScope.stopSpin();
+		}, function(e){
+			console.log("ERROR");
+			$rootScope.stopSpin();
+		});
+
+			}
+			
+			else if($scope.selected.clientID!=null){
+				console.log(" Visualizzazione catalogo IDRA AUTENTICATO con IDM");			
+				var req = {
+						method: 'GET',
+						url: config.ADMIN_SERVICES_BASE_URL + config.REMOTE_CAT_SERVICE + "/authIDM/" + $scope.selID,
+						headers: {
+							'Content-Type': 'application/json'
+		
+						}};	
+						
+				$rootScope.startSpin();
+				$http(req).then(function(value){
+					
+					if(value.data.catalogues!=null || value.data.catalogues!=undefined){
+						$rootScope.remote_nodes=value.data.catalogues; 
+					}
+					else{
+					$rootScope.remote_nodes=value.data; 
+					}
+					checkCatalogues();
+					$rootScope.stopSpin();
+				}, function(e){
+					console.log("ERROR");
+					$rootScope.stopSpin();
+				});
+				
+			}
+			
+			else{
+				console.log("Visualizzazione catalogo IDRA NON AUTENTICATO");
+	
+				var strQuery="withImage=true&rows=100&offset=0&orderBy=id&orderType=asc";
+				var req = {
+						method: 'GET',
+						url: $scope.sel + "Idra/api/v1/client" + config.CLIENT_CATALOGUES+"?"+strQuery,
+						headers: {
+							'Content-Type': 'application/json'
+						}};
+						
+				$rootScope.startSpin();
+				$http(req).then(function(value){
+					
+					if(value.data.catalogues!=null || value.data.catalogues!=undefined){
+						$rootScope.remote_nodes=value.data.catalogues; 
+					}
+					else{
+					$rootScope.remote_nodes=value.data; 
+					}
+					checkCatalogues();
+					$rootScope.stopSpin();
+				}, function(e){
+					console.log("ERROR");
+					$rootScope.stopSpin();
+				});
+		
+				
+		}
 		};
 
 
@@ -114,7 +215,9 @@ $scope.sel = "";
 	$scope.addRemoteNode = function(node) {	
 		dialogs.confirm("Confirm","Add this remote catalogue to your local instance?").result.then(function(value){
 			node.alreadyLocal = true;
-
+			
+			$scope.setLevel(node);
+			
 			if(node.hasOwnProperty("id"))
 				delete node.id;
 			if(node.hasOwnProperty("image"))
@@ -161,6 +264,50 @@ $scope.sel = "";
 
 		});
 	};	
+	
+	$scope.setLevel = function(node) {
+
+		switch(node.nodeType){
+			case 'CKAN':
+				node.federationLevel='LEVEL_3';
+				return "3";
+			case 'DKAN':
+				node.federationLevel='LEVEL_2';
+				return "2";
+			case 'SOCRATA':
+				node.federationLevel='LEVEL_2';
+				return "2";
+			case 'SPOD':
+				node.federationLevel='LEVEL_2';
+				return "2";
+			case 'WEB':
+				node.federationLevel='LEVEL_2';
+				return "2";
+			case 'DCATDUMP':
+				if(node.dumpURL!=''){
+					node.federationLevel='LEVEL_2';
+					return "2";
+				}
+				else{
+					node.federationLevel='LEVEL_4';
+					return "4";
+				}
+
+			case 'ORION':
+				node.federationLevel='LEVEL_4';
+				return "4";
+			case 'SPARQL':
+				node.federationLevel='LEVEL_4';
+				return "4";
+			case 'OPENDATASOFT':
+			case 'JUNAR':	
+				node.federationLevel='LEVEL_2';
+				return "2";
+			default:
+				break;
+			}
+		
+	}	
 	
 	$scope.nodeCountries=[]
 	var checkCatalogues = function(){
