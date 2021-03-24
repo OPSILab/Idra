@@ -7,7 +7,8 @@
 [![](https://nexus.lab.fiware.org/repository/raw/public/badges/chapters/data-publication.svg)](https://www.fiware.org/developers/catalogue/)
 [![License badge](https://img.shields.io/github/license/OPSILab/Idra.svg)](https://opensource.org/licenses/AGPL-3.0)
 [![Docker Pulls](https://img.shields.io/docker/pulls/idraopendata/idra.svg)](https://hub.docker.com/r/idraopendata/idra/)
-[![](https://img.shields.io/badge/tag-fiware-orange.svg?logo=stackoverflow)](http://stackoverflow.com/questions/tagged/fiware)
+[![](https://img.shields.io/badge/tag-fiware-orange.svg?logo=stackoverflow)](http://stackoverflow.com/questions/tagged/fiware+idra+fiware-idra)
+[![CII Best Practices](https://bestpractices.coreinfrastructure.org/projects/4740/badge)](https://bestpractices.coreinfrastructure.org/projects/4740)
 <br>
 [![Documentation badge](https://img.shields.io/readthedocs/idra.svg)](https://idra.readthedocs.io/en/latest/)
 ![Status](https://nexus.lab.fiware.org/static/badges/statuses/idra.svg)
