@@ -21,11 +21,35 @@
 <%@ page language="java" import="java.util.*"%>
 <%@ page import="it.eng.idraportal.utils.PropertyManager"%>
 
+
+
 <!doctype html>
 <html lang="en">
 <head>
 
-<link rel="shortcut icon" type="image/png" href="images/icons/favicon-32x32.png"/>
+<!-- <link rel="shortcut icon" type="image/png" href="images/icons/favicon-32x32.png"/> -->
+<link rel="stylesheet" href="css/theme.css">
+<link id="CSStheme" href="css/theme.css" type="text/css" rel="stylesheet" />
+<link id="favicon" rel="shortcut icon" href="images/icons/favicon-32x32.png" type="image/png" />
+
+<script>
+    newFavicon = function () {
+        		var rules = document.getElementById('CSStheme').sheet.cssRules;
+        		for (var i = 0; i < rules.length; ++i) {
+	            	if(rules[i].selectorText=='.favicon'){
+	            		var l = rules[i].style.getPropertyValue('content');
+		                var old = document.getElementById('favicon'),
+		                    link = document.createElement('link');
+		                link.id = old.id;
+		                link.rel = "shortcut icon";
+		                link.type = "image/png";
+		                link.href = eval(l);
+		                old.parentNode.replaceChild(link, old);
+		                return;
+	            	}} }();
+</script>
+
+
 <title>Idra - Open Data Federation Platform</title>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -63,6 +87,8 @@
 <link rel="stylesheet" href="css/main.css">
 <!--<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">-->
 <link rel="stylesheet" href="css/navbar.css">
+<link rel="stylesheet" href="css/theme.css">
+
 
 
 <style type="text/css">
@@ -280,17 +306,22 @@ div.m-app-loading p {
 </head>
 <body>
 
+
+
+
 	<div class="m-app-loading">
 		<!--         BEGIN: Actual animated container. -->
 		<div class="animated-container">
 			<div class="messaging hide-xs show-gt-xs">
-				<img class="img-responsive " src="images/idra_D_v6_black.svg"
+			<!-- <img class="img-responsive " src="images/idra_D_v6_black.svg"
+					style="margin: 0 auto; max-width: 20%;"> -->
+				<img class="img-logo" 
 					style="margin: 0 auto; max-width: 20%;">
 				<img class="img-responsive " src="images/spinner_synchro.gif"
 					style="margin: 0 auto; max-width: 2%;">
 			</div>
 			<div class="messaging hide-gt-xs">
-				<img class="img-responsive " src="images/idra_D_v6_black.svg"
+				<img class="img-logo"
 					style="margin: 0 auto; max-width: 50%;">
 				<img class="img-responsive " src="images/spinner_synchro.gif"
 					style="margin: 0 auto; max-width: 10%;">
@@ -415,8 +446,26 @@ div.m-app-loading p {
 			ng-controller="ContentCTRL">
 
 			<div class="us-spinner-wrapper" ng-show="spinneractive">
-				<div us-spinner="{radius:25, width:10, length: 20,color:'#00b4ff'}"
+
+				<div id="spinner" us-spinner="{radius:25, width:10, length: 20, color: '#00b4ff' }"
 					spinner-key="spinner-1"></div>
+					
+			<script type="text/javascript">
+			    newSpinner = function () {
+			        		var rules = document.getElementById('CSStheme').sheet.cssRules;
+			        		var mainColor = window.getComputedStyle(document.documentElement).getPropertyValue('--mainColor');
+			        		
+				            		 var old = document.getElementById('spinner'),
+					                    newDiv = document.createElement('div');
+				            		 var newUsSpinner = "{radius:25, width:10, length: 20, color: '"+mainColor+"' }";
+				            		 newDiv.id = old.id;
+				            		 newDiv.setAttribute("spinner-key", old.getAttribute("spinner-key"));
+				            		 newDiv.setAttribute("us-spinner", newUsSpinner);
+				            		 old.parentNode.replaceChild(newDiv, old);
+				            		 return;
+				            	}();
+			</script>
+					
 			</div>
 			<div class="col-md-10 col-md-offset-1" ng-controller="AlertCtrl">
 				<div class="col-md-6 col-md-offset-3">

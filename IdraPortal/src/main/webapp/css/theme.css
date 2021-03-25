@@ -1,0 +1,17 @@
+/* Theme variables */
+:root {
+  --mainColor: #48c951;
+  --logo: url("../images/logo-small.png");
+  /* #00b4ff blu*/
+  /* #48c951 verde*/ 
+  /* --logo: url("../images/idra_D_v6_black.svg");  logo Idra*/
+}
+.img-logo {
+  content: var(--logo);
+}
+.favicon { 
+	content: "images/icons/logo-small32x32.png";
+    /* "images/icons/favicon-32x32.png"   Icona Idra*/
+}
+
+  
