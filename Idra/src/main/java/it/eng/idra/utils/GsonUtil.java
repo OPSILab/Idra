@@ -44,6 +44,7 @@ import it.eng.idra.beans.*;
 import it.eng.idra.beans.ckan.CKANErrorResponse;
 import it.eng.idra.beans.ckan.CKANSuccessResponse;
 import it.eng.idra.beans.dcat.DCATDataset;
+import it.eng.idra.beans.dcat.DCATDistribution;
 import it.eng.idra.beans.dcat.DCATProperty;
 import it.eng.idra.beans.dcat.DCTLicenseDocument;
 import it.eng.idra.beans.dcat.DCTStandard;
@@ -157,6 +158,13 @@ public final class GsonUtil {
 	}.getType();
 
 	public static Type datasetType = new TypeToken<DCATDataset>() {
+	}.getType();
+	
+
+	public static Type distributionType = new TypeToken<DCATDistribution>() {
+	}.getType();
+
+	public static Type distributionListType = new TypeToken<List<DCATDistribution>>() {
 	}.getType();
 	
 	public static Type spodDatasetType = new TypeToken<SPODDataset>() {

@@ -29,6 +29,7 @@ import it.eng.idra.beans.dcat.DCATAPWriteType;
 import it.eng.idra.beans.dcat.DCATDataset;
 import it.eng.idra.beans.dcat.DCATDistribution;
 import it.eng.idra.beans.exception.DatasetNotFoundException;
+import it.eng.idra.beans.exception.DistributionNotFoundException;
 import it.eng.idra.beans.exception.EuroVocTranslationNotFoundException;
 import it.eng.idra.beans.odms.ODMSCatalogue;
 import it.eng.idra.beans.odms.ODMSCatalogueNotFoundException;
@@ -556,105 +557,117 @@ public class ClientAPI {
 
 	@GET
 	@Path("/downloadFromUri")
-	public Response downloadFromUri(@Context HttpServletRequest httpRequest, @QueryParam("url") String url,
-			@QueryParam("format") String format,@QueryParam("downloadFile") @DefaultValue("true") boolean downloadFile,@QueryParam("isPreview") @DefaultValue("false") boolean isPreview) {
+	public Response downloadFromUri(@Context HttpServletRequest httpRequest, @QueryParam("url") String url, @QueryParam("id") String distributionId, 
+			@QueryParam("format") String format,@QueryParam("downloadFile") @DefaultValue("true") boolean downloadFile,
+			@QueryParam("isPreview") @DefaultValue("false") boolean isPreview) {
 		
-		logger.info("Download file API: "+downloadFile);
-		String compiledUri = url;
-		//client = ClientBuilder.newBuilder().readTimeout(10, TimeUnit.SECONDS).build();
-		int timeout = Integer.parseInt(PropertyManager.getProperty(IdraProperty.PREVIEW_TIMEOUT))*1000;
-		client = ClientBuilder.newClient().register(RedirectFilter.class);
-		client.property(ClientProperties.CONNECT_TIMEOUT, timeout);
-	    client.property(ClientProperties.READ_TIMEOUT,    timeout);
-	    
-		try {
-			WebTarget webTarget = client.target(compiledUri);
-			Response request = webTarget.request().get();
-			logger.info("File uri: " + compiledUri);
-			logger.info("File format: " + format);
-			ResponseBuilder responseBuilder = Response.status(request.getStatus());
-			if(downloadFile) {
-				
-				if(StringUtils.isNotBlank(format) && format.toLowerCase().contains("csv")) {
-					InputStream stream = new BufferedInputStream((InputStream) request.getEntity());
-					CharsetDetector charDetector = new CharsetDetector();
-					charDetector.setText(stream);
-					responseBuilder.entity(new InputStreamReader(stream,charDetector.detect().getName()));
-				}else {
-					responseBuilder.entity(new StreamingOutput() {
-						@Override
-						public void write(OutputStream output) throws IOException, WebApplicationException {
-							// TODO Auto-generated method stub
-							IOUtils.copy((InputStream) request.getEntity(), output);
-//							output.flush();
-							output.close();
-						}
-					});
-				}
-			}
-			
-			MultivaluedMap<String, Object> headers = request.getHeaders();
-			Set<String> keys = headers.keySet();
-			logger.info("Status: " + request.getStatus());
-			
-			logger.debug(compiledUri);
-			
-			if(isPreview) {
+		
 				try {
-					//TO-DO: renderlo configurabile
-					long previewLimit = Integer.parseInt(PropertyManager.getProperty(IdraProperty.PREVIEW_TIMEOUT))*1024*1024; //10MB
-					long dimension=0L;
-					for (String k : keys) {
-
-						if(k.toLowerCase().contains("content-length")) {
-							logger.debug("Content-Length");
-							logger.debug(headers.get(k).get(0));
-							dimension = Long.parseLong((String) headers.get(k).get(0));
-							break;
+					MetadataCacheManager.getDistribution(distributionId, url);
+					
+					logger.info("Download file API: "+downloadFile);
+					String compiledUri = url;
+					//client = ClientBuilder.newBuilder().readTimeout(10, TimeUnit.SECONDS).build();
+					int timeout = Integer.parseInt(PropertyManager.getProperty(IdraProperty.PREVIEW_TIMEOUT))*1000;
+					client = ClientBuilder.newClient().register(RedirectFilter.class);
+					client.property(ClientProperties.CONNECT_TIMEOUT, timeout);
+				    client.property(ClientProperties.READ_TIMEOUT,    timeout);
+				    
+					try {
+						WebTarget webTarget = client.target(compiledUri);
+						Response request = webTarget.request().get();
+						logger.info("File uri: " + compiledUri);
+						logger.info("File format: " + format);
+						ResponseBuilder responseBuilder = Response.status(request.getStatus());
+						if(downloadFile) {
+							
+							if(StringUtils.isNotBlank(format) && format.toLowerCase().contains("csv")) {
+								InputStream stream = new BufferedInputStream((InputStream) request.getEntity());
+								CharsetDetector charDetector = new CharsetDetector();
+								charDetector.setText(stream);
+								responseBuilder.entity(new InputStreamReader(stream,charDetector.detect().getName()));
+							}else {
+								responseBuilder.entity(new StreamingOutput() {
+									@Override
+									public void write(OutputStream output) throws IOException, WebApplicationException {
+										// TODO Auto-generated method stub
+										IOUtils.copy((InputStream) request.getEntity(), output);
+			//							output.flush();
+										output.close();
+									}
+								});
+							}
 						}
-						else if(k.toLowerCase().contains("content-range")) {
-							logger.debug("Content-Range");
-							logger.debug(headers.get(k));
-							logger.debug(headers.get(k).get(0).toString());
-							logger.debug(headers.get(k).get(0).toString().split("/")[1].replaceFirst("]", ""));
-							dimension = Long.parseLong((String) headers.get(k).get(0).toString().split("/")[1].replaceFirst("]", ""));
-							break;
-						}
-
-					}
-					
-					
-					if(dimension>previewLimit) {
-						responseBuilder = Response.status(Status.REQUEST_ENTITY_TOO_LARGE);
-					}
-					
-//					if(dimension==0L || dimension>previewLimit) {
-//						responseBuilder = Response.status(Status.REQUEST_ENTITY_TOO_LARGE);
-//					}
-					
-				}catch(NumberFormatException ex) {
-//					System.out.println("Unable to retrieve the dimension of the element");
-					logger.error("Unable to retrieve the dimension of the element");
-					responseBuilder = Response.status(Status.REQUEST_ENTITY_TOO_LARGE);
-				}
-				
-				
-			}
+						
+						MultivaluedMap<String, Object> headers = request.getHeaders();
+						Set<String> keys = headers.keySet();
+						logger.info("Status: " + request.getStatus());
+						
+						logger.debug(compiledUri);
+						
+						if(isPreview) {
+							try {
+								//TO-DO: renderlo configurabile
+								long previewLimit = Integer.parseInt(PropertyManager.getProperty(IdraProperty.PREVIEW_TIMEOUT))*1024*1024; //10MB
+								long dimension=0L;
+								for (String k : keys) {
 			
-//			System.out.println("--------------------------------------------\n");
-//			responseBuilder.header("Access-Control-Allow-Origin", "*");
-			responseBuilder.header("original-file-format", format);
-			responseBuilder.encoding("UTF-8");
-			return responseBuilder.build();
+									if(k.toLowerCase().contains("content-length")) {
+										logger.debug("Content-Length");
+										logger.debug(headers.get(k).get(0));
+										dimension = Long.parseLong((String) headers.get(k).get(0));
+										break;
+									}
+									else if(k.toLowerCase().contains("content-range")) {
+										logger.debug("Content-Range");
+										logger.debug(headers.get(k));
+										logger.debug(headers.get(k).get(0).toString());
+										logger.debug(headers.get(k).get(0).toString().split("/")[1].replaceFirst("]", ""));
+										dimension = Long.parseLong((String) headers.get(k).get(0).toString().split("/")[1].replaceFirst("]", ""));
+										break;
+									}
+			
+								}
+								
+								
+								if(dimension>previewLimit) {
+									responseBuilder = Response.status(Status.REQUEST_ENTITY_TOO_LARGE);
+								}
+								
+			//					if(dimension==0L || dimension>previewLimit) {
+			//						responseBuilder = Response.status(Status.REQUEST_ENTITY_TOO_LARGE);
+			//					}
+								
+							}catch(NumberFormatException ex) {
+			//					System.out.println("Unable to retrieve the dimension of the element");
+								logger.error("Unable to retrieve the dimension of the element");
+								responseBuilder = Response.status(Status.REQUEST_ENTITY_TOO_LARGE);
+							}
+							
+							
+						}
+						
+			//			System.out.println("--------------------------------------------\n");
+			//			responseBuilder.header("Access-Control-Allow-Origin", "*");
+						responseBuilder.header("original-file-format", format);
+						responseBuilder.encoding("UTF-8");
+						return responseBuilder.build();
+			
+					} catch (Exception e) {
+						e.printStackTrace();
+						return handleErrorResponse500(e);
+			
+					}finally {
+			//			request.close();
+						client.close();
+					}
 
-		} catch (Exception e) {
-			e.printStackTrace();
-			return handleErrorResponse500(e);
-
-		}finally {
-//			request.close();
-			client.close();
-		}
+					
+				} catch (DistributionNotFoundException | IOException | SolrServerException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+					return handleErrorResponse500(e1);
+				}
 
 	}
 
@@ -990,6 +1003,8 @@ public class ClientAPI {
 			return Response.status(Response.Status.NOT_FOUND).entity(err.toJson()).build();
 		}
 	}
+	
+	
 
 
 	@GET
@@ -1034,6 +1049,82 @@ public class ClientAPI {
 			return handleBadRequestErrorResponse(e);
 		}
 	}
+	
+	@GET
+	@Path("/catalogues/{nodeID}/datasets/{datasetID}/distributions/{distributionID}")
+	@Consumes({ MediaType.APPLICATION_JSON })
+	@Produces("application/json")
+	public Response getDatasetDistribution(@Context HttpServletRequest httpRequest, @PathParam("nodeID") String nodeID, 
+			@PathParam("datasetID") String datasetID,
+			@PathParam("distributionID") String distributionID) {
+
+		try { 
+				DCATDataset dataset = MetadataCacheManager.getDatasetByID(datasetID);
+		
+				DCATDistribution distribution = MetadataCacheManager.getDistributionByID(distributionID);
+				
+				if((distribution.getNodeID().equals(nodeID)) && (dataset.getNodeID().equals(nodeID)))
+					return Response.status(Response.Status.OK).entity(GsonUtil.obj2Json(distribution, GsonUtil.distributionType)).build();
+				else {
+					ErrorResponse err = new ErrorResponse(String.valueOf(Response.Status.NOT_FOUND.getStatusCode()), "Distribution with id: "+distributionID+" not found for catalogue: "+nodeID, String.valueOf(Response.Status.NOT_FOUND.getStatusCode()), "Dataset with id: "+datasetID+" not found");
+					return Response.status(Response.Status.NOT_FOUND).entity(err.toJson()).build();	
+				}
+
+	
+		} catch (NumberFormatException e) {
+			// TODO Auto-generated catch block
+			return handleErrorResponse500(e);
+		} catch (DistributionNotFoundException e) {
+			// TODO Auto-generated catch block
+			return handleErrorResponse500(e);
+		} catch (DatasetNotFoundException e) {
+			// TODO Auto-generated catch block
+			return handleErrorResponse500(e);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			return handleErrorResponse500(e);
+		} catch (SolrServerException e) {
+			// TODO Auto-generated catch block
+			return handleErrorResponse500(e);
+		} catch (GsonUtilException e) {
+			// TODO Auto-generated catch block
+			return handleErrorResponse500(e);
+		}
+	}
+
+	
+
+	@GET
+	@Path("/catalogues/{nodeID}/datasets/{datasetID}/distributions")
+	@Consumes({ MediaType.APPLICATION_JSON })
+	@Produces("application/json")
+	public Response getDatasetDistributions(@Context HttpServletRequest httpRequest, @PathParam("nodeID") String nodeID, 
+			@PathParam("datasetID") String datasetID) {
+ 
+		try {
+					
+			DCATDataset dataset = MetadataCacheManager.getDatasetByID(datasetID);
+
+			List<DCATDistribution> result = dataset.getDistributions();
+
+			return Response.status(Response.Status.OK).entity(GsonUtil.obj2Json(result, GsonUtil.distributionListType)).build();
+
+
+		}  catch (DatasetNotFoundException e) {
+			// TODO Auto-generated catch block
+			return handleErrorResponse500(e);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			return handleErrorResponse500(e);
+		} catch (SolrServerException e) {
+			// TODO Auto-generated catch block
+			return handleErrorResponse500(e);
+		} catch (GsonUtilException e) {
+			// TODO Auto-generated catch block
+			return handleErrorResponse500(e);
+		} 
+	}
+	
 	
 	@GET
 	@Path("/datasets/{id}")

@@ -641,7 +641,7 @@ public class AdministrationAPI {
 		try {
 			RemoteCatalogue remCat = GsonUtil.json2Obj(input, GsonUtil.remCatType);
 			if(remCat.getPassword()!=null) {
-				//encrypt pssw
+				//encrypt password
 				String ecrPassword = CommonUtil.encrypt(remCat.getPassword());
 				remCat.setPassword(ecrPassword);
 			}
@@ -663,7 +663,8 @@ public class AdministrationAPI {
 	@Path("/remoteCatalogue")
 	@Produces("application/json")
 	public Response getRemoteCatalogue() {
-		try {
+		try {			
+
 			List<RemoteCatalogue> conf = FederationCore.getAllRemCatalogues();
 			return Response.status(Response.Status.OK).entity(GsonUtil.obj2Json(conf, GsonUtil.remCatListType))
 					.build();
@@ -748,7 +749,7 @@ public class AdministrationAPI {
 			//-------------------------- Utenze in Idra
 			RemoteCatalogue remCatalogue = FederationCore.getRemCat(Integer.parseInt(id));
 			String username = remCatalogue.getUsername();
-			//decrypt
+			//decrypt password
 			String password = CommonUtil.decrypt(remCatalogue.getPassword());
 			String basePath = remCatalogue.getURL();
 			
@@ -841,7 +842,7 @@ public class AdministrationAPI {
 			String clientId = remCatalogue.getClientID();
 			String clientSecret = remCatalogue.getClientSecret();
 			String username = remCatalogue.getUsername();
-			//decrypt
+			//decrypt password
 			String password = CommonUtil.decrypt(remCatalogue.getPassword());
 			String basePath = remCatalogue.getURL();
 			String portalURL = remCatalogue.getPortal();

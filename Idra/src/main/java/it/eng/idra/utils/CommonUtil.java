@@ -18,7 +18,6 @@
 package it.eng.idra.utils;
 
 import java.io.File;
-import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.security.Key;
@@ -36,25 +35,17 @@ import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
 import java.util.Base64;
 import java.util.Date;
-import java.util.LinkedList;
 import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 import javax.crypto.Cipher;
 import javax.crypto.spec.SecretKeySpec;
-
 import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
 import com.google.common.collect.Ordering;
 
 import it.eng.idra.beans.odms.ODMSCatalogue;
-
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
 
 public class CommonUtil {
 
@@ -390,86 +381,13 @@ public class CommonUtil {
 //		}
 //	}
 //
-	
-	public static void defaultCatalogueCreation(LinkedList<String> jsonCatalogues, String outputJsonCatalogue_path) {
-		JSONParser parser = new JSONParser();
-		JSONArray a, a1, a2;
-		
-		try {
-			a = (JSONArray) parser.parse(new FileReader(jsonCatalogues.get(0)));
-			a1 = (JSONArray) parser.parse(new FileReader(jsonCatalogues.get(1)));
-			a2 = (JSONArray) parser.parse(new FileReader(jsonCatalogues.get(2)));
-			
-			JSONArray outputArray1 = jsonMerge(a, a1);
-			JSONArray outputArray = jsonMerge(outputArray1, a2);
-			
-			try{
-                FileWriter  file = new FileWriter(outputJsonCatalogue_path, false);
-                outputArray.writeJSONString(file);
-                file.close();
-            }
-            catch(Exception e  ){
-                e.getMessage();
-            }
-			
-		} catch (IOException | org.json.simple.parser.ParseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}	
-	}
-	
-	
-	public static JSONArray jsonMerge(JSONArray a, JSONArray a1) {
-		JSONArray newJArray = jsonPersonalizedCopy(a);
-		boolean toAdd = true;
 
-				 for (Object o : a1) {
-					 JSONObject catalogue_a1 = (JSONObject) o;
-					 JSONObject catalogue_newArray = new JSONObject();
-					 for (Object ob : newJArray) {
-						 JSONObject catalogue_a = (JSONObject) ob;
-						 if(((catalogue_a1.get("host").toString().split(":")[1]).equals(catalogue_a.get("host").toString().split(":")[1]))) {
-							 toAdd = false;
-						 }
-					 }
-					 if(toAdd) {
-						 for(Object key: catalogue_a1.keySet()) {
-						        String k = (String)key;
-						        if(!(k.equals("id")) && !(k.equals("datasetCount")) && !(k.equals("datasetStart")) && !(k.equals("sitemap"))) {
-						        		catalogue_newArray.put(k, catalogue_a1.get(k).toString());
-						        	}
-						  }
-						 newJArray.add(catalogue_newArray);
-					 }
-					 toAdd = true;
-				  }
-		return newJArray;
-	}
-
-	
-	public static JSONArray jsonPersonalizedCopy(JSONArray a) {
-		JSONArray newJArray = new JSONArray();
-
-					 for (Object ob : a) {
-						 JSONObject catalogue_a = (JSONObject) ob;
-							 JSONObject catalogue_newArray = new JSONObject();
-							    for(Object key: catalogue_a.keySet()) {
-							        String k = (String)key;
-							        	if(!(k.equals("id")) && !(k.equals("datasetCount")) && !(k.equals("datasetStart")) && !(k.equals("sitemap"))) {
-							        		catalogue_newArray.put(k, catalogue_a.get(k).toString());
-							        	}
-							        }
-							    	newJArray.add(catalogue_newArray);
-					 }
-		return newJArray;
-	}
 	
 	
   public static String encrypt(String text) {
 	  String encr = "";
       try 
       {
-    	 // System.out.println("\nDA CRIPTARE: "+text);
           String key = "key1234567"; 
           Key aesKey = new SecretKeySpec(Arrays.copyOf(key.getBytes("UTF-8"), 16), "AES");
           Cipher cipher = Cipher.getInstance("AES");
@@ -477,7 +395,7 @@ public class CommonUtil {
           byte[] encrypted = cipher.doFinal(text.getBytes());
 
           encr = Base64.getEncoder().encodeToString(encrypted);
-          //System.out.println("\nCRIPTATO: "+encr);
+
 
       }
       catch(Exception e) 
@@ -499,7 +417,7 @@ public class CommonUtil {
           cipher.init(Cipher.DECRYPT_MODE, aesKey);
           byte[] decode = Base64.getDecoder().decode(encr);
           decrypted = new String(cipher.doFinal(decode));
-          //System.out.println("\nDECRIPTATO: "+decrypted);
+          
       }
       catch(Exception e) 
       {
@@ -507,7 +425,7 @@ public class CommonUtil {
       }
       return decrypted;
   }
-
+	
 
 	
 	

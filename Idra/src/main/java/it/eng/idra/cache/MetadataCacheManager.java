@@ -57,6 +57,7 @@ import it.eng.idra.beans.dcat.DCATDataset;
 import it.eng.idra.beans.dcat.DCATDistribution;
 import it.eng.idra.beans.dcat.DCTLicenseDocument;
 import it.eng.idra.beans.exception.DatasetNotFoundException;
+import it.eng.idra.beans.exception.DistributionNotFoundException;
 import it.eng.idra.beans.odms.ODMSCatalogue;
 import it.eng.idra.beans.odms.ODMSCatalogueState;
 import it.eng.idra.beans.odms.ODMSCatalogueType;
@@ -151,6 +152,85 @@ public class MetadataCacheManager {
 		throw new DatasetNotFoundException("Dataset not found in cache for seoIdentifier:" + id);
 
 	}
+	
+
+	/**
+	 * Retrieve a distribution from SOLR Cache matching passed id and url
+	 * 
+	 * @param id
+	 *            DCATDistribution id to be retrieved
+	 * @param url
+	 *            DCATDistribution access or download url to be retrieved
+	 * @throws IOException
+	 * @throws SolrServerException
+	 * @throws DistributionNotFoundException
+	 * @returns DCATDistribution The distribution matching id
+	 */
+	public static DCATDistribution getDistribution(String id, String url)
+			throws DistributionNotFoundException, IOException, SolrServerException {
+
+		SolrQuery query = new SolrQuery();
+		QueryResponse rsp;
+
+		query.setQuery("(id:\"" + id + "\")");		
+		query.addFilterQuery("(accessURL:\"" + url + "\" OR downloadURL:\"" + url + "\")");
+
+		query.set("parent_filter", "content_type:" + CacheContentType.distribution);
+		query.set("defType", "edismax");
+		query.addFilterQuery("{!parent which=$parent_filter}");
+		query.setParam("fl", "*,[child parentFilter=$parent_filter limit=1000]");
+
+		rsp = server.query(query);
+		SolrDocumentList docs = rsp.getResults();
+
+		DCATDistribution tmp = null;
+		for (SolrDocument doc_tmp : docs) {
+			tmp = DCATDistribution.docToDCATDistribution(doc_tmp);
+			if (tmp.getId().equals(id)) {
+				return tmp;
+			}
+		}
+		throw new DistributionNotFoundException("Distribution not found in cache for seoIdentifier:" + id);
+	}
+	
+	
+
+	/**
+	 * Retrieve a distribution from SOLR Cache matching passed id
+	 * 
+	 * @param id
+	 *            DCATDistribution id to be retrieved
+	 * @throws IOException
+	 * @throws SolrServerException
+	 * @throws DistributionNotFoundException
+	 * @returns DCATDistribution The distribution matching id
+	 */
+	public static DCATDistribution getDistributionByID(String id)
+			throws DistributionNotFoundException, IOException, SolrServerException {
+
+		SolrQuery query = new SolrQuery();
+		QueryResponse rsp;
+
+		query.setQuery("(id:\"" + id + "\")");		
+
+		query.set("parent_filter", "content_type:" + CacheContentType.distribution);
+		query.set("defType", "edismax");
+		query.addFilterQuery("{!parent which=$parent_filter}");
+		query.setParam("fl", "*,[child parentFilter=$parent_filter limit=1000]");
+
+		rsp = server.query(query);
+		SolrDocumentList docs = rsp.getResults();
+
+		DCATDistribution tmp = null;
+		for (SolrDocument doc_tmp : docs) {
+			tmp = DCATDistribution.docToDCATDistribution(doc_tmp);
+			if (tmp.getId().equals(id)) {
+				return tmp;
+			}
+		}
+		throw new DistributionNotFoundException("Distribution not found in cache for seoIdentifier:" + id);
+	}
+
 
 	/**
 	 * Searches all Dataset belonging to the passed nodeID on local SOLR cache

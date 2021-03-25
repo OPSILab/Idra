@@ -72,7 +72,6 @@ $scope.selIsAuth = false;
 			// 3 CASI
 			if( ($scope.selected.username==null) && ($scope.selected.isIdra==false)){
 				console.log("Visualizzazione catalogo JSON");
-				console.log("endpoint: "+$scope.sel);
 				$scope.getRemoteNodes();
 			}
 			else if( ($scope.selected.username!=null) && ($scope.selected.clientID==null) && ($scope.selected.isIdra==true)){

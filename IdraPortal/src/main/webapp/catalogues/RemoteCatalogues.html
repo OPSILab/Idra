@@ -91,7 +91,7 @@
 									<div class="buttons">
 										<a href="javascript:void(0)"
 											class="btn-flat "
-											a-disabled="node.alreadyLocal || ((node.nodeType=='ORION' || node.nodeType=='SPARQL') && (selIsAuth==false))"
+											a-disabled="node.alreadyLocal || ((node.nodeType=='ORION' || node.nodeType=='SPARQL' || node.nodeType=='DCATDUMP') && (selIsAuth==false))"
 											ng-click="addRemoteNode(node)"> <i
 											class="mdi-content-add-circle-outline"> <md-tooltip ng-show="!node.alreadyLocal">
 												{{'addCatalogue' | translate}}</md-tooltip></i>

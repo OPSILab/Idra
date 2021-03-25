@@ -424,6 +424,7 @@ angular.module('IdraPlatform').controller('RemoteModalInstanceCtrl',["$scope","$
 			
 		else if($scope.checkValue){
 			console.log("MODIFICA catalogo CON CREDENZIALI IDRA");
+
 				if(checkRemcat($scope.tmp,$scope.mode) ){
 					var req = {
 							method: 'PUT',
@@ -439,9 +440,7 @@ angular.module('IdraPlatform').controller('RemoteModalInstanceCtrl',["$scope","$
 								'password': md5.createHash($scope.tmp.password),
 								'username': $scope.tmp.username,
 								'isIdra': true,
-								'clientID': null,
-								'clientSecret': null,
-								'portal': null
+						 
 							}
 					};
 				$scope.request(req);
@@ -449,8 +448,6 @@ angular.module('IdraPlatform').controller('RemoteModalInstanceCtrl',["$scope","$
 		
 			}
 		else {
-				console.log("MODIFICA catalogo CON CREDENZIALI IDM o JSON o IDRA in cui hai cambiato solo usernmane o passw");
-			
 				if(checkRemcat($scope.tmp,$scope.mode) ){
 					var req = {
 							method: 'PUT',
