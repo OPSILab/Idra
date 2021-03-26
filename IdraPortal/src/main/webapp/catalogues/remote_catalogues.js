@@ -234,6 +234,9 @@ $scope.selIsAuth = false;
 				node.homepage=node.host;
 			}
 			
+			if(node.hasOwnProperty("datasetStart")){
+				node.datasetStart=0;
+			}
 			var fd = new FormData();  
 			fd.append("node",JSON.stringify(node));
 			fd.append("dump",'');

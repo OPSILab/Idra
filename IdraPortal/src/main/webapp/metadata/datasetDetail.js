@@ -343,7 +343,7 @@ angular.module("IdraPlatform").controller('DatasetDetailCtrl',['$scope','$rootSc
 		
 		var reqCheckDownloadUri = {
 				method: 'GET',
-				url: config.CLIENT_SERVICES_BASE_URL+config.CHECK_DISTRIBUTION_URL+window.encodeURIComponent(distribution.downloadURL)
+				url: config.CLIENT_SERVICES_BASE_URL+config.CHECK_DISTRIBUTION_URL+window.encodeURIComponent(distribution.downloadURL)+'&id='+distribution.id
 		};
 		
 		distribution.lockFile=true;

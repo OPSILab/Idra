@@ -68,7 +68,6 @@ public class OrionCatalogueConfiguration extends ODMSCatalogueAdditionalConfigur
 		this.authToken = authToken;
 	}
 
-	@Transient
 	public String getOrionDatasetDumpString() {
 		return orionDatasetDumpString;
 	}
