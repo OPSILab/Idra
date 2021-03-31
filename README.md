@@ -83,7 +83,7 @@ following link:
 
 ## Contribution
 
-Before start to contribute, please read and sign the [Contributor License Agreement](https://www.clahub.com/agreements/OPSILab/Idra).
+Before start to contribute, please read and sign the [Contributor License Agreement](https://github.com/OPSILab/Idra/blob/master/idra-individual-cla.pdf).
 
 <a name="support"></a>
 
