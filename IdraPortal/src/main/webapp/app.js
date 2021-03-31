@@ -891,7 +891,6 @@
              $scope.version = $rootScope.idraVersion;
             })
            
-            $scope.version = $rootScope.idraVersion;
         }]);
    
 
