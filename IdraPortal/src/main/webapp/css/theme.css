@@ -1,9 +1,8 @@
 /* Theme variables */
 :root {
-  --mainColor: #48c951;
+  --mainColor: #c94848;
   --logo: url("../images/logo-small.png");
-  /* #00b4ff blu*/
-  /* #48c951 verde*/ 
+  /* #00b4ff blu originale Idra */
   /* --logo: url("../images/idra_D_v6_black.svg");  logo Idra*/
 }
 .img-logo {
@@ -13,5 +12,21 @@
 	content: "images/icons/logo-small32x32.png";
     /* "images/icons/favicon-32x32.png"   Icona Idra*/
 }
-
-  
+#header .navbar-link-element{
+	 font-weight: bold;  /* normal, lighter, num da 100 a 900 */
+}
+#header div.navbar {
+  	border-style:solid;
+    border-width:3px;  
+    border-bottom-color: var(--mainColor); /* transparent */
+    box-shadow: 10px 10px 8px #ffffff;  /* ombreggiatura */
+}
+#header div.navbar.navbar-default .navbar-header .navbar-brand {
+	background-image: var(--logo);
+	background-repeat: no-repeat;
+	background-size: auto 60px; /* grandezza del logo */
+	display: block;
+	height: 70px;
+	width: 100px;
+	text-transform: capitalize;
+}
