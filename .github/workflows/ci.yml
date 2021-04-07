@@ -31,8 +31,10 @@ jobs:
       - name: "Build Environment"
         run: |
           docker-compose -f ./docker-compose-test-orion.yml up -d
+          docker ps
       - name: "Orion Tests with Node.js ${{ matrix.node-version }}"
         run: |
+          docker ps
           cd orion-test
           ./replace_ip.sh
           npm install
