@@ -23,7 +23,7 @@ To perform an advanced search the user should click on the expand icon. An
 advanced form appears to him/her where the user can fill one or all of the
 fields in order to filter the results.
 
-![alt tag](advanced.png "Idra Portal Advanced Form")
+![alt tag](advanced2.png "Idra Portal Advanced Form")
 
 The advanced search functionality allows the user to search using a
 multilanguage approach provided by the platform taking advantage of EuroVoc
@@ -40,7 +40,7 @@ The result of both the simple search or the advanced search are a list of the
 dataset that match with the requested filter. Next figure illustrates the result
 of a search operation.
 
-![alt tag](searchresult.png "Search Result")
+![alt tag](searchresult2.png "Search Result")
 
 In this page the user can navigate results, they can change the order and the
 number of the results per page; moreover, they can filter the data using a
@@ -58,11 +58,19 @@ By clicking on a dataset in the search result page, the detailed presentation of
 all its metadata is showed to the user. The following picture shows an example
 of dataset detail.
 
-![alt tag](datasetDetail2.png "Dataset Detail")
+![alt tag](datasetDetailnew.png "Dataset Detail")
 
 In this page the user can download the resources associated to the dataset by
-clicking on the download button; moreover, the user can create a graphical
-representation of the resources by clicking on the _create datalet_ button.
+clicking on the _download_ button; the user is allowed to view the dataset file 
+preview by using the relative button; next figure illustrates the result of 
+this operation.
+
+![alt tag](preview.png "Dataset Preview")
+
+Moreover, the user can create a graphical representation of the resources by 
+clicking on the _create datalet_ button.
+
+![alt tag](datasetDetailnew.png "Dataset Detail")
 
 ## Datalet Creation
 
