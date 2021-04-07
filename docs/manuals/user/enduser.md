@@ -91,10 +91,17 @@ In order to create a datalet the user should follow this steps:
 
 The datalet creation process starts with the selection of the fields from the
 resource. In this page the user can add all or a subset of the original fields.
-Moreover, the user can also filter the data through a dedicated panel. The user
-should then click on the right arrow to continue the process.
 
-![alt tag](dataletField.png "Dataset Detail")
+![alt tag](dataletFieldNew.png "Dataset Detail")
+
+Moreover, the user can also filter the data through a dedicated panel by clicking
+the _Expert mode_ button.
+In this panel it is also possible to perform the _group by_ operation on the data 
+and finally view the resulting query.
+
+![alt tag](filter.png "Filter panel")
+
+The user should then click on the right arrow to continue the process.
 
 ### Select the graphical representation
 
@@ -102,10 +109,12 @@ The next step is to choose the graphical representation of the selected fields
 and the proper association among the selected fields and the chart inputs. The
 following picture depicts a pie chart example.
 
-![alt tag](datalet1.png "Dataset Detail")
+![alt tag](datalet1new.png "Dataset Detail")
 
 In order to show the datalet in the Idra environment the user should click on
-the _Add_ button.
+the _Save_ button. Moreover, the user has the possibility to export the chart in 
+different formats, copy the html code to embed the chat in an external webpage 
+and view the chat in full screen.
 
 ## SPARQL Queries
 
