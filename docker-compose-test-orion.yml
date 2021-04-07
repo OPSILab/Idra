@@ -34,7 +34,9 @@ services :
             command: --default-authentication-plugin=mysql_native_password --lower_case_table_names=1
 
     idra:
-            build: .
+            build: 
+                context: .
+                dockerfile: Dockerfile-BE
             ports:
                 - 8080:8080
             depends_on: 
