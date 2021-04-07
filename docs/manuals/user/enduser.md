@@ -143,3 +143,11 @@ datasets. The user can select between two views:
 -   Table
 
 ![alt tag](viewnodes1.png "Catalogues")
+
+## Statistics
+
+The Statistics page provides statistics about catalogues and datasets in the Idra federation.
+The user can also select all or a subset of Catalogues on which he is interested in viewing 
+the statistics.
+
+![alt tag](statistics.png "Statistics")
