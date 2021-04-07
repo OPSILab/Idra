@@ -34,6 +34,6 @@ jobs:
       - name: "Orion Tests with Node.js ${{ matrix.node-version }}"
         run: |
           cd orion-test
-          ./repalce_ip.sh
+          ./replace_ip.sh
           npm install
           npm test
