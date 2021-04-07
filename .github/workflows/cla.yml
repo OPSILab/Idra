@@ -19,7 +19,7 @@ jobs:
           PERSONAL_ACCESS_TOKEN : ${{ secrets.PERSONAL_ACCESS_TOKEN }}
         with:
           path-to-signatures: 'cla/cla.json'
-          path-to-cla-document: 'https://github.com/OPSILab/Idra/blob/master/idra-individual-cla.pdf' # e.g. a CLA or a DCO document
+          path-to-document: 'https://github.com/OPSILab/Idra/blob/master/idra-individual-cla.pdf' # e.g. a CLA or a DCO document
           # branch should not be protected
           branch: 'master'
           allowlist: OPSILab,robcalla,emastrosimone,martinomaggio,sirnino,francescadag,dependabot,bot*
