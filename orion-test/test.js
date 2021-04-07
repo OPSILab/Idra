@@ -5,8 +5,8 @@ var request = require('supertest');
 
 let room = JSON.parse(fs.readFileSync('room_entity.json'));
 let orion_catalogue = JSON.parse(fs.readFileSync('orion_catalogue.json'));
-let orionBaseURL='http://localhost:1026'
-let idraBaseUrl='http://localhost:8080'
+let orionBaseURL='http://TEST_MACHINE_IP:1026'
+let idraBaseUrl='http://TEST_MACHINE_IP:8080'
 
 let adminToken=null;
 let orionCatalogueID=null;
