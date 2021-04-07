@@ -1,0 +1,17 @@
+{
+  "name": "idra-orion-test",
+  "version": "1.0.0",
+  "description": "",
+  "main": "test.js",
+  "scripts": {
+    "test": "mocha test.js --timeout=120000 --exit"
+  },
+  "author": "",
+  "dependencies": {
+    "mocha": "^8.3.2",
+    "should": "^13.2.3"
+  },
+  "devDependencies": {
+    "supertest": "^6.1.3"
+  }
+}
