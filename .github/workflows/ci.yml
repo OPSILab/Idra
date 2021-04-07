@@ -32,6 +32,13 @@ jobs:
         run: |
           docker-compose -f ./docker-compose-test-orion.yml up -d
           docker ps
+      - name: Wait For Response
+        uses: nev7n/wait_for_response@v1.0.1
+        with:
+          url: 'http://localhost:8080/Idra/api/v1/administration/version'
+          responseCode: 200
+          timeout: 60000
+          interval: 500
       - name: "Orion Tests with Node.js ${{ matrix.node-version }}"
         run: |
           docker ps
