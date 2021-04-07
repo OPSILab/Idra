@@ -31,7 +31,6 @@ jobs:
       - name: "Build Environment"
         run: |
           docker-compose -f ./docker-compose-test-orion.yml up -d
-          docker ps
       - name: Wait For Response
         uses: nev7n/wait_for_response@v1.0.1
         with:
@@ -41,8 +40,6 @@ jobs:
           interval: 500
       - name: "Orion Tests with Node.js ${{ matrix.node-version }}"
         run: |
-          docker ps
           cd orion-test
-          ./replace_ip.sh
           npm install
           npm test
