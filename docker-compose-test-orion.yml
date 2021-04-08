@@ -1,0 +1,92 @@
+#
+# Idra - Open Data Federation Platform
+# Copyright (C) 2018 Engineering Ingegneria Informatica S.p.A.
+# 
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Affero General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Affero General Public License for more details.
+# 
+# You should have received a copy of the GNU Affero General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+version: '3'
+services :
+    db:
+            image: mysql:5.7
+            restart: always
+            ports:
+                - 3306:3306
+            volumes:
+                - mysql-data:/var/lib/mysql
+                - ./idra_db.sql:/docker-entrypoint-initdb.d/idra_db.sql
+            networks:
+                - idra_main
+            environment:
+                - MYSQL_ROOT_PASSWORD=root
+                - MYSQL_DATABASE=idra_db
+                
+            command: --default-authentication-plugin=mysql_native_password --lower_case_table_names=1
+
+    idra:
+            build: 
+                context: .
+                dockerfile: Dockerfile-BE
+            ports:
+                - 8080:8080
+            depends_on: 
+                - db
+            command: ["./wait-for-it.sh", "db:3306", "--timeout=0", "--", "catalina.sh", "run"]
+            environment:
+                - idra.db.host=jdbc:mysql://db:3306/idra_db?serverTimezone=UTC&useLegacyDatetimeCode=false&useEncoding=true&characterEncoding=UTF-8&useSSL\=false
+                - idra.db.host.min=jdbc:mysql://db:3306
+                - idra.db.user=root
+                - idra.db.password=root
+                - idra.db.name=idra_db
+                - org.quartz.dataSource.myDS.URL=jdbc:mysql://db:3306/idra_db?serverTimezone=UTC&useLegacyDatetimeCode=false&useEncoding=true&characterEncoding=UTF-8&useSSL=false
+                - org.quartz.dataSource.myDS.user=root
+                - org.quartz.dataSource.myDS.password=root
+                - idra.cache.loadfromdb=true
+                - idra.synch.onstart=false
+                - idra.odms.dump.file.path=/opt/idra/dump/
+                - idra.dump.file.path=/opt/idra/dump/
+                - idra.lod.enable=false
+                - idra.orion.orionDumpFilePath=/opt/idra/dump/
+                - idra.orion.orionInternalAPI=http://idra:8080/Idra/api/v1/client/executeOrionQuery
+                - idra.authentication.method=BASIC
+                - idm.admin.role.name=Admin
+                - JAVA_OPTS=-Xms1024m -Xmx3g -XX:PermSize=1024m -XX:MaxPermSize=2048m
+            volumes:
+                - idra-data:/opt/idra/dump
+            networks:
+                - idra_main
+    orion:
+        image: fiware/orion
+        ports:
+          - "1026:1026"
+        depends_on:
+          - mongo
+        command: -dbhost mongo
+        networks:
+           - idra_main
+
+    mongo:
+        image: mongo:3.6
+        command: --nojournal
+        networks:
+           - idra_main
+
+volumes:
+  idra-data:
+      driver: local
+  mysql-data:
+      driver: local
+
+networks:
+    idra_main:
+          driver: bridge
