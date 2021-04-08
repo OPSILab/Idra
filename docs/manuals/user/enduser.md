@@ -15,7 +15,7 @@ could:
 -   select a tag from the tag-cloud to filter the search using the selected tag;
 -   search dataset by Categories.
 
-![alt tag](userhomepage.png "Idra Portal Home")
+![alt tag](userhomepageNew.png "Idra Portal Home")
 
 ### Advanced Search
 
@@ -23,7 +23,7 @@ To perform an advanced search the user should click on the expand icon. An
 advanced form appears to him/her where the user can fill one or all of the
 fields in order to filter the results.
 
-![alt tag](advanced2.png "Idra Portal Advanced Form")
+![alt tag](advancedNew.png "Idra Portal Advanced Form")
 
 The advanced search functionality allows the user to search using a
 multilanguage approach provided by the platform taking advantage of EuroVoc
@@ -40,7 +40,7 @@ The result of both the simple search or the advanced search are a list of the
 dataset that match with the requested filter. Next figure illustrates the result
 of a search operation.
 
-![alt tag](searchresult2.png "Search Result")
+![alt tag](searchresultNew.png "Search Result")
 
 In this page the user can navigate results, they can change the order and the
 number of the results per page; moreover, they can filter the data using a
@@ -69,8 +69,6 @@ this operation.
 
 Moreover, the user can create a graphical representation of the resources by 
 clicking on the _create datalet_ button.
-
-![alt tag](datasetDetailnew.png "Dataset Detail")
 
 ## Datalet Creation
 
@@ -123,11 +121,11 @@ federated dataset and stored into RDF4J triple store. In this page the user can
 write his SPARQL query and select the format of the output between _XML_ or
 _JSON_.
 
-![alt tag](sparql.png "SPARQL Query")
+![alt tag](sparqlNew.png "SPARQL Query")
 
 The result of the query is showed to the user and they can download.
 
-![alt tag](sparqlresult.png "SPARQL Result")
+![alt tag](sparqlresultNew.png "SPARQL Result")
 
 ## Catalogues overview
 
@@ -138,16 +136,16 @@ datasets. The user can select between two views:
 
 -   Card
 
-![alt tag](viewnodes.png "Catalogues")
+![alt tag](viewnodesNew.png "Catalogues")
 
 -   Table
 
-![alt tag](viewnodes1.png "Catalogues")
+![alt tag](viewnodes1New.png "Catalogues")
 
 ## Statistics
 
 The Statistics page provides statistics about catalogues and datasets in the Idra federation.
-The user can also select all or a subset of Catalogues on which he is interested in viewing 
+The user can also select all or a subset of Catalogues on which he/she is interested in viewing 
 the statistics.
 
 ![alt tag](statistics.png "Statistics")
