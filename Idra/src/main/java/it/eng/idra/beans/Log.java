@@ -28,7 +28,7 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "logs")
 public class Log {
-	private static final long serialVersionUID = 1L;
+	
 	private int id = 0;
 	private String logger;
 	private String message;

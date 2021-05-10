@@ -20,8 +20,6 @@ package it.eng.idra.beans;
 import java.time.ZonedDateTime;
 import java.util.List;
 
-import org.apache.logging.log4j.Level;
-
 import it.eng.idra.utils.JsonRequired;
 
 public class LogsRequest {

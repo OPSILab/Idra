@@ -24,7 +24,7 @@
 		"angular-ui-ace": "src0.2.3",
 		"angular-md5": "~0.1.8",
 		"bootstrap": "3.3.2",
-		"jquery": "~1.10.2",
+		"jquery": "^3.6.0",
 		"angular-bootstrap": "~0.13.3",
 		"angular-cookies": "~1.5.9",
 		"angular-route": "~1.5.9",
@@ -53,6 +53,7 @@
 	},
 	"resolutions": {
 		"angular": "~1.5.9",
-		"angular-bootstrap": "^0.14.3"
+		"angular-bootstrap": "^0.14.3",
+		"jquery": "~1.10.2"
 	}
 }

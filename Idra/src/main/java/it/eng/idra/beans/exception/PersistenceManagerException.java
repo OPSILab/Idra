@@ -18,6 +18,11 @@
 package it.eng.idra.beans.exception;
 
 public class PersistenceManagerException  extends Exception {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	public PersistenceManagerException(String message) {
         super(message);
     }

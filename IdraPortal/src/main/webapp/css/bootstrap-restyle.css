@@ -1,5 +1,5 @@
 /* ******* Bootstrap re-style ******* */
-
+@import 'theme.css';
 
 /* Reset */
 
@@ -240,8 +240,11 @@ a {
 .pagination > .active > span:focus {
 /*   background-color: #5e4354; */
 /*   border-color: #5e4354; */
-  background-color: #00b4ff;
-  border-color: #00b4ff;
+
+/* background-color: #00b4ff; */
+/* border-color: #00b4ff; */
+  background-color: var(--mainColor);
+  border-color: var(--mainColor);
   color: #fff;
 }
 .pagination > li > a, .pagination > li > span {
@@ -317,12 +320,13 @@ a {
   vertical-align: middle;
 }
 .nav.nav-tabs li.active a {
-/*   color: #e94f1d !important; */
-  color: #48b9c9 !important;
+/* color: #48b9c9 !important; */
+  color: var(--mainColor) !important;
 }
 
 md-checkbox.md-checked.blue .md-icon {
- background-color: #00b4ff;
+ background-color: var(--mainColor);
+ /*  background-color: #00b4ff; */
 }
 
 .nav-tabs {

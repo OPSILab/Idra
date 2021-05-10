@@ -1,5 +1,5 @@
 /* ******* Material re-style ******* */
-
+@import 'theme.css';
 /* Navbar */
 
 .navbar .navbar-nav > .active > a, .navbar .navbar-nav > .active > a:hover, .navbar .navbar-nav > .active > a:focus {
@@ -10,7 +10,7 @@
 
 .form-control {
   background-color: rgba(94, 67, 84, 0);
-  background-image: linear-gradient(#00b4ff, #00b4ff), linear-gradient(#d2d2d2, #d2d2d2);
+  background-image: linear-gradient(var(--mainColor), var(--mainColor)), linear-gradient(#d2d2d2, #d2d2d2);
   background-position: center bottom, center calc(100% - 1px);
   background-repeat: no-repeat;
   background-size: 0 2px, 100% 1px;
@@ -21,7 +21,7 @@
 }
 .form-control:focus, 
 .form-control.focus {
-  background-image: linear-gradient(#00b4ff, #00b4ff), linear-gradient(#d2d2d2, #d2d2d2);
+  background-image: linear-gradient(var(--mainColor), var(--mainColor)), linear-gradient(#d2d2d2, #d2d2d2);
   background-size: 100% 2px, 100% 1px;
   box-shadow: none;
   outline: medium none;
@@ -160,16 +160,16 @@
 
 /*MD-select*/
 md-select.md-default-theme:not([disabled]):focus .md-select-value, md-select:not([disabled]):focus .md-select-value {
-    border-bottom-color: #00b4ff;
+    border-bottom-color: var(--mainColor);
     color: rgba(0,0,0,0.87);
 }
 
 md-select-menu.md-default-theme md-content md-option[selected], md-select-menu md-content md-option[selected] {
-    color: #00b4ff;
+    color: var(--mainColor);
 }
 
 .md-checkbox-enabled.md-default-theme[selected] .md-icon, .md-checkbox-enabled[selected] .md-icon {
-    background-color: #00b4ff;
+    background-color: var(--mainColor);
 }
 
 /*MD-TAB*/
@@ -178,12 +178,12 @@ md-tabs.md-default-theme .md-tab, md-tabs .md-tab {
 }
 
 md-tabs.md-default-theme .md-tab.md-active, md-tabs .md-tab.md-active, md-tabs.md-default-theme .md-tab.md-active md-icon, md-tabs .md-tab.md-active md-icon, md-tabs.md-default-theme .md-tab.md-focused, md-tabs .md-tab.md-focused, md-tabs.md-default-theme .md-tab.md-focused md-icon, md-tabs .md-tab.md-focused md-icon {
-    color: #00b4ff;
+    color: var(--mainColor);
 }
 
 md-tabs.md-default-theme md-ink-bar, md-tabs md-ink-bar {
-    color: #00b4ff;
-    background: #00b4ff;
+    color: var(--mainColor);
+    background: var(--mainColor);
 }
 
 /*MD-LIST*/

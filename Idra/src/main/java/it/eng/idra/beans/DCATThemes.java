@@ -25,8 +25,6 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "themes")
 public class DCATThemes {
-	private static final long serialVersionUID = 1L;
-
 	@Id
 	private String identifier;
 

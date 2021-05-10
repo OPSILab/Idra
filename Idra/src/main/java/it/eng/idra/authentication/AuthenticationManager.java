@@ -42,6 +42,8 @@ public abstract class AuthenticationManager {
 
 		case FIWARE:
 			return FiwareIDMAuthenticationManager.getInstance();
+		case KEYCLOAK:
+			return KeycloakAuthenticationManager.getInstance();
 		default:
 			return BasicAuthenticationManager.getInstance();
 		}

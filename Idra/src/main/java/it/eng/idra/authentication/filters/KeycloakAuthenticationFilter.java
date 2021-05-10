@@ -17,7 +17,7 @@
  ******************************************************************************/
 package it.eng.idra.authentication.filters;
 
-import it.eng.idra.authentication.FiwareIDMAuthenticationManager;
+import it.eng.idra.authentication.KeycloakAuthenticationManager;
 import it.eng.idra.authentication.Secured;
 import it.eng.idra.authentication.fiware.model.Token;
 import java.io.IOException;
@@ -32,7 +32,7 @@ import javax.ws.rs.ext.Provider;
 @Secured
 @Provider
 @Priority(1)
-public class FiwareIDMAuthenticationFilter implements ContainerRequestFilter {
+public class KeycloakAuthenticationFilter implements ContainerRequestFilter {
 
 	@Override
 	public void filter(ContainerRequestContext requestContext) throws IOException {
@@ -45,7 +45,7 @@ public class FiwareIDMAuthenticationFilter implements ContainerRequestFilter {
 		String token = authorizationHeader.substring("Bearer".length()).trim();
 		try {
 
-			if (!FiwareIDMAuthenticationManager.getInstance().validateToken((Object) new Token(token)))
+			if (!KeycloakAuthenticationManager.getInstance().validateToken((Object) new Token(token)))
 				throw new Exception("Token not valid");
 
 		} catch (Exception e) {

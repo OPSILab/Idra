@@ -74,7 +74,7 @@
 			  suffix:'.json'
 		  });
 		  		 
-		  $translateProvider.preferredLanguage('en');
+		  $translateProvider.preferredLanguage('gb');
 	}]).config(function($logProvider){
 		  $logProvider.debugEnabled(false);
 	});
@@ -315,8 +315,17 @@
 					$rootScope.token=undefined;
 					$cookies.remove('loggedin',{"path":"/"});
 					$cookies.remove('username',{"path":"/"});
-					$window.location.assign('#/metadata');
+					//$window.location.assign('#/metadata');
+					loginType=config["idra.authentication.method"];
+					
+					if (loginType === "FIWARE" || loginType === "KEYCLOAK"){
+						$cookies.put('destinationUrl', $window.location.hash,{"path":"/"});
+						$('#loginform').submit();
+					}else{
+						$window.location.assign('#/login');
+					}
 				}
+				
 			});
 
 		}
@@ -324,6 +333,18 @@
 	}]);	
 	
 	app.controller('HeaderController',['$scope','$location','$rootScope','usSpinnerService','$cookies','config','$http','$window','$translate',function($scope,$location,$rootScope,usSpinnerService,$cookies,config,$http,$window,$translate){
+		
+		$scope.data = config.LANGUAGES_MAP.split(',');
+		$scope.languages = {};
+		
+		angular.forEach($scope.data, function(value, key) {
+				  $scope.languages[value.split(':')[0]] = value.split(':')[1];
+				})
+		  
+		$scope.flagIcon = function (langKey) { 
+			return "flag-icon-"+langKey;
+		};
+		
 		$scope.isActive = function (viewLocation) { 
 //			$rootScope.closeAlert();
 			return viewLocation === $location.path();
@@ -394,13 +415,25 @@
 		}, function(value){
 		});
 		
-		$scope.activeLanguage=$translate.use();
+		$scope.actLang = function () {
+			if($translate.use()==undefined)
+				return 'flag-icon-gb';
+			else
+				return 'flag-icon-'+$translate.use();
+		  };
+		
 		$scope.changeLanguage = function (langKey) {
 			$scope.isOpen=false;
 			$scope.activeLanguage=langKey;
 		    $translate.use(langKey);
 		  };
 		
+		let redirectUriAfterIDM = $cookies.get('destinationUrl');
+		if(redirectUriAfterIDM!=undefined){
+			$cookies.remove('destinationUrl',{"path":"/"});
+			$window.location.assign(redirectUriAfterIDM);
+		}
+		  
 	}]);
 
 	app.controller('ContentCTRL',['$scope','$rootScope','usSpinnerService',function($scope,$rootScope,usSpinnerService){
@@ -472,7 +505,7 @@
 		$scope.loginType=config["idra.authentication.method"];
 		
 		$scope.signIn = function(){
-			if ($scope.loginType === "FIWARE")
+			if ($scope.loginType === "FIWARE" || $scope.loginType === "KEYCLOAK")
 				$('#loginform').submit();
 			else
 				$window.location.assign('#/login');
@@ -526,40 +559,52 @@
 		
 		$scope.logout = function(){
 
-			var token = $rootScope.token;
-			var username = $rootScope.loggedUsername;
-
-			var req = {
-					method: 'POST',
-					url: config.ADMIN_SERVICES_BASE_URL+config.LOGOUT_SERVICE,
-					headers: {
-						'Content-Type': 'application/json',
-						'Authorization': "Bearer " +$rootScope.token
-					},
-					data:{
-						'username': username,
-						'token':token
-					}};			
-
-			$rootScope.startSpin();
-			$http(req).then(function(value){
-				console.log(value);
+			loginType=config["idra.authentication.method"];
+			
+			if(loginType.toUpperCase()=='BASIC'){
+			
+				var token = $rootScope.token;
+				var username = $rootScope.loggedUsername;
+	
+				var req = {
+						method: 'POST',
+						url: config.ADMIN_SERVICES_BASE_URL+config.LOGOUT_SERVICE,
+						headers: {
+							'Content-Type': 'application/json',
+							'Authorization': "Bearer " +$rootScope.token
+						},
+						data:{
+							'username': username,
+							'token':token
+						}};			
+	
+				$rootScope.startSpin();
+				$http(req).then(function(value){
+					console.log(value);
+					$rootScope.stopSpin();
+					$rootScope.loggedUsername = undefined;
+					$rootScope.token=undefined;
+					$cookies.remove('loggedin',{"path":"/"});
+					$cookies.remove('username',{"path":"/"});
+					$window.location.assign('#/metadata');
+				}, function(value){
+					console.log(value);
+					$rootScope.stopSpin();
+					$rootScope.loggedUsername = undefined;
+					$rootScope.token=undefined;
+					$cookies.remove('loggedin',{"path":"/"});
+					$cookies.remove('username',{"path":"/"});
+	//				$rootScope.showAlert('danger',value.data.userMessage);
+					$window.location.assign('#/metadata');
+				});
+			}else{
 				$rootScope.stopSpin();
 				$rootScope.loggedUsername = undefined;
 				$rootScope.token=undefined;
 				$cookies.remove('loggedin',{"path":"/"});
 				$cookies.remove('username',{"path":"/"});
-				$window.location.assign('#/metadata');
-			}, function(value){
-				console.log(value);
-				$rootScope.stopSpin();
-				$rootScope.loggedUsername = undefined;
-				$rootScope.token=undefined;
-				$cookies.remove('loggedin',{"path":"/"});
-				$cookies.remove('username',{"path":"/"});
-//				$rootScope.showAlert('danger',value.data.userMessage);
-				$window.location.assign('#/metadata');
-			});
+				$window.location.assign(config["idm.logout.callback"]);
+			}
 		}
 
 		$scope.idmlogout = function(){
@@ -867,5 +912,21 @@
 		};
 
 	});
+	
+	app.controller('FooterCtrl', ['$scope','$rootScope',function($scope,$rootScope){
+        $rootScope.$watch('idraVersion',function(){
+             $scope.version = $rootScope.idraVersion;
+            })
+           
+        }]);
+   
+
+    app.component('footerDetail', {
+          templateUrl: 'templateHtml/FooterTemplate.html',
+          bindings: {
+            version: '='
+          }
+    });
+	
 
 })();	

@@ -18,6 +18,11 @@
 package it.eng.idra.beans.webscraper;
 
 public class WebScraperSelectorNotFoundException extends Exception {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	public WebScraperSelectorNotFoundException(String message) {
         super(message);
     }

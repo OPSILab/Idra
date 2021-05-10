@@ -15,15 +15,10 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package it.eng.idra.beans.webscraper;
+package it.eng.idra.beans.exception;
 
-public class NavigationTypeNotValidException extends Exception {
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
-
-	public NavigationTypeNotValidException(String message) {
+public class DistributionNotFoundException extends Exception {
+	public DistributionNotFoundException(String message) {
         super(message);
     }
 }

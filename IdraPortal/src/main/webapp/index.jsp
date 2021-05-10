@@ -21,11 +21,35 @@
 <%@ page language="java" import="java.util.*"%>
 <%@ page import="it.eng.idraportal.utils.PropertyManager"%>
 
+
+
 <!doctype html>
 <html lang="en">
 <head>
 
-<link rel="shortcut icon" type="image/png" href="images/icons/favicon-32x32.png"/>
+<!-- <link rel="shortcut icon" type="image/png" href="images/icons/favicon-32x32.png"/> -->
+<link rel="stylesheet" href="css/theme.css">
+<link id="CSStheme" href="css/theme.css" type="text/css" rel="stylesheet" />
+<link id="favicon" rel="shortcut icon" href="images/icons/favicon-32x32.png" type="image/png" />
+
+<script>
+    newFavicon = function () {
+        		var rules = document.getElementById('CSStheme').sheet.cssRules;
+        		for (var i = 0; i < rules.length; ++i) {
+	            	if(rules[i].selectorText=='.favicon'){
+	            		var l = rules[i].style.getPropertyValue('content');
+		                var old = document.getElementById('favicon'),
+		                    link = document.createElement('link');
+		                link.id = old.id;
+		                link.rel = "shortcut icon";
+		                link.type = "image/png";
+		                link.href = eval(l);
+		                old.parentNode.replaceChild(link, old);
+		                return;
+	            	}} }();
+</script>
+
+
 <title>Idra - Open Data Federation Platform</title>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -63,6 +87,7 @@
 <link rel="stylesheet" href="css/main.css">
 <!--<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">-->
 <link rel="stylesheet" href="css/navbar.css">
+<link rel="stylesheet" href="css/theme.css">
 
 
 <style type="text/css">
@@ -280,17 +305,22 @@ div.m-app-loading p {
 </head>
 <body>
 
+
+
+
 	<div class="m-app-loading">
 		<!--         BEGIN: Actual animated container. -->
 		<div class="animated-container">
 			<div class="messaging hide-xs show-gt-xs">
-				<img class="img-responsive " src="images/idra_D_v6_black.svg"
+			<!-- <img class="img-responsive " src="images/idra_D_v6_black.svg"
+					style="margin: 0 auto; max-width: 20%;"> -->
+				<img class="img-logo" 
 					style="margin: 0 auto; max-width: 20%;">
 				<img class="img-responsive " src="images/spinner_synchro.gif"
 					style="margin: 0 auto; max-width: 2%;">
 			</div>
 			<div class="messaging hide-gt-xs">
-				<img class="img-responsive " src="images/idra_D_v6_black.svg"
+				<img class="img-logo"
 					style="margin: 0 auto; max-width: 50%;">
 				<img class="img-responsive " src="images/spinner_synchro.gif"
 					style="margin: 0 auto; max-width: 10%;">
@@ -323,59 +353,58 @@ div.m-app-loading p {
 						<ul class="nav navbar-nav navbar-right">
 							<li
 								ng-class="{ active: isActive('/metadata') || isActive('/showDatasets') || isActive('/showDatasetDetail') || isActive('/createDatalet') }"><a
-								href="#/metadata"><strong>{{'datasetSearch' | translate }}</strong></a></li>
+								href="#/metadata"><span class="navbar-link-element">{{'datasetSearch' | translate }}</span></a></li>
 							<li
 								ng-class="{ active: isActive('/sparql') || isActive('/showSparqlResult') }"><a
-								href="#/sparql"><strong>{{'SPARQLSearch' | translate }}</strong></a></li>
+								href="#/sparql"><span class="navbar-link-element">{{'SPARQLSearch' | translate }}</span></a></li>
 							<li ng-class="{ active: isActive('/viewCatalogues')}"><a
-								href="#/viewCatalogues"><strong>{{'DataSources' | translate }}</strong></a></li>
+								href="#/viewCatalogues"><span class="navbar-link-element">{{'DataSources' | translate }}</span></a></li>
 							<li ng-class="{ active: isActive('/statistics')}"><a
-								href="#/statistics"><strong>{{'statistics' | translate }}</strong></a></li>
-							<li dropdown><a href class="dropdown-toggle" dropdown-toggle><strong>Help</strong><b
+								href="#/statistics"><span class="navbar-link-element">{{'statistics' | translate }}</span></a></li>
+							<li dropdown><a href class="dropdown-toggle" dropdown-toggle><span class="navbar-link-element">Help</span><b
 									class="caret"></b></a>
 								<ul class="dropdown-menu">
 									<li>
-										<a href="#/about" ng-click="isOpen=!isOpen"><strong>About</strong></a>
+										<a href="#/about" ng-click="isOpen=!isOpen"><span class="navbar-link-element">About</span></a>
 									</li>
 									<li>
-										<a href="https://idraopendata.docs.apiary.io" target="_blank" ng-click="isOpen=!isOpen"><strong>API</strong></a>
+										<a href="https://idraopendata.docs.apiary.io" target="_blank" ng-click="isOpen=!isOpen"><span class="navbar-link-element">API</span></a>
 									</li>
 									<li>
-										<a href="https://github.com/OPSILab/Idra" target="_blank" ng-click="isOpen=!isOpen"><strong>GitHub</strong></a>
+										<a href="https://github.com/OPSILab/Idra" target="_blank" ng-click="isOpen=!isOpen"><span class="navbar-link-element">GitHub</span></a>
 									</li>
 									<li>
-										<a href="https://idra.readthedocs.io" target="_blank" ng-click="isOpen=!isOpen"><strong>{{'helpMenuManual' | translate }}</strong></a>
+										<a href="https://idra.readthedocs.io" target="_blank" ng-click="isOpen=!isOpen"><span class="navbar-link-element">{{'helpMenuManual' | translate }}</span></a>
 									</li>
 								</ul></li>
 							<li ng-if="token!=undefined"
 								ng-class="{ active: isActive('/catalogues') || isActive('/node') || isActive('/configuration') || isActive('/logs') || isActive('/statistics') || isActive('/dataletsManagement')}"
-								dropdown><a href class="dropdown-toggle" dropdown-toggle><strong>{{'administration' | translate }}</strong><b
+								dropdown><a href class="dropdown-toggle" dropdown-toggle><span class="navbar-link-element">{{'administration' | translate }}</span><b
 									class="caret"></b></a>
 								<ul class="dropdown-menu">
 									<li
 										ng-class="{ active: isActive('/catalogues') || isActive('/addNode') }">
-										<a href="#/catalogues"><strong>{{'manageData' | translate }}</strong></a>
+										<a href="#/catalogues"><span class="navbar-link-element">{{'manageData' | translate }}</span></a>
 									</li>
 									<li ng-class="{ active: isActive('/configuration')}"><a
-										href="#/configuration"><strong>{{'manageConf' | translate }}</strong></a></li>
+										href="#/configuration"><span class="navbar-link-element">{{'manageConf' | translate }}</span></a></li>
 									<li ng-show="dataletEnabled"
 										ng-class="{ active: isActive('/dataletsManagement')}"><a
-										href="#/dataletsManagement"><strong>{{'manageDatalet' | translate }}</strong></a></li>
+										href="#/dataletsManagement"><span class="navbar-link-element">{{'manageDatalet' | translate }}</span></a></li>
 									<li ng-class="{ active: isActive('/logs')}"><a
-										href="#logs"><strong>{{'viewLogs' | translate }}</strong></a></li>
+										href="#logs"><span class="navbar-link-element">{{'viewLogs' | translate }}</span></a></li>
 								</ul></li>
-							<li dropdown><a href class="dropdown-toggle" dropdown-toggle><span class="flag-icon" ng-class="(activeLanguage=='it')?'flag-icon-it':'flag-icon-gb'"></span><b
+								
+							<li dropdown><a href class="dropdown-toggle" dropdown-toggle><span class="flag-icon" ng-class="actLang()"></span><b
 									class="caret"></b></a>
-								<ul class="dropdown-menu">
-									<li>
-										<a href="javascript:void(0)" ng-click="changeLanguage('en')">
-										<span class="flag-icon" ng-class="'flag-icon-gb'"></span>&nbsp<strong>English</strong></a>
-									</li>
-									<li>
-										<a href="javascript:void(0)" ng-click="changeLanguage('it')" >
-										<span class="flag-icon" ng-class="'flag-icon-it'"></span>&nbsp<strong>Italiano</strong></a>
-									</li>
-								</ul></li>
+							<ul class="dropdown-menu">
+									    <li ng-repeat="(key, value) in languages">
+									   		<a href="javascript:void(0)" ng-click="changeLanguage(key)" >
+									        <span id="toEdit" class="flag-icon" ng-class="flagIcon(key)"></span>&nbsp<span class="navbar-link-element">{{value}}</span></a>
+									    </li>
+									
+								</ul></li> 
+
 							<li class="loginBtns">
 								<form ng-if="token==undefined" class="navbar-form"
 									ng-controller="LoginCtrl">
@@ -395,7 +424,7 @@ div.m-app-loading p {
 					<form style="display:none" id="loginform" method="GET" ng-if="token==undefined"
 						class="navbar-form"
 						action="<%=PropertyManager.getProperty(IDMProperty.IDM_PROTOCOL) + "://"
-					+ PropertyManager.getProperty(IDMProperty.IDM_HOST) + "/oauth2/authorize"%>">
+					+ PropertyManager.getProperty(IDMProperty.IDM_HOST) + PropertyManager.getProperty(IDMProperty.IDM_AUTH_PATH)%>">
 						<input type="hidden" name="response_type" value="code" /> <input
 							type="hidden" name="client_id"
 							value="<%=PropertyManager.getProperty(IDMProperty.IDM_CLIENT_ID)%>" />
@@ -415,8 +444,26 @@ div.m-app-loading p {
 			ng-controller="ContentCTRL">
 
 			<div class="us-spinner-wrapper" ng-show="spinneractive">
-				<div us-spinner="{radius:25, width:10, length: 20,color:'#00b4ff'}"
+
+				<div id="spinner" us-spinner="{radius:25, width:10, length: 20, color: '#00b4ff' }"
 					spinner-key="spinner-1"></div>
+					
+			<script type="text/javascript">
+			    newSpinner = function () {
+			        		var rules = document.getElementById('CSStheme').sheet.cssRules;
+			        		var mainColor = window.getComputedStyle(document.documentElement).getPropertyValue('--mainColor');
+			        		
+				            		 var old = document.getElementById('spinner'),
+					                    newDiv = document.createElement('div');
+				            		 var newUsSpinner = "{radius:25, width:10, length: 20, color: '"+mainColor+"' }";
+				            		 newDiv.id = old.id;
+				            		 newDiv.setAttribute("spinner-key", old.getAttribute("spinner-key"));
+				            		 newDiv.setAttribute("us-spinner", newUsSpinner);
+				            		 old.parentNode.replaceChild(newDiv, old);
+				            		 return;
+				            	}();
+			</script>
+					
 			</div>
 			<div class="col-md-10 col-md-offset-1" ng-controller="AlertCtrl">
 				<div class="col-md-6 col-md-offset-3">
@@ -434,39 +481,14 @@ div.m-app-loading p {
 
 	</div>
 	<!--  END WRAPPER -->
-	<!-- FOOTER -->
-	<div class="footer" style="display: none">
-		<div class="col-md-12 col-lg-12 col-sm-12 text-center hide-xs show-gt-xs" >
-			<div class="col-md-4 col-lg-4 col-sm-4">
-			<a href="https://www.eng.it/" target="_blank" class="pull-left"><img
-					class="img-responsive footerImages small-margin"
-					ng-src="images/logo_eng-100.jpg" style="width:25%"/></a></div>
-			<div class="col-md-4 col-lg-4 col-sm-4">
-				<p style="margin-bottom:0px;">Copyright &copy;<a href="https://www.eng.it/" target="_blank">Engineering</a> 2020. - Idra v. {{idraVersion}}</p>
-			</div>
-			<div class="col-md-4 col-lg-4 col-sm-4">
-				<a class="pull-right" href="#/credits">{{'credits' | translate}}</a>
-			</div>
+
+
+	<!--  FOOTER -->
+	    <div ng-controller="FooterCtrl">
+	  		<footer-detail version="version"></footer-detail>
 		</div>
-		<div class="col-md-12 col-lg-12 col-sm-12 text-center hide-gt-xs" >
-			<div class="col-md-12 col-lg-12 col-sm-12">
-				<p style="margin-bottom:0px;">Copyright &copy;<a href="https://www.eng.it/" target="_blank">Engineering</a></p>
-			</div>
-			<div class="col-md-12 col-lg-12 col-sm-12">
-				<p style="margin-bottom:0px;">Idra v. {{idraVersion}}</p>
-			</div>
-			<div class="col-md-12 col-lg-12 col-sm-12">
-				<a href="#/credits">{{'credits' | translate}}</a>
-			</div>
-			<div class="col-md-12 col-lg-12 col-sm-12">
-			<a href="https://www.eng.it/" target="_blank"><img
-					class="img-responsive footerImages center-block"
-					ng-src="images/logo_eng-100.jpg" style="width:40%; margin-bottom:10px"/></a>
-			</div>
-		</div>
-	</div>
 	<!-- END FOOTER -->
-	
+
 	<script type="text/ng-template" id="ModalContentSingle.html">
 <div class="modal-header">
 	<button type="button" class="close" aria-hidden="true" ng-click="cancel()">x</button>
@@ -667,6 +689,7 @@ div.m-app-loading p {
 
 <!-- END PREVIEW TEMPLATES -->
 
+	<!--<script type="text/javascript" src="bower_components/jquery/dist/jquery.js"></script>-->
 	<script type="text/javascript" src="bower_components/jquery/jquery.js"></script>
 	<script type="text/javascript"
 		src="bower_components/angular/angular.js"></script>

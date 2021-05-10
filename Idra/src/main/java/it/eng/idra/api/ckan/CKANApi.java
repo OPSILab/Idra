@@ -16,8 +16,6 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.ckan.Dataset;
 import org.json.JSONObject;
 
@@ -36,7 +34,7 @@ import it.eng.idra.utils.GsonUtil;
 @Path("/")
 public class CKANApi {
 
-	private static Logger logger = LogManager.getLogger(CKANApi.class);
+	//private static Logger logger = LogManager.getLogger(CKANApi.class);
 
 	@GET
 	@Path("/api/{var:(3/?)?}action/package_list")
