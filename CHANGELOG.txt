@@ -1,3 +1,7 @@
+v2.2.0
+- New Feature: Keycloak support
+- New Feature: Dynamic theme colors and logo
+
 v2.1.1
 - Fix: CKANClient-J updated to v0.7 to fix bug with proxy
 
