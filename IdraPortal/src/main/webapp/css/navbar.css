@@ -1,4 +1,5 @@
 /*Navbar*/
+@import 'theme.css';
 
 .navbar .nav.navbar-nav > li > a {
     font-weight: 400;
@@ -19,7 +20,8 @@
 
 /*No FESTIVAL */
 #header div.navbar.navbar-default .navbar-header .navbar-brand {
-	background-image: url("../images/idra_D_v6_black.svg");
+	background-image: var(--logo);
+	/* background-image: url("../images/idra_D_v6_black.svg"); */
 	background-repeat: no-repeat;
 	background-size: auto 60px;
   	/*color: #fefefe;*/
@@ -32,11 +34,12 @@
 	text-transform: capitalize;
 }
 
+/* border-bottom: 3px solid #00b4ff; */
 #header div.navbar {
   	/*   	background-color: #4A2E40; */
   	background-color: #ffffff;
   	border: 0 none;
-  	border-bottom: 3px solid #00b4ff;
+  	border-bottom: 3px solid var(--mainColor);
   	border-radius: 0;
 /* 	box-shadow: 0 0.25em 0.5em 0 rgba(0, 0, 0, 0.25); */
 /* 	-webkit-box-shadow: 0 0.25em 0.5em 0 rgba(0, 0, 0, 0.25); */
@@ -60,9 +63,9 @@
 .loginBtns form.navbar-form .btn:hover:not(.btn-link):not(.btn-flat):not(.btn-fab) {
     box-shadow: none;
 }
-
+/* background-color: #00b4ff; */
 #header div.navbar.navbar-default .btn.btn-default {
-  background-color: #00b4ff;
+  background-color: var(--mainColor);
   border: 0 none;
   border-radius: 2px;
   box-shadow: none;
@@ -94,12 +97,14 @@
 }
 #header div.navbar.navbar-default .navbar-nav li a:hover {
   /*   color: #e94f1d; */
-  color: #00b4ff;
+  color: var(--mainColor);
+  /*   color: #00b4ff; */
 }
 #header div.navbar.navbar-default .navbar-nav li.active > a {
   /*   color: #e94f1d; */
   	outline: none;
-    color: #00b4ff;
+    color: var(--mainColor);
+  /*   color: #00b4ff; */
 /*     border-bottom: 1px solid #555; */
 /*     padding-bottom:0px; */
 }
@@ -118,7 +123,8 @@
 .navbar.navbar .dropdown-menu .active > a, 
 .navbar-default.navbar .dropdown-menu .active > a {
   background-color: transparent;
-  color: #00b4ff !important;
+  color: var(--mainColor) !important;
+  /* color: #00b4ff !important; */
 }
 
 #header .navbar .navbar-toggle .icon-bar {
@@ -206,7 +212,8 @@
 
 .navbar .navbar-toggle, .navbar .navbar-toggle:hover,
  .navbar .navbar-toggle:focus {
-    background-color: #00b4ff;
+    background-color: var(--mainColor);
+    /* background-color: #00b4ff; */
 }
 
 .navbar-brand {

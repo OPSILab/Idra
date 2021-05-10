@@ -74,7 +74,7 @@
 			  suffix:'.json'
 		  });
 		  		 
-		  $translateProvider.preferredLanguage('en');
+		  $translateProvider.preferredLanguage('gb');
 	}]).config(function($logProvider){
 		  $logProvider.debugEnabled(false);
 	});
@@ -333,6 +333,18 @@
 	}]);	
 	
 	app.controller('HeaderController',['$scope','$location','$rootScope','usSpinnerService','$cookies','config','$http','$window','$translate',function($scope,$location,$rootScope,usSpinnerService,$cookies,config,$http,$window,$translate){
+		
+		$scope.data = config.LANGUAGES_MAP.split(',');
+		$scope.languages = {};
+		
+		angular.forEach($scope.data, function(value, key) {
+				  $scope.languages[value.split(':')[0]] = value.split(':')[1];
+				})
+		  
+		$scope.flagIcon = function (langKey) { 
+			return "flag-icon-"+langKey;
+		};
+		
 		$scope.isActive = function (viewLocation) { 
 //			$rootScope.closeAlert();
 			return viewLocation === $location.path();
@@ -403,7 +415,13 @@
 		}, function(value){
 		});
 		
-		$scope.activeLanguage=$translate.use();
+		$scope.actLang = function () {
+			if($translate.use()==undefined)
+				return 'flag-icon-gb';
+			else
+				return 'flag-icon-'+$translate.use();
+		  };
+		
 		$scope.changeLanguage = function (langKey) {
 			$scope.isOpen=false;
 			$scope.activeLanguage=langKey;
@@ -894,5 +912,21 @@
 		};
 
 	});
+	
+	app.controller('FooterCtrl', ['$scope','$rootScope',function($scope,$rootScope){
+        $rootScope.$watch('idraVersion',function(){
+             $scope.version = $rootScope.idraVersion;
+            })
+           
+        }]);
+   
+
+    app.component('footerDetail', {
+          templateUrl: 'templateHtml/FooterTemplate.html',
+          bindings: {
+            version: '='
+          }
+    });
+	
 
 })();	

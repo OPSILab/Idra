@@ -1,0 +1,52 @@
+/* Theme variables */
+:root {
+  --mainColor: #000000; 
+  --logo: url("../images/idra_D_v6_black.svg");
+  /* #00b4ff blu originale Idra */
+  /* --logo: url("../images/idra_D_v6_black.svg");  logo Idra*/
+}
+.img-logo {
+  content: var(--logo);
+}
+.favicon { 
+	content: "images/icons/favicon-32x32.png";
+    /* "images/icons/favicon-32x32.png"   Icona favicon Idra*/
+}
+#header .navbar-link-element{
+	 font-weight: bold;  /* normal, lighter, num da 100 a 900 */
+}
+/* modifiche personalizzate alla linea della navbar */
+#header div.navbar {
+  	border-style:solid;
+    border-width:3px;  
+    border-bottom-color: var(--mainColor); /* transparent */
+    box-shadow: 10px 10px 8px #ffffff;  /* ombreggiatura */
+}
+/* modifiche personalizzate alla navbar */
+#header div.navbar.navbar-default .navbar-header .navbar-brand {
+	background-image: var(--logo);
+	background-repeat: no-repeat;
+	background-size: auto 60px; /* grandezza del logo */
+	display: block;
+	height: 70px;
+	width: 100px;
+	text-transform: capitalize;
+}
+/* modifiche personalizzate al bottone Login */
+/* #header .btn.btn-primary.btn-raised {
+  background-color: #008031;
+  color: rgba(255, 255, 255, 0.84);
+  border: 0 none;
+  border-radius: 2px;
+  box-shadow: 5px 10px;
+  -webkit-box-shadow: none;
+  -moz-box-shadow: none;
+  font-size: 11.5pt;
+  font-weight: 300;
+  height: 2em;
+  line-height: 2em;
+  padding: 0 1.25em;
+  text-align: center;
+  text-decoration: none;
+  vertical-align: baseline;
+} */

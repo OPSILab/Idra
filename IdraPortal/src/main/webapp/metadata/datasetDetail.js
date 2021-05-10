@@ -343,7 +343,7 @@ angular.module("IdraPlatform").controller('DatasetDetailCtrl',['$scope','$rootSc
 		
 		var reqCheckDownloadUri = {
 				method: 'GET',
-				url: config.CLIENT_SERVICES_BASE_URL+config.CHECK_DISTRIBUTION_URL+window.encodeURIComponent(distribution.downloadURL)
+				url: config.CLIENT_SERVICES_BASE_URL+config.CHECK_DISTRIBUTION_URL+window.encodeURIComponent(distribution.downloadURL)+'&id='+distribution.id
 		};
 		
 		distribution.lockFile=true;
@@ -365,7 +365,7 @@ $scope.showPreview = function(datasetID,nodeID,distribution){
 		
 		var reqCheckPreview = {
 				method: 'GET',
-				url: config.CLIENT_SERVICES_BASE_URL+config.CHECK_DISTRIBUTION_PREVIEW+window.encodeURIComponent(distribution.downloadURL)
+				url: config.CLIENT_SERVICES_BASE_URL+config.CHECK_DISTRIBUTION_PREVIEW+window.encodeURIComponent(distribution.downloadURL)+'&id='+distribution.id
 		};
 		
 		distribution.lockPreview=true;
@@ -383,7 +383,7 @@ $scope.showPreview = function(datasetID,nodeID,distribution){
 		$http(reqCheckPreview).then(function(value){
 			if(parameter.includes('csv')){
 				
-				Papa.parse(config.CLIENT_SERVICES_BASE_URL+'/downloadFromUri?url='+window.encodeURIComponent(distribution.downloadURL)+"&format=csv",{
+				Papa.parse(config.CLIENT_SERVICES_BASE_URL+'/downloadFromUri?url='+window.encodeURIComponent(distribution.downloadURL)+'&id='+distribution.id+"&format=csv",{
 					download:true,
 					 header: true,
 					dynamicTyping: true,
@@ -427,7 +427,7 @@ $scope.showPreview = function(datasetID,nodeID,distribution){
 				
 				var req ={
 						method:'GET',
-						url: config.CLIENT_SERVICES_BASE_URL+'/downloadFromUri?url='+window.encodeURIComponent(distribution.downloadURL),
+						url: config.CLIENT_SERVICES_BASE_URL+'/downloadFromUri?url='+window.encodeURIComponent(distribution.downloadURL)+'&id='+distribution.id,
 					}
 				
 				if(parameter!='pdf'){

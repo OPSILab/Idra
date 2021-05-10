@@ -111,8 +111,8 @@
 					<td><switch id="active" name="active" ng-model="node.isActive"
 							ng-change="changed(node)" disabled="node.synchLock!='NONE'"
 							class="small"></switch></td>
-					<td>{{node.name | limitTo:40}}{{node.name.length > 40 ? '...'
-						: ''}} <md-tooltip ng-show="node.name.length > 40">{{node.name}}</md-tooltip>
+					<td><a href="{{node.homepage}}" target="_blank">{{node.name | limitTo:40}}{{node.name.length > 40 ? '...'
+						: ''}} </a><md-tooltip ng-show="node.name.length > 40">{{node.name}}</md-tooltip>
 					</td>
 					<!-- 								<td> -->
 					<!-- 									{{node.host | limitTo:28}}{{node.host.length > 28 ? '...' : ''}} -->
