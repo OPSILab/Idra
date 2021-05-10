@@ -18,6 +18,11 @@
 package it.eng.idra.beans.webscraper;
 
 public class UrlNotParseableException extends Exception {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	public UrlNotParseableException(String message) {
         super(message);
     }

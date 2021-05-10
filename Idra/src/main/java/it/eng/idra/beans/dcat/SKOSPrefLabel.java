@@ -18,11 +18,7 @@
 package it.eng.idra.beans.dcat;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.UUID;
-import java.util.stream.Collectors;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -31,7 +27,6 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import org.apache.jena.rdf.model.Resource;
-import org.apache.jena.vocabulary.DCTerms;
 import org.apache.jena.vocabulary.SKOS;
 import org.apache.solr.common.SolrDocument;
 import org.apache.solr.common.SolrInputDocument;

@@ -18,6 +18,11 @@
 package it.eng.idra.beans.odms;
 
 public class ODMSCatalogueChangeActiveStateException extends Exception {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	public ODMSCatalogueChangeActiveStateException(String message) {
         super(message);
     }

@@ -13,8 +13,6 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import it.eng.idra.statistics.PlatformStatistcs;
 import it.eng.idra.statistics.PlatformStatisticsManager;
 import it.eng.idra.utils.GsonUtil;
@@ -23,7 +21,7 @@ import it.eng.idra.utils.GsonUtilException;
 @Path("/statistics")
 public class StatisticsAPI {
 
-	private static Logger logger = LogManager.getLogger(StatisticsAPI.class);
+	//private static Logger logger = LogManager.getLogger(StatisticsAPI.class);
 
 
 	@GET

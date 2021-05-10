@@ -395,7 +395,7 @@ div.m-app-loading p {
 					<form style="display:none" id="loginform" method="GET" ng-if="token==undefined"
 						class="navbar-form"
 						action="<%=PropertyManager.getProperty(IDMProperty.IDM_PROTOCOL) + "://"
-					+ PropertyManager.getProperty(IDMProperty.IDM_HOST) + "/oauth2/authorize"%>">
+					+ PropertyManager.getProperty(IDMProperty.IDM_HOST) + PropertyManager.getProperty(IDMProperty.IDM_AUTH_PATH)%>">
 						<input type="hidden" name="response_type" value="code" /> <input
 							type="hidden" name="client_id"
 							value="<%=PropertyManager.getProperty(IDMProperty.IDM_CLIENT_ID)%>" />
