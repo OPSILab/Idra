@@ -1,4 +1,5 @@
 {
+<<<<<<< HEAD
   "name": "idraportal",
   "version": "1.0",
   "ignore": [
@@ -57,3 +58,63 @@
     "jquery": "~1.10.2"
   }
 }
+=======
+	"name": "idraportal",
+	"version": "1.0",
+	"ignore": [
+		"**/.",
+		"node_modules",
+		"bower_components",
+		"test",
+		"tests"
+	],
+	"dependencies": {
+		"angular": "~1.5.9",
+		"ace-builds": "~1.2.0",
+		"angular-mocks": "~1.5.9",
+		"zeroclipboard": "2.2.x",
+		"angular-zeroclipboard": "0.8.x",
+		"angular-xeditable": "0.1.8",
+		"angular-dialog-service": "~5.2.8",
+		"ng-img-crop": "~0.3.2",
+		"ng-tags-input": "3.0.x",
+		"angular-utils-pagination": "0.11.x",
+		"angular-smart-table": "~2.1.3",
+		"spin-js": "2.x",
+		"angular-ui-ace": "src0.2.3",
+		"angular-md5": "~0.1.8",
+		"bootstrap": "3.3.2",
+		"jquery": "^3.6.0",
+		"angular-bootstrap": "~0.13.3",
+		"angular-cookies": "~1.5.9",
+		"angular-route": "~1.5.9",
+		"angular-animate": "~1.5.11",
+		"angular-spinner": "~0.7.0",
+		"angular-sanitize": "~1.5.9",
+		"angular-material": "1.1.8",
+		"angular-aria": "1.5.11",
+		"angular-marked": "~1.x",
+		"angular-file-saver": "~1.x",
+		"flag-icon-css": "~1.x",
+		"ng-country-select": "x",
+		"angular-ui-switch": "x",
+		"angular-underscore-module": "x",
+		"angular-d3-word-cloud": "x",
+		"angular-translate": "x",
+		"angular-translate-storage-local": "x",
+		"angular-translate-storage-cookie": "x",
+		"angular-translate-loader-static-files": "x",
+		"chart.js":"2.x",
+		"angular-chart.js":"1.1.1",
+		"angular-papaparse":"x",
+		"angular-pdfjs-viewer":"x",
+		"angular-leaflet-directive":"x",
+		"togeojson":"x"
+	},
+	"resolutions": {
+		"angular": "~1.5.9",
+		"angular-bootstrap": "^0.14.3",
+		"jquery": "~1.10.2"
+	}
+}
+>>>>>>> branch 'master' of https://github.com/OPSILab/Idra.git

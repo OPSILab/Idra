@@ -18,6 +18,11 @@
 package it.eng.idra.beans.webscraper;
 
 public class NavigationTypeNotValidException extends Exception {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	public NavigationTypeNotValidException(String message) {
         super(message);
     }

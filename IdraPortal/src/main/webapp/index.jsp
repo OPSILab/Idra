@@ -342,6 +342,8 @@ div.m-app-loading p {
 						<a class="navbar-brand" href="#/metadata"
 							style="margin-left: 5px;">
 						</a>
+						<span class="navbar-title"></span>
+						
 <!-- 						<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" -->
 <!-- 							data-target=".navbar-responsive-collapse"> -->
 						<button type="button" class="navbar-toggle collapsed" ng-click="toggleDropdown()">
@@ -385,7 +387,7 @@ div.m-app-loading p {
 								<ul class="dropdown-menu">
 									<li
 										ng-class="{ active: isActive('/catalogues') || isActive('/addNode') }">
-										<a href="#/catalogues"><span class="navbar-link-element">{{'manageData' | translate }}</span></a>
+										<a href="#/catalogues" ng-click="checkRemoteCatalogues()"><span class="navbar-link-element">{{'manageData' | translate }}</span></a>
 									</li>
 									<li ng-class="{ active: isActive('/configuration')}"><a
 										href="#/configuration"><span class="navbar-link-element">{{'manageConf' | translate }}</span></a></li>
@@ -425,7 +427,7 @@ div.m-app-loading p {
 					<form style="display:none" id="loginform" method="GET" ng-if="token==undefined"
 						class="navbar-form"
 						action="<%=PropertyManager.getProperty(IDMProperty.IDM_PROTOCOL) + "://"
-					+ PropertyManager.getProperty(IDMProperty.IDM_HOST) + "/oauth2/authorize"%>">
+					+ PropertyManager.getProperty(IDMProperty.IDM_HOST) + PropertyManager.getProperty(IDMProperty.IDM_AUTH_PATH)%>">
 						<input type="hidden" name="response_type" value="code" /> <input
 							type="hidden" name="client_id"
 							value="<%=PropertyManager.getProperty(IDMProperty.IDM_CLIENT_ID)%>" />

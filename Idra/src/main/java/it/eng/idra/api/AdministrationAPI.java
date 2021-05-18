@@ -20,9 +20,11 @@ package it.eng.idra.api;
 import it.eng.idra.authentication.AuthenticationManager;
 import it.eng.idra.authentication.BasicAuthenticationManager;
 import it.eng.idra.authentication.FiwareIDMAuthenticationManager;
+import it.eng.idra.authentication.KeycloakAuthenticationManager;
 import it.eng.idra.authentication.Secured;
 import it.eng.idra.authentication.fiware.model.Token;
 import it.eng.idra.authentication.fiware.model.UserInfo;
+import it.eng.idra.authentication.keycloak.model.KeycloakUser;
 import it.eng.idra.beans.Datalet;
 import it.eng.idra.beans.ErrorResponse;
 import it.eng.idra.beans.Log;
@@ -1066,15 +1068,33 @@ public class AdministrationAPI {
 				String refresh_token = t.getRefresh_token();
 
 				if (token != null && ((String) token).trim().length() > 0) {
-					// HttpSession session = httpRequest.getSession();
-					// session.setAttribute("loggedin", token);
-					// session.setAttribute("refresh_token", refresh_token);
-					// session.setAttribute("username", info.getDisplayName());
 					return Response
 							.seeOther(URI.create(PropertyManager.getProperty(IdraProperty.IDRA_CATALOGUE_BASEPATH)))
 							.cookie(new NewCookie("loggedin", (String) token, "/", "", "comment", 100, false))
 							.cookie(new NewCookie("refresh_token", refresh_token, "/", "", "comment", 100, false))
 							.cookie(new NewCookie("username", info.getDisplayName(), "/", "", "comment", 100, false))
+							.build();
+				} else {
+					return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+				}
+				
+			case KEYCLOAK:
+				if (StringUtils.isBlank(code))
+					return Response.status(Response.Status.BAD_REQUEST).build();
+
+				Token k = (Token) authInstance.login(null, null, code);
+				KeycloakUser kU = KeycloakAuthenticationManager.getInstance().getUserInfo(k.getAccess_token());
+
+				token = k.getAccess_token();
+
+				refresh_token = k.getRefresh_token();
+
+				if (token != null && ((String) token).trim().length() > 0) {
+					return Response
+							.seeOther(URI.create(PropertyManager.getProperty(IdraProperty.IDRA_CATALOGUE_BASEPATH)))
+							.cookie(new NewCookie("loggedin", (String) token, "/", "", "comment", 100, false))
+							.cookie(new NewCookie("refresh_token", refresh_token, "/", "", "comment", 100, false))
+							.cookie(new NewCookie("username", kU.getPreferred_username(), "/", "", "comment", 100, false))
 							.build();
 				} else {
 					return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
@@ -1131,7 +1151,29 @@ public class AdministrationAPI {
 
 				return Response.temporaryRedirect(URI.create(httpRequest.getContextPath()
 						+ PropertyManager.getProperty(IdraProperty.IDRA_CATALOGUE_BASEPATH))).build();
+				
+			case KEYCLOAK:
+				code = httpRequest.getParameter("code");
+				if (StringUtils.isBlank(code))
+					return Response.status(Response.Status.BAD_REQUEST).build();
 
+				Token k = (Token) authInstance.login(null, null, code);
+				KeycloakUser kU = KeycloakAuthenticationManager.getInstance().getUserInfo(k.getAccess_token());
+
+				token = k.getAccess_token();
+
+				refresh_token = k.getRefresh_token();
+
+				if (token != null && ((String) token).trim().length() > 0) {
+					return Response
+							.seeOther(URI.create(PropertyManager.getProperty(IdraProperty.IDRA_CATALOGUE_BASEPATH)))
+							.cookie(new NewCookie("loggedin", (String) token, "/", "", "comment", 100, false))
+							.cookie(new NewCookie("refresh_token", refresh_token, "/", "", "comment", 100, false))
+							.cookie(new NewCookie("username", kU.getPreferred_username(), "/", "", "comment", 100, false))
+							.build();
+				} else {
+					return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+				}
 			default:
 				String input = IOUtils.toString(httpRequest.getInputStream(), Charset.defaultCharset());
 				User user = GsonUtil.json2Obj(input, GsonUtil.userType);

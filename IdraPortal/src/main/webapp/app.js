@@ -315,8 +315,17 @@
 					$rootScope.token=undefined;
 					$cookies.remove('loggedin',{"path":"/"});
 					$cookies.remove('username',{"path":"/"});
-					$window.location.assign('#/metadata');
+					//$window.location.assign('#/metadata');
+					loginType=config["idra.authentication.method"];
+					
+					if (loginType === "FIWARE" || loginType === "KEYCLOAK"){
+						$cookies.put('destinationUrl', $window.location.hash,{"path":"/"});
+						$('#loginform').submit();
+					}else{
+						$window.location.assign('#/login');
+					}
 				}
+				
 			});
 
 		}
@@ -340,6 +349,34 @@
 //			$rootScope.closeAlert();
 			return viewLocation === $location.path();
 		};
+		
+		
+		$scope.checkRemoteCatalogues = function () { 
+			$rootScope.toDisable = false;
+			
+				var req = {
+				method: 'GET',
+				url: config.ADMIN_SERVICES_BASE_URL + config.REMOTE_CAT_SERVICE,
+				headers: {
+					'Content-Type': 'application/json',
+					'Authorization': "Bearer "+$rootScope.token
+				}
+
+		};
+		$http(req).then(function(value){
+			$scope.allRemCatalogues = value.data;	
+			$scope.displayedCollectionImport = [].concat($scope.allRemCatalogues);
+		
+			$scope.remoteCatalogues = $scope.displayedCollectionImport.length;
+			console.log("Numero di cataloghi remoti: "+$scope.remoteCatalogues);
+			$rootScope.toDisable = ($scope.remoteCatalogues==0)?true:false;
+			console.log("Disabilta Import cataloghi remoti? "+$rootScope.toDisable);
+
+		});
+			
+		};
+		
+		
 //		var first=true;
 		$rootScope.$on("$locationChangeStart",function(event, next, current){
 			$scope.isOpen=false;
@@ -419,6 +456,12 @@
 		    $translate.use(langKey);
 		  };
 		
+		let redirectUriAfterIDM = $cookies.get('destinationUrl');
+		if(redirectUriAfterIDM!=undefined){
+			$cookies.remove('destinationUrl',{"path":"/"});
+			$window.location.assign(redirectUriAfterIDM);
+		}
+		  
 	}]);
 
 	app.controller('ContentCTRL',['$scope','$rootScope','usSpinnerService',function($scope,$rootScope,usSpinnerService){
@@ -490,7 +533,7 @@
 		$scope.loginType=config["idra.authentication.method"];
 		
 		$scope.signIn = function(){
-			if ($scope.loginType === "FIWARE")
+			if ($scope.loginType === "FIWARE" || $scope.loginType === "KEYCLOAK")
 				$('#loginform').submit();
 			else
 				$window.location.assign('#/login');
@@ -544,40 +587,52 @@
 		
 		$scope.logout = function(){
 
-			var token = $rootScope.token;
-			var username = $rootScope.loggedUsername;
-
-			var req = {
-					method: 'POST',
-					url: config.ADMIN_SERVICES_BASE_URL+config.LOGOUT_SERVICE,
-					headers: {
-						'Content-Type': 'application/json',
-						'Authorization': "Bearer " +$rootScope.token
-					},
-					data:{
-						'username': username,
-						'token':token
-					}};			
-
-			$rootScope.startSpin();
-			$http(req).then(function(value){
-				console.log(value);
+			loginType=config["idra.authentication.method"];
+			
+			if(loginType.toUpperCase()=='BASIC'){
+			
+				var token = $rootScope.token;
+				var username = $rootScope.loggedUsername;
+	
+				var req = {
+						method: 'POST',
+						url: config.ADMIN_SERVICES_BASE_URL+config.LOGOUT_SERVICE,
+						headers: {
+							'Content-Type': 'application/json',
+							'Authorization': "Bearer " +$rootScope.token
+						},
+						data:{
+							'username': username,
+							'token':token
+						}};			
+	
+				$rootScope.startSpin();
+				$http(req).then(function(value){
+					console.log(value);
+					$rootScope.stopSpin();
+					$rootScope.loggedUsername = undefined;
+					$rootScope.token=undefined;
+					$cookies.remove('loggedin',{"path":"/"});
+					$cookies.remove('username',{"path":"/"});
+					$window.location.assign('#/metadata');
+				}, function(value){
+					console.log(value);
+					$rootScope.stopSpin();
+					$rootScope.loggedUsername = undefined;
+					$rootScope.token=undefined;
+					$cookies.remove('loggedin',{"path":"/"});
+					$cookies.remove('username',{"path":"/"});
+	//				$rootScope.showAlert('danger',value.data.userMessage);
+					$window.location.assign('#/metadata');
+				});
+			}else{
 				$rootScope.stopSpin();
 				$rootScope.loggedUsername = undefined;
 				$rootScope.token=undefined;
 				$cookies.remove('loggedin',{"path":"/"});
 				$cookies.remove('username',{"path":"/"});
-				$window.location.assign('#/metadata');
-			}, function(value){
-				console.log(value);
-				$rootScope.stopSpin();
-				$rootScope.loggedUsername = undefined;
-				$rootScope.token=undefined;
-				$cookies.remove('loggedin',{"path":"/"});
-				$cookies.remove('username',{"path":"/"});
-//				$rootScope.showAlert('danger',value.data.userMessage);
-				$window.location.assign('#/metadata');
-			});
+				$window.location.assign(config["idm.logout.callback"]);
+			}
 		}
 
 		$scope.idmlogout = function(){

@@ -18,6 +18,11 @@
 package it.eng.idra.beans.exception;
 
 public class DatasetNotValidException extends Exception {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	public DatasetNotValidException(String message) {
         super(message);
     }

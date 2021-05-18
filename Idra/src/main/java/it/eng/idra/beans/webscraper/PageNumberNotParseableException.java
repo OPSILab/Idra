@@ -18,6 +18,11 @@
 package it.eng.idra.beans.webscraper;
 
 public class PageNumberNotParseableException extends Exception {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	public PageNumberNotParseableException(String message) {
         super(message);
     }

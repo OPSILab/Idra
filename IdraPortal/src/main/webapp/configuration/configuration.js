@@ -264,11 +264,16 @@ angular.module('IdraPlatform').controller('RemoteModalInstanceCtrl',["$scope","$
 	
 	$scope.checkValue = "";
 	$scope.checkValueIDM = "";
+	
+	$scope.isBasic = false;
+	$scope.isOauth = false;
+	$scope.noAuth = true;
+	
 	$scope.isIdra = false;
 	$scope.usernameIdra = "";
 	$scope.passwordIdra = "";
 	$scope.cataloguePassword = "";
-	$scope.somePlaceholder = 'Insert Idra Base Path';
+	$scope.somePlaceholder = 'Insert URL';
 	$scope.deleteCred = "";
 	
 	$scope.request = function(req){		
@@ -335,8 +340,10 @@ angular.module('IdraPlatform').controller('RemoteModalInstanceCtrl',["$scope","$
 	}
 
 	$scope.addRemCat=function(){
-
-		if($scope.checkValue || $scope.checkValueIDM){
+				$scope.isBasic = true;
+				$scope.isOauth = false;
+		//if($scope.checkValue || $scope.checkValueIDM){
+			if($scope.isBasic || $scope.isOauth){
 					console.log("Aggiunta catalogo CON CREDENZIALI IDRA o IDM");
 
 					if($scope.checkValueIDM)
@@ -345,7 +352,8 @@ angular.module('IdraPlatform').controller('RemoteModalInstanceCtrl',["$scope","$
 						$scope.cataloguePassword = md5.createHash($scope.tmp.password);
 					
 				if(checkRemcat($scope.tmp,$scope.mode) ){
-		
+				console.log("Aggiunta di username: "+$scope.tmp.username,+" passw: "+$scope.cataloguePassword);
+					
 					var req = {
 							method: 'POST',
 							url: config.ADMIN_SERVICES_BASE_URL + config.REMOTE_CAT_SERVICE,
@@ -510,6 +518,32 @@ angular.module('IdraPlatform').controller('RemoteModalInstanceCtrl',["$scope","$
 			}
 		else
 			$scope.isIdra = false;
+		}
+		
+		$scope.authenticationType=function(authSelected){
+		if(authSelected=="basic"){
+				$scope.isBasic = true;
+				$scope.isOauth = false;
+				$scope.noAuth = false;
+			}
+		else if(authSelected=="oauth2"){
+				$scope.isOauth = true;
+				$scope.isBasic = false;
+				$scope.noAuth = false;
+		}
+		else{
+			$scope.isBasic = false;
+			$scope.isOauth = false;
+			$scope.noAuth = true;
+		}
+		}
+		
+		$scope.setSelection=function(){
+			if($scope.mode == 'update'){
+				return false;
+			}
+			else
+				return true;
 		}
 
 		$scope.setPlaceholder=function(){

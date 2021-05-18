@@ -62,7 +62,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
-import java.nio.charset.StandardCharsets;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
@@ -402,9 +401,9 @@ public class ClientAPI {
 			request = GsonUtil.json2Obj(input, GsonUtil.searchRequestType);
 
 			// Gets the source IP address from HTTPRequest
-			String ipAddress = null;
-			if (httpRequest.getHeader("X-FORWARDED-FOR") == null)
-				ipAddress = httpRequest.getRemoteAddr();
+//			String ipAddress = null;
+//			if (httpRequest.getHeader("X-FORWARDED-FOR") == null)
+//				ipAddress = httpRequest.getRemoteAddr();
 
 			// If the filters list is not empty, start to build the parameters
 			// HashMap, to be passed to FederatesSearch

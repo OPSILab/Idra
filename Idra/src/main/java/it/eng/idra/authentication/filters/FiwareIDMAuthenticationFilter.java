@@ -19,21 +19,12 @@ package it.eng.idra.authentication.filters;
 
 import it.eng.idra.authentication.FiwareIDMAuthenticationManager;
 import it.eng.idra.authentication.Secured;
-import it.eng.idra.authentication.fiware.configuration.IDMProperty;
-import it.eng.idra.authentication.fiware.connectors.FiwareIDMConnector;
-import it.eng.idra.authentication.fiware.model.FiwareIDMVersion;
 import it.eng.idra.authentication.fiware.model.Token;
-import it.eng.idra.utils.PropertyManager;
 import java.io.IOException;
-import java.lang.reflect.Method;
-import java.util.Set;
-
 import javax.annotation.Priority;
 import javax.ws.rs.NotAuthorizedException;
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.ContainerRequestFilter;
-import javax.ws.rs.container.ResourceInfo;
-import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.Provider;

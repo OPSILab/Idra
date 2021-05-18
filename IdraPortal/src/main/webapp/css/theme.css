@@ -2,37 +2,56 @@
 :root {
   --mainColor: #00b4ff; 
   --logo: url("../images/idra_D_v6_black.svg");
-  /* #00b4ff blu originale Idra */
-  /* --logo: url("../images/idra_D_v6_black.svg");  logo Idra*/
 }
 .img-logo {
   content: var(--logo);
 }
 .favicon { 
 	content: "images/icons/favicon-32x32.png";
-    /* "images/icons/favicon-32x32.png"   Icona favicon Idra*/
 }
 #header .navbar-link-element{
-	 font-weight: bold;  /* normal, lighter, num da 100 a 900 */
+	 font-weight: bold;  
 }
-/* modifiche personalizzate alla linea della navbar */
-#header div.navbar {
-  	border-style:solid;
-    border-width:3px;  
-    border-bottom-color: var(--mainColor); /* transparent */
-    box-shadow: 10px 10px 8px #ffffff;  /* ombreggiatura */
+
+/* Custom modifications to the Title */
+#header .navbar-title {
+	visibility: hidden;
 }
-/* modifiche personalizzate alla navbar */
+#header .navbar-title:after {
+	 visibility: visible;
+	 content: ''; /* Insert here the title */
+	 font-weight: bold;  
+	 color: var(--mainColor); 
+	 font-size: 20pt;
+	 overflow:hidden;
+}
+
+@media screen and (max-width: 600px) { /* When the browser's width is 600px wide or less, hide the element */
+  #header .navbar-title:after {
+    display: none;
+  }
+}
+
+/* Custom modifications to the Navbar */
 #header div.navbar.navbar-default .navbar-header .navbar-brand {
 	background-image: var(--logo);
 	background-repeat: no-repeat;
-	background-size: auto 60px; /* grandezza del logo */
+	background-size: auto 60px; /* Size of the logo */
 	display: block;
 	height: 70px;
 	width: 100px;
 	text-transform: capitalize;
 }
-/* modifiche personalizzate al bottone Login */
+
+/* Custom modifications to the Navbar line */
+#header div.navbar {
+  	border-style:solid;
+    border-width:3px;  
+    border-bottom-color: var(--mainColor); /* Insert 'transparent' to remove the line */
+    box-shadow: 10px 10px 8px #ffffff;  /* shading */
+}
+
+/* Custom modifications to the Login button */
 /* #header .btn.btn-primary.btn-raised {
   background-color: #008031;
   color: rgba(255, 255, 255, 0.84);

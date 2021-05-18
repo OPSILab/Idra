@@ -265,8 +265,9 @@
 	"createNewRemoteCatalogue": "Crea nuovo catalogo remoto",
 	"searchCatalogueName":"Cerca nome",
 	"catalogueType": "Tipo di Catalogo",
-	"idraCredentials": "Credenziali Idra",
-	"portalCredentials": "Credenziali IDM",
+	"authType": "Metodo di autenticazione",
+	"idraCredentials": "Base",
+	"portalCredentials": "Oauth2",
 	"deleteCredentials": "Elimina Credenziali",
 	"portalURL": "URL Portale",
 	

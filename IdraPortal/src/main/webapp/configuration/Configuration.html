@@ -40,6 +40,7 @@
 
 		<li ng-class="{active: main.active.tab == 'remCataloguesManagement'}"><a
 			ng-click="main.active.tab = 'remCataloguesManagement'">{{'remoteCatalogues' | translate}}</a></li>
+				
 	</ul>
 
 	<div class="tab-content">
@@ -277,7 +278,8 @@
 	<div class="row form-inline" ng-if=" mode=='create' ">
 			<label class="control-label">{{'catalogueType' | translate}}</label>
 				<select ng-model="selected" class="form-control" ng-click="catalogueType(selected); setPlaceholder()">
-				<option value="json">JSON</option>
+				<option value="" selected hidden />
+				<option value="json" ng-selected="true">JSON</option>
 				<option value="idra">Idra</option>
 			    </select>
 	</div>
@@ -294,28 +296,42 @@
 			<input type="text" class="form-control" name="URL"
 							placeholder="{{somePlaceholder}}" 
 							ng-model="tmp.URL">
-	</div>
+	</div>	
+							
+				<!-- NEW -->
+				<div class="row form-inline" ng-show="(isIdra && mode!='update') || (mode=='update' && tmp.username==null && tmp.isIdra)">
+					<label class="control-label">{{'authType' | translate}}</label>
+					<select ng-model="authSelected" class="form-control" ng-click="authenticationType(authSelected)">
+						<option value="" selected hidden />
+						<option value="noAuth" ng-selected="true">N.A.</option>
+						<option value="basic">{{'idraCredentials' | translate}}</option>
+						<option value="oauth2">{{'portalCredentials' | translate}}</option>
+				    </select>
+				</div>
+				
+				<!-- in Edit, è un Idra autenticato -->
+				<div class="row form-inline" ng-show="tmp.isIdra && mode=='update' && tmp.username!=null">
+					<label class="control-label">{{'authType' | translate}}</label>
+					<select ng-model="authSelected" class="form-control" ng-click="authenticationType(authSelected)">
+						<option value="basic" ng-selected="(tmp.clientID==null)?true:false">{{'idraCredentials' | translate}}</option>
+						<option value="oauth2" ng-selected="(tmp.clientID!=null)?true:false">{{'portalCredentials' | translate}}</option>
+				    </select>
+				</div>
 			
-			<div class="row form-inline" ng-if=" (tmp.isIdra || isIdra)" >
-				<label for="refresh" class="control-label">{{'idraCredentials' | translate}}</label> <input type="checkbox" class="form-control"
-							ng-model="checkValue" ng-click="checkedValue(checkValue)" ng-checked="ckeck()">
-				<label for="refresh" class="control-label">{{'portalCredentials' | translate}}</label> <input type="checkbox" class="form-control"
-							ng-model="checkValueIDM" ng-click="checkedValueIDM(checkValueIDM)" ng-checked="ckeckIDM()">
-				<div class="row form-inline" ng-show=" (mode=='update' && tmp.username!=null) && (checkValueIDM==false && checkValue==false)" >
-				<label for="refresh" class="control-label">{{'deleteCredentials' | translate}}</label> <input type="checkbox" class="form-control"
-							ng-model="deleteCred" ng-click="checkedDeleteCred(deleteCred)" >
-				</div>		
-			</div>
-			<div class="row form-inline" ng-if=" ((tmp.isIdra) || isIdra) && (checkValueIDM==false)" ng-show="checkValue">
+	
+				</div>
+			
+			<div class="row form-inline" ng-if=" ((tmp.isIdra) || isIdra)" ng-show="isBasic || (mode=='update' && tmp.clientID==null && tmp.username!=null && isOauth==false)">
 				<label for="refresh" class="control-label">Username</label> <input type="text" placeholder="Insert Username" class="form-control"
 							ng-model="tmp.username">
-			
 				</br>
 				<label for="refresh" class="control-label">Password</label> <input type="password" placeholder="Insert Password" class="form-control"
 							ng-model="tmp.password">
 				</br>
 			</div>
-			<div class="row form-inline" ng-if=" (checkValue==false) && ((tmp.isIdra) || isIdra)" ng-show="checkValueIDM">
+
+
+			<div class="row form-inline" ng-if="((tmp.isIdra) || isIdra)" ng-show="isOauth || (mode=='update' && tmp.clientID!=null)">
 				<label for="refresh" class="control-label">Username</label> <input type="text" placeholder="Insert Username" class="form-control"
 							ng-model="tmp.username">
 				</br>
@@ -331,7 +347,11 @@
 				<label for="refresh" class="control-label">{{'portalURL' | translate}}</label> <input type="text" placeholder="{{'addURL' | translate}}" class="form-control"
 							ng-model="tmp.portal">
 			</div>
-	
+				
+			<div class="row form-inline" ng-show=" (mode=='update' && tmp.username!=null)" >
+				<label for="refresh" class="control-label">{{'deleteCredentials' | translate}}</label> <input type="checkbox" class="form-control"
+							ng-model="deleteCred" ng-click="checkedDeleteCred(deleteCred)" >
+			</div>	
 	
 	
 	</div>
