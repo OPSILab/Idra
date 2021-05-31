@@ -313,6 +313,8 @@
 				<div class="row form-inline" ng-show="tmp.isIdra && mode=='update' && tmp.username!=null">
 					<label class="control-label">{{'authType' | translate}}</label>
 					<select ng-model="authSelected" class="form-control" ng-click="authenticationType(authSelected)">
+					    <option value="" selected hidden />
+						<option value="noAuth">N.A.</option>
 						<option value="basic" ng-selected="(tmp.clientID==null)?true:false">{{'idraCredentials' | translate}}</option>
 						<option value="oauth2" ng-selected="(tmp.clientID!=null)?true:false">{{'portalCredentials' | translate}}</option>
 				    </select>
@@ -321,7 +323,7 @@
 	
 				</div>
 			
-			<div class="row form-inline" ng-if=" ((tmp.isIdra) || isIdra)" ng-show="isBasic || (mode=='update' && tmp.clientID==null && tmp.username!=null && isOauth==false)">
+			<div class="row form-inline" ng-if=" ((tmp.isIdra) || isIdra)" ng-show="(isBasic) || (mode=='update' && tmp.clientID==null && tmp.username!=null && noAuth==false && isOauth==false) ">
 				<label for="refresh" class="control-label">Username</label> <input type="text" placeholder="Insert Username" class="form-control"
 							ng-model="tmp.username">
 				</br>
@@ -331,7 +333,7 @@
 			</div>
 
 
-			<div class="row form-inline" ng-if="((tmp.isIdra) || isIdra)" ng-show="isOauth || (mode=='update' && tmp.clientID!=null)">
+			<div class="row form-inline" ng-if="((tmp.isIdra) || isIdra)" ng-show="(isOauth) || (mode=='update' && tmp.clientID!=null && noAuth==false && isBasic==false)">
 				<label for="refresh" class="control-label">Username</label> <input type="text" placeholder="Insert Username" class="form-control"
 							ng-model="tmp.username">
 				</br>
@@ -347,12 +349,12 @@
 				<label for="refresh" class="control-label">{{'portalURL' | translate}}</label> <input type="text" placeholder="{{'addURL' | translate}}" class="form-control"
 							ng-model="tmp.portal">
 			</div>
-				
+			<!--
 			<div class="row form-inline" ng-show=" (mode=='update' && tmp.username!=null)" >
 				<label for="refresh" class="control-label">{{'deleteCredentials' | translate}}</label> <input type="checkbox" class="form-control"
 							ng-model="deleteCred" ng-click="checkedDeleteCred(deleteCred)" >
 			</div>	
-	
+	        -->
 	
 	</div>
 </div>
@@ -360,7 +362,7 @@
 <div class="modal-footer">
 	<button class="btn btn-default btn-raised" type="button" ng-click="cancel()">{{'cancel' | translate}}</button>
 	<button class="btn btn-primary btn-raised" type="button" ng-if=" mode=='create' " ng-click="addRemCat()" ng-disabled="tmp.URL=='' && tmp.catalogueName==''">{{'create' | translate}}</button>
-	<button class="btn btn-primary btn-raised" type="button" ng-if=" mode=='update' " ng-click="updateRemCat()" ng-disabled="tmp.URL==oldRemCat.URL && tmp.catalogueName==oldRemCat.catalogueName && !deleteCred">{{'update' | translate}}</button>
+	<button class="btn btn-primary btn-raised" type="button" ng-if=" mode=='update' " ng-click="updateRemCat()" ng-disabled="tmp.URL==oldRemCat.URL && tmp.catalogueName==oldRemCat.catalogueName && noAuth==false">{{'update' | translate}}</button>
 </div>
 </script>
 

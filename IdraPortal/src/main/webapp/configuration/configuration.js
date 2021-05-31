@@ -267,14 +267,14 @@ angular.module('IdraPlatform').controller('RemoteModalInstanceCtrl',["$scope","$
 	
 	$scope.isBasic = false;
 	$scope.isOauth = false;
-	$scope.noAuth = true;
+	$scope.noAuth = false;
 	
 	$scope.isIdra = false;
 	$scope.usernameIdra = "";
 	$scope.passwordIdra = "";
 	$scope.cataloguePassword = "";
 	$scope.somePlaceholder = 'Insert URL';
-	$scope.deleteCred = "";
+	$scope.deleteCred = false;
 	
 	$scope.request = function(req){		
 					$rootScope.startSpin();
@@ -403,7 +403,7 @@ angular.module('IdraPlatform').controller('RemoteModalInstanceCtrl',["$scope","$
 
 	$scope.updateRemCat=function(){
 		
-		if($scope.deleteCred){
+		if($scope.noAuth){
 					console.log("ELIMINAZIONE CREDENZIALI");
 					
 				if(checkRemcat($scope.tmp,$scope.mode) ){
@@ -500,8 +500,10 @@ angular.module('IdraPlatform').controller('RemoteModalInstanceCtrl',["$scope","$
 			}
 		}
 		
-	$scope.checkedDeleteCred=function(deleteCred){
-		$scope.deleteCred = deleteCred;
+	$scope.delete_Cred=function(){
+		$scope.deleteCred = true;
+	
+		
 		}
 	
 	$scope.ckeckIDM=function(){
@@ -521,6 +523,8 @@ angular.module('IdraPlatform').controller('RemoteModalInstanceCtrl',["$scope","$
 		}
 		
 		$scope.authenticationType=function(authSelected){
+	
+		 
 		if(authSelected=="basic"){
 				$scope.isBasic = true;
 				$scope.isOauth = false;
@@ -537,6 +541,19 @@ angular.module('IdraPlatform').controller('RemoteModalInstanceCtrl',["$scope","$
 			$scope.noAuth = true;
 		}
 		}
+		
+		$scope.check = function(){
+		//autrenticato idra
+		if($scope.tmp.clientID==null && $scope.tmp.username!=null && $scope.mode == 'update'){
+			console.log("ERA BASIC");
+			$scope.isBasic = true;
+				
+			}
+			else if($scope.tmp.clientID!=null && $scope.tmp.username!=null && $scope.mode == 'update'){
+				console.log("ERA IDM");
+				$scope.isOauth = false;
+			}
+	  }
 		
 		$scope.setSelection=function(){
 			if($scope.mode == 'update'){
