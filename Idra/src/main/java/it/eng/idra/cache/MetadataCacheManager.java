@@ -231,7 +231,6 @@ public class MetadataCacheManager {
 		throw new DistributionNotFoundException("Distribution not found in cache for seoIdentifier:" + id);
 	}
 
-	
 
 	/**
 	 * Searches all Dataset belonging to the passed nodeID on local SOLR cache

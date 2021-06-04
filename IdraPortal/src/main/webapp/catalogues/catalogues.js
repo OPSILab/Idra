@@ -27,6 +27,12 @@ angular.module("IdraPlatform").controller('CataloguesController',["$scope","$htt
 	$scope.deactivateCatalogueOPT1="";
 	$scope.deactivateCatalogueOPT2="";
 	$scope.deleteCatalogueSuccMex="";
+	$scope.allRemCat = 0;
+	
+	$scope.remoteCatalogues = 0;
+	$scope.disableImport = false;
+	$scope.allRemCatalogues = 0;	
+	$scope.displayedCollectionImport = [];
 	
 	var getTranlsatedValueDialogs = function(){
 			$translate('deleteCatalogueTitle')
@@ -424,6 +430,12 @@ angular.module("IdraPlatform").controller('CataloguesController',["$scope","$htt
 		$window.location.assign('#/remotes');
 	}
 	
+	//Controllo lista dei cataloghi remoti
+	$scope.checkImport = function(){
+		return $rootScope.toDisable;
+	}
+
+
 	$scope.downloadZip = false;
 	
 	$scope.downloadDump = function(node){

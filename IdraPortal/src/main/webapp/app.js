@@ -349,6 +349,34 @@
 //			$rootScope.closeAlert();
 			return viewLocation === $location.path();
 		};
+		
+		
+		$scope.checkRemoteCatalogues = function () { 
+			$rootScope.toDisable = false;
+			
+				var req = {
+				method: 'GET',
+				url: config.ADMIN_SERVICES_BASE_URL + config.REMOTE_CAT_SERVICE,
+				headers: {
+					'Content-Type': 'application/json',
+					'Authorization': "Bearer "+$rootScope.token
+				}
+
+		};
+		$http(req).then(function(value){
+			$scope.allRemCatalogues = value.data;	
+			$scope.displayedCollectionImport = [].concat($scope.allRemCatalogues);
+		
+			$scope.remoteCatalogues = $scope.displayedCollectionImport.length;
+			console.log("Numero di cataloghi remoti: "+$scope.remoteCatalogues);
+			$rootScope.toDisable = ($scope.remoteCatalogues==0)?true:false;
+			console.log("Disabilta Import cataloghi remoti? "+$rootScope.toDisable);
+
+		});
+			
+		};
+		
+		
 //		var first=true;
 		$rootScope.$on("$locationChangeStart",function(event, next, current){
 			$scope.isOpen=false;

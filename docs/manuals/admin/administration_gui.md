@@ -19,7 +19,7 @@ able to:
 -   Start the synchronization of a Catalogue;
 -   Download a catalogue dump or the federation dump with DCAT-AP profile
 
-![alt tag](administration_nodes.png "Catalogues")
+![alt tag](administration_nodesNew.png "Catalogues")
 
 The following pictures depicts the functionalities linked to every button or
 icons.
@@ -31,7 +31,7 @@ icons.
 By clicking on the **ADD** button the following Catalogue form is presented to
 the administrator.
 
-![alt tag](addNode.png "Add Catalogues")
+![alt tag](addNodeNew.png "Add Catalogues")
 
 Here the administrator has to insert the metadata of the catalogue and then
 click on the **CREATE** button. The default metadata related to a catalogue are:
@@ -95,13 +95,15 @@ reverted.
 
 ### Remote Catalogues
 
-New Catalogues can be added to the federation using the **remote catalogues**
-list. This remote list is a catalogue repository maintained by Engineering. In
-the remote catalogue list an Idra administrator can find certified catalogues
-and by clicking on the _plus_ icon he can insert the selected catalogue in
-his/her Idra instance.
+New Catalogues can be added to the federation using the ** remote catalogues ** 
+list. This remote list is a catalogue repository maintained by Engineering.
+The administrator has the possibility to choose between different remote catalogues 
+lists, imported from different instances of catalogue federations.
+In the remote catalogue list an Idra administrator can find certified catalogues 
+and by clicking on the _plus_ icon he can insert the selected catalogue in his/her 
+Idra instance.
 
-![alt tag](remotes.png "Remotes Catalogues")
+![alt tag](remotesNew.png "Remotes Catalogues")
 
 ### Activate/Deactivate a Catalogue
 
@@ -140,23 +142,36 @@ the loading of the RDF files into the LOD repository. In particular, they can:
 
 Moreover, the administrator will define the default catalogue's refresh period.
 
-![alt tag](configurations.png "Configurations")
+![alt tag](configurationsNew.png "Configurations")
 
 The administrator can also update his/her password and they can manage the RDFs'
 prefixes through the console.
+
+Moreover, an administrator can manage remote catalogues by adding other sets of 
+certified catalogues, in addition to the default remote catalogue, by importing 
+them from other federation instances.
+When adding a new remote catalogue, several situations can occur:
+-   The administrator wants to add a set of catalogues present inside a json file. 
+	To do this, he will need to specify the URL of the resource.
+-   The administrator wants to add a set of catalogues present in an Idra instance 
+	of catalogue federations of which he knows the access credentials. 
+	In this way, he will have access to all the metadata of the catalogue. 
+	Otherwise, he will only be able to access a part of the metadata.
+
+![alt tag](configurationsRemoteCat.png "Remote Catalogues Configurations")
 
 ## Datalets Management
 
 Through this page, the administrator can manage all of the datalets produced by
 the end users.
 
-![alt tag](datalet_management.png "Datalet Management")
+![alt tag](datalet_managementNew.png "Datalet Management")
 
 The administrator will check the number of views and the last time the datalets
 was seen by end users. The administrator will be able to delete the datalet or
 to see its preview.
 
-![alt tag](datalet_detail.png "Datalet Detail")
+![alt tag](datalet_detailNew.png "Datalet Detail")
 
 ## Platform Logs
 

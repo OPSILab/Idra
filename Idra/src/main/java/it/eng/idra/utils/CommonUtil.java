@@ -20,30 +20,29 @@ package it.eng.idra.utils;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.security.Key;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.text.Normalizer;
-import java.text.ParseException;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
-import java.text.SimpleDateFormat;
 import java.time.format.DateTimeParseException;
 import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
+import java.util.Base64;
 import java.util.Date;
 import java.util.Locale;
-import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
+import javax.crypto.Cipher;
+import javax.crypto.spec.SecretKeySpec;
 import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
 import com.google.common.collect.Ordering;
 
 import it.eng.idra.beans.odms.ODMSCatalogue;
@@ -381,7 +380,55 @@ public class CommonUtil {
 //			e.printStackTrace();
 //		}
 //	}
-//	
+//
+
 	
 	
+  public static String encrypt(String text) {
+	  String encr = "";
+      try 
+      {
+          String key = "key1234567"; 
+          Key aesKey = new SecretKeySpec(Arrays.copyOf(key.getBytes("UTF-8"), 16), "AES");
+          Cipher cipher = Cipher.getInstance("AES");
+          cipher.init(Cipher.ENCRYPT_MODE, aesKey);
+          byte[] encrypted = cipher.doFinal(text.getBytes());
+
+          encr = Base64.getEncoder().encodeToString(encrypted);
+
+
+      }
+      catch(Exception e) 
+      {
+          e.printStackTrace();
+      }
+      return encr;
+  }
+  
+  
+  public static String decrypt(String encr) {
+	  String decrypted = "";
+      try 
+      {
+          String key = "key1234567"; 
+          Key aesKey = new SecretKeySpec(Arrays.copyOf(key.getBytes("UTF-8"), 16), "AES");
+          Cipher cipher = Cipher.getInstance("AES");
+          
+          cipher.init(Cipher.DECRYPT_MODE, aesKey);
+          byte[] decode = Base64.getDecoder().decode(encr);
+          decrypted = new String(cipher.doFinal(decode));
+          
+      }
+      catch(Exception e) 
+      {
+          e.printStackTrace();
+      }
+      return decrypted;
+  }
+	
+
+	
+	
+	
+
 }

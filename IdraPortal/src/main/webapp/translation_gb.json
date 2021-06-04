@@ -273,8 +273,9 @@
 	"createNewRemoteCatalogue": "Create new remote catalogue",
 	"searchCatalogueName":"search name",
 	"catalogueType": "Catalogue Type",
-	"idraCredentials": "Idra credentials",
-	"portalCredentials": "IDM credentials",
+	"authType": "Authentication method",
+	"idraCredentials": "Basic",
+	"portalCredentials": "Oauth2",
 	"deleteCredentials": "Delete credentials",
 	"portalURL": "Portal URL",
 	
