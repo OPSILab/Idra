@@ -39,7 +39,7 @@ federated open datasets (through DatalEt-Ecosystem Provider
 
 Idra is an open source software developed by
 [Engineering Ingegneria Informatica SpA](http://www.eng.it) inside the EU
-founded project [FESTIVAL](http://www.festival-project.eu/). This project is
+founded project "FESTIVAL". This project is
 part of [FIWARE](https://www.fiware.org/). For more information check the FIWARE
 Catalogue entry for
 [Data Publication](https://github.com/Fiware/catalogue/tree/master/data-publication). The roadmap of this FIWARE GE is described [here](./roadmap.md)
