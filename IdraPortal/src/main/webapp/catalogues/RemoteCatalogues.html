@@ -27,8 +27,13 @@
 					ng-click="returnToCatalogues()">{{'back' | translate}}</button>
 			</div>
 		</div>
+		<div class="col-sm-5 col-md-5 form-inline">
+			<label class="control-label">{{'remoteCatalogues' | translate}}</label>
+				<select ng-model="selected" ng-change="selCatalogue()" ng-options="c.catalogueName for c in displayedCollection2 track by c.URL" class="form-control">
+			    </select>
+		</div>
 	</div>
-	
+
 		<div class="table-responsive" >
 					<table st-table="remote_displayedCollection" st-safe-src="remote_nodes"
 						class="table table-striped">
@@ -79,13 +84,14 @@
             							style="border-style: solid;border-width: 1px;border-color: rgba(0,0,0,0.1)" class="flag-icon " 
            								 ng-class="'flag-icon-'+node.country.toLowerCase()"></span></td>
 								<td>{{node.nodeType}}</td>
-								<td>{{node.federationLevel.split("_")[1]}}</td>
+								<!-- <td>{{node.federationLevel.split("_")[1]}}</td> -->
+								<td>{{setLevel(node)}}</td>
 								<td>{{node.host}}</td>
 								<td>
 									<div class="buttons">
 										<a href="javascript:void(0)"
 											class="btn-flat "
-											a-disabled="node.alreadyLocal"
+											a-disabled="node.alreadyLocal || ((node.nodeType=='ORION' || node.nodeType=='SPARQL' || node.nodeType=='DCATDUMP') && (selIsAuth==false))"
 											ng-click="addRemoteNode(node)"> <i
 											class="mdi-content-add-circle-outline"> <md-tooltip ng-show="!node.alreadyLocal">
 												{{'addCatalogue' | translate}}</md-tooltip></i>

@@ -74,8 +74,8 @@ services :
                 - idra.dump.file.path=/opt/idra/dump/
                 - idra.lod.enable=true
                 - idra.lod.repo.name=Idra
-                - idra.lod.server.uri=http://rdf4j:8080/rdf4j-server/repositories/
-                - idra.lod.server.uri.query=http://rdf4j:8080/rdf4j-workbench/repositories/Idra/query
+                - idra.lod.server.uri=http://rdf4j:8081/rdf4j-server/repositories/
+                - idra.lod.server.uri.query=http://rdf4j:8081/rdf4j-workbench/repositories/Idra/query
                 - idra.orion.orionDumpFilePath=/opt/idra/dump/
                 - idra.orion.orionInternalAPI=http://localhost:8080/Idra/api/v1/client/executeOrionQuery
                 - idra.authentication.method=BASIC

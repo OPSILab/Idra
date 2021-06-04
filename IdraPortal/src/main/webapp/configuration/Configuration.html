@@ -28,12 +28,19 @@
 <div class="col-md-12 tabbable tabs-left">
 	<ul class="nav nav-tabs"
 		ng-init="main.active.tab = 'defaultConfiguration'">
+		
 		<li ng-class="{active: main.active.tab == 'defaultConfiguration'}"><a
 			ng-click="main.active.tab = 'defaultConfiguration'">{{'DataSources' | translate}}</a></li>
+		
 		<li ng-class="{active: main.active.tab == 'prefixManagement'}"><a
 			ng-click="main.active.tab = 'prefixManagement'">{{'sparqlPrefixes' | translate}}</a></li>
+		
 		<li ng-class="{active: main.active.tab == 'updatePassword'}" ng-if="showUpdatePass"><a
 			ng-click="main.active.tab = 'updatePassword'">{{'updatePassword' | translate}}</a></li>
+
+		<li ng-class="{active: main.active.tab == 'remCataloguesManagement'}"><a
+			ng-click="main.active.tab = 'remCataloguesManagement'">{{'remoteCatalogues' | translate}}</a></li>
+				
 	</ul>
 
 	<div class="tab-content">
@@ -77,6 +84,7 @@
 				</div>
 			</div>
 
+
 			<div ng-switch-when="updatePassword" ng-if="showUpdatePass">
 				<div class="col-md-6" ng-controller="UpdatePasswordCtrl">
 					<form class="form" ng-submit="updatePassword()" novalidate>
@@ -104,6 +112,7 @@
 					</form>
 				</div>
 			</div>
+
 
 			<div ng-switch-when="prefixManagement">
 
@@ -165,6 +174,8 @@
 	<button type="button" class="close" aria-hidden="true" ng-click="cancel()">x</button>
     <h3 class="modal-title">{{'createNewPrefix' | translate}}</h3>
 </div>
+
+
 <div class="modal-body row">
 	<alert type='danger' style="text-align:center"
 		ng-show="alertModal" close="closeAlertModal()" dismiss-on-timeout="3000">
@@ -194,10 +205,168 @@
 </script>
 
 
+
 			</div>
+
+			<div ng-switch-when="remCataloguesManagement">
+
+				<div class="col-md-12" ng-controller="RemCatCtrl">
+
+					<div class="col-md-12 inner-section-title">
+						<label class="control-label">{{'remoteCatalogues' | translate}}</label>
+					</div>
+					<div class=" col-md-12 table-responsive">
+						<table st-table="displayedCollection" st-safe-src="allRemCat"
+							class="table table-striped">
+							<thead>
+								<tr>
+									<th st-sort="catalogueName">{{'catalogueName' | translate}}</th>
+									<th st-sort="URL" st-sort-default="true">{{'url' | translate}}</th>
+									<th>{{'edit' | translate}}</th>
+								</tr>
+								<tr> 
+									<th><input placeholder="{{'searchCatalogueName' | translate}}"
+										st-search="catalogueName" /></th>
+									<th><input placeholder="{{'searchURL' | translate}}" st-search="URL" />
+									</th>
+									<th></th>
+								</tr>  
+							</thead>
+							<tbody>
+								<tr ng-repeat="c in displayedCollection track by $index">
+									<td>{{c.catalogueName}}</td>
+									<td>{{c.URL}}</td>
+									<td>
+										<div class="buttons" ng-if="c.editable">
+											<a class="btn-flat "
+												ng-click="openModal(c)"><i class="mdi-content-create"></i></a>
+											<a class="btn-flat "
+												ng-click="deleteCatalogue(c)"><i class="mdi-content-clear"></i></a>
+										</div>
+									</td>
+								</tr>
+							</tbody>
+							<tfoot>
+								<tr>
+									<td>
+										<div st-pagination="" st-items-by-page="itemsByPage"
+											st-template="CustomPagination.html"></div>
+									</td>
+									<td colspan="1"></td>
+									<td><span style="margin: 0 auto" class="pull-right"><button
+												class="btn btn-primary "
+												ng-click="openModal('')">{{'addCatalogue' | translate}}</button></span></td>
+								</tr>
+							</tfoot>
+						</table>
+					</div>
+
+				</div>
+
+<script type="text/ng-template" id="RemCatModalContent.html">
+<div class="modal-header">
+	<button type="button" class="close" aria-hidden="true" ng-click="cancel()">x</button>
+    <h3 class="modal-title">{{'createNewRemoteCatalogue' | translate}}</h3>
+</div>
+
+
+<div class="modal-body row">
+	<alert type='danger' style="text-align:center"
+		ng-show="alertModal" close="closeAlertModal()" dismiss-on-timeout="3000">
+	{{textAlertModal}} </alert>
+	<div class="col-md-12">
+	<div class="row form-inline" ng-if=" mode=='create' ">
+			<label class="control-label">{{'catalogueType' | translate}}</label>
+				<select ng-model="selected" class="form-control" ng-click="catalogueType(selected); setPlaceholder()">
+				<option value="" selected hidden />
+				<option value="json" ng-selected="true">JSON</option>
+				<option value="idra">Idra</option>
+			    </select>
+	</div>
+	</div>
+	<div class="col-md-12">
+		<div class="row form-inline">
+		<label class="control-label">{{'catalogueName' | translate}}</label>
+			<input type="text" class="form-control" name="catalogueName"
+							placeholder="{{'addCatalogueName' | translate}}"
+							ng-model="tmp.catalogueName">
+	</div>
+	<div class="row form-inline" name="formPrefix">
+		<label class="control-label">{{'url' | translate}}</label>
+			<input type="text" class="form-control" name="URL"
+							placeholder="{{somePlaceholder}}" 
+							ng-model="tmp.URL">
+	</div>	
+							
+				<!-- NEW -->
+				<div class="row form-inline" ng-show="(isIdra && mode!='update') || (mode=='update' && tmp.username==null && tmp.isIdra)">
+					<label class="control-label">{{'authType' | translate}}</label>
+					<select ng-model="authSelected" class="form-control" ng-click="authenticationType(authSelected)">
+						<option value="" selected hidden />
+						<option value="noAuth" ng-selected="true">N.A.</option>
+						<option value="basic">{{'idraCredentials' | translate}}</option>
+						<option value="oauth2">{{'portalCredentials' | translate}}</option>
+				    </select>
+				</div>
+				
+				<!-- in Edit, è un Idra autenticato -->
+				<div class="row form-inline" ng-show="tmp.isIdra && mode=='update' && tmp.username!=null">
+					<label class="control-label">{{'authType' | translate}}</label>
+					<select ng-model="authSelected" class="form-control" ng-click="authenticationType(authSelected)">
+					    <option value="" selected hidden />
+						<option value="noAuth">N.A.</option>
+						<option value="basic" ng-selected="(tmp.clientID==null)?true:false">{{'idraCredentials' | translate}}</option>
+						<option value="oauth2" ng-selected="(tmp.clientID!=null)?true:false">{{'portalCredentials' | translate}}</option>
+				    </select>
+				</div>
+			
+	
+				</div>
+			
+			<div class="row form-inline" ng-if=" ((tmp.isIdra) || isIdra)" ng-show="(isBasic) || (mode=='update' && tmp.clientID==null && tmp.username!=null && noAuth==false && isOauth==false) ">
+				<label for="refresh" class="control-label">Username</label> <input type="text" placeholder="Insert Username" class="form-control"
+							ng-model="tmp.username">
+				</br>
+				<label for="refresh" class="control-label">Password</label> <input type="password" placeholder="Insert Password" class="form-control"
+							ng-model="tmp.password">
+				</br>
+			</div>
+
+
+			<div class="row form-inline" ng-if="((tmp.isIdra) || isIdra)" ng-show="(isOauth) || (mode=='update' && tmp.clientID!=null && noAuth==false && isBasic==false)">
+				<label for="refresh" class="control-label">Username</label> <input type="text" placeholder="Insert Username" class="form-control"
+							ng-model="tmp.username">
+				</br>
+				<label for="refresh" class="control-label">Password</label> <input type="password" placeholder="Insert Password" class="form-control"
+							ng-model="tmp.password">
+				</br>
+				<label for="refresh" class="control-label">Client ID</label> <input type="text" placeholder="Insert Client ID" class="form-control"
+							ng-model="tmp.clientID">
+				</br>
+				<label for="refresh" class="control-label">Client Secret</label> <input type="text" placeholder="Insert Client secret" class="form-control"
+							ng-model="tmp.clientSecret">
+								</br>
+				<label for="refresh" class="control-label">{{'portalURL' | translate}}</label> <input type="text" placeholder="{{'addURL' | translate}}" class="form-control"
+							ng-model="tmp.portal">
+			</div>
+			<!--
+			<div class="row form-inline" ng-show=" (mode=='update' && tmp.username!=null)" >
+				<label for="refresh" class="control-label">{{'deleteCredentials' | translate}}</label> <input type="checkbox" class="form-control"
+							ng-model="deleteCred" ng-click="checkedDeleteCred(deleteCred)" >
+			</div>	
+	        -->
+	
+	</div>
+</div>
+
+<div class="modal-footer">
+	<button class="btn btn-default btn-raised" type="button" ng-click="cancel()">{{'cancel' | translate}}</button>
+	<button class="btn btn-primary btn-raised" type="button" ng-if=" mode=='create' " ng-click="addRemCat()" ng-disabled="tmp.URL=='' && tmp.catalogueName==''">{{'create' | translate}}</button>
+	<button class="btn btn-primary btn-raised" type="button" ng-if=" mode=='update' " ng-click="updateRemCat()" ng-disabled="tmp.URL==oldRemCat.URL && tmp.catalogueName==oldRemCat.catalogueName && noAuth==false">{{'update' | translate}}</button>
+</div>
+</script>
+
 		</div>
 	</div>
-
-
 
 </div>

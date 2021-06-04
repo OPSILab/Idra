@@ -133,6 +133,480 @@ angular.module("IdraPlatform").controller('PrefixCtrl',['$scope','config','$root
 
 }]);
 
+
+
+
+
+angular.module("IdraPlatform").controller('RemCatCtrl',['$scope','config','$rootScope','$http','$modal',function($scope,config,$rootScope,$http,$modal){
+
+	$scope.itemsByPage = 6;
+
+	$scope.allRemCat=[];
+
+	$scope.getAllRemCat = function(){
+
+		var req = {
+				method: 'GET',
+				url: config.ADMIN_SERVICES_BASE_URL + config.REMOTE_CAT_SERVICE,
+				headers: {
+					'Content-Type': 'application/json',
+					'Authorization': "Bearer "+$rootScope.token
+				}
+
+		};
+
+		$rootScope.startSpin();
+		$http(req).then(function(value){
+			$rootScope.stopSpin();
+			console.log(value.data);
+			$scope.allRemCat = value.data;	
+			$scope.displayedCollection = [].concat($scope.allRemCat);
+		}, function(value){
+			console.log(value.status);
+			if(value.status==401){
+				$rootScope.token=undefined;
+			}
+			$rootScope.stopSpin();
+			return null;
+		});
+	}
+
+
+	$scope.getAllRemCat();
+	
+	$scope.addRemCat = function() {
+		$scope.inserted = {
+				URL: '',
+				catalogueName: ''
+		};
+		$scope.allRemCat.unshift($scope.inserted);
+	};
+
+		$scope.openModal = function (c) {
+
+		var catalogue;
+		var title="";
+		if(c==''){
+			catalogue={
+					id: '-1',
+					URL: '',
+					catalogueName: ''
+			}
+			mode="create";
+		}else{
+			catalogue=c;
+			mode="update";
+		}
+
+		var modalInstance = $modal.open({
+			animation: true,
+			templateUrl: 'RemCatModalContent.html',
+			controller: 'RemoteModalInstanceCtrl',
+			size: 'md',
+			resolve: {
+				catalogue: function () {
+					return catalogue;
+				},
+				mode: function(){
+					return mode;
+				},
+				message: function(){
+					return "Please select a node";
+				},
+				allRemCat: function(){
+					return $scope.allRemCat;
+				}
+			}
+		});
+
+		modalInstance.result.then(function () {
+			$scope.getAllRemCat();
+		});
+
+	};
+
+	$scope.deleteCatalogue = function(c){
+
+		var req = {
+				method: 'DELETE',
+				url: config.ADMIN_SERVICES_BASE_URL+config.REMOTE_CAT_SERVICE+'/' + c.id,
+				headers: {
+					'Authorization': "Bearer "+$rootScope.token
+				}
+		};
+
+		$rootScope.startSpin();
+		$http(req).then(function(value){
+			console.log(value);
+			$scope.getAllRemCat();
+			$rootScope.stopSpin();
+		}, function(value){
+
+			if(value.status==401){
+				$rootScope.token=undefined;
+			}
+
+			$scope.getAllRemCat();
+			$rootScope.stopSpin();
+			$rootScope.showAlert('danger',value.data.userMessage);
+		}); 
+	}
+	
+}]);
+
+
+
+
+angular.module('IdraPlatform').controller('RemoteModalInstanceCtrl',["$scope","$modalInstance", "catalogue","mode",'config','$rootScope','$http','allRemCat','md5', function ($scope, $modalInstance, catalogue,mode,config,$rootScope,$http,allRemCat,md5) {
+
+	$scope.tmp = angular.copy(catalogue);
+	$scope.oldRemCat = angular.copy(catalogue); 
+	
+	$scope.checkValue = "";
+	$scope.checkValueIDM = "";
+	
+	$scope.isBasic = ($scope.tmp.clientID==null && $scope.tmp.username!=null)?true:false;
+	$scope.isOauth = ($scope.tmp.clientID!=null && $scope.tmp.username!=null)?true:false;
+	$scope.noAuth = false;
+	
+	$scope.isIdra = false;
+	$scope.usernameIdra = "";
+	$scope.passwordIdra = "";
+	$scope.cataloguePassword = "";
+	$scope.somePlaceholder = 'Insert URL';
+	$scope.deleteCred = false;
+	
+	$scope.request = function(req){		
+					$rootScope.startSpin();
+					$http(req).then(function(value){
+						$rootScope.stopSpin();
+						$scope.cancel();
+					}, function(value){
+						$rootScope.stopSpin();
+						$scope.cancel();
+						$rootScope.showAlert('danger',value.data.userMessage);
+					});
+	}
+	
+	console.log($scope.oldRemCat.catalogueName == $scope.tmp.catalogueName && $scope.oldRemCat.URL == $scope.tmp.URL);
+
+	console.log($scope.tmp);
+	
+	$scope.mode=mode;
+
+	if(mode=="create"){
+		$scope.title = "Create new Remote Catalogue";
+	}else{
+		$scope.title = "Update Remote Catalogue";
+	}
+
+	$scope.textAlertModal="";
+	$scope.alertModal=false;
+	
+	$scope.closeAlertModal = function(){
+		$scope.alertModal=false;
+	}
+
+	$scope.showAlertModal = function(){
+		$scope.alertModal=true;
+	}
+
+	function checkRemcat(tmp,mode){
+
+		if(tmp.URL=='' || tmp.catalogueName==''){
+			$scope.alertModal=true;
+			$scope.textAlertModal="All fields required";
+			return false;
+		}
+		
+		for(i=0; i<allRemCat.length; i++){
+			if(allRemCat[i].URL == tmp.URL && tmp.id != allRemCat[i].id){
+				$scope.alertModal=true;
+				$scope.textAlertModal="Remote Catalogue already exists";
+				return false;
+			}else if(allRemCat[i].catalogueName == tmp.catalogueName && tmp.id != allRemCat[i].id){
+				$scope.alertModal=true;
+				$scope.textAlertModal="Remote Catalogue Name already exists";
+				return false;
+			}
+		}
+		//var reg = /^<(http|https):\/\/[^ "]+>$/;
+		//if(!reg.test(tmp.URL)){
+			//$scope.alertModal=true;
+			//$scope.textAlertModal="Wrong URL format";
+			//return false;
+		//}
+		return true;
+	}
+
+	$scope.addRemCat=function(){
+				$scope.isBasic = true;
+				$scope.isOauth = false;
+		//if($scope.checkValue || $scope.checkValueIDM){
+			if($scope.isBasic || $scope.isOauth){
+					console.log("Aggiunta catalogo CON CREDENZIALI IDRA o IDM");
+
+					if($scope.checkValueIDM)
+						$scope.cataloguePassword = $scope.tmp.password;
+					else
+						$scope.cataloguePassword = md5.createHash($scope.tmp.password);
+					
+				if(checkRemcat($scope.tmp,$scope.mode) ){
+				console.log("Aggiunta di username: "+$scope.tmp.username,+" passw: "+$scope.cataloguePassword);
+					
+					var req = {
+							method: 'POST',
+							url: config.ADMIN_SERVICES_BASE_URL + config.REMOTE_CAT_SERVICE,
+							headers: {
+								'Content-Type': 'application/json',
+								'Authorization': "Bearer "+$rootScope.token
+							},
+							data:{
+								'URL': $scope.tmp.URL,
+								'catalogueName': $scope.tmp.catalogueName,
+								'editable': true,
+								'password': $scope.cataloguePassword,
+								'username': $scope.tmp.username,
+								'isIdra': $scope.isIdra,
+								'clientID': $scope.tmp.clientID,
+								'clientSecret': $scope.tmp.clientSecret,
+								'portal': $scope.tmp.portal
+							}
+					};
+			$scope.request(req);
+				}
+	}
+	else{
+		console.log("Aggiunta catalogo SENZA CREDENZIALI");
+			if(checkRemcat($scope.tmp,$scope.mode) ){
+		
+					var req = {
+							method: 'POST',
+							url: config.ADMIN_SERVICES_BASE_URL + config.REMOTE_CAT_SERVICE,
+							headers: {
+								'Content-Type': 'application/json',
+								'Authorization': "Bearer "+$rootScope.token
+							},
+							data:{
+								'URL': $scope.tmp.URL,
+								'catalogueName': $scope.tmp.catalogueName,
+								'editable': true,
+								'isIdra': $scope.isIdra
+							}
+					};
+				$scope.request(req);
+				}	
+	}
+	}
+
+
+
+	$scope.updateRemCat=function(){
+		
+		if($scope.noAuth){
+					console.log("ELIMINAZIONE CREDENZIALI");
+					
+				if(checkRemcat($scope.tmp,$scope.mode) ){
+					var req = {
+							method: 'PUT',
+							url: config.ADMIN_SERVICES_BASE_URL+config.REMOTE_CAT_SERVICE+"/"+$scope.tmp.id.toString(),
+							headers: {
+								'Content-Type': 'application/json',
+								'Authorization': "Bearer "+$rootScope.token
+							},
+							data:{
+								'URL': $scope.tmp.URL,
+								'catalogueName': $scope.tmp.catalogueName,
+								'editable': true,
+								'password': null,
+								'username': null,
+								'isIdra': true,
+								'clientID': null,
+								'clientSecret': null,
+								'portal': null
+							}
+					};
+				$scope.request(req);
+				}
+			}
+			
+		else if($scope.checkValue){
+			console.log("MODIFICA catalogo CON CREDENZIALI IDRA");
+
+				if(checkRemcat($scope.tmp,$scope.mode) ){
+					var req = {
+							method: 'PUT',
+							url: config.ADMIN_SERVICES_BASE_URL+config.REMOTE_CAT_SERVICE+"/"+$scope.tmp.id.toString(),
+							headers: {
+								'Content-Type': 'application/json',
+								'Authorization': "Bearer "+$rootScope.token
+							},
+							data:{
+								'URL': $scope.tmp.URL,
+								'catalogueName': $scope.tmp.catalogueName,
+								'editable': true,
+								'password': md5.createHash($scope.tmp.password),
+								'username': $scope.tmp.username,
+								'isIdra': true,
+						 
+							}
+					};
+				$scope.request(req);
+				}
+		
+			}
+		else {
+				if(checkRemcat($scope.tmp,$scope.mode) ){
+					var req = {
+							method: 'PUT',
+							url: config.ADMIN_SERVICES_BASE_URL+config.REMOTE_CAT_SERVICE+"/"+$scope.tmp.id.toString(),
+							headers: {
+								'Content-Type': 'application/json',
+								'Authorization': "Bearer "+$rootScope.token
+							},
+							data:{	
+								'URL': $scope.tmp.URL,
+								'catalogueName': $scope.tmp.catalogueName,
+								'editable': true,
+								'password': $scope.tmp.password,
+								'username': $scope.tmp.username,
+								'isIdra': $scope.tmp.isIdra,
+								'clientID': $scope.tmp.clientID,
+								'clientSecret': $scope.tmp.clientSecret,
+								'portal': $scope.tmp.portal
+							}
+					};
+		
+					$scope.request(req);
+				}
+			}
+	}
+	$scope.cancel = function () {
+		$modalInstance.close();
+	};
+	
+	
+	  $scope.checkedValue=function(checked){
+		$scope.checkValue = checked;
+			if($scope.checkValueIDM){
+				$scope.checkValueIDM = false;
+			}
+		}
+		
+	$scope.checkedValueIDM=function(checkedIDM){
+		$scope.checkValueIDM = checkedIDM;
+		if($scope.checkValue){
+				$scope.checkValue = false;
+			}
+		}
+		
+	$scope.delete_Cred=function(){
+		$scope.deleteCred = true;
+			
+		}
+	
+	$scope.ckeckIDM=function(){
+			return $scope.checkValueIDM;
+		}
+		
+	$scope.ckeck=function(){
+			return $scope.checkValue;
+		}
+		
+		$scope.catalogueType=function(selected){
+		if(selected=="idra"){
+				$scope.isIdra = true;
+			}
+		else
+			$scope.isIdra = false;
+		}
+		
+		$scope.authenticationType=function(authSelected){
+	
+		 
+		if(authSelected=="basic"){
+				$scope.isBasic = true;
+				$scope.isOauth = false;
+				$scope.noAuth = false;
+			}
+		else if(authSelected=="oauth2"){
+				$scope.isOauth = true;
+				$scope.isBasic = false;
+				$scope.noAuth = false;
+		}
+		else if (authSelected=="noAuth"){
+			$scope.isBasic = false;
+			$scope.isOauth = false;
+			$scope.noAuth = true;
+		}
+		}
+		
+		
+		$scope.setSelection=function(){
+			if($scope.mode == 'update'){
+				return false;
+			}
+			else
+				return true;
+		}
+
+		$scope.setPlaceholder=function(){
+			if($scope.isIdra)
+				$scope.somePlaceholder = 'Insert Idra Base Path';
+			else
+				$scope.somePlaceholder = 'Insert URL';
+			}
+		
+	  $scope.setCredentials=function(username, password){
+		$scope.usernameIdra = username;
+		$scope.passwordIdra = password;
+
+		}
+		
+/*
+		$scope.tokenIdra="";
+		$scope.loginIdra = function(username, password){
+			$scope.usernameIdra = username;
+			$scope.passwordIdra = password;
+			
+			console.log("Login username: " + $scope.usernameIdra);
+			console.log("URL: " + $scope.tmp.URL);
+		
+			var req = {
+					method: 'POST',
+				
+					url: config.ADMIN_SERVICES_BASE_URL + config.REMOTE_CAT_SERVICE + "/login",
+					dataType: 'json',
+					headers: {
+						'Content-Type': 'application/json'
+					},
+					data:{					
+						'username':$scope.usernameIdra,
+						'password':md5.createHash($scope.passwordIdra)
+					}};			
+
+			$rootScope.startSpin();
+			$http(req).then(function(value){
+				console.log("Login token: " + value.data);
+				console.log("Login passw: " + md5.createHash($scope.passwordIdra));
+				$rootScope.stopSpin();
+				$scope.tokenIdra=value.data;
+				//$rootScope.loggedUsername = $scope.username;
+				//$cookies.put('loggedin', value.data,{"path":"/"});
+				//$cookies.put('username', $scope.username,{"path":"/"});
+				//$window.location.assign('#/metadata');
+			}, function(value){
+				//console.log(value);
+				$rootScope.stopSpin();
+				$rootScope.showAlert('danger',value.data.userMessage);
+			});			
+		}
+*/
+}]);
+
+
+
+
 angular.module("IdraPlatform").controller('UpdatePasswordCtrl',['$scope','config','$rootScope','$http','md5',function($scope,config,$rootScope,$http,md5){
 
 	$scope.oldPassword="";

@@ -31,7 +31,6 @@ import javax.persistence.EntityTransaction;
 import javax.persistence.NoResultException;
 import javax.persistence.NonUniqueResultException;
 import javax.persistence.Persistence;
-import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import javax.ws.rs.NotFoundException;
@@ -45,6 +44,7 @@ import it.eng.idra.beans.ConfigurationParameter;
 import it.eng.idra.beans.DCATThemes;
 import it.eng.idra.beans.Log;
 import it.eng.idra.beans.RdfPrefix;
+import it.eng.idra.beans.RemoteCatalogue;
 import it.eng.idra.beans.User;
 import it.eng.idra.beans.exception.InvalidPasswordException;
 import it.eng.idra.beans.odms.ODMSCatalogue;
@@ -370,7 +370,99 @@ public class PersistenceManager {
 	}
 
 	/* End configuration */
+	
+	
+	
+	/* Remote Catalogues */
+	
+	public HashMap<String, String> getRemoteCatalogues() {
+		HashMap<String, String> catalogues = new HashMap<>();
+		TypedQuery<RemoteCatalogue> q = em.createQuery("SELECT d FROM RemoteCatalogue d ", RemoteCatalogue.class);
+		catalogues = (HashMap<String, String>) q.getResultList().stream().collect(
+				Collectors.toMap(RemoteCatalogue::getCatalogueName, RemoteCatalogue::getURL));
+		return catalogues;
+	}
+		
 
+	public RemoteCatalogue getRemCatID(int id) {
+		TypedQuery<RemoteCatalogue> q = em.createQuery("SELECT d FROM RemoteCatalogue d where d.id=" + id, RemoteCatalogue.class);
+		return q.getResultList().get(0);
+	}
+	
+	public boolean checkRemCatExists(RemoteCatalogue rm) {
+		TypedQuery<RemoteCatalogue> q = em
+				.createQuery("SELECT d FROM RemoteCatalogue d where d.catalogueName='" + rm.getCatalogueName() + "'", RemoteCatalogue.class);
+		return q.getResultList().size() > 0;
+	}
+	
+	public boolean updateRemoteCatalogues(List<RemoteCatalogue> catalogues) {
+		try {
+			if (!em.getTransaction().isActive())
+				em.getTransaction().begin();
+			for (RemoteCatalogue tmp : catalogues) {
+				em.merge(tmp);
+			}
+			em.getTransaction().commit();
+			return true;
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			return false;
+		}
+	}
+	
+	public boolean addRemoteCat(RemoteCatalogue r) {
+
+		try {
+			if (!em.getTransaction().isActive())
+				em.getTransaction().begin();
+			em.persist(r);
+			em.getTransaction().commit();
+			return true;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
+	
+	public boolean deleteRemCat(int id) {
+
+		try {
+			Query q;
+			if (!em.getTransaction().isActive())
+				em.getTransaction().begin();
+			q = em.createQuery("DELETE FROM RemoteCatalogue where id=" + id);
+			q.executeUpdate();
+			em.getTransaction().commit();
+			return true;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
+	
+	public boolean updateRemCat(RemoteCatalogue rm) {
+		try {
+			if (!em.getTransaction().isActive())
+				em.getTransaction().begin();
+			em.merge(rm);
+			em.getTransaction().commit();
+			return true;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
+	
+		public List<RemoteCatalogue> getremoteCataloguesList() {
+			TypedQuery<RemoteCatalogue> q = em.createQuery("SELECT d FROM RemoteCatalogue d ",
+					RemoteCatalogue.class);
+			return q.getResultList();
+		}
+	/* End Remote Catalogues */
+	
+
+	
+	
 	/* LOGS */
 
 	private String buildLogsQuery(List<String> levelList, ZonedDateTime from, ZonedDateTime to) {
@@ -683,8 +775,10 @@ public class PersistenceManager {
 
 	}
 
+	
 	public static String hashPassword(String pwd) throws NoSuchAlgorithmException {
 
+		
 		MessageDigest hash = MessageDigest.getInstance("MD5");
 		hash.update(pwd.getBytes());
 		byte byteData[] = hash.digest();
@@ -695,13 +789,16 @@ public class PersistenceManager {
 			sb.append(Integer.toString((byteData[i] & 0xff) + 0x100, 16).substring(1));
 
 		return sb.toString();
+		//return "";
 	}
+		
 	/* END USER */
 
 	public void jpaUpdate(Object obj) {
 		em.merge(obj);
 
 	}
+
 
 	public void jpaUpdateAndCommit(Object obj) {
 		if (!em.getTransaction().isActive())
