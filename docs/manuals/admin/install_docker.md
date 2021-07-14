@@ -85,7 +85,7 @@ Once the application was started, you can check IPs assigned to running
 containers, with:
 
 ```bash
-docker inspect network idra_main.
+docker inspect network idra_main
 ```
 
 **NOTE**
@@ -163,7 +163,7 @@ Unlike the MySQL case, currently, you have to manually create a new RDF4J
 repository:
 
 -   Once the Idra server started (after launching docker-compose), go with
-    browser to the RDF4J URL: `localhost:8080/rdf4j-workbench`
+    browser to the RDF4J URL: `localhost:8081/rdf4j-workbench`
 
 Note. Change the port number according to the configuration done (if changed) in
 the `ports` section of docker-compose file.
