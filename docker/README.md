@@ -1,8 +1,5 @@
 # Idra - Open Data Federation Platform
 
-[![FIWARE IoT Agents](https://nexus.lab.fiware.org/repository/raw/public/badges/chapters/iot-agents.svg)](https://www.fiware.org/developers/catalogue/)
-[![](https://nexus.lab.fiware.org/repository/raw/public/badges/stackoverflow/iot-agents.svg)](https://stackoverflow.com/questions/tagged/fiware+iot)
-
 Idra is a web application able to federate existing Open Data Management Systems
 (ODMS) based on different technologies providing a unique access point to search
 and discover open datasets coming from heterogeneous sources. Idra uniforms
