@@ -62,8 +62,12 @@ RUN			npm install -g bower
 # c='"}' && \
 # echo $a$http_proxy$b$https_proxy$c | tee .bowerrc
 
+ARG GITHUB_ACCOUNT=OPSILab
+ARG GITHUB_REPOSITORY=Idra
+ARG DOWNLOAD=v2.2.0
 ### Clone the official Idra GitHub repository ###
-RUN			git clone https://github.com/OPSILab/Idra.git
+RUN echo "${DOWNLOAD} https://github.com/${GITHUB_ACCOUNT}/${GITHUB_REPOSITORY}"
+RUN git clone --depth 1 --branch "${DOWNLOAD}" https://github.com/"${GITHUB_ACCOUNT}"/"${GITHUB_REPOSITORY}"
 	#&& mv .bowerrc ./Idra/IdraPortal/src/main/webapp
     
 RUN cd Idra && git checkout docker
@@ -108,7 +112,7 @@ RUN chmod +x wait-for-it.sh
 # Set the port to expose. WARNING The "docker run" command, used to run a container from the image built from this DockerFile,
 # MUST define the mapping with the host ports.
 # (e.g. -p 8080:8080 option of "docker run" command maps the 8080 port of the container (exposed through the following EXPOSE directive) to the host's 8080 port )
-EXPOSE 8080
+EXPOSE ${IDRA_PORT:-8080}
 
 # Set the working directory from which run the following commands
 WORKDIR     /
