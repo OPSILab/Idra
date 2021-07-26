@@ -11,7 +11,7 @@
 [![CII Best Practices](https://bestpractices.coreinfrastructure.org/projects/4740/badge)](https://bestpractices.coreinfrastructure.org/projects/4740)
 <br>
 [![Documentation badge](https://img.shields.io/readthedocs/idra.svg)](https://idra.readthedocs.io/en/latest/)
-![Status](https://nexus.lab.fiware.org/static/badges/statuses/idra.svg)
+![Status](https://nexus.lab.fiware.org/repository/raw/public/badges/statuses/full.svg)
 
 Idra is a web application able to federate existing Open Data Management Systems
 (ODMS) based on different technologies providing a unique access point to search
