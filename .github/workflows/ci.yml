@@ -14,6 +14,20 @@ on:
   workflow_dispatch:
 
 jobs:
+  java-checkstyle:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+      - name: Run Java Checkstyle
+        uses: Justintime50/java-checkstyle-action@v1
+        with:
+          directory: /Idra/src/main/java/it/eng/idra
+
+          # The name of the style suite to be used, either 'sun' or 'google'.
+
+          style_suite: google
+          
   orion-test:
     name: Orion Test
     runs-on: ubuntu-latest
