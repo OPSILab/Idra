@@ -255,7 +255,7 @@ public class CachePersistenceManager {
   }
 
   public List<DcatDataset> jpaGetDatasets() {
-    TypedQuery<DcatDataset> q = em.createQuery("SELECT d FROM DCATDataset d", DcatDataset.class);
+    TypedQuery<DcatDataset> q = em.createQuery("SELECT d FROM DcatDataset d", DcatDataset.class);
     return q.getResultList();
   }
 
@@ -275,7 +275,7 @@ public class CachePersistenceManager {
     nodes.addAll(filterMap.keySet());
     HashMap<String, String> filters = filterMap.get(nodes.get(0));
 
-    String query = "SELECT d FROM DCATDataset d where d.nodeID in (:nodes) and  ( regexp(d.title,'"
+    String query = "SELECT d FROM DcatDataset d where d.nodeID in (:nodes) and  ( regexp(d.title,'"
         + filters.get("regex") + "') = true "
             + "or regexp(d.description,'" + filters.get("regex") + "') = true ) ";
 
@@ -319,7 +319,7 @@ public class CachePersistenceManager {
     nodes.addAll(filterMap.keySet());
     HashMap<String, String> filters = filterMap.get(nodes.get(0));
 
-    String query = "SELECT d FROM DCATDataset d join DCTLocation l on d.spatialCoverage=l.id"
+    String query = "SELECT d FROM DcatDataset d join DctLocation l on d.spatialCoverage=l.id"
         + " where d.nodeID in (:nodes) and l.geometry is not '' "
         + "and ST_Intersects(ST_GeomFromGeoJSON('"
         + filters.get("geographic_area") + "'),ST_GeomFromGeoJSON(l.geometry))=true ";
@@ -376,7 +376,7 @@ public class CachePersistenceManager {
     nodes.addAll(filterMap.keySet());
     HashMap<String, String> filters = filterMap.get(nodes.get(0));
 
-    String query = "SELECT d FROM DCATDataset d where d.nodeID in (:nodes) and  ( regexp(d.title,'"
+    String query = "SELECT d FROM DcatDataset d where d.nodeID in (:nodes) and  ( regexp(d.title,'"
         + filters.get("regex") + "') = true "
             + "or regexp(d.description,'" + filters.get("regex") + "') = true ) ";
 
@@ -418,12 +418,12 @@ public class CachePersistenceManager {
     nodes.addAll(filterMap.keySet());
     HashMap<String, String> filters = filterMap.get(nodes.get(0));
 
-    // String query = "SELECT d FROM DCATDataset d where d.nodeID in (:nodes) and
+    // String query = "SELECT d FROM DcatDataset d where d.nodeID in (:nodes) and
     // d.spatialCoverage is not '' and ST_Intersects(ST_GeomFromGeoJSON('"
     // + filters.get("geographic_area") +
     // "'),ST_GeomFromGeoJSON(d.spatialCoverage))=true ";
 
-    String query = "SELECT d FROM DCATDataset d join DCTLocation l on d.spatialCoverage=l.id "
+    String query = "SELECT d FROM DcatDataset d join DctLocation l on d.spatialCoverage=l.id "
         + "where d.nodeID in (:nodes) and l.geometry is not '' "
         + "and ST_Intersects(ST_GeomFromGeoJSON('"
         + filters.get("geographic_area") + "'),ST_GeomFromGeoJSON(l.geometry))=true ";
@@ -472,7 +472,7 @@ public class CachePersistenceManager {
    */
   public List<DcatDataset> jpaGetDatasetsByOdmsNode(int nodeId) {
     TypedQuery<DcatDataset> q = 
-        em.createQuery("SELECT d FROM DCATDataset d where d.nodeID = " + nodeId,
+        em.createQuery("SELECT d FROM DcatDataset d where d.nodeID = " + nodeId,
         DcatDataset.class);
     return q.getResultList();
   }
@@ -485,7 +485,7 @@ public class CachePersistenceManager {
    */
   public DcatDataset jpaGetDatasetsById(String datasetId) {
     TypedQuery<DcatDataset> q = 
-        em.createQuery("SELECT d FROM DCATDataset d where d.id = '" + datasetId + "'",
+        em.createQuery("SELECT d FROM DcatDataset d where d.id = '" + datasetId + "'",
         DcatDataset.class);
     return q.getResultList().get(0);
   }
@@ -560,11 +560,11 @@ public class CachePersistenceManager {
     em.getTransaction().commit();
   }
 
-  // public void jpaDeleteDataset(DCATDataset d){
+  // public void jpaDeleteDataset(DcatDataset d){
   // Query q;
   // logger.info("HIBERNATE: Delete Transaction BEGIN");
   // em.getTransaction().begin();
-  // q= em.createQuery("DELETE FROM DCATDataset where dataset_id='" +
+  // q= em.createQuery("DELETE FROM DcatDataset where dataset_id='" +
   // d.getId() + "' AND nodeID='" + d.getNodeID() + "'");
   // q.executeUpdate();
   // logger.info("HIBERNATE: Delete Transaction COMMIT");
@@ -583,7 +583,7 @@ public class CachePersistenceManager {
     for (DcatDataset o : objList) {
       DcatDataset dataset = (DcatDataset) em.find(DcatDataset.class, 
           new DcatDatasetId(o.getId(), o.getNodeID()));
-      // DCATDataset managed = em.merge(o);
+      // DcatDataset managed = em.merge(o);
       em.remove(dataset);
     }
     em.getTransaction().commit();
@@ -765,7 +765,7 @@ public class CachePersistenceManager {
     q = em.createNativeQuery("DELETE FROM dcat_concept_prefLabel where nodeID= " + nodeId);
     q.executeUpdate();
 
-    q = em.createQuery("DELETE FROM DCTStandard where nodeID= " + nodeId);
+    q = em.createQuery("DELETE FROM DctStandard where nodeID= " + nodeId);
     q.executeUpdate();
 
     q = em.createQuery("DELETE FROM VCardOrganization where nodeID = " + nodeId);
@@ -780,25 +780,25 @@ public class CachePersistenceManager {
     q = em.createQuery("DELETE FROM Datalet where nodeID = " + nodeId);
     q.executeUpdate();
 
-    q = em.createQuery("DELETE FROM DCATDistribution where nodeID = " + nodeId);
+    q = em.createQuery("DELETE FROM DcatDistribution where nodeID = " + nodeId);
     q.executeUpdate();
 
     q = em.createNativeQuery("DELETE FROM dcat_checksum where nodeID= " + nodeId);
     q.executeUpdate();
 
-    q = em.createQuery("DELETE FROM DCATDataset where nodeID = " + nodeId);
+    q = em.createQuery("DELETE FROM DcatDataset where nodeID = " + nodeId);
     q.executeUpdate();
 
-    q = em.createQuery("DELETE FROM DCTLicenseDocument where nodeID= " + nodeId);
+    q = em.createQuery("DELETE FROM DctLicenseDocument where nodeID= " + nodeId);
     q.executeUpdate();
 
-    q = em.createQuery("DELETE FROM DCTLocation where nodeID= " + nodeId);
+    q = em.createQuery("DELETE FROM DctLocation where nodeID= " + nodeId);
     q.executeUpdate();
 
-    q = em.createQuery("DELETE FROM DCTPeriodOfTime where nodeID= " + nodeId);
+    q = em.createQuery("DELETE FROM DctPeriodOfTime where nodeID= " + nodeId);
     q.executeUpdate();
 
-    q = em.createQuery("DELETE FROM FOAFAgent where nodeID = " + nodeId);
+    q = em.createQuery("DELETE FROM FoafAgent where nodeID = " + nodeId);
     q.executeUpdate();
 
     q = em.createNativeQuery("DELETE FROM dcat_concept where "

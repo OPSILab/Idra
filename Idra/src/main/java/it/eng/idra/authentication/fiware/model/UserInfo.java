@@ -84,7 +84,8 @@ public class UserInfo {
    * @param email the email
    * @param id the id
    */
-  public UserInfo(Set<Organization> organizations, String displayName, Set<Role> role, String app_id,
+  public UserInfo(Set<Organization> organizations,
+      String displayName, Set<Role> role, String app_id,
       boolean isGravatarEnabled, String email, String id) {
     this.organizations = organizations;
     this.displayName = displayName;

@@ -74,9 +74,6 @@ public class BasicAuthenticationManager extends AuthenticationManager {
     return instance;
   }
 
-  /* (non-Javadoc)
-   * @see it.eng.idra.authentication.AuthenticationManager#login(java.lang.String, java.lang.String, java.lang.String)
-   */
   @Override
   public Object login(String username, String password, String code)
       throws SQLException, NullPointerException, NoSuchAlgorithmException {
@@ -105,9 +102,6 @@ public class BasicAuthenticationManager extends AuthenticationManager {
 
   }
 
-  /* (non-Javadoc)
-   * @see it.eng.idra.authentication.AuthenticationManager#logout(javax.servlet.http.HttpServletRequest)
-   */
   @Override
   public Response logout(HttpServletRequest httpRequest) throws Exception {
 
@@ -129,9 +123,6 @@ public class BasicAuthenticationManager extends AuthenticationManager {
 
   }
 
-  /* (non-Javadoc)
-   * @see it.eng.idra.authentication.AuthenticationManager#getToken(java.lang.String, java.lang.String)
-   */
   @Override
   public String getToken(String username, String code) throws NoSuchAlgorithmException {
     Random random = new SecureRandom();

@@ -985,7 +985,6 @@ public class AdministrationApi {
   }
 
   /**
-   *  
    * authRemoteCatalogueIdm.
    *
    * @param id parameter

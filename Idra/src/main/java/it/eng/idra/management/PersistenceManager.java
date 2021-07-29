@@ -178,11 +178,11 @@ public class PersistenceManager {
    */
   public List<OdmsCatalogue> jpaGetOdmsCatalogues(boolean withImage) {
 
-    // TypedQuery<ODMSCatalogue> q = em.createQuery("SELECT d FROM ODMSCatalogue d "
+    // TypedQuery<OdmsCatalogue> q = em.createQuery("SELECT d FROM OdmsCatalogue d "
     // + (withImage ? "JOIN FETCH d.image i" : "")+" where d.isActive=true or
     // d.isActive is null",
     TypedQuery<OdmsCatalogue> q = em.createQuery(
-        "SELECT d FROM ODMSCatalogue d " + (withImage ? "JOIN FETCH d.image i" : ""),
+        "SELECT d FROM OdmsCatalogue d " + (withImage ? "JOIN FETCH d.image i" : ""),
         OdmsCatalogue.class);
     return q.getResultList();
   }
@@ -214,7 +214,7 @@ public class PersistenceManager {
    * @return the odms catalogue
    */
   public OdmsCatalogue jpaGetOdmsCatalogue(int id) {
-    TypedQuery<OdmsCatalogue> q = em.createQuery("SELECT d FROM ODMSCatalogue d where id=" + id,
+    TypedQuery<OdmsCatalogue> q = em.createQuery("SELECT d FROM OdmsCatalogue d where id=" + id,
         OdmsCatalogue.class);
     return q.getResultList().get(0);
   }
@@ -227,10 +227,10 @@ public class PersistenceManager {
    * @return the odms catalogue
    */
   public OdmsCatalogue jpaGetOdmsCatalogue(int id, boolean withImage) {
-    // TypedQuery<ODMSCatalogue> q = em.createQuery("SELECT d FROM ODMSCatalogue d"
+    // TypedQuery<OdmsCatalogue> q = em.createQuery("SELECT d FROM OdmsCatalogue d"
     // + (withImage ? " JOIN FETCH d.image i" : "") + " where id=" + id +" and
     // (d.isActive=true or d.isActive is null)",
-    TypedQuery<OdmsCatalogue> q = em.createQuery("SELECT d FROM ODMSCatalogue d"
+    TypedQuery<OdmsCatalogue> q = em.createQuery("SELECT d FROM OdmsCatalogue d"
         + (withImage ? " JOIN FETCH d.image i" : "") + " where id=" + id, OdmsCatalogue.class);
     return q.getResultList().get(0);
   }
@@ -243,7 +243,7 @@ public class PersistenceManager {
    * @return the odms catalogue
    */
   public OdmsCatalogue jpaGetInactiveOdmsCatalogue(int id, boolean withImage) {
-    TypedQuery<OdmsCatalogue> q = em.createQuery("SELECT d FROM ODMSCatalogue d"
+    TypedQuery<OdmsCatalogue> q = em.createQuery("SELECT d FROM OdmsCatalogue d"
         + (withImage ? " JOIN FETCH d.image i" : "") + " where id=" + id + " and d.isActive=false",
         OdmsCatalogue.class);
     return q.getResultList().get(0);
@@ -256,7 +256,7 @@ public class PersistenceManager {
    * @return the list
    */
   public List<OdmsCatalogue> jpaGetAllInactiveOdmsCatalogue(boolean withImage) {
-    TypedQuery<OdmsCatalogue> q = em.createQuery("SELECT d FROM ODMSCatalogue d"
+    TypedQuery<OdmsCatalogue> q = em.createQuery("SELECT d FROM OdmsCatalogue d"
         + (withImage ? " JOIN FETCH d.image i" : "") + " where d.isActive=false",
         OdmsCatalogue.class);
     return q.getResultList();
@@ -302,7 +302,7 @@ public class PersistenceManager {
    */
   public List<OdmsCatalogueMessage> jpaGetOdmsMessagesByNode(int nodeId) {
     TypedQuery<OdmsCatalogueMessage> q = em.createQuery(
-        "SELECT d FROM ODMSCatalogueMessage d where d.nodeID=" + nodeId + " order by d.date desc",
+        "SELECT d FROM OdmsCatalogueMessage d where d.nodeID=" + nodeId + " order by d.date desc",
         OdmsCatalogueMessage.class);
     return q.getResultList();
   }
@@ -316,7 +316,7 @@ public class PersistenceManager {
    */
   public OdmsCatalogueMessage jpaGetOdmsMessage(int id, int nodeId) {
     TypedQuery<OdmsCatalogueMessage> q = em.createQuery(
-        "SELECT d FROM ODMSCatalogueMessage d where d.nodeID=" + nodeId + "and d.id=" + id,
+        "SELECT d FROM OdmsCatalogueMessage d where d.nodeID=" + nodeId + "and d.id=" + id,
         OdmsCatalogueMessage.class);
     return q.getSingleResult();
   }
@@ -333,7 +333,7 @@ public class PersistenceManager {
       em.getTransaction().begin();
     }
     q = em
-        .createQuery("DELETE FROM ODMSCatalogueMessage where nodeID = " + nodeId + " and id=" + id);
+        .createQuery("DELETE FROM OdmsCatalogueMessage where nodeID = " + nodeId + " and id=" + id);
     q.executeUpdate();
     em.getTransaction().commit();
   }
@@ -348,7 +348,7 @@ public class PersistenceManager {
     if (!em.getTransaction().isActive()) {
       em.getTransaction().begin();
     }
-    q = em.createQuery("DELETE FROM ODMSCatalogueMessage where nodeID = " + nodeId);
+    q = em.createQuery("DELETE FROM OdmsCatalogueMessage where nodeID = " + nodeId);
     q.executeUpdate();
     em.getTransaction().commit();
   }
@@ -363,7 +363,7 @@ public class PersistenceManager {
     HashMap<Integer, Long> res = new HashMap<Integer, Long>();
     for (Integer nodeId : nodeIds) {
       Query q = em
-          .createQuery("SELECT count(*) FROM ODMSCatalogueMessage d Where d.nodeID=" + nodeId);
+          .createQuery("SELECT count(*) FROM OdmsCatalogueMessage d Where d.nodeID=" + nodeId);
       long var = (long) q.getSingleResult();
       res.put(nodeId, var);
     }
@@ -526,7 +526,7 @@ public class PersistenceManager {
    * @return the dcat thems
    */
   public List<DcatThemes> getDcatThems() {
-    String query = "FROM DCATThemes";
+    String query = "FROM DcatThemes";
     TypedQuery<DcatThemes> q = em.createQuery(query, DcatThemes.class);
     return q.getResultList();
   }
@@ -877,7 +877,7 @@ public class PersistenceManager {
    */
   public OdmsStatistics getOdmsStatistics(OdmsCatalogue node, int year, int month, int day) {
 
-    String query = "Select d From ODMSStatistics d Where d.nodeID=" + node.getId() + " and d.day="
+    String query = "Select d From OdmsStatistics d Where d.nodeID=" + node.getId() + " and d.day="
         + day + " and d.month=" + month + " and d.year=" + year;
     TypedQuery<OdmsStatistics> searchQuery = em.createQuery(query, OdmsStatistics.class);
     if (searchQuery.getResultList().size() == 0) {
@@ -939,7 +939,7 @@ public class PersistenceManager {
       if (!em.getTransaction().isActive()) {
         em.getTransaction().begin();
       }
-      q = em.createQuery("DELETE FROM ODMSStatistics where id=" + nodeId);
+      q = em.createQuery("DELETE FROM OdmsStatistics where id=" + nodeId);
       q.executeUpdate();
       em.getTransaction().commit();
     } catch (Exception e) {
@@ -1044,7 +1044,7 @@ public class PersistenceManager {
    */
   public DateTime getMinDateNodesStatistics() {
     DateTime res = new DateTime();
-    String query = "from ODMSStatistics d where d.id = (Select min(e.id) from ODMSStatistics e)";
+    String query = "from OdmsStatistics d where d.id = (Select min(e.id) from ODMSStatistics e)";
     TypedQuery<OdmsStatistics> q = em.createQuery(query, OdmsStatistics.class);
     if (q.getResultList().size() != 0) {
       OdmsStatistics tmp = q.getResultList().get(0);
@@ -1080,7 +1080,7 @@ public class PersistenceManager {
    */
   public OdmsStatisticsResult getOdmsCataloguesStatistics(String query) {
 
-    Query q = em.createNativeQuery(query, "ODMSStatisticsResult");
+    Query q = em.createNativeQuery(query, "OdmsStatisticsResult");
     OdmsStatisticsResult res = null;
 
     try {

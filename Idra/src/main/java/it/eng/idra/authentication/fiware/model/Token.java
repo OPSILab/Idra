@@ -60,7 +60,8 @@ public class Token {
    * @param scope         the scope
    * @param state         the state
    */
-  public Token(String access_token, String token_type, Integer expires_in, String refresh_token, Set<String> scope,
+  public Token(String access_token, String token_type, 
+      Integer expires_in, String refresh_token, Set<String> scope,
       String state) {
     this.access_token = access_token;
     this.token_type = token_type;

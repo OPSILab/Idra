@@ -1039,10 +1039,10 @@ public class MetadataCacheManager {
 
     if (searchParameters.containsKey("nodes") && !searchParameters.containsKey("nodeID")) {
       ArrayList<Integer> nodes = (ArrayList<Integer>) searchParameters.remove("nodes");
-      String nodeIDString = nodes.stream()
+      String nodeIdstring = nodes.stream()
           .map(i -> i.toString()).collect(Collectors.joining(" OR ", "(", ")"));
-      if (!"()".equals(nodeIDString)) {
-        searchParameters.put("nodeID", nodeIDString);
+      if (!"()".equals(nodeIdstring)) {
+        searchParameters.put("nodeID", nodeIdstring);
       }
     }
 
