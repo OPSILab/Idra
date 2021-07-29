@@ -15,46 +15,44 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
+
 package it.eng.idra.utils;
 
-import java.io.IOException;
-import java.nio.charset.Charset;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.Optional;
-import java.util.Properties;
-
-
-import it.eng.idra.authentication.fiware.configuration.IDMProperty;
+import it.eng.idra.authentication.fiware.configuration.IdmProperty;
 import it.eng.idra.beans.IdraProperty;
 import it.eng.idra.utils.restclient.configuration.RestProperty;
 
+import java.io.IOException;
+import java.util.Optional;
+import java.util.Properties;
+
 public class PropertyManager {
 
-	private static Properties props = null;
+  private static Properties props = null;
 
-	static {
-		props = new Properties();
-		try {
-			props.load(PropertyManager.class.getClassLoader().getResourceAsStream("configuration.properties"));
+  static {
+    props = new Properties();
+    try {
+      props.load(
+          PropertyManager.class.getClassLoader().getResourceAsStream("configuration.properties"));
 
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+  }
 
-	public static String getProperty(IdraProperty propName) {
-		Optional<String> prop = Optional.ofNullable(System.getenv(propName.toString()));
-		return prop.orElse(props.getProperty(propName.toString()));
-	}
+  public static String getProperty(IdraProperty propName) {
+    Optional<String> prop = Optional.ofNullable(System.getenv(propName.toString()));
+    return prop.orElse(props.getProperty(propName.toString()));
+  }
 
-	public static String getProperty(IDMProperty propName) {
-		Optional<String> prop = Optional.ofNullable(System.getenv(propName.toString()));
-		return prop.orElse(props.getProperty(propName.toString()));
-	}
+  public static String getProperty(IdmProperty propName) {
+    Optional<String> prop = Optional.ofNullable(System.getenv(propName.toString()));
+    return prop.orElse(props.getProperty(propName.toString()));
+  }
 
-	public static String getProperty(RestProperty propName) {
-		Optional<String> prop = Optional.ofNullable(System.getenv(propName.toString()));
-		return prop.orElse(props.getProperty(propName.toString()));
-	}
+  public static String getProperty(RestProperty propName) {
+    Optional<String> prop = Optional.ofNullable(System.getenv(propName.toString()));
+    return prop.orElse(props.getProperty(propName.toString()));
+  }
 }

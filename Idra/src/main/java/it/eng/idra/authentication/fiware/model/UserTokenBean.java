@@ -15,24 +15,25 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
+
 package it.eng.idra.authentication.fiware.model;
 
 @Deprecated
 public class UserTokenBean {
-	
-	private Auth auth;
 
-	public UserTokenBean(Auth auth) {
-		super();
-		this.auth = auth;
-	}
+  private Auth auth;
 
-	public Auth getAuth() {
-		return auth;
-	}
+  public UserTokenBean(Auth auth) {
+    super();
+    this.auth = auth;
+  }
 
-	public void setAuth(Auth auth) {
-		this.auth = auth;
-	}
-	
+  public Auth getAuth() {
+    return auth;
+  }
+
+  public void setAuth(Auth auth) {
+    this.auth = auth;
+  }
+
 }

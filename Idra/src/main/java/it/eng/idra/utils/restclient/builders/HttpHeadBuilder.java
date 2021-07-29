@@ -15,6 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
+
 package it.eng.idra.utils.restclient.builders;
 
 import java.net.URL;
@@ -25,22 +26,29 @@ import javax.ws.rs.core.MediaType;
 import org.apache.http.client.methods.HttpHead;
 import org.apache.http.client.methods.HttpRequestBase;
 
-public class HttpHeadBuilder extends HttpRequestBuilder<HttpHead>{
-	
-	private HttpHeadBuilder(URL url){
-		super.httpRequest = new HttpHead(url.toString());
-	}
-	
-	public static HttpRequestBase getInstance(URL url, Map<String, String> headers) {
-		HttpHeadBuilder builder = new HttpHeadBuilder(url);
-		builder.addHeaders(headers);
-		
-		return builder.httpRequest;
-	}
-	
-	@Override
-	protected void addPayload(MediaType type, String data){
-		throw new RuntimeException("Payload not allowed in HTTP HEAD requests");
-	}
+public class HttpHeadBuilder extends HttpRequestBuilder<HttpHead> {
+
+  private HttpHeadBuilder(URL url) {
+    super.httpRequest = new HttpHead(url.toString());
+  }
+
+  /**
+   * Gets the single instance of HttpHeadBuilder.
+   *
+   * @param url the url
+   * @param headers the headers
+   * @return single instance of HttpHeadBuilder
+   */
+  public static HttpRequestBase getInstance(URL url, Map<String, String> headers) {
+    HttpHeadBuilder builder = new HttpHeadBuilder(url);
+    builder.addHeaders(headers);
+
+    return builder.httpRequest;
+  }
+
+  @Override
+  protected void addPayload(MediaType type, String data) {
+    throw new RuntimeException("Payload not allowed in HTTP HEAD requests");
+  }
 
 }

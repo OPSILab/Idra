@@ -15,6 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
+
 package it.eng.idra.beans;
 
 import javax.persistence.Entity;
@@ -32,56 +33,62 @@ import org.hibernate.annotations.GenericGenerator;
 @Table(name = "distribution_additional_config")
 public class DistributionAdditionalConfiguration {
 
-	private String id;
-	private String nodeID;
-	private String type;
-	private String query;
-	
-	public DistributionAdditionalConfiguration() {
-		super();
-	}
-	
-	public DistributionAdditionalConfiguration(String id, String nodeID) {
-		super();
-		this.id = id;
-		this.nodeID = nodeID;
-	}
+  private String id;
+  private String nodeID;
+  private String type;
+  private String query;
 
-	@Id
-	@GeneratedValue(generator = "uuid")
-	@GenericGenerator(name = "uuid", strategy = "uuid2")
-	//@Column(name = "orion_id")
-	public String getId() {
-		return id;
-	}
+  public DistributionAdditionalConfiguration() {
+    super();
+  }
 
-	public void setId(String id) {
-		this.id = id;
-	}
+  /**
+   * Instantiates a new distribution additional configuration.
+   *
+   * @param id the id
+   * @param nodeID the node ID
+   */
+  public DistributionAdditionalConfiguration(String id, String nodeID) {
+    super();
+    this.id = id;
+    this.nodeID = nodeID;
+  }
 
-	public String getNodeID() {
-		return nodeID;
-	}
+  @Id
+  @GeneratedValue(generator = "uuid")
+  @GenericGenerator(name = "uuid", strategy = "uuid2")
+  // @Column(name = "orion_id")
+  public String getId() {
+    return id;
+  }
 
-	public void setNodeID(String nodeID) {
-		this.nodeID = nodeID;
-	}
+  public void setId(String id) {
+    this.id = id;
+  }
 
-	public String getType() {
-		return type;
-	}
+  public String getNodeID() {
+    return nodeID;
+  }
 
-	public void setType(String type) {
-		this.type = type;
-	}
+  public void setNodeID(String nodeID) {
+    this.nodeID = nodeID;
+  }
 
-	@Lob
-	public String getQuery() {
-		return query;
-	}
+  public String getType() {
+    return type;
+  }
 
-	public void setQuery(String query) {
-		this.query = query;
-	}
-	
+  public void setType(String type) {
+    this.type = type;
+  }
+
+  @Lob
+  public String getQuery() {
+    return query;
+  }
+
+  public void setQuery(String query) {
+    this.query = query;
+  }
+
 }

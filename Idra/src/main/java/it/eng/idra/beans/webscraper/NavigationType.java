@@ -15,9 +15,10 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
+
 package it.eng.idra.beans.webscraper;
 
 public enum NavigationType {
 
-	QUERY_RANGE, PATH_RANGE, QUERY_PAGE, PATH_PAGE;
+  QUERY_RANGE, PATH_RANGE, QUERY_PAGE, PATH_PAGE;
 }

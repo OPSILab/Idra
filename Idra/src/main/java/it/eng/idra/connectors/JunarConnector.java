@@ -1,20 +1,24 @@
 package it.eng.idra.connectors;
 
-import it.eng.idra.beans.dcat.DCATDataset;
-import it.eng.idra.beans.dcat.DCATDistribution;
-import it.eng.idra.beans.dcat.DCTLicenseDocument;
-import it.eng.idra.beans.dcat.DCTStandard;
-import it.eng.idra.beans.dcat.FOAFAgent;
-import it.eng.idra.beans.dcat.SKOSConcept;
-import it.eng.idra.beans.dcat.SKOSConceptStatus;
-import it.eng.idra.beans.dcat.SKOSConceptTheme;
-import it.eng.idra.beans.dcat.SKOSPrefLabel;
-import it.eng.idra.beans.dcat.SPDXChecksum;
+import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Sets;
+import com.google.common.collect.Sets.SetView;
+
+import it.eng.idra.beans.dcat.DcatDataset;
+import it.eng.idra.beans.dcat.DcatDistribution;
+import it.eng.idra.beans.dcat.DctLicenseDocument;
+import it.eng.idra.beans.dcat.DctStandard;
+import it.eng.idra.beans.dcat.FoafAgent;
+import it.eng.idra.beans.dcat.SkosConcept;
+import it.eng.idra.beans.dcat.SkosConceptStatus;
+import it.eng.idra.beans.dcat.SkosConceptTheme;
+import it.eng.idra.beans.dcat.SkosPrefLabel;
+import it.eng.idra.beans.dcat.SpdxChecksum;
 import it.eng.idra.beans.dcat.VCardOrganization;
-import it.eng.idra.beans.odms.ODMSCatalogue;
-import it.eng.idra.beans.odms.ODMSCatalogueForbiddenException;
-import it.eng.idra.beans.odms.ODMSCatalogueOfflineException;
-import it.eng.idra.beans.odms.ODMSSynchronizationResult;
+import it.eng.idra.beans.odms.OdmsCatalogue;
+import it.eng.idra.beans.odms.OdmsCatalogueForbiddenException;
+import it.eng.idra.beans.odms.OdmsCatalogueOfflineException;
+import it.eng.idra.beans.odms.OdmsSynchronizationResult;
 import it.eng.idra.utils.CommonUtil;
 import it.eng.idra.utils.restclient.RestClient;
 import it.eng.idra.utils.restclient.RestClientImpl;
@@ -44,355 +48,339 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Sets;
-import com.google.common.collect.Sets.SetView;
 
 @SuppressWarnings("deprecation")
-public class JunarConnector implements IODMSConnector {
+public class JunarConnector implements IodmsConnector {
 
-	private ODMSCatalogue node;
-	private String nodeID;
-	public static final MediaType JSON_TYPE = MediaType.APPLICATION_JSON_TYPE;
-	private static Logger logger = LogManager.getLogger(JunarConnector.class);
-	
-	private static final Map<String, String> junarResourcesType = new HashMap<String, String>();
-	
-	static{
-		junarResourcesType.put("csv", "text/csv");
-		junarResourcesType.put("xml", "application/xml");
-		junarResourcesType.put("ajson", "application/json");
-		
-		/*
-		 * Junar provides also an Excel version of the resource; but it's created on the fly
-		 * and expires in few hours so it's not federable.
-		 */
-	}
-	
-	public JunarConnector(ODMSCatalogue node) {
-		this.node = node;
-		this.nodeID = String.valueOf(node.getId());
-	}
-	
-	/**
-	 * Live search is not available on current Junar APIs
-	 */
-	@Override
-	public List<DCATDataset> findDatasets(HashMap<String, Object> searchParameters) throws Exception {
-		ArrayList<DCATDataset> resultDatasets = new ArrayList<DCATDataset>();
-		return resultDatasets;
-	}
+  private OdmsCatalogue node;
+  private String nodeId;
+  public static final MediaType JSON_TYPE = MediaType.APPLICATION_JSON_TYPE;
+  private static Logger logger = LogManager.getLogger(JunarConnector.class);
 
-	/**
-	 * Live search is not available on current Junar APIs
-	 */
-	@Override
-	public int countSearchDatasets(HashMap<String, Object> searchParameters) throws Exception {
-		return 0;
-	}
+  private static final Map<String, String> junarResourcesType = new HashMap<String, String>();
 
-	@Override
-	public int countDatasets() throws Exception {
-		return getAllDatasets().size();
-	}
-	
-	@Override
-	public List<DCATDataset> getAllDatasets() throws Exception {
+  static {
+    junarResourcesType.put("csv", "text/csv");
+    junarResourcesType.put("xml", "application/xml");
+    junarResourcesType.put("ajson", "application/json");
 
-		logger.info("-- JUNAR Connector Request sent -- " + node.getHost());
-		
-		ArrayList<DCATDataset> dcatDatasets = new ArrayList<DCATDataset>();	
-		
-		Optional<String> returned_json = Optional.ofNullable(sendGetRequest(node.getHost() + "/api/v2/resources?auth_key="+node.getAPIKey()+"&format=json"));
-		
-		if (!returned_json.isPresent()){
-			throw new ODMSCatalogueOfflineException(" The ODMS node is currently unreachable");
-		}
-		else if(!returned_json.get().startsWith("[")){
-			if (returned_json.get().contains("403")){
-				throw new ODMSCatalogueForbiddenException("The ODMS node is forbidden");
-			}
-			else
-				throw new ODMSCatalogueOfflineException(" The ODMS node is currently unreachable");
-		}
+    /*
+     * Junar provides also an Excel version of the resource; but it's created on the
+     * fly and expires in few hours so it's not federable.
+     */
+  }
 
-		JSONArray jsonArray = new JSONArray(returned_json.get());
-		logger.debug("-- JUNAR Connector Response - Result count:" + jsonArray.length());
-		
-		for (int i = 0; i < jsonArray.length(); i++) {
-			try {
-				JSONObject dataset = jsonArray.getJSONObject(i);
-				if(dataset.has("type") && "ds".equalsIgnoreCase(dataset.getString("type"))){
-					dcatDatasets.add(datasetToDCAT(dataset, node));
-				}
-				dataset = null;
-			} catch (Exception e) {
-				logger.warn("There was an error: " + e.getMessage() + " while deserializing Dataset - " + i + " - SKIPPED");
-			}
-		}
+  public JunarConnector(OdmsCatalogue node) {
+    this.node = node;
+    this.nodeId = String.valueOf(node.getId());
+  }
 
-		jsonArray = null;
-		System.gc();
+  @Override
+  public List<DcatDataset> findDatasets(HashMap<String, Object> searchParameters) throws Exception {
+    ArrayList<DcatDataset> resultDatasets = new ArrayList<DcatDataset>();
+    return resultDatasets;
+  }
 
-		return dcatDatasets;
-		
-	}
+  @Override
+  public int countSearchDatasets(HashMap<String, Object> searchParameters) throws Exception {
+    return 0;
+  }
 
-	/**
-	 * Performs mapping from Junar JSON Resource object to DCATDataset object
-	 *
-	 * @param node Node which dataset belongs to
-	 * @param d Junar Resource to be mapped
-	 * @throws ParseException JSONException
-	 * @returns DCATDataset resulting mapped object
-	 * @throws Exception if the request fails
-	 */
-	@Override
-	public DCATDataset datasetToDCAT(Object d, ODMSCatalogue node) throws JSONException, ParseException {
+  @Override
+  public int countDatasets() throws Exception {
+    return getAllDatasets().size();
+  }
 
-		JSONObject dataset = (JSONObject) d;
+  @Override
+  public List<DcatDataset> getAllDatasets() throws Exception {
 
-		// Properties to be mapped to Junar metadata
-		String identifier = null;
-		String description = null, issued = null, modified = null, title = null, landingPage = null;
-		List<VCardOrganization> contactPointList = null;
-		FOAFAgent publisher = null;
-		List<String> keywords = new ArrayList<String>();
-		ArrayList<DCATDistribution> distributionList = new ArrayList<DCATDistribution>();
-		List<SKOSConceptTheme> themeList = null;
-		String frequency = null;
-		
-		identifier = dataset.getString("guid");
-		landingPage = dataset.optString("link");
-		description = dataset.optString("description");
+    logger.info("-- JUNAR Connector Request sent -- " + node.getHost());
 
-		try {
-			issued = CommonUtil.fixBadUTCDate(CommonUtil.fromMillisToUtcDate(dataset.optLong("created_at")));
-		} catch (IllegalArgumentException skip) {
-		}
+    ArrayList<DcatDataset> dcatDatasets = new ArrayList<DcatDataset>();
 
-		try {
-			modified = CommonUtil.fixBadUTCDate(CommonUtil.fromMillisToUtcDate(dataset.optLong("modified_at")));
-		} catch (IllegalArgumentException skip) {
-		}
+    Optional<String> returnedJson = Optional
+        .ofNullable(sendGetRequest(node.getHost() 
+            + "/api/v2/resources?auth_key=" + node.getAPIKey() + "&format=json"));
 
-		if (dataset.has("tags")) {
-			JSONArray keywordArray = dataset.getJSONArray("tags");
-			for (int i = 0; i < keywordArray.length(); i++) {
-				keywords.add(keywordArray.getString(i));
-			}
-		}
-		if(dataset.has("category_name")){
-			keywords.add(dataset.getString("category_name"));
-		}
+    if (!returnedJson.isPresent()) {
+      throw new OdmsCatalogueOfflineException(" The ODMS node is currently unreachable");
+    } else if (!returnedJson.get().startsWith("[")) {
+      if (returnedJson.get().contains("403")) {
+        throw new OdmsCatalogueForbiddenException("The ODMS node is forbidden");
+      } else {
+        throw new OdmsCatalogueOfflineException(" The ODMS node is currently unreachable");
+      }
+    }
 
-		title = dataset.optString("title");
+    JSONArray jsonArray = new JSONArray(returnedJson.get());
+    logger.debug("-- JUNAR Connector Response - Result count:" + jsonArray.length());
 
-		if (dataset.has("user"))
-			publisher = deserializeFOAFAgent(dataset, "user", DCTerms.publisher, nodeID);
+    for (int i = 0; i < jsonArray.length(); i++) {
+      try {
+        JSONObject dataset = jsonArray.getJSONObject(i);
+        if (dataset.has("type") && "ds".equalsIgnoreCase(dataset.getString("type"))) {
+          dcatDatasets.add(datasetToDcat(dataset, node));
+        }
+        dataset = null;
+      } catch (Exception e) {
+        logger.warn("There was an error: " 
+             + e.getMessage() + " while deserializing Dataset - " + i + " - SKIPPED");
+      }
+    }
 
-		themeList = deserializeConcept(dataset, "category_name", DCAT.theme, nodeID, SKOSConceptTheme.class);
-		
-		frequency = dataset.optString("frequency");
-		
-		distributionList = retrieveDistributionList(dataset, node.getAPIKey());
+    jsonArray = null;
+    System.gc();
 
-		return new DCATDataset(nodeID, identifier, title, description, distributionList, themeList, publisher, contactPointList, keywords, null, 
-				null, null, frequency, null, null, landingPage, null, null, issued, modified, null, null, null, null, null, 
-				"JUNAR", null, null, null, null, null, null);
-	}
-	
-	/**
-	 * Junar always provides CSV, XML, JSON and XLS versions of the resources
-	 * @param identifier
-	 * @param apikey
-	 * @return
-	 */
-	private ArrayList<DCATDistribution> retrieveDistributionList(JSONObject dataset, String apikey) {
-		
-		ArrayList<DCATDistribution> distributionList = new ArrayList<DCATDistribution>();
-		JSONObject distribution = new JSONObject();
-		distribution.put("description", dataset.getString("description"));
-		distribution.put("title", dataset.getString("title"));
-		
-		String uriPattern = node.getHost() + "/api/v2/datastreams/%s/data.%s?auth_key="+apikey;
-		
-		junarResourcesType.entrySet().forEach((e) -> {
-			distribution.put("mediaType", e.getValue());
-			distribution.put("downloadURL", String.format(uriPattern, dataset.getString("guid"), e.getKey()));
-			
-			try {
-				distributionList.add(distributionToDCAT(distribution, null, nodeID));
-			} catch (Exception ex) {
-				logger.info("There was an error while deserializing a Distribution: " + ex.getMessage() + " - SKIPPED");
-			}
-		});
-		
-		return distributionList;
-	}
-	
-	/**
-	 * @param obj
-	 * @param nodeID
-	 * @param DCTLicenseDocument
-	 *            license
-	 * @return DCATDistribution
-	 * @throws Exception
-	 */
-	protected DCATDistribution distributionToDCAT(JSONObject obj, DCTLicenseDocument license, String nodeID)
-			throws Exception {
+    return dcatDatasets;
 
-		String accessURL = null, description = null, format = null, byteSize = null, downloadURL = null,
-				mediaType = null, releaseDate = null, updateDate = null, rights = null, title = null;
-		SPDXChecksum checksum = null;
-		List<String> documentation = new ArrayList<String>(), language = new ArrayList<String>();
-		List<DCTStandard> linkedSchemas = null;
-		SKOSConceptStatus status = null;
+  }
 
-		mediaType = obj.optString("mediaType");
-		accessURL = downloadURL = obj.getString("downloadURL");
+  @Override
+  public DcatDataset datasetToDcat(Object d,
+      OdmsCatalogue node) throws JSONException, ParseException {
 
-		return new DCATDistribution(nodeID, accessURL, description, format, license, byteSize, checksum, documentation,
-				downloadURL, language, linkedSchemas, mediaType, releaseDate, updateDate, rights, status, title);
+    JSONObject dataset = (JSONObject) d;
 
-	}
-	
+    // Properties to be mapped to Junar metadata
+    String identifier = null;
+    String description = null;
+    String issued = null;
+    String modified = null;
+    String landingPage = null;
+    FoafAgent publisher = null;
+    List<String> keywords = new ArrayList<String>();
 
-	/**
-	 * @param obj
-	 * @param fieldName
-	 * @param property
-	 * @param nodeID
-	 * @return List<SKOSConcept>
-	 * @throws JSONException
-	 */
-	protected <T extends SKOSConcept> List<T> deserializeConcept(JSONObject obj, String fieldName, Property property, String nodeID,Class<T> type)
-			throws JSONException {
+    identifier = dataset.getString("guid");
+    landingPage = dataset.optString("link");
+    description = dataset.optString("description");
 
-		List<T> result = new ArrayList<T>();
-		
-		String concept = obj.optString(fieldName);
-		JSONArray conceptArray = new JSONArray().put(concept); 
+    try {
+      issued = CommonUtil.fixBadUtcDate(
+          CommonUtil.fromMillisToUtcDate(dataset.optLong("created_at")));
+    } catch (IllegalArgumentException skip) {
+      logger.debug(skip.getLocalizedMessage());
+    }
 
-		if (conceptArray != null) {
-			for (int i = 0; i < conceptArray.length(); i++) {
+    try {
+      modified = CommonUtil.fixBadUtcDate(
+          CommonUtil.fromMillisToUtcDate(dataset.optLong("modified_at")));
+    } catch (IllegalArgumentException skip) {
+      logger.debug(skip.getLocalizedMessage());
+    }
 
-				String label = conceptArray.getString(i);
-				if (StringUtils.isNotBlank(label)) {
+    if (dataset.has("tags")) {
+      JSONArray keywordArray = dataset.getJSONArray("tags");
+      for (int i = 0; i < keywordArray.length(); i++) {
+        keywords.add(keywordArray.getString(i));
+      }
+    }
+    if (dataset.has("category_name")) {
+      keywords.add(dataset.getString("category_name"));
+    }
+    String title = null;
+    title = dataset.optString("title");
 
-					List<SKOSPrefLabel> prefLabelList = Arrays.asList(new SKOSPrefLabel(null, label, nodeID));
-					try {
-						result.add(type.getDeclaredConstructor(SKOSConcept.class).newInstance(new SKOSConcept(property.getURI(), null, prefLabelList, nodeID)));
-					} catch (InstantiationException | IllegalAccessException | IllegalArgumentException
-							| InvocationTargetException | NoSuchMethodException | SecurityException e) {
-						e.printStackTrace();
-					}
-				}
-			}
-		}
+    if (dataset.has("user")) {
+      publisher = deserializeFoafAgent(dataset, "user", DCTerms.publisher, nodeId);
+    }
+    List<SkosConceptTheme> themeList = null;
+    themeList = deserializeConcept(dataset, "category_name", 
+        DCAT.theme, nodeId, SkosConceptTheme.class);
 
-		return result;
-	}
-	
-	/**
-	 * @param dataset
-	 * @param fieldName
-	 * @param property
-	 * @param nodeID
-	 * @return FOAFAgent
-	 */
-	protected FOAFAgent deserializeFOAFAgent(JSONObject dataset, String fieldName, Property property, String nodeID) {
-		try {
-			String publishername = dataset.optString("user");
-			
-			return new FOAFAgent(property.getURI(), null, publishername, null, null, null, publishername, nodeID);
-		} catch (JSONException ignore) {
-			logger.info("Agent object not valid! - Skipped");
-		}
-		return null;
-	}
+    String frequency = null;
+    frequency = dataset.optString("frequency");
+    ArrayList<DcatDistribution> distributionList = new ArrayList<DcatDistribution>();
+    distributionList = retrieveDistributionList(dataset, node.getAPIKey());
 
-	@Override
-	public DCATDataset getDataset(String datasetId) throws Exception {
-		return null;
-	}
+    return new DcatDataset(nodeId, identifier, title, description,
+        distributionList, themeList, publisher,
+        new ArrayList<VCardOrganization>(), keywords,
+        null, null, null, frequency, null, null, landingPage, null, null, issued, modified,
+        null, null, null, null, null, "JUNAR", null, null, null, null, null, null);
+  }
 
-	@Override
-	public ODMSSynchronizationResult getChangedDatasets(List<DCATDataset> oldDatasets, String startingDate) throws Exception {
-		ArrayList<DCATDataset> newDatasets = (ArrayList<DCATDataset>) getAllDatasets();
+  private ArrayList<DcatDistribution> retrieveDistributionList(JSONObject dataset, String apikey) {
 
-		ODMSSynchronizationResult syncrhoResult = new ODMSSynchronizationResult();
+    ArrayList<DcatDistribution> distributionList = new ArrayList<DcatDistribution>();
+    JSONObject distribution = new JSONObject();
+    distribution.put("description", dataset.getString("description"));
+    distribution.put("title", dataset.getString("title"));
 
-		ImmutableSet<DCATDataset> newSets = ImmutableSet.copyOf(newDatasets);
-		ImmutableSet<DCATDataset> oldSets = ImmutableSet.copyOf(oldDatasets);
+    String uriPattern = node.getHost() + "/api/v2/datastreams/%s/data.%s?auth_key=" + apikey;
 
-		int deleted = 0, added = 0;//, changed = 0;
+    junarResourcesType.entrySet().forEach((e) -> {
+      distribution.put("mediaType", e.getValue());
+      distribution.put("downloadURL", 
+          String.format(uriPattern, dataset.getString("guid"), e.getKey()));
 
-		/// Find added datasets
-		SetView<DCATDataset> diff = Sets.difference(newSets, oldSets);
-		logger.info("New Packages: " + diff.size());
-		for (DCATDataset d : diff) {
-			syncrhoResult.addToAddedList(d);
-			added++;
-		}
+      try {
+        distributionList.add(distributionToDcat(distribution, null, nodeId));
+      } catch (Exception ex) {
+        logger.info("There was an error while deserializing a Distribution: " 
+             + ex.getMessage() + " - SKIPPED");
+      }
+    });
 
-		// Find removed datasets
-		SetView<DCATDataset> diff1 = Sets.difference(oldSets, newSets);
-		logger.info("Deleted Packages: " + diff1.size());
-		for (DCATDataset d : diff1) {
-			syncrhoResult.addToDeletedList(d);
-			deleted++;
-		}
+    return distributionList;
+  }
 
-		// Find updated datasets
-		SetView<DCATDataset> intersection = Sets.intersection(newSets, oldSets);
-		logger.fatal("Changed Packages: " + intersection.size());
+  protected DcatDistribution distributionToDcat(JSONObject obj,
+      DctLicenseDocument license, String nodeId)
+      throws Exception {
 
-		GregorianCalendar oldDate = new GregorianCalendar(TimeZone.getTimeZone("UTC"));
-		oldDate.setLenient(false);
-		GregorianCalendar newDate = new GregorianCalendar(TimeZone.getTimeZone("UTC"));
-		oldDate.setLenient(false);
-		SimpleDateFormat ISO = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+    String accessUrl = null;
+    String description = null;
+    String format = null;
+    String byteSize = null;
+    String downloadUrl = null;
+    String mediaType = null;
+    String releaseDate = null;
+    String updateDate = null;
+    String rights = null;
+    String title = null;
+    SpdxChecksum checksum = null;
+    List<String> documentation = new ArrayList<String>();
+    List<String> language = new ArrayList<String>();
+    List<DctStandard> linkedSchemas = null;
+    SkosConceptStatus status = null;
 
-		int exception = 0;
-		for (DCATDataset d : intersection) {
-			try {
-				int oldIndex = oldDatasets.indexOf(d);
-				int newIndex = newDatasets.indexOf(d);
-				oldDate.setTime(ISO.parse(oldDatasets.get(oldIndex).getUpdateDate().getValue()));
-				newDate.setTime(ISO.parse(newDatasets.get(newIndex).getUpdateDate().getValue()));
+    mediaType = obj.optString("mediaType");
+    accessUrl = downloadUrl = obj.getString("downloadURL");
 
-				if (newDate.after(oldDate)) {
-					syncrhoResult.addToChangedList(d);
-//					changed++;
-				}
-			} catch (Exception ex) {
-				exception++;
-				if (exception % 1000 == 0) {
-					ex.printStackTrace();
-				}
-			}
-		}
-		logger.info("Changed " + syncrhoResult.getChangedDatasets().size());
-		logger.info("Added " + syncrhoResult.getAddedDatasets().size());
-		logger.info("Deleted " + syncrhoResult.getDeletedDatasets().size());
-		logger.info("Expected new dataset count: " + (node.getDatasetCount() - deleted + added));
+    return new DcatDistribution(nodeId, accessUrl, description,
+        format, license, byteSize, checksum, documentation,
+        downloadUrl, language, linkedSchemas, mediaType,
+        releaseDate, updateDate, rights, status, title);
 
-		return syncrhoResult;
-	}
-	
-	private String sendGetRequest(String urlString) throws Exception {
-		try {
-			RestClient client = new RestClientImpl();
-			HttpResponse response = client.sendGetRequest(urlString, new HashMap<String,String>());
-			return client.getHttpResponseBody(response);
-		}catch(Exception e) {
-			throw e;
-		}
-	}
-	
-	private static boolean isSet(String string) {
-		return string != null && string.length() > 0;
-	}
+  }
+
+  protected <T extends SkosConcept> List<T> deserializeConcept(
+      JSONObject obj, String fieldName, Property property,
+      String nodeId, Class<T> type) throws JSONException {
+
+    List<T> result = new ArrayList<T>();
+
+    String concept = obj.optString(fieldName);
+    JSONArray conceptArray = new JSONArray().put(concept);
+
+    if (conceptArray != null) {
+      for (int i = 0; i < conceptArray.length(); i++) {
+
+        String label = conceptArray.getString(i);
+        if (StringUtils.isNotBlank(label)) {
+
+          List<SkosPrefLabel> prefLabelList = Arrays.asList(new SkosPrefLabel(null, label, nodeId));
+          try {
+            result.add(type.getDeclaredConstructor(SkosConcept.class)
+                .newInstance(new SkosConcept(property.getURI(), null, prefLabelList, nodeId)));
+          } catch (InstantiationException | IllegalAccessException | IllegalArgumentException
+              | InvocationTargetException | NoSuchMethodException | SecurityException e) {
+            e.printStackTrace();
+          }
+        }
+      }
+    }
+
+    return result;
+  }
+
+  protected FoafAgent deserializeFoafAgent(JSONObject dataset, 
+      String fieldName, Property property, String nodeId) {
+    try {
+      String publishername = dataset.optString("user");
+
+      return new FoafAgent(property.getURI(), null, 
+          publishername, null, null, null, publishername, nodeId);
+    } catch (JSONException ignore) {
+      logger.info("Agent object not valid! - Skipped");
+    }
+    return null;
+  }
+
+  @Override
+  public DcatDataset getDataset(String datasetId) throws Exception {
+    return null;
+  }
+
+  @Override
+  public OdmsSynchronizationResult getChangedDatasets(List<DcatDataset> oldDatasets,
+      String startingDate)
+      throws Exception {
+    ArrayList<DcatDataset> newDatasets = (ArrayList<DcatDataset>) getAllDatasets();
+
+    OdmsSynchronizationResult syncrhoResult = new OdmsSynchronizationResult();
+
+    ImmutableSet<DcatDataset> newSets = ImmutableSet.copyOf(newDatasets);
+    ImmutableSet<DcatDataset> oldSets = ImmutableSet.copyOf(oldDatasets);
+
+    int deleted = 0;
+    int added = 0;
+    // , changed = 0;
+
+    /// Find added datasets
+    SetView<DcatDataset> diff = Sets.difference(newSets, oldSets);
+    logger.info("New Packages: " + diff.size());
+    for (DcatDataset d : diff) {
+      syncrhoResult.addToAddedList(d);
+      added++;
+    }
+
+    // Find removed datasets
+    SetView<DcatDataset> diff1 = Sets.difference(oldSets, newSets);
+    logger.info("Deleted Packages: " + diff1.size());
+    for (DcatDataset d : diff1) {
+      syncrhoResult.addToDeletedList(d);
+      deleted++;
+    }
+
+    // Find updated datasets
+    SetView<DcatDataset> intersection = Sets.intersection(newSets, oldSets);
+    logger.fatal("Changed Packages: " + intersection.size());
+
+    GregorianCalendar oldDate = new GregorianCalendar(TimeZone.getTimeZone("UTC"));
+    oldDate.setLenient(false);
+    GregorianCalendar newDate = new GregorianCalendar(TimeZone.getTimeZone("UTC"));
+    oldDate.setLenient(false);
+    SimpleDateFormat iso = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+
+    int exception = 0;
+    for (DcatDataset d : intersection) {
+      try {
+        int oldIndex = oldDatasets.indexOf(d);
+        int newIndex = newDatasets.indexOf(d);
+        oldDate.setTime(iso.parse(oldDatasets.get(oldIndex).getUpdateDate().getValue()));
+        newDate.setTime(iso.parse(newDatasets.get(newIndex).getUpdateDate().getValue()));
+
+        if (newDate.after(oldDate)) {
+          syncrhoResult.addToChangedList(d);
+        }
+      } catch (Exception ex) {
+        exception++;
+        if (exception % 1000 == 0) {
+          ex.printStackTrace();
+        }
+      }
+    }
+    logger.info("Changed " + syncrhoResult.getChangedDatasets().size());
+    logger.info("Added " + syncrhoResult.getAddedDatasets().size());
+    logger.info("Deleted " + syncrhoResult.getDeletedDatasets().size());
+    logger.info("Expected new dataset count: " + (node.getDatasetCount() - deleted + added));
+
+    return syncrhoResult;
+  }
+
+  private String sendGetRequest(String urlString) throws Exception {
+    try {
+      RestClient client = new RestClientImpl();
+      HttpResponse response = client.sendGetRequest(urlString, new HashMap<String, String>());
+      return client.getHttpResponseBody(response);
+    } catch (Exception e) {
+      throw e;
+    }
+  }
+
+//  private static boolean isSet(String string) {
+//    return string != null && string.length() > 0;
+//  }
 
 }

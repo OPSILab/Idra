@@ -15,6 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
+
 package it.eng.idra.utils;
 
 import java.util.ArrayList;
@@ -26,20 +27,18 @@ import org.apache.commons.lang3.StringUtils;
 
 public class StringListToStringConverter implements AttributeConverter<List<String>, String> {
 
-	@Override
-	public String convertToDatabaseColumn(List<String> attribute) {
-		return attribute == null ? null : String.join(";;", attribute);
-	}
+  @Override
+  public String convertToDatabaseColumn(List<String> attribute) {
+    return attribute == null ? null : String.join(";;", attribute);
+  }
 
-	@Override
-	public List<String> convertToEntityAttribute(String dbData) {
-		if (StringUtils.isBlank(dbData))
-			return new ArrayList<>();
+  @Override
+  public List<String> convertToEntityAttribute(String dbData) {
+    if (StringUtils.isBlank(dbData)) {
+      return new ArrayList<>();
+    }
 
-//		try (Stream<String> stream = Arrays.stream(dbData.split(";;"))) {
-//			return stream.map(String::valueOf).collect(Collectors.toList());
-			 return new ArrayList<>(Arrays.asList(dbData.split(",")));
-//		}
-	}
+    return new ArrayList<>(Arrays.asList(dbData.split(",")));
+  }
 
 }

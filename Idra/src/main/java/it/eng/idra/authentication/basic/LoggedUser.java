@@ -15,48 +15,93 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package it.eng.idra.authentication.basic;
 
-import java.util.Date;
+package it.eng.idra.authentication.basic;
 
 import it.eng.idra.utils.JsonRequired;
 
+import java.util.Date;
+
+// TODO: Auto-generated Javadoc
+/**
+ * The Class LoggedUser.
+ */
 public class LoggedUser {
 
-	@JsonRequired
-	private String username;
-	@JsonRequired
-	private String token;
-	
-	private Date creationDate;
-	
-	public LoggedUser(String us, String tok) {
-		this.username=us;
-		this.token=tok;
-		this.creationDate=new Date();
-	}
-	
-	public String getUsername() {
-		return username;
-	}
+  /** The username. */
+  @JsonRequired
+  private String username;
+  
+  /** The token. */
+  @JsonRequired
+  private String token;
 
-	public void setUsername(String username) {
-		this.username = username;
-	}
+  /** The creation date. */
+  private Date creationDate;
 
-	public String getToken() {
-		return token;
-	}
+  /**
+   * Instantiates a new logged user.
+   *
+   * @param us the us
+   * @param tok the tok
+   */
+  public LoggedUser(String us, String tok) {
+    this.username = us;
+    this.token = tok;
+    this.creationDate = new Date();
+  }
 
-	public void setToken(String token) {
-		this.token = token;
-	}
+  /**
+   * Gets the username.
+   *
+   * @return the username
+   */
+  public String getUsername() {
+    return username;
+  }
 
-	public Date getCreationDate() {
-		return creationDate;
-	}
+  /**
+   * Sets the username.
+   *
+   * @param username the new username
+   */
+  public void setUsername(String username) {
+    this.username = username;
+  }
 
-	public void setCreationDate(Date creationDate) {
-		this.creationDate = creationDate;
-	}	
+  /**
+   * Gets the token.
+   *
+   * @return the token
+   */
+  public String getToken() {
+    return token;
+  }
+
+  /**
+   * Sets the token.
+   *
+   * @param token the new token
+   */
+  public void setToken(String token) {
+    this.token = token;
+  }
+
+  /**
+   * Gets the creation date.
+   *
+   * @return the creation date
+   */
+  public Date getCreationDate() {
+    return creationDate;
+  }
+
+  /**
+   * Sets the creation date.
+   *
+   * @param creationDate the new creation date
+   */
+  public void setCreationDate(Date creationDate) {
+    this.creationDate = creationDate;
+  }
 }

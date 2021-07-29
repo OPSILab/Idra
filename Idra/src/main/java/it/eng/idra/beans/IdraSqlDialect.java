@@ -15,6 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
+
 package it.eng.idra.beans;
 
 import org.hibernate.dialect.MySQL5Dialect;
@@ -22,11 +23,15 @@ import org.hibernate.dialect.function.SQLFunctionTemplate;
 import org.hibernate.type.StandardBasicTypes;
 
 public class IdraSqlDialect extends MySQL5Dialect {
-    public IdraSqlDialect() {
-        super();
-        /**
-         * Function to evaluate regexp in MySQL
-         */
-        registerFunction("regexp", new SQLFunctionTemplate(StandardBasicTypes.BOOLEAN, "?1 REGEXP ?2"));
-    }
+  
+  /**
+   * Instantiates a new idra sql dialect.
+   */
+  public IdraSqlDialect() {
+    super();
+    /**
+     * Function to evaluate regexp in MySQL
+     */
+    registerFunction("regexp", new SQLFunctionTemplate(StandardBasicTypes.BOOLEAN, "?1 REGEXP ?2"));
+  }
 }

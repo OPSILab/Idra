@@ -15,37 +15,44 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
+
 package it.eng.idra.beans.search;
 
 import it.eng.idra.utils.JsonRequired;
 
 public class SparqlSearchRequest {
 
-	@JsonRequired
-	private String query;
-	@JsonRequired
-	private SparqlResultFormat format;
+  @JsonRequired
+  private String query;
+  @JsonRequired
+  private SparqlResultFormat format;
 
-	public SparqlSearchRequest(String query, SparqlResultFormat format) {
-		super();
-		this.query = query;
-		this.format = format;
-	}
+  /**
+   * Instantiates a new sparql search request.
+   *
+   * @param query the query
+   * @param format the format
+   */
+  public SparqlSearchRequest(String query, SparqlResultFormat format) {
+    super();
+    this.query = query;
+    this.format = format;
+  }
 
-	public String getQuery() {
-		return query;
-	}
+  public String getQuery() {
+    return query;
+  }
 
-	public void setQuery(String query) {
-		this.query = query;
-	}
+  public void setQuery(String query) {
+    this.query = query;
+  }
 
-	public SparqlResultFormat getFormat() {
-		return format;
-	}
+  public SparqlResultFormat getFormat() {
+    return format;
+  }
 
-	public void setFormat(SparqlResultFormat format) {
-		this.format = format;
-	}
+  public void setFormat(SparqlResultFormat format) {
+    this.format = format;
+  }
 
 }

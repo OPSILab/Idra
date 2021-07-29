@@ -15,6 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
+
 package it.eng.idra.beans.webscraper;
 
 import java.util.List;
@@ -35,32 +36,33 @@ import org.hibernate.annotations.LazyCollectionOption;
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 public class DatasetSelector extends WebScraperSelector {
 
-	public DatasetSelector() {
+  public DatasetSelector() {
 
-	}
+  }
 
-	public DatasetSelector(List<String> parentSelectors, WebScraperSelectorType type, Boolean multiple, String name,
-			String selector, String regex, List<String> stopValues) {
-		super(parentSelectors, type, multiple, name, selector, regex, stopValues);
+  public DatasetSelector(List<String> parentSelectors,
+      WebScraperSelectorType type, Boolean multiple, String name,
+      String selector, String regex, List<String> stopValues) {
+    super(parentSelectors, type, multiple, name, selector, regex, stopValues);
 
-	}
+  }
 
-	@Override
-	@LazyCollection(LazyCollectionOption.FALSE)
-	@ElementCollection
-	@CollectionTable(name = "odms_sitemap_dataset_selector_parentSelector", joinColumns = {
-			@JoinColumn(name = "selector_id") })
-	public List<String> getParentSelectors() {
-		return parentSelectors;
-	}
+  @Override
+  @LazyCollection(LazyCollectionOption.FALSE)
+  @ElementCollection
+  @CollectionTable(name = "odms_sitemap_dataset_selector_parentSelector", joinColumns = {
+      @JoinColumn(name = "selector_id") })
+  public List<String> getParentSelectors() {
+    return parentSelectors;
+  }
 
-	@Override
-	@LazyCollection(LazyCollectionOption.FALSE)
-	@ElementCollection
-	@CollectionTable(name = "odms_sitemap_dataset_selector_stopValues", joinColumns = {
-			@JoinColumn(name = "selector_id") })
-	public List<String> getStopValues() {
-		return stopValues;
-	}
+  @Override
+  @LazyCollection(LazyCollectionOption.FALSE)
+  @ElementCollection
+  @CollectionTable(name = "odms_sitemap_dataset_selector_stopValues", joinColumns = {
+      @JoinColumn(name = "selector_id") })
+  public List<String> getStopValues() {
+    return stopValues;
+  }
 
 }

@@ -15,6 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
+
 package it.eng.idra.beans;
 
 import it.eng.idra.utils.GsonUtil;
@@ -22,65 +23,80 @@ import it.eng.idra.utils.GsonUtilException;
 
 public class ErrorResponse {
 
-	private String statusCode;
-	private String technicalMessage;
-	private String errorCode;
-	private String userMessage;
+  private String statusCode;
+  private String technicalMessage;
+  private String errorCode;
+  private String userMessage;
 
-	public ErrorResponse(String statusCode, String technicalMessage, String errorCode, String userMessage) {
-		super();
-		this.statusCode = statusCode;
-		this.technicalMessage = technicalMessage;
-		this.errorCode = errorCode;
-		this.userMessage = userMessage;
-	}
+  /**
+   * Instantiates a new error response.
+   *
+   * @param statusCode the status code
+   * @param technicalMessage the technical message
+   * @param errorCode the error code
+   * @param userMessage the user message
+   */
+  public ErrorResponse(String statusCode, String technicalMessage,
+      String errorCode, String userMessage) {
+    super();
+    this.statusCode = statusCode;
+    this.technicalMessage = technicalMessage;
+    this.errorCode = errorCode;
+    this.userMessage = userMessage;
+  }
 
-	public String getStatusCode() {
-		return statusCode;
-	}
+  public String getStatusCode() {
+    return statusCode;
+  }
 
-	public void setStatusCode(String statusCode) {
-		this.statusCode = statusCode;
-	}
+  public void setStatusCode(String statusCode) {
+    this.statusCode = statusCode;
+  }
 
-	public String getTechnicalMessage() {
-		return technicalMessage;
-	}
+  public String getTechnicalMessage() {
+    return technicalMessage;
+  }
 
-	public void setTechnicalMessage(String technicalMessage) {
-		this.technicalMessage = technicalMessage;
-	}
+  public void setTechnicalMessage(String technicalMessage) {
+    this.technicalMessage = technicalMessage;
+  }
 
-	public String getErrorCode() {
-		return errorCode;
-	}
+  public String getErrorCode() {
+    return errorCode;
+  }
 
-	public void setErrorCode(String errorCode) {
-		this.errorCode = errorCode;
-	}
+  public void setErrorCode(String errorCode) {
+    this.errorCode = errorCode;
+  }
 
-	public String getUserMessage() {
-		return userMessage;
-	}
+  public String getUserMessage() {
+    return userMessage;
+  }
 
-	public void setUserMessage(String userMessage) {
-		this.userMessage = userMessage;
-	}
+  public void setUserMessage(String userMessage) {
+    this.userMessage = userMessage;
+  }
 
-	@Override
-	public String toString() {
-		return "\nErrorResponse [statusCode=" + statusCode + ", technicalMessage=" + technicalMessage + ", errorCode="
-				+ errorCode + "userMessage=" + userMessage + "]\n";
-	}
+  @Override
+  public String toString() {
+    return "\nErrorResponse [statusCode=" + statusCode 
+        + ", technicalMessage=" + technicalMessage + ", errorCode="
+        + errorCode + "userMessage=" + userMessage + "]\n";
+  }
 
-	public String toJson() {
-		try {
-			return GsonUtil.obj2Json(this, ErrorResponse.class);
-		} catch (GsonUtilException e) {
-			e.printStackTrace();
-			return null;
-		}
+  /**
+   * To json.
+   *
+   * @return the string
+   */
+  public String toJson() {
+    try {
+      return GsonUtil.obj2Json(this, ErrorResponse.class);
+    } catch (GsonUtilException e) {
+      e.printStackTrace();
+      return null;
+    }
 
-	}
+  }
 
 }

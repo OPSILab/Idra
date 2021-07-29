@@ -15,21 +15,22 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
+
 package it.eng.idra.beans;
 
 public enum OrderType {
 
-	ASC("ASC"), DESC("DESC");
+  ASC("ASC"), DESC("DESC");
 
-	private String value;
+  private String value;
 
-	OrderType(String value) {
-		this.value = value;
-	}
+  OrderType(String value) {
+    this.value = value;
+  }
 
-	@Override
-	public String toString() {
-		return String.valueOf(value);
-	}
+  @Override
+  public String toString() {
+    return String.valueOf(value);
+  }
 
 }

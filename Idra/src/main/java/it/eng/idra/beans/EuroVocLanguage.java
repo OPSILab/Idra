@@ -15,48 +15,27 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
+
 package it.eng.idra.beans;
 
 public enum EuroVocLanguage {
 
-	
-	BG("Български"),
-	ES("Español"),
-	CS("Čeština"),
-	DA("Dansk"),
-	DE("Deutsch"),
-	ET("Eesti"),
-	EL("λληνικά"),
-	EN("English"),
-	FR("Français"),
-	GA("Gaeilge"),
-	HR("Hrvatski"),
-	IT("Italiano"),
-	LV("Latviešu"),
-	LT("Lietuvių"),
-	HU("Magyar"),
-	MT("Malti"),
-	NL("Nederlands"),
-	PL("Polski"),
-	PT("Português"),
-	RO("Română"),
-	SK("Slovenčina"),
-	SL("Slovenščina"),
-	FI("Suomi"),
-	SV("Svenska"),
-	MK("Македонски"),
-	SQ("Shqip"),
-	SR("Српски");
-	
-	
-	private String languageName;
-	
-	EuroVocLanguage(String name){
-		this.languageName = name;
-	}
-	
-	
-	public String languageName(){
-		return languageName;
-	}
+  BG("Български"), ES("Español"), CS("Čeština"), 
+  DA("Dansk"), DE("Deutsch"), ET("Eesti"), EL("λληνικά"), EN("English"),
+  FR("Français"), GA("Gaeilge"), HR("Hrvatski"), 
+  IT("Italiano"), LV("Latviešu"), 
+  LT("Lietuvių"), HU("Magyar"),
+  MT("Malti"), NL("Nederlands"), PL("Polski"), 
+  PT("Português"), RO("Română"), SK("Slovenčina"), SL("Slovenščina"),
+  FI("Suomi"), SV("Svenska"), MK("Македонски"), SQ("Shqip"), SR("Српски");
+
+  private String languageName;
+
+  EuroVocLanguage(String name) {
+    this.languageName = name;
+  }
+
+  public String languageName() {
+    return languageName;
+  }
 }

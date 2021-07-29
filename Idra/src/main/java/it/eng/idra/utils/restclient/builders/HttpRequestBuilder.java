@@ -15,6 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
+
 package it.eng.idra.utils.restclient.builders;
 
 import java.util.Map;
@@ -25,16 +26,16 @@ import javax.ws.rs.core.MediaType;
 import org.apache.http.client.methods.HttpRequestBase;
 
 public abstract class HttpRequestBuilder<T extends HttpRequestBase> {
-	
-	protected static final Logger logger = Logger.getLogger(HttpRequestBuilder.class.getName());
-	protected T httpRequest;
-	
-	protected void addHeaders(Map<String, String> headers){
-		for(Map.Entry<String, String> h : headers.entrySet()){
-			httpRequest.addHeader(h.getKey(), h.getValue());
-		}
-	}
-	
-	protected abstract void addPayload(MediaType type, String data);
-	
+
+  protected static final Logger logger = Logger.getLogger(HttpRequestBuilder.class.getName());
+  protected T httpRequest;
+
+  protected void addHeaders(Map<String, String> headers) {
+    for (Map.Entry<String, String> h : headers.entrySet()) {
+      httpRequest.addHeader(h.getKey(), h.getValue());
+    }
+  }
+
+  protected abstract void addPayload(MediaType type, String data);
+
 }

@@ -15,16 +15,15 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
+
 package it.eng.idra.beans.exception;
 
-public class PersistenceManagerException  extends Exception {
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
+public class PersistenceManagerException extends Exception {
+  
+  private static final long serialVersionUID = 1L;
 
-	public PersistenceManagerException(String message) {
-        super(message);
-    }
+  public PersistenceManagerException(String message) {
+    super(message);
+  }
 
 }

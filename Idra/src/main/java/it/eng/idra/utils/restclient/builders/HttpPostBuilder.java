@@ -15,6 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
+
 package it.eng.idra.utils.restclient.builders;
 
 import java.net.URL;
@@ -26,30 +27,39 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.entity.StringEntity;
 
-public class HttpPostBuilder extends HttpRequestBuilder<HttpPost>{
-	
-	private HttpPostBuilder(URL url){
-		super.httpRequest = new HttpPost(url.toString());
-	}
-	
-	public static HttpRequestBase getInstance(URL url, Map<String, String> headers, MediaType type, String data) {
-		HttpPostBuilder builder = new HttpPostBuilder(url);
-		builder.addHeaders(headers);
-		builder.addPayload(type, data);
-		
-		return builder.httpRequest;
-	}
-	
-	@Override
-	protected void addPayload(MediaType type, String data){
-		try{
-			StringEntity input = new StringEntity(data);
-			input.setContentType(type.toString());
-			super.httpRequest.setEntity(input);
-		}
-		catch(Exception e){
-			logger.warning(e.toString());
-		}
-	}
+public class HttpPostBuilder extends HttpRequestBuilder<HttpPost> {
+
+  private HttpPostBuilder(URL url) {
+    super.httpRequest = new HttpPost(url.toString());
+  }
+
+  /**
+   * Gets the single instance of HttpPostBuilder.
+   *
+   * @param url the url
+   * @param headers the headers
+   * @param type the type
+   * @param data the data
+   * @return single instance of HttpPostBuilder
+   */
+  public static HttpRequestBase getInstance(URL url, Map<String, String> headers,
+      MediaType type, String data) {
+    HttpPostBuilder builder = new HttpPostBuilder(url);
+    builder.addHeaders(headers);
+    builder.addPayload(type, data);
+
+    return builder.httpRequest;
+  }
+
+  @Override
+  protected void addPayload(MediaType type, String data) {
+    try {
+      StringEntity input = new StringEntity(data);
+      input.setContentType(type.toString());
+      super.httpRequest.setEntity(input);
+    } catch (Exception e) {
+      logger.warning(e.toString());
+    }
+  }
 
 }

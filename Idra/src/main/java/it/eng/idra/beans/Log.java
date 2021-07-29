@@ -15,6 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
+
 package it.eng.idra.beans;
 
 import java.time.ZonedDateTime;
@@ -28,69 +29,70 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "logs")
 public class Log {
-	
-	private int id = 0;
-	private String logger;
-	private String message;
-	private String level;
-	private ZonedDateTime timestamp;
 
-	public Log() {
+  private int id = 0;
+  private String logger;
+  private String message;
+  private String level;
+  private ZonedDateTime timestamp;
 
-	}
+  public Log() {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "id")
-	public int getId() {
-		return this.id;
-	}
+  }
 
-	public void setId(int id) {
-		this.id = id;
-	}
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @Column(name = "id")
+  public int getId() {
+    return this.id;
+  }
 
-	@Column(name = "logger")
-	public String getLogger() {
-		return logger;
-	}
+  public void setId(int id) {
+    this.id = id;
+  }
 
-	public void setLogger(String logger) {
-		this.logger = logger;
-	}
+  @Column(name = "logger")
+  public String getLogger() {
+    return logger;
+  }
 
-	@Column(name = "message", unique = false, nullable = false, columnDefinition = "LONGTEXT")
-	public String getMessage() {
-		return message;
-	}
+  public void setLogger(String logger) {
+    this.logger = logger;
+  }
 
-	public void setMessage(String message) {
-		this.message = message;
-	}
+  @Column(name = "message", unique = false, nullable = false, columnDefinition = "LONGTEXT")
+  public String getMessage() {
+    return message;
+  }
 
-	@Column(name = "level")
-	public String getLevel() {
-		return level;
-	}
+  public void setMessage(String message) {
+    this.message = message;
+  }
 
-	public void setLevel(String level) {
-		this.level = level;
-	}
+  @Column(name = "level")
+  public String getLevel() {
+    return level;
+  }
 
-	@Column(name = "dated")
-	// @Type(type="date")
-	public ZonedDateTime getDated() {
-		return timestamp;
-	}
+  public void setLevel(String level) {
+    this.level = level;
+  }
 
-	public void setDated(ZonedDateTime dated) {
-		this.timestamp = dated;
-	}
+  @Column(name = "dated")
+  // @Type(type="date")
+  public ZonedDateTime getDated() {
+    return timestamp;
+  }
 
-	@Override
-	public String toString() {
-		return "Logs [id=" + id + ", logger=" + logger + ", message=" + message + ", level=" + level + ", dated="
-				+ timestamp + "]";
-	}
+  public void setDated(ZonedDateTime dated) {
+    this.timestamp = dated;
+  }
+
+  @Override
+  public String toString() {
+    return "Logs [id=" + id + ", logger=" 
+        + logger + ", message=" + message + ", level=" + level + ", dated="
+        + timestamp + "]";
+  }
 
 }

@@ -15,8 +15,10 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
+
 package it.eng.idra.scheduler.job;
 
+import it.eng.idra.management.PersistenceManager;
 import java.time.ZonedDateTime;
 
 import org.apache.logging.log4j.LogManager;
@@ -27,32 +29,31 @@ import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.quartz.PersistJobDataAfterExecution;
 
-import it.eng.idra.management.PersistenceManager;
-
 @PersistJobDataAfterExecution
 @DisallowConcurrentExecution
-public class DeleteLogsJob implements Job{
+public class DeleteLogsJob implements Job {
 
-	private static Logger logger = LogManager.getLogger(DeleteLogsJob.class);
-	
-	public DeleteLogsJob() {}
-	
-	@Override
-	public void execute(JobExecutionContext context) throws JobExecutionException {
-		// TODO Auto-generated method stub
-		logger.info("Start Delete Logs job");
-		PersistenceManager jpa = new PersistenceManager();
-		try {
-			ZonedDateTime now = ZonedDateTime.now();
-			jpa.deleteLogs(now);
-			logger.info("Logs deleted ");
-		} catch (Exception e) {
-			logger.error("Error during logs deletion "+e.getLocalizedMessage());
-			e.printStackTrace();
-		}finally {
-			jpa.jpaClose();
-		}
-	
-	}
+  private static Logger logger = LogManager.getLogger(DeleteLogsJob.class);
+
+  public DeleteLogsJob() {
+  }
+
+  @Override
+  public void execute(JobExecutionContext context) throws JobExecutionException {
+    // TODO Auto-generated method stub
+    logger.info("Start Delete Logs job");
+    PersistenceManager jpa = new PersistenceManager();
+    try {
+      ZonedDateTime now = ZonedDateTime.now();
+      jpa.deleteLogs(now);
+      logger.info("Logs deleted ");
+    } catch (Exception e) {
+      logger.error("Error during logs deletion " + e.getLocalizedMessage());
+      e.printStackTrace();
+    } finally {
+      jpa.jpaClose();
+    }
+
+  }
 
 }

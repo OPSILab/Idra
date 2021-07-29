@@ -34,22 +34,24 @@
 // */
 //@WebServlet("/logout")
 //public class Logout extends HttpServlet {
-//	
-//	private static final long serialVersionUID = 693724303976303888L;
-//	private static final String logoutallback = PropertyManager.getProperty(IDMProperty.IDM_LOGOUT_CALLBACK);
-//	protected void doGet(HttpServletRequest request, HttpServletResponse response) {
-//		
-//		System.out.println("Logging out...");
-//		
-//		HttpSession session = request.getSession();
-//		session.removeAttribute("loggedin");
-//		session.removeAttribute("refresh_token");
-//		session.removeAttribute("username");
-//		session.invalidate();
-//		try{ Response.temporaryRedirect(URI.create(httpRequest.getContextPath() + "/IdraPortal")).build();(PropertyManager.getProperty("idm.logout.callback")); }
-//		catch(Exception e){
-//			e.printStackTrace();
-//		}
-//	}
+//
+//private static final long serialVersionUID = 693724303976303888L;
+//private static final String logoutallback = 
+//PropertyManager.getProperty(IDMProperty.IDM_LOGOUT_CALLBACK);
+//protected void doGet(HttpServletRequest request, HttpServletResponse response) {
+//
+//System.out.println("Logging out...");
+//
+//HttpSession session = request.getSession();
+//session.removeAttribute("loggedin");
+//session.removeAttribute("refresh_token");
+//session.removeAttribute("username");
+//session.invalidate();
+//try{ Response.temporaryRedirect(URI.create(httpRequest.getContextPath() 
+//+ "/IdraPortal")).build();(PropertyManager.getProperty("idm.logout.callback")); }
+//catch(Exception e){
+//e.printStackTrace();
+//}
+//}
 //
 //}

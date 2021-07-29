@@ -15,20 +15,21 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
+
 package it.eng.idra.beans.statistics;
 
 public enum AggregationLevelEnum {
 
-	YEAR("year"), MONTH("month"), WEEK("week"), DAY("day");
+  YEAR("year"), MONTH("month"), WEEK("week"), DAY("day");
 
-	private final String text;
+  private final String text;
 
-	private AggregationLevelEnum(final String text) {
-		this.text = text;
-	}
+  private AggregationLevelEnum(final String text) {
+    this.text = text;
+  }
 
-	@Override
-	public String toString() {
-		return text;
-	}
-};
+  @Override
+  public String toString() {
+    return text;
+  }
+}

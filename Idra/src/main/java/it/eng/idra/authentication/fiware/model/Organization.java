@@ -15,85 +15,199 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
+
 package it.eng.idra.authentication.fiware.model;
 
 import java.util.HashSet;
 import java.util.Set;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class Organization.
+ */
 public class Organization {
 
-	private String website;
-	private String description;
-	private Set<Role> roles;
-	private boolean enabled;
-	private String id;
-	private String domain_id;
-	private String name;
-	
-	public String getWebsite() {
-		return website;
-	}
-	public void setWebsite(String website) {
-		this.website = website;
-	}
-	public String getDescription() {
-		return description;
-	}
-	public void setDescription(String description) {
-		this.description = description;
-	}
-	public Set<Role> getRoles() {
-		return roles;
-	}
-	public void setRoles(Set<Role> roles) {
-		this.roles = roles;
-	}
-	public boolean isEnabled() {
-		return enabled;
-	}
-	public void setEnabled(boolean enabled) {
-		this.enabled = enabled;
-	}
-	public String getId() {
-		return id;
-	}
-	public void setId(String id) {
-		this.id = id;
-	}
-	public String getDomain_id() {
-		return domain_id;
-	}
-	public void setDomain_id(String domain_id) {
-		this.domain_id = domain_id;
-	}
-	public String getName() {
-		return name;
-	}
-	public void setName(String name) {
-		this.name = name;
-	}
-	
-	
-	public Organization(String website, String description, Set<Role> roles, boolean enabled, String id, String domain_id, String name) {
-	this.website = website;
-		this.description = description;
-		this.roles = roles;
-		this.enabled = enabled;
-		this.id = id;
-		this.domain_id = domain_id;
-		this.name = name;
-	}
+  /** The website. */
+  private String website;
+  
+  /** The description. */
+  private String description;
+  
+  /** The roles. */
+  private Set<Role> roles;
+  
+  /** The enabled. */
+  private boolean enabled;
+  
+  /** The id. */
+  private String id;
+  
+  /** The domain id. */
+  private String domain_id;
+  
+  /** The name. */
+  private String name;
 
-	public Organization(){
-		this.description = "";
-		this.roles = new HashSet<Role>();
-		this.enabled = true;
-		this.id = "";
-		this.domain_id = "";
-		this.name = "";
-	}
-	
-	
+  /**
+   * Gets the website.
+   *
+   * @return the website
+   */
+  public String getWebsite() {
+    return website;
+  }
+
+  /**
+   * Sets the website.
+   *
+   * @param website the new website
+   */
+  public void setWebsite(String website) {
+    this.website = website;
+  }
+
+  /**
+   * Gets the description.
+   *
+   * @return the description
+   */
+  public String getDescription() {
+    return description;
+  }
+
+  /**
+   * Sets the description.
+   *
+   * @param description the new description
+   */
+  public void setDescription(String description) {
+    this.description = description;
+  }
+
+  /**
+   * Gets the roles.
+   *
+   * @return the roles
+   */
+  public Set<Role> getRoles() {
+    return roles;
+  }
+
+  /**
+   * Sets the roles.
+   *
+   * @param roles the new roles
+   */
+  public void setRoles(Set<Role> roles) {
+    this.roles = roles;
+  }
+
+  /**
+   * Checks if is enabled.
+   *
+   * @return true, if is enabled
+   */
+  public boolean isEnabled() {
+    return enabled;
+  }
+
+  /**
+   * Sets the enabled.
+   *
+   * @param enabled the new enabled
+   */
+  public void setEnabled(boolean enabled) {
+    this.enabled = enabled;
+  }
+
+  /**
+   * Gets the id.
+   *
+   * @return the id
+   */
+  public String getId() {
+    return id;
+  }
+
+  /**
+   * Sets the id.
+   *
+   * @param id the new id
+   */
+  public void setId(String id) {
+    this.id = id;
+  }
+
+  /**
+   * Gets the domain id.
+   *
+   * @return the domain id
+   */
+  public String getDomain_id() {
+    return domain_id;
+  }
+
+  /**
+   * Sets the domain id.
+   *
+   * @param domain_id the new domain id
+   */
+  public void setDomain_id(String domain_id) {
+    this.domain_id = domain_id;
+  }
+
+  /**
+   * Gets the name.
+   *
+   * @return the name
+   */
+  public String getName() {
+    return name;
+  }
+
+  /**
+   * Sets the name.
+   *
+   * @param name the new name
+   */
+  public void setName(String name) {
+    this.name = name;
+  }
+
+  /**
+   * Instantiates a new organization.
+   *
+   * @param website the website
+   * @param description the description
+   * @param roles the roles
+   * @param enabled the enabled
+   * @param id the id
+   * @param domain_id the domain id
+   * @param name the name
+   */
+  public Organization(String website, String description, 
+      Set<Role> roles, boolean enabled, String id, 
+      String domain_id,
+      String name) {
+    this.website = website;
+    this.description = description;
+    this.roles = roles;
+    this.enabled = enabled;
+    this.id = id;
+    this.domain_id = domain_id;
+    this.name = name;
+  }
+
+  /**
+   * Instantiates a new organization.
+   */
+  public Organization() {
+    this.description = "";
+    this.roles = new HashSet<Role>();
+    this.enabled = true;
+    this.id = "";
+    this.domain_id = "";
+    this.name = "";
+  }
+
 }
-
-

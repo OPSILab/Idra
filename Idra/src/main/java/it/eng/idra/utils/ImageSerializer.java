@@ -15,33 +15,30 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package it.eng.idra.utils;
 
-import java.lang.reflect.Type;
+package it.eng.idra.utils;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
 
-import it.eng.idra.beans.odms.ODMSCatalogueImage;
+import it.eng.idra.beans.odms.OdmsCatalogueImage;
+import java.lang.reflect.Type;
 
-public class ImageSerializer implements JsonSerializer<ODMSCatalogueImage>{
+public class ImageSerializer implements JsonSerializer<OdmsCatalogueImage> {
 
-	@Override
-	public JsonElement serialize(ODMSCatalogueImage image, Type arg1, JsonSerializationContext arg2) {
-//		System.out.println("Image serializer");
-//		if(image!=null){
-		try{
-//			System.out.println("Image not null");
-			JsonObject jsonObject = new JsonObject();
-		    jsonObject.addProperty("imageId", image.getImageId());
-		    jsonObject.addProperty("imageData", image.getImageData());
-		    return jsonObject;
-		}catch(Exception e){
-//			System.out.println("Image null "+e.getMessage());
-			return null;
-		}
-	}
+  @Override
+  public JsonElement serialize(OdmsCatalogueImage image, Type arg1, JsonSerializationContext arg2) {
+
+    try {
+      JsonObject jsonObject = new JsonObject();
+      jsonObject.addProperty("imageId", image.getImageId());
+      jsonObject.addProperty("imageData", image.getImageData());
+      return jsonObject;
+    } catch (Exception e) {
+      return null;
+    }
+  }
 
 }

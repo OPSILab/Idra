@@ -1,0 +1,902 @@
+/*******************************************************************************
+ * Idra - Open Data Federation Platform
+ *  Copyright (C) 2020 Engineering Ingegneria Informatica S.p.A.
+ *  
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * at your option) any later version.
+ *  
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *  
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ ******************************************************************************/
+
+package it.eng.idra.dcat.dump;
+
+import it.eng.idra.beans.IdraProperty;
+import it.eng.idra.beans.dcat.DcatApFormat;
+import it.eng.idra.beans.dcat.DcatApProfile;
+import it.eng.idra.beans.dcat.DcatApWriteType;
+import it.eng.idra.beans.dcat.DcatDataset;
+import it.eng.idra.beans.dcat.DcatDistribution;
+import it.eng.idra.beans.dcat.DcatProperty;
+import it.eng.idra.beans.dcat.DctFrequency;
+import it.eng.idra.beans.dcat.DctLicenseDocument;
+import it.eng.idra.beans.dcat.DctLocation;
+import it.eng.idra.beans.dcat.DctPeriodOfTime;
+import it.eng.idra.beans.dcat.DctStandard;
+import it.eng.idra.beans.dcat.FoafAgent;
+import it.eng.idra.beans.dcat.SkosConcept;
+import it.eng.idra.beans.dcat.SkosPrefLabel;
+import it.eng.idra.beans.dcat.SpdxChecksum;
+import it.eng.idra.beans.dcat.VCardOrganization;
+import it.eng.idra.beans.odms.OdmsCatalogue;
+import it.eng.idra.beans.search.SearchResult;
+import it.eng.idra.management.FederationCore;
+import it.eng.idra.utils.CommonUtil;
+import it.eng.idra.utils.PropertyManager;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.StringWriter;
+import java.math.BigDecimal;
+import java.net.URISyntaxException;
+import java.time.Duration;
+import java.time.Instant;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
+
+import org.apache.commons.lang.StringUtils;
+import org.apache.jena.datatypes.RDFDatatype;
+import org.apache.jena.datatypes.xsd.XSDhexBinary;
+import org.apache.jena.datatypes.xsd.impl.XSDDateType;
+import org.apache.jena.iri.IRI;
+import org.apache.jena.iri.IRIException;
+import org.apache.jena.iri.IRIFactory;
+import org.apache.jena.rdf.model.Model;
+import org.apache.jena.rdf.model.ModelFactory;
+import org.apache.jena.rdf.model.Resource;
+import org.apache.jena.rdf.model.ResourceRequiredException;
+import org.apache.jena.shared.BadURIException;
+import org.apache.jena.sparql.vocabulary.FOAF;
+import org.apache.jena.vocabulary.DCAT;
+import org.apache.jena.vocabulary.DCTerms;
+import org.apache.jena.vocabulary.OWL;
+import org.apache.jena.vocabulary.RDFS;
+import org.apache.jena.vocabulary.SKOS;
+import org.apache.jena.vocabulary.VCARD4;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.eclipse.rdf4j.model.vocabulary.XMLSchema;
+
+/* TODO Pensare ad un approccio con Interfaccia DCAPAPSerializer e
+ *  Classi che la implementano a seconda del Profilo
+ */
+public class DcatApSerializer {
+
+  static Map<Integer, OdmsCatalogue> nodeResources = null;
+
+  @SuppressWarnings("deprecation")
+  protected static final IRIFactory iriFactory = IRIFactory.jenaImplementation();
+
+  public static final String DCATAP_IT_BASE_URI = "http://dati.gov.it/onto/dcatapit#";
+  public static final String THEME_BASE_URI = "http://publications.europa.eu/resource/authority/data-theme/";
+  public static final String SUBJECT_BASE_URI = "http://eurovoc.europa.eu/";
+  public static final String FREQUENCY_BASE_URI = "http://publications.europa.eu/resource/authority/frequency/";
+  public static final String LANGUAGE_BASE_URI = "http://publications.europa.eu/mdr/authority/language/";
+  public static final String GEO_BASE_URI = "http://publications.europa.eu/mdr/authority/place/";
+  public static final String GEO_BASE_URI_ALT = "http://geonames.org/";
+  public static final String FORMAT_BASE_URI = "http://publications.europa.eu/mdr/authority/file-type/";
+  public static final String LICENSE_TYPE_BASE_URI = "http://purl.org/adms/licencetype/";
+
+  protected static Logger logger = LogManager.getLogger(DcatApSerializer.class);
+  private static String filePath = PropertyManager.getProperty(IdraProperty.DUMP_FILE_PATH);
+  private static String fileName = PropertyManager.getProperty(IdraProperty.DUMP_FILE_NAME);
+
+  static {
+
+  }
+
+  public DcatApSerializer() {
+  }
+
+  private static Model datasetToModel(DcatDataset dataset, DcatApProfile profile) {
+
+    Model model = initializeModel();
+
+    try {
+      switch (profile) {
+
+        case DCATAP_IT:
+          model.setNsPrefix("dcatapit", "http://dati.gov.it/onto/dcatapit#");
+          model = DcatApItSerializer.addDatasetToModel(dataset, model);
+          break;
+
+          /*
+           * ADD HERE MORE CASES FOR FURTHER PROFILES
+           */
+          
+        default:
+          model = addDatasetToModel(dataset, model);
+          break;
+      }
+
+    } catch (Exception e) {
+      logger.error("Error while converting dataset " + dataset.getId() + " to model, reason: "
+          + e.getMessage());
+    }
+
+    return model;
+  }
+
+  /**
+   * initializeModel.
+   * @return Model
+   */
+  private static Model initializeModel() {
+    Model model = ModelFactory.createDefaultModel();
+    model.setNsPrefix("dct", DCTerms.getURI());
+    model.setNsPrefix("dcat", DCAT.getURI());
+    model.setNsPrefix("adms", "http://www.w3.org/ns/adms#");
+    model.setNsPrefix("foaf", FOAF.getURI());
+    model.setNsPrefix("owl", OWL.getURI());
+    model.setNsPrefix("rdfs", RDFS.getURI());
+    model.setNsPrefix("schema", "http://schema.org#");
+    model.setNsPrefix("skos", SKOS.getURI());
+    model.setNsPrefix("spdx", "http://spdx.org/rdf/terms#");
+    model.setNsPrefix("xsd", XMLSchema.NAMESPACE);
+    model.setNsPrefix("vcard", VCARD4.getURI());
+    model.setNsPrefix("locn", "http://www.w3.org/ns/locn#");
+    return model;
+  }
+
+  private static Model datasetsToModel(List<DcatDataset> datasets, DcatApProfile profile) {
+
+    Model model = initializeModel();
+
+    for (DcatDataset d : datasets) {
+      try {
+        switch (profile) {
+
+          case DCATAP_IT:
+            model.setNsPrefix("dcatapit", "http://dati.gov.it/onto/dcatapit#");
+            model = DcatApItSerializer.addDatasetToModel(d, model);
+            break;
+
+          /*
+           * ADD HERE MORE CASES FOR FURTHER PROFILES
+           */
+
+          default:
+            model = addDatasetToModel(d, model);
+            break;
+        }
+
+      } catch (Exception e) {
+        logger.error(
+            "Error while converting dataset " + d.getId() + " to model, reason: " + e.getMessage());
+      }
+    }
+
+    return model;
+
+  }
+
+  private static Model addDatasetToModel(DcatDataset dataset, Model model) {
+
+    String landingPage = dataset.getLandingPage().getValue();
+    IRI iri = iriFactory.create(landingPage);
+    if (iri.hasViolation(false)) {
+      throw new BadURIException(
+          "URI for dataset: " + iri + "is not valid, skipping the dataset in the Jena Model:"
+              + (iri.violations(false).next()).getShortMessage());
+    }
+
+    Resource datasetResource = model.createResource(iri.toString(), DCAT.Dataset);
+
+    addDcatPropertyAsLiteral(dataset.getTitle(), datasetResource, model);
+
+    addDcatPropertyAsLiteral(dataset.getDescription(), datasetResource, model);
+
+    serializeConcept(dataset.getTheme(), model, datasetResource);
+
+    serializeContactPoint(dataset.getContactPoint(), model, datasetResource);
+
+    dataset.getKeywords().stream().filter(keyword -> StringUtils.isNotBlank(keyword))
+        .forEach(keyword -> datasetResource.addLiteral(DCAT.keyword, keyword));
+
+    addDcatPropertyAsLiteral(dataset.getAccessRights(), datasetResource, model);
+
+    serializeDctStandard(dataset.getConformsTo(), datasetResource, model);
+
+    List<DcatProperty> documentationList = dataset.getDocumentation();
+    if (documentationList != null) {
+      documentationList.stream().filter(item -> !isValidUri(item.getValue()))
+          .forEach(item -> addDcatPropertyAsResource(item, datasetResource, model, true));
+    }
+
+    List<DcatProperty> relatedResourceList = dataset.getRelatedResource();
+    if (relatedResourceList != null) {
+      relatedResourceList.stream().filter(item -> !isValidUri(item.getValue()))
+          .forEach(item -> addDcatPropertyAsResource(item, datasetResource, model, true));
+    }
+
+    serializeFrequency(dataset.getFrequency(), model, datasetResource);
+
+    List<DcatProperty> hasVersion = dataset.getHasVersion();
+    if (hasVersion != null) {
+      hasVersion.stream().filter(item -> !isValidUri(item.getValue()))
+          .forEach(item -> addDcatPropertyAsResource(item, datasetResource, model, true));
+    }
+
+    List<DcatProperty> isVersionOf = dataset.getIsVersionOf();
+    if (isVersionOf != null) {
+      isVersionOf.stream().filter(item -> !isValidUri(item.getValue()))
+          .forEach(item -> addDcatPropertyAsResource(item, datasetResource, model, true));
+    }
+
+    addDcatPropertyAsResource(dataset.getLandingPage(), datasetResource, model, false);
+
+    serializeLanguage(dataset.getLanguage(), model, datasetResource);
+
+    List<DcatProperty> provenance = dataset.getProvenance();
+    if (provenance != null) {
+      provenance.stream().forEach(item -> addDcatPropertyAsLiteral(item, datasetResource, model));
+    }
+
+    addDcatPropertyAsTypedLiteral(dataset.getReleaseDate(), XSDDateType.XSDdateTime,
+        datasetResource, model);
+    addDcatPropertyAsTypedLiteral(dataset.getUpdateDate(), XSDDateType.XSDdateTime, datasetResource,
+        model);
+
+    addDcatPropertyAsLiteral(dataset.getIdentifier(), datasetResource, model);
+
+    List<DcatProperty> otherIdentifier = dataset.getOtherIdentifier();
+    if (otherIdentifier != null) {
+      otherIdentifier.stream().filter(id -> StringUtils.isNotBlank(id.getValue())).forEach(id -> {
+        datasetResource.addProperty(model.createProperty(id.getProperty().getURI()),
+            model.createResource().addLiteral(SKOS.notation, id.getValue()));
+      });
+    }
+
+    List<DcatProperty> sample = dataset.getSample();
+    if (sample != null) {
+      sample.stream().filter(item -> isValidUri(item.getValue()))
+          .forEach(item -> addDcatPropertyAsResource(item, datasetResource, model, true));
+    }
+
+    List<DcatProperty> source = dataset.getSource();
+    if (source != null) {
+      source.stream().filter(item -> isValidUri(item.getValue()))
+          .forEach(item -> addDcatPropertyAsResource(item, datasetResource, model, true));
+    }
+
+    serializeSpatialCoverage(dataset.getSpatialCoverage(), model, datasetResource);
+
+    serializeTemporalCoverage(dataset.getTemporalCoverage(), model, datasetResource);
+
+    addDcatPropertyAsLiteral(dataset.getType(), datasetResource, model);
+    addDcatPropertyAsLiteral(dataset.getVersion(), datasetResource, model);
+
+    List<DcatProperty> versionNotes = dataset.getVersionNotes();
+    if (versionNotes != null) {
+      versionNotes.stream().forEach(item -> addDcatPropertyAsLiteral(item, datasetResource, model));
+    }
+
+    for (DcatDistribution distribution : dataset.getDistributions()) {
+      addDistributionToModel(model, datasetResource, distribution);
+    }
+
+    OdmsCatalogue node = nodeResources.get(new Integer(dataset.getNodeID()));
+
+    /*
+     * Add the Catalogue with the Dataset to the global Model
+     */
+    model.createResource(node.getHost(), DCAT.Catalog).addLiteral(DCTerms.title, node.getName())
+        .addLiteral(DCTerms.description, node.getDescription())
+        .addProperty(DCAT.dataset, datasetResource)
+        .addProperty(DCTerms.issued, node.getRegisterDate().toString(), XSDDateType.XSDdateTime)
+        .addProperty(DCTerms.modified, node.getLastUpdateDate().toString(),
+            XSDDateType.XSDdateTime);
+
+    /*
+     * ** Create the Publisher for the DCATCatalogue as a new FOAFAgent with info
+     * from the federated Catalogue
+     */
+
+    String publisherResourceUri = node.getPublisherUrl();
+    if (StringUtils.isBlank(publisherResourceUri) || !isValidUri(publisherResourceUri)) {
+
+      if (!node.getHomepage().equalsIgnoreCase(node.getHost())) {
+        publisherResourceUri = node.getHomepage();
+      } else {
+        publisherResourceUri = node.getHomepage() + "/" + node.getId();
+      }
+    }
+
+    /*
+     * Check if the publisher is already present in the global Model and if any
+     * create it, either or both for dataset and catalog
+     */
+
+    serializeFoafAgent(
+        new FoafAgent(DCTerms.publisher.getURI(), publisherResourceUri, node.getPublisherName(),
+            node.getPublisherEmail(), node.getPublisherUrl(), "", "", String.valueOf(node.getId())),
+        model, model.getResource(node.getHost()));
+
+    FoafAgent datasetPublisher = dataset.getPublisher();
+    if (datasetPublisher != null) {
+      if (StringUtils.isNotBlank(datasetPublisher.getResourceUri())
+          && isValidUri(datasetPublisher.getResourceUri())) {
+        serializeFoafAgent(datasetPublisher, model, datasetResource);
+      } else {
+        // Set blank URI for Dataset Publisher in order to create a blank node
+        datasetPublisher.setResourceUri("");
+        serializeFoafAgent(datasetPublisher, model, datasetResource);
+      }
+    }
+
+    return model;
+
+  }
+
+  protected static void serializeTemporalCoverage(DctPeriodOfTime temporalCoverage, Model model,
+      Resource datasetResource) {
+    if (temporalCoverage != null) {
+      datasetResource.addProperty(model.createProperty(temporalCoverage.getUri()),
+          model.createResource(DctPeriodOfTime.getRDFClass())
+              .addProperty(temporalCoverage.getStartDate().getProperty(),
+                  temporalCoverage.getStartDate().getValue(), XSDDateType.XSDdate)
+              .addProperty(temporalCoverage.getEndDate().getProperty(),
+                  temporalCoverage.getEndDate().getValue(), XSDDateType.XSDdate));
+    }
+  }
+
+  protected static void serializeSpatialCoverage(DctLocation spatialCoverage, Model model,
+      Resource parentResource) {
+
+    if (spatialCoverage != null) {
+
+      Resource spatialResource = model.createResource(DctLocation.getRDFClass());
+      String geoUri = null;
+      // Initialize spatial Resource
+
+      if (StringUtils.isNotBlank(geoUri = spatialCoverage.getGeographicalIdentifier().getValue())) {
+
+        if (IRIFactory.iriImplementation().create(geoUri).hasViolation(false)) {
+          spatialCoverage.getGeographicalIdentifier().setValue(GEO_BASE_URI + geoUri);
+        }
+
+        addDcatPropertyAsLiteral(spatialCoverage.getGeographicalIdentifier(), spatialResource,
+            model);
+      }
+
+      addDcatPropertyAsLiteral(spatialCoverage.getGeographicalIdentifier(), spatialResource, model);
+      addDcatPropertyAsLiteral(spatialCoverage.getGeometry(), spatialResource, model);
+
+      // TODO Geographical Name as SKOS CONCEPT
+      addDcatPropertyAsResource(spatialCoverage.getGeographicalName(), spatialResource, model,
+          false);
+
+      parentResource.addProperty(model.createProperty(spatialCoverage.getUri()), spatialResource);
+
+    }
+
+  }
+
+
+  protected static void serializeLanguage(List<DcatProperty> language, Model model,
+      Resource datasetResource) {
+
+    if (language != null) {
+      language.stream().filter(lang -> StringUtils.isNotBlank(lang.getValue())).forEach(lang -> {
+        try {
+          datasetResource.addProperty(lang.getProperty(),
+              model.createResource(iriFactory.construct(lang.getValue()).toURI().toString()));
+        } catch (IRIException | URISyntaxException e) {
+          datasetResource.addProperty(lang.getProperty(),
+              model.createResource(LANGUAGE_BASE_URI + lang.getValue()));
+        }
+      });
+    }
+  }
+
+  protected static void serializeFrequency(DcatProperty frequency, Model model,
+      Resource datasetResource) {
+
+    try {
+      // Check if the value is a valid Frequency enum value
+      DctFrequency.valueOf(frequency.getValue());
+      datasetResource.addProperty(frequency.getProperty(),
+          model.createResource(FREQUENCY_BASE_URI + frequency.getValue()));
+
+    } catch (Exception e) {
+
+      datasetResource.addProperty(frequency.getProperty(),
+          model.createResource(FREQUENCY_BASE_URI + DctFrequency.UNKNOWN));
+    }
+  }
+
+  private static void serializeContactPoint(List<VCardOrganization> contactPointList, Model model,
+      Resource datasetResource) {
+
+    if (contactPointList != null && !contactPointList.isEmpty()) {
+      for (VCardOrganization contactPoint : contactPointList) {
+        try {
+          Resource contactPointR = null;
+
+          if (StringUtils.isNotBlank(contactPoint.getResourceUri())) {
+            contactPointR = model.createResource(contactPoint.getResourceUri(),
+                VCardOrganization.getRDFClass());
+          } else {
+            contactPointR = model.createResource(VCardOrganization.getRDFClass());
+          }
+
+          // .addProperty(RDF.type, VCARD4.Kind)
+          contactPointR.addLiteral(contactPoint.getFn().getProperty(),
+              contactPoint.getFn().getValue());
+
+          // Fix hasEmail value if needed
+          String hasEmailValue = contactPoint.getHasEmail().getValue();
+          if (StringUtils.isNotBlank(hasEmailValue) && CommonUtil.checkIfIsEmail(hasEmailValue)) {
+            if (!hasEmailValue.startsWith("mailto:")) {
+              contactPoint.getHasEmail().setValue("mailto:" + hasEmailValue);
+            }
+            addDcatPropertyAsResource(contactPoint.getHasEmail(), contactPointR, model, false);
+          }
+
+          addDcatPropertyAsResource(contactPoint.getHasURL(), contactPointR, model, false);
+
+          // Add contactPoint property to dataset Resource;
+          datasetResource.addProperty(model.createProperty(contactPoint.getPropertyUri()),
+              contactPointR);
+
+        } catch (Exception ignore) {
+          logger.debug(ignore.getLocalizedMessage());
+        }
+      }
+    }
+
+  }
+
+  protected static void serializeFoafAgent(FoafAgent agent, Model model, Resource parentResource) {
+
+    if (agent != null) {
+      Resource agentResource = null;
+
+      if (StringUtils.isNotBlank(agent.getResourceUri()) && isValidUri(agent.getResourceUri())) {
+        agentResource = model.createResource(agent.getResourceUri(), FoafAgent.getRDFClass());
+      } else {
+        agentResource = model.createResource(FoafAgent.getRDFClass());
+      }
+
+      addDcatPropertyAsLiteral(agent.getName(), agentResource, model);
+      addDcatPropertyAsLiteral(agent.getMbox(), agentResource, model);
+      addDcatPropertyAsLiteral(agent.getType(), agentResource, model);
+      addDcatPropertyAsLiteral(agent.getIdentifier(), agentResource, model);
+      addDcatPropertyAsResource(agent.getHomepage(), agentResource, model, false);
+
+      parentResource.addProperty(model.createProperty(agent.getPropertyUri()), agentResource);
+
+    }
+  }
+
+  protected static <T extends SkosConcept> void serializeConcept(List<T> conceptList, Model model,
+      Resource parentResource) {
+
+    if (conceptList != null && !conceptList.isEmpty()) {
+
+      for (T concept : conceptList) {
+        Resource conceptR = null;
+        if (concept != null) {
+          List<SkosPrefLabel> labelList = concept.getPrefLabel();
+
+          if (StringUtils.isNotBlank(concept.getResourceUri())) {
+            conceptR = model.createResource(concept.getResourceUri(), SKOS.Concept);
+          } else {
+            conceptR = model.createResource(SKOS.Concept);
+          }
+
+          if (labelList != null && !labelList.isEmpty()) {
+            for (SkosPrefLabel l : labelList) {
+              conceptR.addProperty(SKOS.prefLabel,
+                  model.createLiteral(l.getValue(), l.getLanguage()));
+            }
+          }
+
+          parentResource.addProperty(model.createProperty(concept.getPropertyUri()), conceptR);
+
+        }
+
+        // if (StringUtils.isNotBlank(concept.getValue()))
+        // datasetResource.addProperty(concept.getProperty(),
+        // model.createResource(
+        // IRIFactory.jenaImplementation().construct(concept.getValue()).toURI().toString(),
+        // SKOS.Concept));
+
+        // } catch (IRIException | URISyntaxException e) {
+        // datasetResource.addProperty(concept.getProperty(),
+        // model.createResource(THEME_BASE_URI + concept.getValue(), SKOS.Concept));
+        // }
+      }
+    }
+  }
+
+  private static void addDistributionToModel(Model model, Resource datasetResource,
+      DcatDistribution distribution) {
+
+    Resource distResource = model.createResource(DcatDistribution.getRDFClass());
+
+    addDcatPropertyAsResource(distribution.getAccessURL(), distResource, model, false);
+
+    addDcatPropertyAsLiteral(distribution.getDescription(), distResource, model);
+
+    serializeFormat(distribution.getFormat(), model, distResource);
+
+    serializeLicense(distribution.getLicense(), model, distResource);
+
+    serializeByteSize(distribution.getByteSize(), model, distResource);
+
+    serializeChecksum(distribution.getChecksum(), model, distResource);
+
+    serializeLanguage(distribution.getLanguage(), model, distResource);
+
+    List<DcatProperty> distDocumentation = distribution.getDocumentation();
+    if (distDocumentation != null) {
+      distDocumentation.stream().filter(item -> StringUtils.isNotBlank(item.getValue()))
+          .forEach(item -> distResource.addProperty(item.getProperty(), item.getValue()));
+    }
+
+    addDcatPropertyAsResource(distribution.getDownloadURL(), distResource, model, false);
+
+    serializeDctStandard(distribution.getLinkedSchemas(), distResource, model);
+
+    addDcatPropertyAsLiteral(distribution.getMediaType(), distResource, model);
+
+    distResource.addProperty(distribution.getReleaseDate().getProperty(),
+        distribution.getReleaseDate().getValue(), XSDDateType.XSDdateTime);
+    distResource.addProperty(distribution.getUpdateDate().getProperty(),
+        distribution.getUpdateDate().getValue(), XSDDateType.XSDdateTime);
+
+    addDcatPropertyAsLiteral(distribution.getRights(), distResource, model);
+
+    serializeConcept(Arrays.asList(distribution.getStatus()), model, distResource);
+
+    addDcatPropertyAsLiteral(distribution.getTitle(), distResource, model);
+
+    datasetResource.addProperty(DCAT.distribution, distResource);
+  }
+
+  protected static void serializeByteSize(DcatProperty property, Model model,
+      Resource distResource) {
+
+    try {
+      distResource.addProperty(property.getProperty(),
+          model.createTypedLiteral(new BigDecimal(property.getValue())));
+    } catch (NumberFormatException e) {
+      logger.debug("The value: " + property.getValue() + " is not a valid byteSize - SKIPPED");
+    }
+  }
+
+  protected static void serializeChecksum(SpdxChecksum checksum, Model model,
+      Resource distResource) {
+
+    if (checksum != null) {
+      distResource.addProperty(model.createProperty(checksum.getUri()),
+          model.createResource(SpdxChecksum.getRDFClass())
+              .addProperty(checksum.getAlgorithm().getProperty(),
+                  checksum.getAlgorithm().getValue())
+              .addProperty(checksum.getChecksumValue().getProperty(),
+                  checksum.getChecksumValue().getValue(), XSDhexBinary.XSDhexBinary));
+    }
+  }
+
+  protected static void serializeLicense(DctLicenseDocument license, Model model,
+      Resource distResource) {
+
+    if (license != null) {
+
+      String licenseTypeUri = null;
+      Resource licenseResource = null;
+
+      // Initialize license Resource
+      if (StringUtils.isNotBlank(license.getUri())) {
+        licenseResource = model.createResource(license.getUri(), DctLicenseDocument.getRDFClass());
+      } else {
+        licenseResource = model.createResource(DctLicenseDocument.getRDFClass());
+      }
+
+      try {
+        licenseTypeUri = iriFactory.construct(license.getType().getValue()).toString();
+      } catch (Exception e) {
+        licenseTypeUri = LICENSE_TYPE_BASE_URI + license.getType().getValue();
+      }
+      license.getType().setValue(licenseTypeUri);
+
+      addDcatPropertyAsLiteral(license.getName(), licenseResource, model);
+      addDcatPropertyAsLiteral(license.getVersionInfo(), licenseResource, model);
+      addDcatPropertyAsResource(license.getType(), licenseResource, model, false);
+
+      // Add license Resource as property object of the parent Resource
+      distResource.addProperty(model.createProperty(DCTerms.license.getURI()), licenseResource);
+
+    }
+  }
+
+  protected static void serializeFormat(DcatProperty format, Model model, Resource distResource) {
+
+    if (format != null && StringUtils.isNotBlank(format.getValue())) {
+      format.setValue(FORMAT_BASE_URI + format.getValue());
+      addDcatPropertyAsResource(format, distResource, model, false);
+    }
+  }
+
+  protected static void serializeDctStandard(List<DctStandard> standardList,
+      Resource parentResource, Model model) {
+
+    if (standardList != null && !standardList.isEmpty()) {
+      standardList.stream().filter(standard -> standard != null).forEach(standard -> {
+
+        Resource standardResource = null;
+
+        if (StringUtils.isNotBlank(standard.getUri())) {
+          standardResource = model.createResource(standard.getUri(), DctStandard.getRDFClass());
+        } else {
+          standardResource = model.createResource(DctStandard.getRDFClass());
+        }
+
+        standardResource
+            .addLiteral(standard.getDescription().getProperty(),
+                standard.getDescription().getValue())
+            .addLiteral(standard.getIdentifier().getProperty(), standard.getIdentifier().getValue())
+            .addLiteral(standard.getTitle().getProperty(), standard.getTitle().getValue());
+
+        for (DcatProperty p : standard.getReferenceDocumentation()) {
+          standardResource.addProperty(p.getProperty(), p.getValue(), XSDDateType.XSDanyURI);
+        }
+
+        parentResource.addProperty(DCTerms.conformsTo, standardResource);
+
+      });
+    }
+
+  }
+
+  /*
+   * Helper method used to add a Property, which should have a Resource as its
+   * Object, to a passed Resource e.g. hasUrl, hasEmail or hasTelephone -> type
+   * Optionally use the DCATProperty Range to create a typed Resource
+   */
+  protected static void addDcatPropertyAsResource(DcatProperty property, Resource parentResource,
+      Model model, boolean useRange) {
+
+    if (StringUtils.isNotBlank(property.getValue())) {
+      try {
+        if (useRange) {
+          parentResource.addProperty(property.getProperty(), model.createResource(
+              iriFactory.construct(property.getValue()).toURI().toString(), property.getRange()));
+        } else {
+          parentResource.addProperty(property.getProperty(),
+              model.createResource(iriFactory.construct(property.getValue()).toURI().toString()));
+        }
+      } catch (ResourceRequiredException | IRIException | URISyntaxException e) {
+
+        // Add anyway the property as string value
+
+        parentResource.addProperty(property.getProperty(),
+            model.createLiteral(property.getValue()));
+      }
+    }
+  }
+
+  /*
+   * Helper method used to add a Property, which should have a Literal as its
+   * Object, to a passed Resource
+   */
+  protected static void addDcatPropertyAsLiteral(DcatProperty property, Resource parentResource,
+      Model model) {
+
+    // Add the property as literal value
+    if (StringUtils.isNotBlank(property.getValue())) {
+      parentResource.addProperty(property.getProperty(), model.createLiteral(property.getValue()));
+    }
+  }
+
+  /*
+   * Helper method used to add a Property, which should have a Typed Literal as
+   * its Object, to a passed Resource
+   */
+  protected static void addDcatPropertyAsTypedLiteral(DcatProperty property, RDFDatatype dataType,
+      Resource parentResource, Model model) {
+
+    // Add the property as literal value
+    if (StringUtils.isNotBlank(property.getValue())) {
+      parentResource.addProperty(property.getProperty(), property.getValue(), dataType);
+    }
+  }
+
+  private static String writeModelToString(Model model, DcatApFormat format) {
+
+    StringWriter outputWriter = new StringWriter();
+    model.write(outputWriter, format.formatName());
+    return outputWriter.toString();
+  }
+
+  public static void writeModelToFileAndZip(Model model, DcatApFormat format, String filePath,
+      String fileName) throws IOException {
+    writeModelToFile(model, format, filePath, fileName);
+    writeModelToZipFile(model, format, filePath, fileName);
+  }
+
+  /**
+   * Write model to file.
+   *
+   * @param model the model
+   * @param format the format
+   * @param filePath the file path
+   * @param fileName the file name
+   * @throws IOException Signals that an I/O exception has occurred.
+   */
+  public static void writeModelToFile(Model model, DcatApFormat format, String filePath,
+      String fileName) throws IOException {
+    /* This method is used to serialize the Jena-model to file. */
+
+    FileWriter out = null;
+    logger.info("Writing model to file: " + filePath + fileName);
+
+    Instant tick = Instant.now();
+    try {
+      out = new FileWriter(filePath + fileName);
+      model.write(out, format.name());
+    } catch (Exception e) {
+      e.printStackTrace();
+    } finally {
+      out.close();
+      Instant tock = Instant.now();
+      logger.info("File writing completed in: " + Duration.between(tick, tock).toString());
+
+    }
+  }
+
+  /**
+   * Write model to zip file.
+   *
+   * @param model the model
+   * @param format the format
+   * @param filePath the file path
+   * @param fileName the file name
+   * @throws IOException Signals that an I/O exception has occurred.
+   */
+  public static void writeModelToZipFile(Model model, DcatApFormat format, String filePath,
+      String fileName) throws IOException {
+
+    logger.info("Writing model to file: " + filePath + fileName + ".zip");
+    Instant tick = Instant.now();
+    try {
+      File f = new File(filePath + fileName + ".zip");
+      ZipOutputStream out = new ZipOutputStream(new FileOutputStream(f));
+      ZipEntry e = new ZipEntry(fileName);
+      out.putNextEntry(e);
+
+      byte[] data = writeModelToString(model, format).getBytes();
+      out.write(data, 0, data.length);
+      out.closeEntry();
+      out.close();
+
+    } finally {
+      Instant tock = Instant.now();
+      logger.info("File writing completed in: " + Duration.between(tick, tock).toString());
+
+    }
+  }
+
+  // public static String datasetToDCATAP(DCATDataset dataset, DCATAPFormat
+  // format) {
+  // return (writeModelToString(datasetToModel(dataset), format));
+  // }
+
+  // public static List<String> datasetsToDCATAPList(List<DCATDataset> datasets,
+  // DCATAPFormat format) {
+  // return datasets.stream().map(item -> writeModelToString(datasetToModel(item),
+  // format))
+  // .collect(Collectors.toList());
+  // }
+
+  /**
+   * Search result to dcat ap.
+   *
+   * @param result the result
+   * @param format the format
+   * @param profile the profile
+   * @param writeType the write type
+   * @return the string
+   * @throws IOException Signals that an I/O exception has occurred.
+   */
+  public static String searchResultToDcatAp(SearchResult result, DcatApFormat format,
+      DcatApProfile profile, DcatApWriteType writeType) throws IOException {
+
+    nodeResources = FederationCore.getOdmsCatalogues().stream()
+        .collect(Collectors.toMap(OdmsCatalogue::getId, node -> node));
+
+    Model model = datasetsToModel(result.getResults(), profile);
+
+    model.setNsPrefix("co", "http://purl.org/ontology/co/core#");
+    model.createResource("http://purl.org/ontology/co/core#Counter")
+        .addProperty(DCTerms.description, "The total count of matching datasets").addLiteral(
+            model.createProperty("http://purl.org/ontology/co/core#count"), result.getCount());
+
+    if (writeType.equals(DcatApWriteType.FILE)) {
+
+      writeModelToFileAndZip(model, format, filePath, fileName);
+      return writeModelToString(model, format);
+      // } else if (writeType.equals(DCATAPWriteType.ZIPFILE)) {
+      //
+      // writeModelToZipFile(model, format,
+      // PropertyManager.getProperty(IdraProperty.DUMP_FILE_PATH),
+      // "datasetDump");
+      // return "";
+    } else {
+
+      return writeModelToString(model, format);
+    }
+
+  }
+
+  /**
+   * Search result to dcat ap by node.
+   *
+   * @param nodeId the node id
+   * @param result the result
+   * @param format the format
+   * @param profile the profile
+   * @param writeType the write type
+   * @return the string
+   * @throws IOException Signals that an I/O exception has occurred.
+   */
+  public static String searchResultToDcatApByNode(String nodeId, SearchResult result,
+      DcatApFormat format, DcatApProfile profile, DcatApWriteType writeType) throws IOException {
+
+    nodeResources = FederationCore.getOdmsCatalogues().stream()
+        .collect(Collectors.toMap(OdmsCatalogue::getId, node -> node));
+
+    Model model = datasetsToModel(result.getResults(), profile);
+
+    model.setNsPrefix("co", "http://purl.org/ontology/co/core#");
+    model.createResource("http://purl.org/ontology/co/core#Counter")
+        .addProperty(DCTerms.description, "The total count of matching datasets").addLiteral(
+            model.createProperty("http://purl.org/ontology/co/core#count"), result.getCount());
+
+    if (writeType.equals(DcatApWriteType.FILE)) {
+
+      writeModelToFileAndZip(model, format, filePath, fileName + "_node_" + nodeId);
+
+      return writeModelToString(model, format);
+      // } else if (writeType.equals(DCATAPWriteType.ZIPFILE)) {
+      //
+      // writeModelToZipFile(model, format,
+      // PropertyManager.getProperty(IdraProperty.DUMP_FILE_PATH),
+      // "datasetDump");
+      // return "";
+    } else {
+
+      return writeModelToString(model, format);
+    }
+
+  }
+
+  protected static boolean isValidUri(String uri) {
+    return !iriFactory.create(uri).hasViolation(false);
+  }
+
+}

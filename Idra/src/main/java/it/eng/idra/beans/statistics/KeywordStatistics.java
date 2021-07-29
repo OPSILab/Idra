@@ -15,6 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
+
 package it.eng.idra.beans.statistics;
 
 import javax.persistence.Column;
@@ -28,78 +29,71 @@ import javax.persistence.SqlResultSetMapping;
 import javax.persistence.Table;
 
 @SqlResultSetMapping(name = "KeywordStatisticsResult", classes = {
-	    @ConstructorResult(targetClass = KeywordStatisticsResult.class,
-	            columns = {
-	                    @ColumnResult(name = "keyword",type=String.class),
-	                    @ColumnResult(name = "counter",type=Integer.class),
-	                    @ColumnResult(name = "percentage",type=Double.class),
-	            })
-	})
-
+    @ConstructorResult(targetClass = KeywordStatisticsResult.class, columns = {
+        @ColumnResult(name = "keyword", type = String.class),
+        @ColumnResult(name = "counter", type = Integer.class),
+        @ColumnResult(name = "percentage", type = Double.class), }) })
 
 @Entity
-@Table(name="keyword_statistics")
+@Table(name = "keyword_statistics")
 public class KeywordStatistics {
 
-	private int id;
-	private String keyword;
-	private int counter;
-	
-	public KeywordStatistics(){
-		
-	}
-	
-	
-	
-	
-	public KeywordStatistics(String keyword, int counter) {
-		super();
-		this.keyword = keyword;
-		this.counter = counter;
-	}
+  private int id;
+  private String keyword;
+  private int counter;
 
+  public KeywordStatistics() {
 
+  }
 
+  /**
+   * Instantiates a new keyword statistics.
+   *
+   * @param keyword the keyword
+   * @param counter the counter
+   */
+  public KeywordStatistics(String keyword, int counter) {
+    super();
+    this.keyword = keyword;
+    this.counter = counter;
+  }
 
-	@Id
-	@Column(name="id")
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	public int getId() {
-		return id;
-	}
+  @Id
+  @Column(name = "id")
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  public int getId() {
+    return id;
+  }
 
-	public void setId(int id) {
-		this.id = id;
-	}
+  public void setId(int id) {
+    this.id = id;
+  }
 
-	@Column(name="keyword")
-	public String getKeyword() {
-		return keyword;
-	}
+  @Column(name = "keyword")
+  public String getKeyword() {
+    return keyword;
+  }
 
-	public void setKeyword(String keyword) {
-		this.keyword = keyword;
-	}
-	
-	@Column(name="counter")
-	public int getCounter() {
-		return counter;
-	}
+  public void setKeyword(String keyword) {
+    this.keyword = keyword;
+  }
 
-	public void setCounter(int counter) {
-		this.counter = counter;
-	}
+  @Column(name = "counter")
+  public int getCounter() {
+    return counter;
+  }
 
-	public void incCounter(){
-		this.counter++;
-	}
-	
-	
-	@Override
-	public String toString() {
-		return "KeywordStatistics [id=" + id + ", keyword=" + keyword + ", counter=" + counter + "]";
-	}
-	
-	
-	
+  public void setCounter(int counter) {
+    this.counter = counter;
+  }
+
+  public void incCounter() {
+    this.counter++;
+  }
+
+  @Override
+  public String toString() {
+    return "KeywordStatistics [id=" + id + ", keyword=" + keyword + ", counter=" + counter + "]";
+  }
+
 }

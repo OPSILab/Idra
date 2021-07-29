@@ -15,6 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
+
 package it.eng.idra.utils.restclient.builders;
 
 import java.net.URL;
@@ -25,22 +26,32 @@ import javax.ws.rs.core.MediaType;
 import org.apache.http.client.methods.HttpOptions;
 import org.apache.http.client.methods.HttpRequestBase;
 
-public class HttpOptionsBuilder extends HttpRequestBuilder<HttpOptions>{
-	
-	private HttpOptionsBuilder(URL url){
-		super.httpRequest = new HttpOptions(url.toString());
-	}
-	
-	public static HttpRequestBase getInstance(URL url, Map<String, String> headers, MediaType type, String data) {
-		HttpOptionsBuilder builder = new HttpOptionsBuilder(url);
-		builder.addHeaders(headers);
-		
-		return builder.httpRequest;
-	}
-	
-	@Override
-	protected void addPayload(MediaType type, String data){
-		throw new RuntimeException("Payload not allowed in HTTP OPTIONS requests");
-	}
+public class HttpOptionsBuilder extends HttpRequestBuilder<HttpOptions> {
+
+  private HttpOptionsBuilder(URL url) {
+    super.httpRequest = new HttpOptions(url.toString());
+  }
+
+  /**
+   * Gets the single instance of HttpOptionsBuilder.
+   *
+   * @param url the url
+   * @param headers the headers
+   * @param type the type
+   * @param data the data
+   * @return single instance of HttpOptionsBuilder
+   */
+  public static HttpRequestBase getInstance(URL url, Map<String, String> headers,
+      MediaType type, String data) {
+    HttpOptionsBuilder builder = new HttpOptionsBuilder(url);
+    builder.addHeaders(headers);
+
+    return builder.httpRequest;
+  }
+
+  @Override
+  protected void addPayload(MediaType type, String data) {
+    throw new RuntimeException("Payload not allowed in HTTP OPTIONS requests");
+  }
 
 }

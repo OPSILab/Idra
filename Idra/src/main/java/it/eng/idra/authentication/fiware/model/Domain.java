@@ -15,24 +15,25 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
+
 package it.eng.idra.authentication.fiware.model;
 
 @Deprecated
-public class Domain{
-	
-	private String id;
-	
-	public Domain(String id) {
-		super();
-		this.id = id;
-	}
+public class Domain {
 
-	public String getId() {
-		return id;
-	}
+  private String id;
 
-	public void setId(String id) {
-		this.id = id;
-	}
-	
+  public Domain(String id) {
+    super();
+    this.id = id;
+  }
+
+  public String getId() {
+    return id;
+  }
+
+  public void setId(String id) {
+    this.id = id;
+  }
+
 }

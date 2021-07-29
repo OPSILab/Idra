@@ -15,16 +15,19 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
+
 package it.eng.idra.scheduler.exception;
 
 
-import org.quartz.SchedulerException;
-
 public class SchedulerNotInitialisedException extends Exception {
-    public SchedulerNotInitialisedException(String message) {
-        super(message);
-    }
-    public SchedulerNotInitialisedException(String message, Throwable t) {
-        super(message, t);
-    }
+  
+  private static final long serialVersionUID = -4091208752860181734L;
+
+  public SchedulerNotInitialisedException(String message) {
+    super(message);
+  }
+
+  public SchedulerNotInitialisedException(String message, Throwable t) {
+    super(message, t);
+  }
 }

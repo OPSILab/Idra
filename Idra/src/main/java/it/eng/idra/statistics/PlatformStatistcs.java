@@ -2,28 +2,27 @@ package it.eng.idra.statistics;
 
 public class PlatformStatistcs {
 
-	private FacetsStatistics facetsStatistics;
-	private CataloguesStatistics cataloguesStatistics;
-	
-	public PlatformStatistcs() {
-		// TODO Auto-generated constructor stub
-	}
+  private FacetsStatistics facetsStatistics;
+  private CataloguesStatistics cataloguesStatistics;
 
-	public FacetsStatistics getFacets() {
-		return facetsStatistics;
-	}
+  public PlatformStatistcs() {
+    // TODO Auto-generated constructor stub
+  }
 
-	public void setFacets(FacetsStatistics facets) {
-		this.facetsStatistics = facets;
-	}
+  public FacetsStatistics getFacets() {
+    return facetsStatistics;
+  }
 
-	public CataloguesStatistics getCatalogues() {
-		return cataloguesStatistics;
-	}
+  public void setFacets(FacetsStatistics facets) {
+    this.facetsStatistics = facets;
+  }
 
-	public void setCatalogues(CataloguesStatistics catalogues) {
-		this.cataloguesStatistics = catalogues;
-	}
+  public CataloguesStatistics getCatalogues() {
+    return cataloguesStatistics;
+  }
 
-	
+  public void setCatalogues(CataloguesStatistics catalogues) {
+    this.cataloguesStatistics = catalogues;
+  }
+
 }

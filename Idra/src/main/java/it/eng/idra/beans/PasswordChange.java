@@ -15,66 +15,72 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
+
 package it.eng.idra.beans;
 
 import it.eng.idra.utils.JsonRequired;
 
 public class PasswordChange {
 
-	@JsonRequired
-	private String oldPassword;
-	
-	@JsonRequired
-	private String newPassword;
-	
-	@JsonRequired
-	private String newPasswordConfirm;
-	
-	@JsonRequired
-	private String username;
+  @JsonRequired
+  private String oldPassword;
 
-	
-	public PasswordChange(String oldPassword, String newPassword, String newPasswordConfirm, String username) {
-		super();
-		this.oldPassword = oldPassword;
-		this.newPassword = newPassword;
-		this.newPasswordConfirm = newPasswordConfirm;
-		this.username = username;
-	}
+  @JsonRequired
+  private String newPassword;
 
-	public String getOldPassword() {
-		return oldPassword;
-	}
+  @JsonRequired
+  private String newPasswordConfirm;
 
-	public void setOldPassword(String oldPassword) {
-		this.oldPassword = oldPassword;
-	}
+  @JsonRequired
+  private String username;
 
-	public String getNewPassword() {
-		return newPassword;
-	}
+  /**
+   * Instantiates a new password change.
+   *
+   * @param oldPassword the old password
+   * @param newPassword the new password
+   * @param newPasswordConfirm the new password confirm
+   * @param username the username
+   */
+  public PasswordChange(String oldPassword, String newPassword, 
+      String newPasswordConfirm, String username) {
+    super();
+    this.oldPassword = oldPassword;
+    this.newPassword = newPassword;
+    this.newPasswordConfirm = newPasswordConfirm;
+    this.username = username;
+  }
 
-	public void setNewPassword(String newPassword) {
-		this.newPassword = newPassword;
-	}
+  public String getOldPassword() {
+    return oldPassword;
+  }
 
-	public String getNewPasswordConfirm() {
-		return newPasswordConfirm;
-	}
+  public void setOldPassword(String oldPassword) {
+    this.oldPassword = oldPassword;
+  }
 
-	public void setNewPasswordConfirm(String newPasswordConfirm) {
-		this.newPasswordConfirm = newPasswordConfirm;
-	}
+  public String getNewPassword() {
+    return newPassword;
+  }
 
-	public String getUsername() {
-		return username;
-	}
+  public void setNewPassword(String newPassword) {
+    this.newPassword = newPassword;
+  }
 
-	public void setUsername(String username) {
-		this.username = username;
-	}
-	
-	
-	
-	
+  public String getNewPasswordConfirm() {
+    return newPasswordConfirm;
+  }
+
+  public void setNewPasswordConfirm(String newPasswordConfirm) {
+    this.newPasswordConfirm = newPasswordConfirm;
+  }
+
+  public String getUsername() {
+    return username;
+  }
+
+  public void setUsername(String username) {
+    this.username = username;
+  }
+
 }

@@ -15,10 +15,14 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
+
 package it.eng.idra.beans.exception;
 
 public class DistributionNotFoundException extends Exception {
-	public DistributionNotFoundException(String message) {
-        super(message);
-    }
+
+  private static final long serialVersionUID = 7435848078563064042L;
+
+  public DistributionNotFoundException(String message) {
+    super(message);
+  }
 }

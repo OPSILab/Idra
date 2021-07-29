@@ -15,6 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
+
 package it.eng.idra.utils.restclient.builders;
 
 import java.net.URL;
@@ -26,30 +27,39 @@ import org.apache.http.client.methods.HttpPut;
 import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.entity.StringEntity;
 
-public class HttpPutBuilder extends HttpRequestBuilder<HttpPut>{
-	
-	private HttpPutBuilder(URL url){
-		super.httpRequest = new HttpPut(url.toString());
-	}
-	
-	public static HttpRequestBase getInstance(URL url, Map<String, String> headers, MediaType type, String data) {
-		HttpPutBuilder builder = new HttpPutBuilder(url);
-		builder.addHeaders(headers);
-		builder.addPayload(type, data);
-		
-		return builder.httpRequest;
-	}
-	
-	@Override
-	protected void addPayload(MediaType type, String data){
-		try{
-			StringEntity input = new StringEntity(data);
-			input.setContentType(type.toString());
-			super.httpRequest.setEntity(input);
-		}
-		catch(Exception e){
-			logger.warning(e.toString());
-		}
-	}
+public class HttpPutBuilder extends HttpRequestBuilder<HttpPut> {
+
+  private HttpPutBuilder(URL url) {
+    super.httpRequest = new HttpPut(url.toString());
+  }
+
+  /**
+   * Gets the single instance of HttpPutBuilder.
+   *
+   * @param url the url
+   * @param headers the headers
+   * @param type the type
+   * @param data the data
+   * @return single instance of HttpPutBuilder
+   */
+  public static HttpRequestBase getInstance(URL url, Map<String, String> headers,
+      MediaType type, String data) {
+    HttpPutBuilder builder = new HttpPutBuilder(url);
+    builder.addHeaders(headers);
+    builder.addPayload(type, data);
+
+    return builder.httpRequest;
+  }
+
+  @Override
+  protected void addPayload(MediaType type, String data) {
+    try {
+      StringEntity input = new StringEntity(data);
+      input.setContentType(type.toString());
+      super.httpRequest.setEntity(input);
+    } catch (Exception e) {
+      logger.warning(e.toString());
+    }
+  }
 
 }

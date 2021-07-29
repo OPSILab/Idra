@@ -32,43 +32,43 @@
 //
 //@WebServlet("/PostLogin")
 //public class PostLogin extends HttpServlet {
-//	private static final long serialVersionUID = 1L;
+//private static final long serialVersionUID = 1L;
 //
-//	public PostLogin() {
-//		super();
-//	}
+//public PostLogin() {
+//super();
+//}
 //
-//	protected void doGet(HttpServletRequest request, HttpServletResponse response)
-//			throws ServletException, IOException {
+//protected void doGet(HttpServletRequest request, HttpServletResponse response)
+//throws ServletException, IOException {
 //
-//		String code = request.getParameter("code");
+//String code = request.getParameter("code");
 //
-//		try {
-//			Token t = FiwareIDMAuthenticationManager.getInstance().getToken(null, code);
+//try {
+//Token t = FiwareIDMAuthenticationManager.getInstance().getToken(null, code);
 //
-//			UserInfo info = FiwareIDMAuthenticationManager.getInstance().getUserInfo(t.getAccess_token());
+//UserInfo info = FiwareIDMAuthenticationManager.getInstance().getUserInfo(t.getAccess_token());
 //
-//			String token = t.getAccess_token();
-//			String refresh_token = t.getRefresh_token();
+//String token = t.getAccess_token();
+//String refresh_token = t.getRefresh_token();
 //
-//			if (token != null && token.trim().length() > 0) {
-//				HttpSession session = request.getSession();
-//				session.setAttribute("loggedin", token);
-//				session.setAttribute("refresh_token", refresh_token);
-//				session.setAttribute("username", info.getDisplayName());
-//			}
+//if (token != null && token.trim().length() > 0) {
+//HttpSession session = request.getSession();
+//session.setAttribute("loggedin", token);
+//session.setAttribute("refresh_token", refresh_token);
+//session.setAttribute("username", info.getDisplayName());
+//}
 //
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//		}
+//} catch (Exception e) {
+//e.printStackTrace();
+//}
 //
-//		response.sendRedirect("/IdraPortal");
-//	}
+//response.sendRedirect("/IdraPortal");
+//}
 //
-//	protected void doPost(HttpServletRequest request, HttpServletResponse response)
-//			throws ServletException, IOException {
-//		response.setStatus(405);
-//		return;
-//	}
+//protected void doPost(HttpServletRequest request, HttpServletResponse response)
+//throws ServletException, IOException {
+//response.setStatus(405);
+//return;
+//}
 //
 //}

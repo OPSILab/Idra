@@ -15,22 +15,21 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
+
 package it.eng.idra.beans;
 
 public enum IdraAuthenticationMethod {
-	
-	BASIC("BASIC"),
-	FIWARE("FIWARE"), 
-	KEYCLOAK("KEYCLOAK");
-	
-	private final String text;
 
-	private IdraAuthenticationMethod(final String text) {
-		this.text = text;
-	}
+  BASIC("BASIC"), FIWARE("FIWARE"), KEYCLOAK("KEYCLOAK");
 
-	@Override
-	public String toString() {
-		return text;
-	}
+  private final String text;
+
+  private IdraAuthenticationMethod(final String text) {
+    this.text = text;
+  }
+
+  @Override
+  public String toString() {
+    return text;
+  }
 }

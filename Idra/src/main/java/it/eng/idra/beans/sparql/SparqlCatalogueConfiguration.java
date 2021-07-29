@@ -15,52 +15,64 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
+
 package it.eng.idra.beans.sparql;
+
+import it.eng.idra.beans.odms.OdmsCatalogueAdditionalConfiguration;
 
 import javax.persistence.Entity;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
-import it.eng.idra.beans.odms.ODMSCatalogueAdditionalConfiguration;
-
 @Entity
 @Table(name = "odms_sparql_config")
-public class SparqlCatalogueConfiguration extends ODMSCatalogueAdditionalConfiguration {
-	
-	private String sparqlDatasetDumpString;
-	private String sparqlDatasetFilePath;
-	
-	public SparqlCatalogueConfiguration() {
-		this.setType("SPARQL");
-	}
-	
-	public SparqlCatalogueConfiguration(String datasets) {
-		super();
-		this.sparqlDatasetDumpString = datasets;
-		this.setType("SPARQL");
-	}
-	
-	public SparqlCatalogueConfiguration(String datasets,String dumpPath) {
-		this(datasets);
-		this.sparqlDatasetFilePath=dumpPath;
-		this.setType("SPARQL");
-	}
-	
-	@Transient
-	public String getSparqlDatasetDumpString() {
-		return sparqlDatasetDumpString;
-	}
+public class SparqlCatalogueConfiguration extends OdmsCatalogueAdditionalConfiguration {
 
-	public void setSparqlDatasetDumpString(String sparqlDatasetDumpString) {
-		this.sparqlDatasetDumpString = sparqlDatasetDumpString;
-	}
+  private String sparqlDatasetDumpString;
+  private String sparqlDatasetFilePath;
 
-	public String getSparqlDatasetFilePath() {
-		return sparqlDatasetFilePath;
-	}
+  public SparqlCatalogueConfiguration() {
+    this.setType("SPARQL");
+  }
 
-	public void setSparqlDatasetFilePath(String sparqlDatasetFilePath) {
-		this.sparqlDatasetFilePath = sparqlDatasetFilePath;
-	}
-		
+  /**
+   * Instantiates a new sparql catalogue configuration.
+   *
+   * @param datasets the datasets
+   */
+  public SparqlCatalogueConfiguration(String datasets) {
+    super();
+    this.sparqlDatasetDumpString = datasets;
+    this.setType("SPARQL");
+  }
+
+  /**
+   * Instantiates a new sparql catalogue configuration.
+   *
+   * @param datasets the datasets
+   * @param dumpPath the dump path
+   */
+  public SparqlCatalogueConfiguration(String datasets, String dumpPath) {
+    this(datasets);
+    this.sparqlDatasetFilePath = dumpPath;
+    this.setType("SPARQL");
+  }
+
+  @Transient
+  public String getSparqlDatasetDumpString() {
+    return sparqlDatasetDumpString;
+  }
+
+  public void setSparqlDatasetDumpString(String sparqlDatasetDumpString) {
+    this.sparqlDatasetDumpString = sparqlDatasetDumpString;
+  }
+
+  public String getSparqlDatasetFilePath() {
+    return sparqlDatasetFilePath;
+  }
+
+  public void setSparqlDatasetFilePath(String sparqlDatasetFilePath) {
+    this.sparqlDatasetFilePath = sparqlDatasetFilePath;
+  }
+
 }

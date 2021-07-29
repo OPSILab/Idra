@@ -15,126 +15,152 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
+
 package it.eng.idra.beans.search;
+
+import it.eng.idra.beans.odms.OdmsCatalogueNotFoundException;
+import it.eng.idra.management.FederationCore;
+import it.eng.idra.management.OdmsManager;
 
 import org.apache.solr.client.solrj.response.FacetField.Count;
 
-import it.eng.idra.beans.odms.ODMSCatalogueNotFoundException;
-import it.eng.idra.management.FederationCore;
-import it.eng.idra.management.ODMSManager;
-
 public class SearchFacet {
 
-	private String facet;
-	private String keyword;
-	private String search_value;
-	
-	public SearchFacet(){
-		
-	}
+  private String facet;
+  private String keyword;
+  private String search_value;
 
-	public SearchFacet(String facet, String keywordQuery,String search_value) {
-		super();
-		this.facet = facet;
-		this.keyword = keywordQuery;
-		this.search_value = search_value;
-	}
+  public SearchFacet() {
 
-	public SearchFacet(Count c){
-		super();
-		this.facet = c.toString();
-		this.keyword = c.getName();
-		this.search_value = c.getName();
-	}
-	
-	public SearchFacet(Count c,String category){
-		super();
-		
-		if("datasetThemes".equals(category)){
-			try {
-				this.facet = FederationCore.getDCATThemesFromAbbr(c.getName())+" ("+c.getCount()+")";
-				this.keyword = FederationCore.getDCATThemesFromAbbr(c.getName());
-			}catch(Exception e) {
-				this.facet = c.getName()+" ("+c.getCount()+")";
-				this.keyword = c.getName();
-			}
-			this.search_value = c.getName();
-		}else if("catalogues".equals(category)) {
-			try {
-				this.facet = ODMSManager.getODMSCatalogue(Integer.parseInt(c.getName())).getName()+" ("+c.getCount()+")";
-				this.keyword = ODMSManager.getODMSCatalogue(Integer.parseInt(c.getName())).getName();
-				this.search_value = this.keyword;
-			} catch (NumberFormatException | ODMSCatalogueNotFoundException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}else {
-			this.facet = c.toString();
-			this.keyword = c.getName();
-			this.search_value = c.getName();
-		}
-	}
-	
-	public String getFacet() {
-		return facet;
-	}
+  }
 
-	public void setFacet(String facet) {
-		this.facet = facet;
-	}
+  /**
+   * Instantiates a new search facet.
+   *
+   * @param facet the facet
+   * @param keywordQuery the keyword query
+   * @param search_value the search value
+   */
+  public SearchFacet(String facet, String keywordQuery, String search_value) {
+    super();
+    this.facet = facet;
+    this.keyword = keywordQuery;
+    this.search_value = search_value;
+  }
 
-	public String getKeyword() {
-		return keyword;
-	}
+  /**
+   * Instantiates a new search facet.
+   *
+   * @param c the c
+   */
+  public SearchFacet(Count c) {
+    super();
+    this.facet = c.toString();
+    this.keyword = c.getName();
+    this.search_value = c.getName();
+  }
 
-	public void setKeyword(String keywordQuery) {
-		this.keyword = keywordQuery;
-	}
-	
-	public String getSearch_value() {
-		return search_value;
-	}
+  /**
+   * Instantiates a new search facet.
+   *
+   * @param c the c
+   * @param category the category
+   */
+  public SearchFacet(Count c, String category) {
+    super();
 
-	public void setSearch_value(String search_value) {
-		this.search_value = search_value;
-	}
+    if ("datasetThemes".equals(category)) {
+      try {
+        this.facet = FederationCore.getDcatThemesFromAbbr(c.getName()) + " (" + c.getCount() + ")";
+        this.keyword = FederationCore.getDcatThemesFromAbbr(c.getName());
+      } catch (Exception e) {
+        this.facet = c.getName() + " (" + c.getCount() + ")";
+        this.keyword = c.getName();
+      }
+      this.search_value = c.getName();
+    } else if ("catalogues".equals(category)) {
+      try {
+        this.facet = OdmsManager.getOdmsCatalogue(
+            Integer.parseInt(c.getName())).getName() + " (" + c.getCount() + ")";
+        this.keyword = OdmsManager.getOdmsCatalogue(Integer.parseInt(c.getName())).getName();
+        this.search_value = this.keyword;
+      } catch (NumberFormatException | OdmsCatalogueNotFoundException e) {
+        // TODO Auto-generated catch block
+        e.printStackTrace();
+      }
+    } else {
+      this.facet = c.toString();
+      this.keyword = c.getName();
+      this.search_value = c.getName();
+    }
+  }
 
-	@Override
-	public String toString() {
-		return "SearchFacet [facet=" + facet + ", keyword=" + keyword +", search_value="+search_value+ "]";
-	}
+  public String getFacet() {
+    return facet;
+  }
 
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((facet == null) ? 0 : facet.hashCode());
-		result = prime * result + ((keyword == null) ? 0 : keyword.hashCode());
-		return result;
-	}
+  public void setFacet(String facet) {
+    this.facet = facet;
+  }
 
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		SearchFacet other = (SearchFacet) obj;
-		if (facet == null) {
-			if (other.facet != null)
-				return false;
-		} else if (!facet.equals(other.facet))
-			return false;
-		if (keyword == null) {
-			if (other.keyword != null)
-				return false;
-		} else if (!keyword.equals(other.keyword))
-			return false;
-		return true;
-	}
-	
-	
-	
+  public String getKeyword() {
+    return keyword;
+  }
+
+  public void setKeyword(String keywordQuery) {
+    this.keyword = keywordQuery;
+  }
+
+  public String getSearch_value() {
+    return search_value;
+  }
+
+  public void setSearch_value(String search_value) {
+    this.search_value = search_value;
+  }
+
+  @Override
+  public String toString() {
+    return "SearchFacet [facet=" 
+      + facet + ", keyword=" + keyword + ", search_value=" + search_value + "]";
+  }
+
+  @Override
+  public int hashCode() {
+    final int prime = 31;
+    int result = 1;
+    result = prime * result + ((facet == null) ? 0 : facet.hashCode());
+    result = prime * result + ((keyword == null) ? 0 : keyword.hashCode());
+    return result;
+  }
+
+  @Override
+  public boolean equals(Object obj) {
+    if (this == obj) {
+      return true;
+    }
+    if (obj == null) {
+      return false;
+    }
+    if (getClass() != obj.getClass()) {
+      return false;
+    }
+    SearchFacet other = (SearchFacet) obj;
+    if (facet == null) {
+      if (other.facet != null) {
+        return false;
+      }
+    } else if (!facet.equals(other.facet)) {
+      return false;
+    }
+    if (keyword == null) {
+      if (other.keyword != null) {
+        return false;
+      }
+    } else if (!keyword.equals(other.keyword)) {
+      return false;
+    }
+    return true;
+  }
+
 }

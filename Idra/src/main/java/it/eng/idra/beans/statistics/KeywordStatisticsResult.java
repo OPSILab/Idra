@@ -15,52 +15,60 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
+
 package it.eng.idra.beans.statistics;
 
 public class KeywordStatisticsResult {
 
-	private String keyword;
-	private int counter;
-	private double percentage;
-	
-	public KeywordStatisticsResult(){
-		
-	}
-	
-	public KeywordStatisticsResult(String keyword,int counter,double percentage){
-		this.keyword=keyword;
-		this.counter=counter;
-		this.percentage=percentage;
-	}
+  private String keyword;
+  private int counter;
+  private double percentage;
 
-	public String getKeyword() {
-		return keyword;
-	}
+  public KeywordStatisticsResult() {
 
-	public void setKeyword(String keyword) {
-		this.keyword = keyword;
-	}
+  }
 
-	public int getCounter() {
-		return counter;
-	}
+  /**
+   * Instantiates a new keyword statistics result.
+   *
+   * @param keyword the keyword
+   * @param counter the counter
+   * @param percentage the percentage
+   */
+  public KeywordStatisticsResult(String keyword, int counter, double percentage) {
+    this.keyword = keyword;
+    this.counter = counter;
+    this.percentage = percentage;
+  }
 
-	public void setCounter(int counter) {
-		this.counter = counter;
-	}
+  public String getKeyword() {
+    return keyword;
+  }
 
-	public double getPercentage() {
-		return percentage;
-	}
+  public void setKeyword(String keyword) {
+    this.keyword = keyword;
+  }
 
-	public void setPercentage(double percentage) {
-		this.percentage = percentage;
-	}
+  public int getCounter() {
+    return counter;
+  }
 
-	@Override
-	public String toString() {
-		return "KeywordStatisticsResult [keyword=" + keyword + ", counter=" + counter + ", percentage=" + percentage
-				+ "]";
-	}
-	
+  public void setCounter(int counter) {
+    this.counter = counter;
+  }
+
+  public double getPercentage() {
+    return percentage;
+  }
+
+  public void setPercentage(double percentage) {
+    this.percentage = percentage;
+  }
+
+  @Override
+  public String toString() {
+    return "KeywordStatisticsResult [keyword=" + keyword 
+        + ", counter=" + counter + ", percentage=" + percentage + "]";
+  }
+
 }

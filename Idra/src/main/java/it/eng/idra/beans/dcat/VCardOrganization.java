@@ -15,7 +15,10 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
+
 package it.eng.idra.beans.dcat;
+
+import it.eng.idra.cache.CacheContentType;
 
 import javax.persistence.AttributeOverride;
 import javax.persistence.AttributeOverrides;
@@ -35,175 +38,222 @@ import org.apache.solr.common.SolrDocument;
 import org.apache.solr.common.SolrInputDocument;
 import org.hibernate.annotations.GenericGenerator;
 
-import it.eng.idra.cache.CacheContentType;
-
 /**
- * Represents a DCAT VCard, the dataset contacts information
+ * Represents a DCAT VCard, the dataset contacts information.
  *
  * @author
- * @version 1.1
- * @since
  */
 
 @Entity
 @Table(name = "dcat_vcard")
 public class VCardOrganization {
 
-	private static transient final Resource RDFClass = VCARD4.Organization;
+  private static final transient Resource RDFClass = VCARD4.Organization;
 
-	private String id;
+  private String id;
 
-	private String resourceUri;
-	private String propertyUri;
-	private DCATProperty fn;
-	private String nodeID;
-	private DCATProperty hasEmail;
-	private DCATProperty hasURL;
-	private DCATProperty hasTelephoneValue;
-	private DCATProperty hasTelephoneType;
+  private String resourceUri;
+  private String propertyUri;
+  private DcatProperty fn;
+  private String nodeID;
+  private DcatProperty hasEmail;
+  private DcatProperty hasURL;
+  private DcatProperty hasTelephoneValue;
+  private DcatProperty hasTelephoneType;
 
-	public VCardOrganization() {
-	}
+  public VCardOrganization() {
+  }
 
-	public VCardOrganization(String propertyUri, String resourceUri, String fn, String hasEmail, String hasURL,
-			String hasTelephoneValue, String hasTelephoneType, String nodeID) {
-		setResourceUri(resourceUri);
-		setNodeID(nodeID);
-		setPropertyUri(propertyUri);
-		setFn(new DCATProperty(VCARD4.fn, RDFS.Literal, fn));
-		hasEmail = (hasEmail != null) ? hasEmail.trim() : hasEmail;
-		setHasEmail(new DCATProperty(VCARD4.hasEmail, RDFS.Literal, hasEmail));
-		setHasURL(new DCATProperty(VCARD4.hasURL, RDFS.Literal, hasURL));
-		setHasTelephoneValue(new DCATProperty(VCARD4.value, RDFS.Literal, hasTelephoneValue));
-		setHasTelephoneType(new DCATProperty(RDF.type, RDFS.Literal, hasTelephoneType));
-	}
+  /**
+   * Instantiates a new v card organization.
+   *
+   * @param propertyUri the property uri
+   * @param resourceUri the resource uri
+   * @param fn the fn
+   * @param hasEmail the has email
+   * @param hasURL the has URL
+   * @param hasTelephoneValue the has telephone value
+   * @param hasTelephoneType the has telephone type
+   * @param nodeID the node ID
+   */
+  public VCardOrganization(String propertyUri, 
+      String resourceUri, 
+      String fn, String hasEmail,
+      String hasURL,
+      String hasTelephoneValue, 
+      String hasTelephoneType,
+      String nodeID) {
+    setResourceUri(resourceUri);
+    setNodeID(nodeID);
+    setPropertyUri(propertyUri);
+    setFn(new DcatProperty(VCARD4.fn, RDFS.Literal, fn));
+    hasEmail = (hasEmail != null) ? hasEmail.trim() : hasEmail;
+    setHasEmail(new DcatProperty(VCARD4.hasEmail, RDFS.Literal, hasEmail));
+    setHasURL(new DcatProperty(VCARD4.hasURL, RDFS.Literal, hasURL));
+    setHasTelephoneValue(new DcatProperty(VCARD4.value, RDFS.Literal, hasTelephoneValue));
+    setHasTelephoneType(new DcatProperty(RDF.type, RDFS.Literal, hasTelephoneType));
+  }
 
-	public VCardOrganization(String id, String propertyUri, String resourceUri, String fn, String hasEmail,
-			String hasURL, String hasTelephoneValue, String hasTelephoneType, String nodeID) {
-		this(propertyUri, resourceUri, fn, hasEmail, hasURL, hasTelephoneValue, hasTelephoneType, nodeID);
-		this.setId(id);
-	}
+  /**
+   * Instantiates a new v card organization.
+   *
+   * @param id the id
+   * @param propertyUri the property uri
+   * @param resourceUri the resource uri
+   * @param fn the fn
+   * @param hasEmail the has email
+   * @param hasURL the has URL
+   * @param hasTelephoneValue the has telephone value
+   * @param hasTelephoneType the has telephone type
+   * @param nodeID the node ID
+   */
+  public VCardOrganization(String id, String propertyUri, 
+      String resourceUri, String fn, String hasEmail, String hasURL,
+      String hasTelephoneValue, String hasTelephoneType, String nodeID) {
+    this(propertyUri, resourceUri, fn, hasEmail,
+        hasURL, hasTelephoneValue, hasTelephoneType, nodeID);
+    this.setId(id);
+  }
 
-	@Transient
-	public static Resource getRDFClass() {
-		return RDFClass;
-	}
+  @Transient
+  public static Resource getRDFClass() {
+    return RDFClass;
+  }
 
-	@Id
-	@GeneratedValue(generator = "uuid")
-	@GenericGenerator(name = "uuid", strategy = "uuid2")
-	@Column(name = "vcard_id")
-	public String getId() {
-		return id;
-	}
+  @Id
+  @GeneratedValue(generator = "uuid")
+  @GenericGenerator(name = "uuid", strategy = "uuid2")
+  @Column(name = "vcard_id")
+  public String getId() {
+    return id;
+  }
 
-	public void setId(String id) {
-		this.id = id;
-	}
+  public void setId(String id) {
+    this.id = id;
+  }
 
-	public String getResourceUri() {
-		return resourceUri;
-	}
+  public String getResourceUri() {
+    return resourceUri;
+  }
 
-	public void setResourceUri(String resourceUri) {
-		// this.resourceUri = resourceUri != null ? resourceUri : "";
-		this.resourceUri = resourceUri;
-	}
+  public void setResourceUri(String resourceUri) {
+    // this.resourceUri = resourceUri != null ? resourceUri : "";
+    this.resourceUri = resourceUri;
+  }
 
-	public String getNodeID() {
-		return nodeID;
-	}
+  public String getNodeID() {
+    return nodeID;
+  }
 
-	public void setNodeID(String nodeID) {
-		this.nodeID = nodeID;
-	}
+  public void setNodeID(String nodeID) {
+    this.nodeID = nodeID;
+  }
 
-	@Transient
-	public String getPropertyUri() {
-		return propertyUri;
-	}
+  @Transient
+  public String getPropertyUri() {
+    return propertyUri;
+  }
 
-	public void setPropertyUri(String propertUri) {
-		this.propertyUri = propertUri != null ? propertUri : "";
-	}
+  public void setPropertyUri(String propertUri) {
+    this.propertyUri = propertUri != null ? propertUri : "";
+  }
 
-	@Embedded
-	@AttributeOverrides({ @AttributeOverride(name = "value", column = @Column(name = "fn", length = 500)) })
-	public DCATProperty getFn() {
-		return fn;
-	}
+  @Embedded
+  @AttributeOverrides({ 
+      @AttributeOverride(name = "value", column = @Column(name = "fn", length = 500)) })
+  public DcatProperty getFn() {
+    return fn;
+  }
 
-	public void setFn(DCATProperty fn) {
-		this.fn = fn;
-	}
+  public void setFn(DcatProperty fn) {
+    this.fn = fn;
+  }
 
-	@Embedded
-	@AttributeOverrides({ @AttributeOverride(name = "value", column = @Column(name = "hasEmail")) })
-	public DCATProperty getHasEmail() {
-		return hasEmail;
-	}
+  @Embedded
+  @AttributeOverrides({ @AttributeOverride(name = "value", column = @Column(name = "hasEmail")) })
+  public DcatProperty getHasEmail() {
+    return hasEmail;
+  }
 
-	public void setHasEmail(DCATProperty hasEmail) {
-		this.hasEmail = hasEmail;
-	}
+  public void setHasEmail(DcatProperty hasEmail) {
+    this.hasEmail = hasEmail;
+  }
 
-	@Embedded
-	@AttributeOverrides({ @AttributeOverride(name = "value", column = @Column(name = "hasURL")) })
-	public DCATProperty getHasURL() {
-		return hasURL;
-	}
+  @Embedded
+  @AttributeOverrides({ @AttributeOverride(name = "value", column = @Column(name = "hasURL")) })
+  public DcatProperty getHasURL() {
+    return hasURL;
+  }
 
-	public void setHasURL(DCATProperty hasURL) {
-		this.hasURL = hasURL;
-	}
+  public void setHasURL(DcatProperty hasURL) {
+    this.hasURL = hasURL;
+  }
 
-	@Embedded
-	@AttributeOverrides({ @AttributeOverride(name = "value", column = @Column(name = "hasTelephoneValue")) })
-	public DCATProperty getHasTelephoneValue() {
-		return hasTelephoneValue;
-	}
+  @Embedded
+  @AttributeOverrides({ 
+      @AttributeOverride(name = "value", column = @Column(name = "hasTelephoneValue")) })
+  public DcatProperty getHasTelephoneValue() {
+    return hasTelephoneValue;
+  }
 
-	public void setHasTelephoneValue(DCATProperty hasTelephone) {
-		this.hasTelephoneValue = hasTelephone;
-	}
+  public void setHasTelephoneValue(DcatProperty hasTelephone) {
+    this.hasTelephoneValue = hasTelephone;
+  }
 
-	@Embedded
-	@AttributeOverrides({ @AttributeOverride(name = "value", column = @Column(name = "hasTelephoneType")) })
+  @Embedded
+  @AttributeOverrides({ 
+      @AttributeOverride(name = "value", column = @Column(name = "hasTelephoneType")) })
 
-	public DCATProperty getHasTelephoneType() {
-		return hasTelephoneType;
-	}
+  public DcatProperty getHasTelephoneType() {
+    return hasTelephoneType;
+  }
 
-	public void setHasTelephoneType(DCATProperty hasTelephoneType) {
-		this.hasTelephoneType = hasTelephoneType;
-	}
+  public void setHasTelephoneType(DcatProperty hasTelephoneType) {
+    this.hasTelephoneType = hasTelephoneType;
+  }
 
-	public SolrInputDocument toDoc(CacheContentType contentType) {
-		SolrInputDocument doc = new SolrInputDocument();
-		doc.addField("id", this.id);
-		doc.addField("nodeID", this.nodeID);
-		doc.addField("content_type", contentType.toString());
-		doc.addField("resourceUri", this.resourceUri);
-		doc.addField("fn", this.getFn().getValue());
-		doc.addField("hasEmail", this.getHasEmail().getValue());
-		doc.addField("hasURL", this.getHasURL().getValue());
-		doc.addField("hasTelephoneValue", this.getHasTelephoneValue().getValue());
-		doc.addField("hasTelephoneType", this.getHasTelephoneType().getValue());
-		return doc;
-	}
+  /**
+   * To doc.
+   *
+   * @param contentType the content type
+   * @return the solr input document
+   */
+  public SolrInputDocument toDoc(CacheContentType contentType) {
+    SolrInputDocument doc = new SolrInputDocument();
+    doc.addField("id", this.id);
+    doc.addField("nodeID", this.nodeID);
+    doc.addField("content_type", contentType.toString());
+    doc.addField("resourceUri", this.resourceUri);
+    doc.addField("fn", this.getFn().getValue());
+    doc.addField("hasEmail", this.getHasEmail().getValue());
+    doc.addField("hasURL", this.getHasURL().getValue());
+    doc.addField("hasTelephoneValue", this.getHasTelephoneValue().getValue());
+    doc.addField("hasTelephoneType", this.getHasTelephoneType().getValue());
+    return doc;
+  }
 
-	public static VCardOrganization docToVCardOrganization(SolrDocument doc, String propertyUri, String nodeID) {
-		return new VCardOrganization((String) doc.getFieldValue("id"), propertyUri,
-				(String) doc.getFieldValue("resourceUri"), doc.getFieldValue("fn").toString(),
-				doc.getFieldValue("hasEmail").toString(), doc.getFieldValue("hasURL").toString(),
-				doc.getFieldValue("hasTelephoneValue").toString(), doc.getFieldValue("hasTelephoneType").toString(),
-				nodeID);
-	}
+  /**
+   * Doc to V card organization.
+   *
+   * @param doc the doc
+   * @param propertyUri the property uri
+   * @param nodeId the node ID
+   * @return the v card organization
+   */
+  public static VCardOrganization docToVCardOrganization(SolrDocument doc,
+      String propertyUri, String nodeId) {
+    return new VCardOrganization((String) doc.getFieldValue("id"), propertyUri,
+        (String) doc.getFieldValue("resourceUri"), doc.getFieldValue("fn").toString(),
+        doc.getFieldValue("hasEmail").toString(), doc.getFieldValue("hasURL").toString(),
+        doc.getFieldValue("hasTelephoneValue").toString(), 
+        doc.getFieldValue("hasTelephoneType").toString(), nodeId);
+  }
 
-	@Override
-	public String toString() {
-		return "VCardOrganization [id=" + id + ", fn=" + fn + ", nodeID=" + nodeID + ", hasEmail=" + hasEmail
-				+ ", hasURL=" + hasURL + ", hasTelephone=" + hasTelephoneValue + "]";
-	}
+  @Override
+  public String toString() {
+    return "VCardOrganization [id=" + id + ", fn=" 
+        + fn + ", nodeID=" + nodeID + ", hasEmail=" + hasEmail + ", hasURL="
+        + hasURL + ", hasTelephone=" + hasTelephoneValue + "]";
+  }
 
 }

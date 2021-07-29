@@ -15,19 +15,21 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
+
 package it.eng.idra.beans.webscraper;
 
 public enum WebScraperSelectorType {
 
-	SelectorElementAttribute("SelectorElementAttribute"), SelectorText("SelectorText"), SelectorLink("SelectorLink");
+  SelectorElementAttribute("SelectorElementAttribute"), 
+  SelectorText("SelectorText"), SelectorLink("SelectorLink");
 
-	private String typeName;
+  private String typeName;
 
-	WebScraperSelectorType(String name) {
-		this.typeName = name;
-	}
+  WebScraperSelectorType(String name) {
+    this.typeName = name;
+  }
 
-	public String typeName() {
-		return typeName;
-	}
+  public String typeName() {
+    return typeName;
+  }
 }

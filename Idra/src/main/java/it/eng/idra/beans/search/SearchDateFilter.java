@@ -15,43 +15,42 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
+
 package it.eng.idra.beans.search;
 
 import java.time.ZonedDateTime;
 
 public class SearchDateFilter {
 
-	
-	private ZonedDateTime start;
-	private ZonedDateTime end;
-	
-	
-	
-	public SearchDateFilter(ZonedDateTime start, ZonedDateTime end) {
-		super();
-		this.start = start;
-		this.end = end;
-	}
+  private ZonedDateTime start;
+  private ZonedDateTime end;
 
-	public ZonedDateTime getStart() {
-		return start;
-	}
+  /**
+   * Instantiates a new search date filter.
+   *
+   * @param start the start
+   * @param end the end
+   */
+  public SearchDateFilter(ZonedDateTime start, ZonedDateTime end) {
+    super();
+    this.start = start;
+    this.end = end;
+  }
 
+  public ZonedDateTime getStart() {
+    return start;
+  }
 
-	public void setStart(ZonedDateTime start) {
-		this.start = start;
-	}
+  public void setStart(ZonedDateTime start) {
+    this.start = start;
+  }
 
+  public ZonedDateTime getEnd() {
+    return end;
+  }
 
-	public ZonedDateTime getEnd() {
-		return end;
-	}
+  public void setEnd(ZonedDateTime end) {
+    this.end = end;
+  }
 
-
-	public void setEnd(ZonedDateTime end) {
-		this.end = end;
-	}
-
-
-	
 }

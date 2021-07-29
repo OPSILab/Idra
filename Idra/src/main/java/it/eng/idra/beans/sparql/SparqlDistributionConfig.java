@@ -15,38 +15,43 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
+
 package it.eng.idra.beans.sparql;
 
-import javax.persistence.Entity;
 import it.eng.idra.beans.DistributionAdditionalConfiguration;
 
+import javax.persistence.Entity;
+
 @Entity
-public class SparqlDistributionConfig extends DistributionAdditionalConfiguration{
+public class SparqlDistributionConfig extends DistributionAdditionalConfiguration {
 
-	/**
-	 * 
-	 */		
-	//Comma Separated Values
-	private String formats;
-	
-	public SparqlDistributionConfig() {
-		this.setType("SPARQL");
-	}
+  private String formats;
 
-	public SparqlDistributionConfig(String query,String formats,String nodeID) {
-		super();
-		this.formats=formats;
-		this.setNodeID(nodeID);
-		this.setType("SPARQL");
-		this.setQuery(query);
-	}
-	
-	public String getFormats() {
-		return formats;
-	}
+  public SparqlDistributionConfig() {
+    this.setType("SPARQL");
+  }
 
-	public void setFormats(String formats) {
-		this.formats = formats;
-	}
-	
+  /**
+   * Instantiates a new sparql distribution config.
+   *
+   * @param query the query
+   * @param formats the formats
+   * @param nodeID the node ID
+   */
+  public SparqlDistributionConfig(String query, String formats, String nodeID) {
+    super();
+    this.formats = formats;
+    this.setNodeID(nodeID);
+    this.setType("SPARQL");
+    this.setQuery(query);
+  }
+
+  public String getFormats() {
+    return formats;
+  }
+
+  public void setFormats(String formats) {
+    this.formats = formats;
+  }
+
 }

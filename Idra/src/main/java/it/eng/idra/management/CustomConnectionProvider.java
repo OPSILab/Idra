@@ -15,34 +15,40 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
+
 package it.eng.idra.management;
 
+import it.eng.idra.beans.IdraProperty;
 import java.util.Map;
 import java.util.Optional;
 
 import org.hibernate.HibernateException;
 import org.hibernate.hikaricp.internal.HikariCPConnectionProvider;
 
-import it.eng.idra.beans.IdraProperty;
-
 public class CustomConnectionProvider extends HikariCPConnectionProvider {
 
-	private static final long serialVersionUID = -5309283059350710680L;
+  private static final long serialVersionUID = -5309283059350710680L;
 
-	@SuppressWarnings({ "rawtypes", "unchecked" })
-	@Override
-	public void configure(Map conf) throws HibernateException {
-		
-		if(Optional.ofNullable(System.getenv(IdraProperty.DB_USERNAME.toString())).isPresent())
-			conf.put("hibernate.hikari.dataSource.user", System.getenv(IdraProperty.DB_USERNAME.toString()));
-		
-		if(Optional.ofNullable(System.getenv(IdraProperty.DB_PASSWORD.toString())).isPresent())
-			conf.put("hibernate.hikari.dataSource.password", System.getenv(IdraProperty.DB_PASSWORD.toString()));
-		
-		if(Optional.ofNullable(System.getenv(IdraProperty.DB_HOST.toString())).isPresent())
-			conf.put("hibernate.hikari.dataSource.url", System.getenv(IdraProperty.DB_HOST.toString()));
-	
-		super.configure(conf);
-	}
+  @SuppressWarnings({ "rawtypes", "unchecked" })
+  @Override
+  public void configure(Map conf) throws HibernateException {
+
+    if (Optional.ofNullable(System.getenv(IdraProperty.DB_USERNAME.toString())).isPresent()) {
+      conf.put("hibernate.hikari.dataSource.user", 
+          System.getenv(IdraProperty.DB_USERNAME.toString()));
+    }
+
+    if (Optional.ofNullable(System.getenv(IdraProperty.DB_PASSWORD.toString())).isPresent()) {
+      conf.put("hibernate.hikari.dataSource.password", 
+          System.getenv(IdraProperty.DB_PASSWORD.toString()));
+    }
+
+    if (Optional.ofNullable(System.getenv(IdraProperty.DB_HOST.toString())).isPresent()) {
+      conf.put("hibernate.hikari.dataSource.url", 
+          System.getenv(IdraProperty.DB_HOST.toString()));
+    }
+
+    super.configure(conf);
+  }
 
 }

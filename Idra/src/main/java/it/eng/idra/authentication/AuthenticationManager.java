@@ -15,38 +15,87 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package it.eng.idra.authentication;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.core.Response;
+package it.eng.idra.authentication;
 
 import it.eng.idra.beans.IdraAuthenticationMethod;
 import it.eng.idra.beans.IdraProperty;
 import it.eng.idra.utils.PropertyManager;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.ws.rs.core.Response;
+
+
+// TODO: Auto-generated Javadoc
+/**
+ * The Class AuthenticationManager.
+ */
 public abstract class AuthenticationManager {
 
-	public abstract Object login(String username, String password, String code) throws Exception;
+  /**
+   * Login.
+   *
+   * @param username the username
+   * @param password the password
+   * @param code the code
+   * @return the object
+   * @throws Exception the exception
+   */
+  public abstract Object login(String username, String password, String code) throws Exception;
 
-	public abstract Response logout(HttpServletRequest username) throws Exception;
+  /**
+   * Logout.
+   *
+   * @param username the username
+   * @return the response
+   * @throws Exception the exception
+   */
+  public abstract Response logout(HttpServletRequest username) throws Exception;
 
-	public abstract Object getToken(String username, String code) throws Exception;
+  /**
+   * Gets the token.
+   *
+   * @param username the username
+   * @param code the code
+   * @return the token
+   * @throws Exception the exception
+   */
+  public abstract Object getToken(String username, String code) throws Exception;
 
-	public abstract Boolean validateToken(Object token) throws Exception;
+  /**
+   * Validate token.
+   *
+   * @param token the token
+   * @return the boolean
+   * @throws Exception the exception
+   */
+  public abstract Boolean validateToken(Object token) throws Exception;
 
-	public abstract Class<?> getFilterClass() throws ClassNotFoundException;
- 
-	public static AuthenticationManager getActiveAuthenticationManager() {
+  /**
+   * Gets the filter class.
+   *
+   * @return the filter class
+   * @throws ClassNotFoundException the class not found exception
+   */
+  public abstract Class<?> getFilterClass() throws ClassNotFoundException;
 
-		switch (IdraAuthenticationMethod.valueOf(PropertyManager.getProperty(IdraProperty.AUTHENTICATION_METHOD))) {
+  /**
+   * Gets the active authentication manager.
+   *
+   * @return the active authentication manager
+   */
+  public static AuthenticationManager getActiveAuthenticationManager() {
 
-		case FIWARE:
-			return FiwareIDMAuthenticationManager.getInstance();
-		case KEYCLOAK:
-			return KeycloakAuthenticationManager.getInstance();
-		default:
-			return BasicAuthenticationManager.getInstance();
-		}
+    switch (IdraAuthenticationMethod.valueOf(
+        PropertyManager.getProperty(IdraProperty.AUTHENTICATION_METHOD))) {
 
-	}
+      case FIWARE:
+        return FiwareIdmAuthenticationManager.getInstance();
+      case KEYCLOAK:
+        return KeycloakAuthenticationManager.getInstance();
+      default:
+        return BasicAuthenticationManager.getInstance();
+    }
+
+  }
 }

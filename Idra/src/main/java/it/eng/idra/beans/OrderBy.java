@@ -15,30 +15,25 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
+
 package it.eng.idra.beans;
 
 public enum OrderBy {
 
-	ID("ID"), 
-	NAME("NAME"), 
-	HOST("HOST"),
-	NODETYPE("NODETYPE"),
-	FEDERATIONLEVEL("FEDERATIONLEVEL"),
-	DATASETCOUNT("DATASETCOUNT"),
-	NODESTATE("NODESTATE"),
-	REGISTERDATE("REGISTERDATE"),
-	LASTUPDATEDATE("LASTUPDATEDATE"),
-	REFRESHPERIOD("REFRESHPERIOD");
+  ID("ID"), NAME("NAME"), HOST("HOST"), NODETYPE("NODETYPE"), FEDERATIONLEVEL("FEDERATIONLEVEL"),
+  DATASETCOUNT("DATASETCOUNT"), NODESTATE("NODESTATE"), 
+  REGISTERDATE("REGISTERDATE"), LASTUPDATEDATE("LASTUPDATEDATE"),
+  REFRESHPERIOD("REFRESHPERIOD");
 
-	private String value;
+  private String value;
 
-	OrderBy(String value) {
-		this.value = value;
-	}
+  OrderBy(String value) {
+    this.value = value;
+  }
 
-	@Override
-	public String toString() {
-		return String.valueOf(value);
-	}
+  @Override
+  public String toString() {
+    return String.valueOf(value);
+  }
 
 }

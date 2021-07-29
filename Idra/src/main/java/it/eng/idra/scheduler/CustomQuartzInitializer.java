@@ -15,6 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
+
 package it.eng.idra.scheduler;
 
 import java.io.IOException;
@@ -27,35 +28,34 @@ import org.quartz.ee.servlet.QuartzInitializerListener;
 import org.quartz.impl.StdSchedulerFactory;
 
 public class CustomQuartzInitializer extends QuartzInitializerListener {
-	
-	private static Logger logger = LogManager.getLogger(CustomQuartzInitializer.class);
-	
-	private Properties getQuartzProperties(String file) throws IOException{
-		
-		Properties props = new Properties();
-		props.load(CustomQuartzInitializer.class.getClassLoader().getResourceAsStream(file));
-		
-		System.getenv().entrySet().stream()
-			.filter(e -> {
-				return e.getKey().startsWith("org.quartz.");
-			})
-			.forEach(e->{
-				logger.debug("Overriding Quartz property " + e.getKey() + ": "+e.getValue());
-				props.setProperty(e.getKey(), e.getValue());
-			});
-		
-		return props;
-	}
-	
-	@Override
-	protected StdSchedulerFactory getSchedulerFactory(String configFile) throws SchedulerException {
-		StdSchedulerFactory schedFactory = new StdSchedulerFactory();
-		try{ schedFactory.initialize(getQuartzProperties(configFile)); }
-		catch(Exception e){
-			e.printStackTrace();
-		}
-		return schedFactory;
-		
-	}
-	
+
+  private static Logger logger = LogManager.getLogger(CustomQuartzInitializer.class);
+
+  private Properties getQuartzProperties(String file) throws IOException {
+
+    Properties props = new Properties();
+    props.load(CustomQuartzInitializer.class.getClassLoader().getResourceAsStream(file));
+
+    System.getenv().entrySet().stream().filter(e -> {
+      return e.getKey().startsWith("org.quartz.");
+    }).forEach(e -> {
+      logger.debug("Overriding Quartz property " + e.getKey() + ": " + e.getValue());
+      props.setProperty(e.getKey(), e.getValue());
+    });
+
+    return props;
+  }
+
+  @Override
+  protected StdSchedulerFactory getSchedulerFactory(String configFile) throws SchedulerException {
+    StdSchedulerFactory schedFactory = new StdSchedulerFactory();
+    try {
+      schedFactory.initialize(getQuartzProperties(configFile));
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+    return schedFactory;
+
+  }
+
 }

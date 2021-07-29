@@ -15,6 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
+
 package it.eng.idra.beans.webscraper;
 
 import java.util.List;
@@ -24,8 +25,9 @@ import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
-import javax.persistence.Table;
 import javax.persistence.JoinColumn;
+import javax.persistence.Table;
+
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
 
@@ -34,31 +36,32 @@ import org.hibernate.annotations.LazyCollectionOption;
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 public class PageSelector extends WebScraperSelector {
 
-	public PageSelector() {
+  public PageSelector() {
 
-	}
+  }
 
-	public PageSelector(List<String> parentSelectors, WebScraperSelectorType type, Boolean multiple, String title,
-			String selector, String regex, List<String> stopValues) {
-		super(parentSelectors, type, multiple, title, selector, regex, stopValues);
+  public PageSelector(List<String> parentSelectors, 
+      WebScraperSelectorType type, Boolean multiple, String title,
+      String selector, String regex, List<String> stopValues) {
+    super(parentSelectors, type, multiple, title, selector, regex, stopValues);
 
-	}
+  }
 
-	@Override
-	@LazyCollection(LazyCollectionOption.FALSE)
-	@ElementCollection
-	@CollectionTable(name = "odms_sitemap_page_selector_parentSelector", joinColumns = {
-			@JoinColumn(name = "selector_id") })
-	public List<String> getParentSelectors() {
-		return parentSelectors;
-	}
+  @Override
+  @LazyCollection(LazyCollectionOption.FALSE)
+  @ElementCollection
+  @CollectionTable(name = "odms_sitemap_page_selector_parentSelector", joinColumns = {
+      @JoinColumn(name = "selector_id") })
+  public List<String> getParentSelectors() {
+    return parentSelectors;
+  }
 
-	@Override
-	@LazyCollection(LazyCollectionOption.FALSE)
-	@ElementCollection
-	@CollectionTable(name = "odms_sitemap_page_selector_stopValues", joinColumns = {
-			@JoinColumn(name = "selector_id") })
-	public List<String> getStopValues() {
-		return stopValues;
-	}
+  @Override
+  @LazyCollection(LazyCollectionOption.FALSE)
+  @ElementCollection
+  @CollectionTable(name = "odms_sitemap_page_selector_stopValues", 
+       joinColumns = { @JoinColumn(name = "selector_id") })
+  public List<String> getStopValues() {
+    return stopValues;
+  }
 }

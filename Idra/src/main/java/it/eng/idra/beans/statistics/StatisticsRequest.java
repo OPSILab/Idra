@@ -15,73 +15,82 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package it.eng.idra.beans.statistics;
 
-import java.time.ZonedDateTime;
+package it.eng.idra.beans.statistics;
 
 import it.eng.idra.utils.JsonRequired;
 
+import java.time.ZonedDateTime;
+
 public class StatisticsRequest {
 
-	
-	@JsonRequired
-	private AggregationLevelEnum aggregationLevel;
-	@JsonRequired
-	private ZonedDateTime startDate;
-	@JsonRequired
-	private ZonedDateTime endDate;
-	
-	private String[] countries;
-	
-	private String[] nodesId;
+  @JsonRequired
+  private AggregationLevelEnum aggregationLevel;
+  @JsonRequired
+  private ZonedDateTime startDate;
+  @JsonRequired
+  private ZonedDateTime endDate;
 
-	public StatisticsRequest(AggregationLevelEnum aggregationLevel, ZonedDateTime startDate, ZonedDateTime endDate,
-			String[] nodesId) {
-		super();
-		this.aggregationLevel = aggregationLevel;
-		this.startDate = startDate;
-		this.endDate = endDate;
-		this.nodesId = nodesId;
-	}
+  private String[] countries;
 
-	public AggregationLevelEnum getAggregationLevel() {
-		return aggregationLevel;
-	}
+  private String[] nodesId;
 
-	public void setAggregationLevel(AggregationLevelEnum aggregationLevel) {
-		this.aggregationLevel = aggregationLevel;
-	}
+  /**
+   * Instantiates a new statistics request.
+   *
+   * @param aggregationLevel the aggregation level
+   * @param startDate the start date
+   * @param endDate the end date
+   * @param nodesId the nodes id
+   */
+  public StatisticsRequest(AggregationLevelEnum aggregationLevel, 
+      ZonedDateTime startDate, ZonedDateTime endDate,
+      String[] nodesId) {
+    super();
+    this.aggregationLevel = aggregationLevel;
+    this.startDate = startDate;
+    this.endDate = endDate;
+    this.nodesId = nodesId;
+  }
 
-	public ZonedDateTime getStartDate() {
-		return startDate;
-	}
+  public AggregationLevelEnum getAggregationLevel() {
+    return aggregationLevel;
+  }
 
-	public void setStartDate(ZonedDateTime startDate) {
-		this.startDate = startDate;
-	}
+  public void setAggregationLevel(AggregationLevelEnum aggregationLevel) {
+    this.aggregationLevel = aggregationLevel;
+  }
 
-	public ZonedDateTime getEndDate() {
-		return endDate;
-	}
+  public ZonedDateTime getStartDate() {
+    return startDate;
+  }
 
-	public void setEndDate(ZonedDateTime endDate) {
-		this.endDate = endDate;
-	}
+  public void setStartDate(ZonedDateTime startDate) {
+    this.startDate = startDate;
+  }
 
-	public String[] getNodesId() {
-		return nodesId;
-	}
+  public ZonedDateTime getEndDate() {
+    return endDate;
+  }
 
-	public void setNodesId(String[] nodesId) {
-		this.nodesId = nodesId;
-	}
+  public void setEndDate(ZonedDateTime endDate) {
+    this.endDate = endDate;
+  }
 
-	public String[] getCountries() {
-		return countries;
-	}
+  public String[] getNodesId() {
+    return nodesId;
+  }
 
-	public void setCountries(String[] countries) {
-		this.countries = countries;
-	}
+  public void setNodesId(String[] nodesId) {
+    this.nodesId = nodesId;
+  }
+
+  public String[] getCountries() {
+    return countries;
+  }
+
+  public void setCountries(String[] countries) {
+    this.countries = countries;
+  }
 
 }

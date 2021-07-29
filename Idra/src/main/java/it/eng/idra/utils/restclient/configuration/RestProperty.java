@@ -15,24 +15,23 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
+
 package it.eng.idra.utils.restclient.configuration;
 
 public enum RestProperty {
-	HTTP_PROXY_ENABLED("http.proxyEnabled"),
-	HTTP_PROXY_HOST("http.proxyHost"),
-	HTTP_PROXY_USER("http.proxyUser"),
-	HTTP_PROXY_PORT("http.proxyPort"),
-	HTTP_PROXY_PASSWORD("http.proxyPassword"),
-	HTTP_PROXY_NONPROXYHOSTS("http.nonProxyHosts");
+  HTTP_PROXY_ENABLED("http.proxyEnabled"),
+  HTTP_PROXY_HOST("http.proxyHost"), HTTP_PROXY_USER("http.proxyUser"),
+  HTTP_PROXY_PORT("http.proxyPort"), HTTP_PROXY_PASSWORD("http.proxyPassword"),
+  HTTP_PROXY_NONPROXYHOSTS("http.nonProxyHosts");
 
-	private final String text;
+  private final String text;
 
-	private RestProperty(final String text) {
-		this.text = text;
-	}
+  private RestProperty(final String text) {
+    this.text = text;
+  }
 
-	@Override
-	public String toString() {
-		return text;
-	}
+  @Override
+  public String toString() {
+    return text;
+  }
 }

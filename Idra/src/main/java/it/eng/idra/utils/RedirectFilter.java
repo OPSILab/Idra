@@ -8,19 +8,22 @@ import javax.ws.rs.client.ClientResponseContext;
 import javax.ws.rs.client.ClientResponseFilter;
 import javax.ws.rs.core.Response;
 
-public class RedirectFilter implements ClientResponseFilter{
+public class RedirectFilter implements ClientResponseFilter {
 
-	@Override
-	public void filter(ClientRequestContext requestContext, ClientResponseContext responseContext) throws IOException {
-		// TODO Auto-generated method stub
-		if (responseContext.getStatusInfo().getFamily() != Response.Status.Family.REDIRECTION)
-			return;
+  @Override
+  public void filter(ClientRequestContext requestContext, 
+      ClientResponseContext responseContext) throws IOException {
+    // TODO Auto-generated method stub
+    if (responseContext.getStatusInfo().getFamily() != Response.Status.Family.REDIRECTION) {
+      return;
+    }
 
-		Response resp = requestContext.getClient().target(responseContext.getLocation()).request().method(requestContext.getMethod());
+    Response resp = requestContext.getClient().target(responseContext.getLocation()).request()
+        .method(requestContext.getMethod());
 
-		responseContext.setEntityStream((InputStream) resp.getEntity());
-		responseContext.setStatusInfo(resp.getStatusInfo());
-		responseContext.setStatus(resp.getStatus());
+    responseContext.setEntityStream((InputStream) resp.getEntity());
+    responseContext.setStatusInfo(resp.getStatusInfo());
+    responseContext.setStatus(resp.getStatus());
 
-	}
+  }
 }

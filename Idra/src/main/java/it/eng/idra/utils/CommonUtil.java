@@ -15,7 +15,11 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
+
 package it.eng.idra.utils;
+
+import com.google.common.collect.Ordering;
+import it.eng.idra.beans.odms.OdmsCatalogue;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -43,392 +47,450 @@ import javax.crypto.spec.SecretKeySpec;
 import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import com.google.common.collect.Ordering;
-
-import it.eng.idra.beans.odms.ODMSCatalogue;
 
 public class CommonUtil {
 
-	private static Logger logger = LogManager.getLogger(CommonUtil.class);
-	private static DateTimeFormatter dtFormatter = DateTimeFormatter.ISO_OFFSET_DATE_TIME.withZone(ZoneOffset.UTC);
-	private static String[] dateFormats = { "yyyy","dd/MM/yyyy", "yyyy-MM-dd", "EEE MMM dd HH:mm:ss zzz yyyy",
-			"EEEE dd MMMM yyyy", "dd MMMM yyyy", "yyyy-MM-dd'T'HH:mm:ss[XXX][X]", "EEEE, dd MMMM yyyy" };
+  private static Logger logger = LogManager.getLogger(CommonUtil.class);
+  private static DateTimeFormatter dtFormatter = 
+      DateTimeFormatter.ISO_OFFSET_DATE_TIME.withZone(ZoneOffset.UTC);
+  private static String[] dateFormats = 
+      { "yyyy", "dd/MM/yyyy", "yyyy-MM-dd", 
+        "EEE MMM dd HH:mm:ss zzz yyyy",
+        "EEEE dd MMMM yyyy", "dd MMMM yyyy",
+        "yyyy-MM-dd'T'HH:mm:ss[XXX][X]", "EEEE, dd MMMM yyyy" };
 
-	public static Ordering<ODMSCatalogue> idOrder = new Ordering<ODMSCatalogue>() {
-		public int compare(ODMSCatalogue one, ODMSCatalogue other) {
-			return one.getId()-other.getId();
-		}
-	};
-	
-	public static Ordering<ODMSCatalogue> nameOrder = new Ordering<ODMSCatalogue>() {
-		public int compare(ODMSCatalogue one, ODMSCatalogue other) {
-			return one.getName().compareTo(other.getName());
-		}
-	};
-	
-	public static Ordering<ODMSCatalogue> hostOrder = new Ordering<ODMSCatalogue>() {
-		public int compare(ODMSCatalogue one, ODMSCatalogue other) {
-			return one.getHost().compareTo(other.getHost());
-		}
-	};
-	
-	public static Ordering<ODMSCatalogue> typeOrder = new Ordering<ODMSCatalogue>() {
-		public int compare(ODMSCatalogue one, ODMSCatalogue other) {
-			return one.getNodeType().compareTo(other.getNodeType());
-		}
-	};
-	
-	public static Ordering<ODMSCatalogue> federationLevelOrder = new Ordering<ODMSCatalogue>() {
-		public int compare(ODMSCatalogue one, ODMSCatalogue other) {
-			return one.getFederationLevel().compareTo(other.getFederationLevel());
-		}
-	};
-	
-	public static Ordering<ODMSCatalogue> stateOrder = new Ordering<ODMSCatalogue>() {
-		public int compare(ODMSCatalogue one, ODMSCatalogue other) {
-			return one.getNodeState().compareTo(other.getNodeState());
-		}
-	};
-	
-	public static Ordering<ODMSCatalogue> isActiveOrder = new Ordering<ODMSCatalogue>() {
-		public int compare(ODMSCatalogue one, ODMSCatalogue other) {
-			return one.isActive().compareTo(other.isActive());
-		}
-	};
-	
-	public static Ordering<ODMSCatalogue> refreshPeriodOrder = new Ordering<ODMSCatalogue>() {
-		public int compare(ODMSCatalogue one, ODMSCatalogue other) {
-			return one.getRefreshPeriod()-other.getRefreshPeriod();
-		}
-	};
-	
-	public static Ordering<ODMSCatalogue> datasetCountOrder = new Ordering<ODMSCatalogue>() {
-		public int compare(ODMSCatalogue one, ODMSCatalogue other) {
-			return one.getDatasetCount()-other.getDatasetCount();
-		}
-	};
+  public static Ordering<OdmsCatalogue> idOrder = new Ordering<OdmsCatalogue>() {
+    public int compare(OdmsCatalogue one, OdmsCatalogue other) {
+      return one.getId() - other.getId();
+    }
+  };
 
-	public static Ordering<ODMSCatalogue> registerDateOrder = new Ordering<ODMSCatalogue>() {
-		public int compare(ODMSCatalogue one, ODMSCatalogue other) {
-			return one.getRegisterDate().compareTo(other.getRegisterDate());
-		}
-	};
-	
-	public static Ordering<ODMSCatalogue> lastUpdateOrder = new Ordering<ODMSCatalogue>() {
-		public int compare(ODMSCatalogue one, ODMSCatalogue other) {
-			return one.getLastUpdateDate().compareTo(other.getLastUpdateDate());
-		}
-	};
-	
-	public static final Integer ROWSDEFAULT = 10, OFFSETDEFAULT = 0;
-	
-	private static Pattern emailPattern = Pattern.compile("\\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,4}\\b");
+  public static Ordering<OdmsCatalogue> nameOrder = new Ordering<OdmsCatalogue>() {
+    public int compare(OdmsCatalogue one, OdmsCatalogue other) {
+      return one.getName().compareTo(other.getName());
+    }
+  };
 
-	public static String encodePassword(String pwd) throws NoSuchAlgorithmException {
-		// Esegue la codifica MD5
-		MessageDigest md = MessageDigest.getInstance("MD5");
-		md.update(pwd.getBytes());
+  public static Ordering<OdmsCatalogue> hostOrder = new Ordering<OdmsCatalogue>() {
+    public int compare(OdmsCatalogue one, OdmsCatalogue other) {
+      return one.getHost().compareTo(other.getHost());
+    }
+  };
 
-		byte byteData[] = md.digest();
+  public static Ordering<OdmsCatalogue> typeOrder = new Ordering<OdmsCatalogue>() {
+    public int compare(OdmsCatalogue one, OdmsCatalogue other) {
+      return one.getNodeType().compareTo(other.getNodeType());
+    }
+  };
 
-		// Conversione della password codificata in Stringa
-		StringBuffer sb = new StringBuffer();
-		for (int i = 0; i < byteData.length; i++)
-			sb.append(Integer.toString((byteData[i] & 0xff) + 0x100, 16).substring(1));
+  public static Ordering<OdmsCatalogue> federationLevelOrder = new Ordering<OdmsCatalogue>() {
+    public int compare(OdmsCatalogue one, OdmsCatalogue other) {
+      return one.getFederationLevel().compareTo(other.getFederationLevel());
+    }
+  };
 
-		return sb.toString();
-	}
+  public static Ordering<OdmsCatalogue> stateOrder = new Ordering<OdmsCatalogue>() {
+    public int compare(OdmsCatalogue one, OdmsCatalogue other) {
+      return one.getNodeState().compareTo(other.getNodeState());
+    }
+  };
 
-	public static String toUtcDate(String dateString) throws IllegalArgumentException {
+  public static Ordering<OdmsCatalogue> isActiveOrder = new Ordering<OdmsCatalogue>() {
+    public int compare(OdmsCatalogue one, OdmsCatalogue other) {
+      return one.isActive().compareTo(other.isActive());
+    }
+  };
 
-		// SimpleDateFormat out = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
-		// String[] dateFormats = { "yyyy-MM-dd", "EEE MMM dd HH:mm:ss zzz yyyy" };
-		// for (String dateFormat : dateFormats) {
-		// try {
-		// return out.format(new SimpleDateFormat(dateFormat,
-		// Locale.US).parse(dateString));
-		// } catch (ParseException ignore) {
-		// }
-		// }
-		// throw new IllegalArgumentException("Invalid date: " + dateString);
+  public static Ordering<OdmsCatalogue> refreshPeriodOrder = new Ordering<OdmsCatalogue>() {
+    public int compare(OdmsCatalogue one, OdmsCatalogue other) {
+      return one.getRefreshPeriod() - other.getRefreshPeriod();
+    }
+  };
 
-		for (String dateFormat : dateFormats) {
-			try {
+  public static Ordering<OdmsCatalogue> datasetCountOrder = new Ordering<OdmsCatalogue>() {
+    public int compare(OdmsCatalogue one, OdmsCatalogue other) {
+      return one.getDatasetCount() - other.getDatasetCount();
+    }
+  };
 
-				if (dateFormat.contains("H"))
-					return dtFormatter.format(DateTimeFormatter.ofPattern(dateFormat, Locale.US).parse(dateString));
-				else
-					return dtFormatter
-							.format(LocalDate.parse(dateString, DateTimeFormatter.ofPattern(dateFormat, Locale.US))
-									.atStartOfDay().atZone(ZoneOffset.UTC));
-				// .format(DateTimeFormatter.ofPattern("EEEE dd MMMM yyyy", Locale.US)));
-			} catch (DateTimeParseException ignore) {
-			}
+  public static Ordering<OdmsCatalogue> registerDateOrder = new Ordering<OdmsCatalogue>() {
+    public int compare(OdmsCatalogue one, OdmsCatalogue other) {
+      return one.getRegisterDate().compareTo(other.getRegisterDate());
+    }
+  };
 
-		}
-		logger.error("Invalid date: " + dateString+" impossible to format, leaving the default");
-		return dateString;
-//		throw new IllegalArgumentException("Invalid date: " + dateString);
-	}
+  public static Ordering<OdmsCatalogue> lastUpdateOrder = new Ordering<OdmsCatalogue>() {
+    public int compare(OdmsCatalogue one, OdmsCatalogue other) {
+      return one.getLastUpdateDate().compareTo(other.getLastUpdateDate());
+    }
+  };
 
-	public static String fromLocalToUtcDate(String originalDateString, Locale locale) {
+  public static final Integer ROWSDEFAULT = 10;
+  public static final Integer OFFSETDEFAULT = 0;
 
-		if (StringUtils.isNotBlank(originalDateString)) {
-			String dateString = originalDateString.toLowerCase();
+  private static Pattern emailPattern = 
+      Pattern.compile("\\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,4}\\b");
 
-			if (locale == null) {
-				Locale[] locales = Locale.getAvailableLocales();
+  /**
+   * Encode password.
+   *
+   * @param pwd the pwd
+   * @return the string
+   * @throws NoSuchAlgorithmException the no such algorithm exception
+   */
+  public static String encodePassword(String pwd) throws NoSuchAlgorithmException {
+    // Esegue la codifica MD5
+    MessageDigest md = MessageDigest.getInstance("MD5");
+    md.update(pwd.getBytes());
 
-				for (Locale l : locales) {
-					for (String dateFormat : dateFormats) {
-						try {
+    byte[] byteData = md.digest();
 
-							if (dateFormat.contains("H"))
-								return dtFormatter.format(DateTimeFormatter.ofPattern(dateFormat, l).parse(dateString));
-							else
-								return dtFormatter
-										.format(LocalDate.parse(dateString, DateTimeFormatter.ofPattern(dateFormat, l))
-												.atStartOfDay().atZone(ZoneOffset.UTC));
+    // Conversione della password codificata in Stringa
+    StringBuffer sb = new StringBuffer();
+    for (int i = 0; i < byteData.length; i++) {
+      sb.append(Integer.toString((byteData[i] & 0xff) + 0x100, 16).substring(1));
+    }
 
-						} catch (DateTimeParseException ignore) {
-						}
-					}
-				}
+    return sb.toString();
+  }
 
-			} else {
+  /**
+   * To utc date.
+   *
+   * @param dateString the date string
+   * @return the string
+   * @throws IllegalArgumentException the illegal argument exception
+   */
+  public static String toUtcDate(String dateString) 
+      throws IllegalArgumentException {
+    for (String dateFormat : dateFormats) {
+      try {
 
-				for (String dateFormat : dateFormats) {
-					try {
+        if (dateFormat.contains("H")) {
+          return dtFormatter.format(
+              DateTimeFormatter.ofPattern(dateFormat, Locale.US).parse(dateString));
+        } else {
+          return dtFormatter.format(LocalDate.parse(
+              dateString, DateTimeFormatter.ofPattern(dateFormat, Locale.US))
+              .atStartOfDay().atZone(ZoneOffset.UTC));
+        }
+      } catch (DateTimeParseException ignore) {
+        logger.debug(ignore.getLocalizedMessage());
+      }
 
-						if (dateFormat.contains("H"))
-							return dtFormatter
-									.format(DateTimeFormatter.ofPattern(dateFormat, locale).parse(dateString));
-						else
-							return dtFormatter
-									.format(LocalDate.parse(dateString, DateTimeFormatter.ofPattern(dateFormat, locale))
-											.atStartOfDay().atZone(ZoneOffset.UTC));
-						// .format(DateTimeFormatter.ofPattern("EEEE dd MMMM yyyy", Locale.US)));
-					} catch (DateTimeParseException ignore) {
-					}
+    }
+    logger.error("Invalid date: " + dateString + " impossible to format, leaving the default");
+    return dateString;
+  }
 
-				}
-			}
+  /**
+   * From local to utc date.
+   *
+   * @param originalDateString the original date string
+   * @param locale the locale
+   * @return the string
+   */
+  public static String fromLocalToUtcDate(String originalDateString, Locale locale) {
 
-		}
+    if (StringUtils.isNotBlank(originalDateString)) {
+      String dateString = originalDateString.toLowerCase();
 
-		throw new IllegalArgumentException("Invalid date: " + originalDateString);
+      if (locale == null) {
+        Locale[] locales = Locale.getAvailableLocales();
 
-	}
+        for (Locale l : locales) {
+          for (String dateFormat : dateFormats) {
+            try {
 
-	public static String formatDate(ZonedDateTime dt) {
-		return dtFormatter.format(dt.truncatedTo(ChronoUnit.SECONDS));
+              if (dateFormat.contains("H")) {
+                return dtFormatter.format(
+                    DateTimeFormatter.ofPattern(dateFormat, l).parse(dateString));
+              } else {
+                return dtFormatter.format(
+                    LocalDate.parse(dateString, DateTimeFormatter.ofPattern(dateFormat, l))
+                    .atStartOfDay().atZone(ZoneOffset.UTC));
+              }
 
-	}
+            } catch (DateTimeParseException ignore) {
+              logger.debug(ignore.getLocalizedMessage());
+            }
+          }
+        }
 
-	public static ZonedDateTime parseDate(String dateString) {
-		return ZonedDateTime.from(dtFormatter.parse(dateString));
-	}
+      } else {
 
-	public static String fixBadUTCDate(String date) {
+        for (String dateFormat : dateFormats) {
+          try {
 
-		Pattern pattern1 = Pattern.compile("([0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}.[0-9]{6})$");
-		Pattern pattern2 = Pattern.compile("([0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}.[0-9]{3})$");
-		Pattern pattern3 = Pattern.compile("([0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2})$");
-		Pattern pattern4 = Pattern.compile("([0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}\\+[0-9]{2}:[0-9]{2})$");
-		Pattern pattern5 = Pattern.compile("([0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}.[0-9]{3}Z)$");
-		Pattern pattern6 = Pattern.compile("([0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2})(.[0-9]*)?$");
-		Pattern pattern7 = Pattern.compile("([0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2})(.*)?$");
-		
-		if(pattern1.matcher(date).find())
-			return date.substring(0, date.length() - 7) + "Z";
-		
-		if(pattern2.matcher(date).find())
-			return date.substring(0, date.length() - 4) + "Z";
-			
-		if(pattern3.matcher(date).find())
-			return date + "Z";
-		
-		if(pattern4.matcher(date).find())
-			return date.substring(0, date.length() - 6) + "Z";
-		
-		if(pattern5.matcher(date).find())
-			return date.substring(0, date.length() - 5) + "Z";
-		
-		Matcher m6 = pattern6.matcher(date);
-		if(m6.find()) {
-			return m6.group(1)+"Z";
-		}
-		
-		Matcher m7 = pattern7.matcher(date);
-		if(m7.find()) {
-			return m7.group(1)+"Z";
-		}
-		
-		return date;
-	}
+            if (dateFormat.contains("H")) {
+              return dtFormatter.format(
+                  DateTimeFormatter.ofPattern(dateFormat, locale).parse(dateString));
+            } else {
+              return dtFormatter.format(
+                  LocalDate.parse(dateString, DateTimeFormatter.ofPattern(dateFormat, locale))
+                  .atStartOfDay().atZone(ZoneOffset.UTC));
+            }
+          } catch (DateTimeParseException ignore) {
+            logger.debug(ignore.getLocalizedMessage());
+          }
 
-	public static String extractFormatFromFileExtension(String downloadURL) {
+        }
+      }
 
-		Matcher matcher = Pattern.compile("\\w+\\.(\\w\\w\\w(\\w)?)$").matcher(downloadURL);
-		String result = null;
+    }
 
-		return (matcher.find() && (result = matcher.group(1)) != null) ? result : "";
+    throw new IllegalArgumentException("Invalid date: " + originalDateString);
 
-	}
+  }
 
-	public static String extractFrequencyFromURI(String uri) {
+  public static String formatDate(ZonedDateTime dt) {
+    return dtFormatter.format(dt.truncatedTo(ChronoUnit.SECONDS));
 
-		Matcher matcher = Pattern
-				.compile("http:\\/\\/publications\\.europa\\.eu\\/resource\\/authority\\/frequency(\\/|#)(\\w*)")
-				.matcher(uri);
-		String result = null;
+  }
 
-		return (matcher.find() && (result = matcher.group(2)) != null) ? result : "";
+  public static ZonedDateTime parseDate(String dateString) {
+    return ZonedDateTime.from(dtFormatter.parse(dateString));
+  }
 
-	}
+  /**
+   * Fix bad UTC date.
+   *
+   * @param date the date
+   * @return the string
+   */
+  public static String fixBadUtcDate(String date) {
 
-	public static boolean checkIfIsEmail(String emailValue) {
+    Pattern pattern1 = 
+        Pattern.compile("([0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}.[0-9]{6})$");
+    if (pattern1.matcher(date).find()) {
+      return date.substring(0, date.length() - 7) + "Z";
+    }
 
-		return emailPattern.matcher(emailValue).find();
-	}
+    Pattern pattern2 = 
+        Pattern.compile("([0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}.[0-9]{3})$");
+    if (pattern2.matcher(date).find()) {
+      return date.substring(0, date.length() - 4) + "Z";
+    }
+    
+    Pattern pattern3 = Pattern.compile("([0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2})$");
+    if (pattern3.matcher(date).find()) {
+      return date + "Z";
+    }
+    
+    Pattern pattern4 = Pattern.compile("([0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}"
+        + ":[0-9]{2}:[0-9]{2}\\+[0-9]{2}:[0-9]{2})$");
+    if (pattern4.matcher(date).find()) {
+      return date.substring(0, date.length() - 6) + "Z";
+    }
+    Pattern pattern5 = Pattern.compile("([0-9]{4}-[0-9]{2}-[0-9]{2}"
+        + "T[0-9]{2}:[0-9]{2}:[0-9]{2}.[0-9]{3}Z)$");
+    if (pattern5.matcher(date).find()) {
+      return date.substring(0, date.length() - 5) + "Z";
+    }
 
-	public static String extractSeoIdentifier(String title, String internalIdentifier,String nodeID) {
-//		String title1 = unaccent(title).toLowerCase().replaceAll("[^\\p{L}\\p{Z}\\p{N}]","");
-//		String title1 = unaccent(title).toLowerCase().replaceAll("[^\\w\\s]","");
-//		String title1 = unaccent(title.toLowerCase()).replaceAll("[_+-.,!@#$%^*():?=\\\\;&amp;\\/|&gt;&lt;&quot;']","");
-		String title1 = StringUtils.normalizeSpace(unaccent(title.trim().toLowerCase()).replaceAll("[^\\p{L}\\p{Z}\\p{N}]",""));
-		
-		//In order to support this features for non ASCII characters, the internalIdentifier is used
-		//since it can be a problem with solr server
-		boolean foundMatch = false;
-		Pattern regex = Pattern.compile("\\p{L}");
-		Matcher regexMatcher = regex.matcher(title1);
-		foundMatch = regexMatcher.find();
-		if(!foundMatch) {
-			return internalIdentifier+"-"+nodeID;
-		}
-		
-		String seoId="";
-		logger.debug("Old: "+title);
-		logger.debug("New: "+title1);
-		String arr[] = title1.split(" ");
-		if(arr.length>4) {
-			seoId = String.join("-",Arrays.copyOfRange(arr, 0, 4));
-		}else {
-			seoId = String.join("-",arr);
-		}
-		String arr1 [] = internalIdentifier.split("-");
-		logger.debug("seoID: "+seoId+"-"+arr1[arr1.length-2]+"-"+nodeID);
-		return seoId+"-"+arr1[arr1.length-1]+"-"+nodeID;
-	}
-	
-	
-	//https://stackoverflow.com/questions/3322152/is-there-a-way-to-get-rid-of-accents-and-convert-a-whole-string-to-regular-lette
-	
-	public static String unaccent(String src) {
-		return Normalizer
-				.normalize(src, Normalizer.Form.NFD)
-				.replaceAll("[^\\p{ASCII}]", "");
-				//.replaceAll("[^\\p{M}]", ""); -> it works also for japanese char but solr doesn't return the proper dataset
-	}
-	
-	public static void storeFile(String filePath,String fileName,String content) throws IOException {
-		FileWriter out = null;
-		logger.info("Writing model to file: " + filePath + fileName);
+    Pattern pattern6 = 
+        Pattern.compile("([0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2})(.[0-9]*)?$");
+    Matcher m6 = pattern6.matcher(date);
+    if (m6.find()) {
+      return m6.group(1) + "Z";
+    }
+    Pattern pattern7 = 
+        Pattern.compile("([0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2})(.*)?$");
+    Matcher m7 = pattern7.matcher(date);
+    if (m7.find()) {
+      return m7.group(1) + "Z";
+    }
 
-		Instant tick = Instant.now();
-		try {
-			out = new FileWriter(filePath + fileName);
-			out.write(content);
-		} catch (Exception e) {
-			e.printStackTrace();
-		} finally {
-			out.close();
-			Instant tock = Instant.now();
-			logger.info("File writing completed in: " + Duration.between(tick, tock).toString());
-		}
-	}
-	
-	public static void deleteFile(String filePath){
-		logger.info("Deleting file: " + filePath);
-		try{
-    		File file = new File(filePath);
-    		if(file.delete()){
-    			logger.info(file.getName() + " is deleted!");
-    		}else{
-    			logger.info("Delete operation is failed.");
-    		}
-    	}catch(Exception e){
-    		e.printStackTrace();
-    	}
-	}
-	
-	public static String fromMillisToUtcDate(Long time) {
-		return dtFormatter.format(new Date(time*1000).toInstant());
-	}
-	
-//	
-//	public static void main(String[] args) {
-//		try {
-//			Date date = new SimpleDateFormat("EEEE, MMMM dd yyyy").parse("sabato, Luglio 14 2018");
-//			System.out.println(date.toGMTString());
-//			
-//			LocalDate lDate = LocalDate.parse("sabato, 14 luglio 2018",DateTimeFormatter.ofPattern("EEEE, dd MMMM yyyy",Locale.UK));
-//			System.out.println(lDate.format(DateTimeFormatter.ofPattern("EEEE, dd MMMM yyyy",Locale.UK)));
-//		} catch (ParseException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-//	}
-//
+    return date;
+  }
 
-	
-	
+  /**
+   * Extract format from file extension.
+   *
+   * @param downloadUrl the download URL
+   * @return the string
+   */
+  public static String extractFormatFromFileExtension(String downloadUrl) {
+
+    Matcher matcher = Pattern.compile("\\w+\\.(\\w\\w\\w(\\w)?)$").matcher(downloadUrl);
+    String result = null;
+
+    return (matcher.find() && (result = matcher.group(1)) != null) ? result : "";
+
+  }
+
+  /**
+   * Extract frequency from uri.
+   *
+   * @param uri the uri
+   * @return the string
+   */
+  public static String extractFrequencyFromUri(String uri) {
+
+    Matcher matcher = Pattern
+        .compile("http:\\/\\/publications\\.europa\\."
+            + "eu\\/resource\\/authority\\/frequency(\\/|#)(\\w*)").matcher(uri);
+    String result = null;
+
+    return (matcher.find() && (result = matcher.group(2)) != null) ? result : "";
+
+  }
+
+  public static boolean checkIfIsEmail(String emailValue) {
+
+    return emailPattern.matcher(emailValue).find();
+  }
+
+  /**
+   * Extract seo identifier.
+   *
+   * @param title the title
+   * @param internalIdentifier the internal identifier
+   * @param nodeId the node ID
+   * @return the string
+   */
+  public static String extractSeoIdentifier(String title, 
+      String internalIdentifier, String nodeId) {
+    //String title1 = unaccent(title).toLowerCase().replaceAll("[^\\p{L}\\p{Z}\\p{N}]","");
+    //String title1 = unaccent(title).toLowerCase().replaceAll("[^\\w\\s]","");
+    //String title1 = unaccent(title.toLowerCase())
+    //.replaceAll("[_+-.,!@#$%^*():?=\\\\;&amp;\\/|&gt;&lt;&quot;']","");
+    String title1 = StringUtils
+        .normalizeSpace(unaccent(title.trim().toLowerCase())
+            .replaceAll("[^\\p{L}\\p{Z}\\p{N}]", ""));
+
+    // In order to support this features for non ASCII characters, the
+    // internalIdentifier is used
+    // since it can be a problem with solr server
+    boolean foundMatch = false;
+    Pattern regex = Pattern.compile("\\p{L}");
+    Matcher regexMatcher = regex.matcher(title1);
+    foundMatch = regexMatcher.find();
+    if (!foundMatch) {
+      return internalIdentifier + "-" + nodeId;
+    }
+
+    String seoId = "";
+    logger.debug("Old: " + title);
+    logger.debug("New: " + title1);
+    String[] arr = title1.split(" ");
+    if (arr.length > 4) {
+      seoId = String.join("-", Arrays.copyOfRange(arr, 0, 4));
+    } else {
+      seoId = String.join("-", arr);
+    }
+    String[] arr1 = internalIdentifier.split("-");
+    logger.debug("seoID: " + seoId + "-" + arr1[arr1.length - 2] + "-" + nodeId);
+    return seoId + "-" + arr1[arr1.length - 1] + "-" + nodeId;
+  }
+
+  // https://stackoverflow.com/questions/3322152/is-there-a-way-to-get-rid-of-accents-and-convert-a-whole-string-to-regular-lette
+
+  /**
+   * Unaccent.
+   *
+   * @param src the src
+   * @return the string
+   */
+  public static String unaccent(String src) {
+    return Normalizer.normalize(src, Normalizer.Form.NFD).replaceAll("[^\\p{ASCII}]", "");
+    // .replaceAll("[^\\p{M}]", ""); -> it works also for japanese char but solr
+    // doesn't return the proper dataset
+  }
+
+  /**
+   * Store file.
+   *
+   * @param filePath the file path
+   * @param fileName the file name
+   * @param content the content
+   * @throws IOException Signals that an I/O exception has occurred.
+   */
+  public static void storeFile(String filePath,
+      String fileName, String content) throws IOException {
+    FileWriter out = null;
+    logger.info("Writing model to file: " + filePath + fileName);
+
+    Instant tick = Instant.now();
+    try {
+      out = new FileWriter(filePath + fileName);
+      out.write(content);
+    } catch (Exception e) {
+      e.printStackTrace();
+    } finally {
+      out.close();
+      Instant tock = Instant.now();
+      logger.info("File writing completed in: " + Duration.between(tick, tock).toString());
+    }
+  }
+
+  /**
+   * Delete file.
+   *
+   * @param filePath the file path
+   */
+  public static void deleteFile(String filePath) {
+    logger.info("Deleting file: " + filePath);
+    try {
+      File file = new File(filePath);
+      if (file.delete()) {
+        logger.info(file.getName() + " is deleted!");
+      } else {
+        logger.info("Delete operation is failed.");
+      }
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+  }
+
+  public static String fromMillisToUtcDate(Long time) {
+    return dtFormatter.format(new Date(time * 1000).toInstant());
+  }
+
+  /**
+   * Encrypt.
+   *
+   * @param text the text
+   * @return the string
+   */
   public static String encrypt(String text) {
-	  String encr = "";
-      try 
-      {
-          String key = "key1234567"; 
-          Key aesKey = new SecretKeySpec(Arrays.copyOf(key.getBytes("UTF-8"), 16), "AES");
-          Cipher cipher = Cipher.getInstance("AES");
-          cipher.init(Cipher.ENCRYPT_MODE, aesKey);
-          byte[] encrypted = cipher.doFinal(text.getBytes());
+    String encr = "";
+    try {
+      String key = "key1234567";
+      Key aesKey = new SecretKeySpec(Arrays.copyOf(key.getBytes("UTF-8"), 16), "AES");
+      Cipher cipher = Cipher.getInstance("AES");
+      cipher.init(Cipher.ENCRYPT_MODE, aesKey);
+      byte[] encrypted = cipher.doFinal(text.getBytes());
 
-          encr = Base64.getEncoder().encodeToString(encrypted);
+      encr = Base64.getEncoder().encodeToString(encrypted);
 
-
-      }
-      catch(Exception e) 
-      {
-          e.printStackTrace();
-      }
-      return encr;
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+    return encr;
   }
-  
-  
+
+  /**
+   * Decrypt.
+   *
+   * @param encr the encr
+   * @return the string
+   */
   public static String decrypt(String encr) {
-	  String decrypted = "";
-      try 
-      {
-          String key = "key1234567"; 
-          Key aesKey = new SecretKeySpec(Arrays.copyOf(key.getBytes("UTF-8"), 16), "AES");
-          Cipher cipher = Cipher.getInstance("AES");
-          
-          cipher.init(Cipher.DECRYPT_MODE, aesKey);
-          byte[] decode = Base64.getDecoder().decode(encr);
-          decrypted = new String(cipher.doFinal(decode));
-          
-      }
-      catch(Exception e) 
-      {
-          e.printStackTrace();
-      }
-      return decrypted;
-  }
-	
+    String decrypted = "";
+    try {
+      String key = "key1234567";
+      Key aesKey = new SecretKeySpec(Arrays.copyOf(key.getBytes("UTF-8"), 16), "AES");
+      Cipher cipher = Cipher.getInstance("AES");
 
-	
-	
-	
+      cipher.init(Cipher.DECRYPT_MODE, aesKey);
+      byte[] decode = Base64.getDecoder().decode(encr);
+      decrypted = new String(cipher.doFinal(decode));
+
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+    return decrypted;
+  }
 
 }

@@ -15,22 +15,12 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
+
 package it.eng.idra.authentication.fiware.connectors;
-
-import java.util.Base64;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-
-import javax.ws.rs.core.MediaType;
-
-import org.apache.http.Header;
-import org.apache.http.HttpResponse;
 
 import com.google.gson.Gson;
 
-import it.eng.idra.authentication.fiware.configuration.IDMProperty;
+import it.eng.idra.authentication.fiware.configuration.IdmProperty;
 import it.eng.idra.authentication.fiware.model.Auth;
 import it.eng.idra.authentication.fiware.model.Domain;
 import it.eng.idra.authentication.fiware.model.Identity;
@@ -43,129 +33,210 @@ import it.eng.idra.utils.PropertyManager;
 import it.eng.idra.utils.restclient.RestClient;
 import it.eng.idra.utils.restclient.RestClientImpl;
 
+import java.util.Base64;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+
+import javax.ws.rs.core.MediaType;
+
+import org.apache.http.Header;
+import org.apache.http.HttpResponse;
+
+
+
+
+
+// TODO: Auto-generated Javadoc
 /**
  * Integration with Fiware IDM version 6.0.0
  * 
  *
  */
 
-public class Keyrock6Connector extends FiwareIDMConnector {
+@SuppressWarnings("deprecation")
+public class Keyrock6Connector extends FiwareIdmConnector {
 
-	private static final String keystone_baseurl = PropertyManager.getProperty(IDMProperty.IDM_PROTOCOL) + "://"
-			+ PropertyManager.getProperty(IDMProperty.IDM_FIWARE_KEYSTONE_HOST) + ":"
-			+ PropertyManager.getProperty(IDMProperty.IDM_FIWARE_KEYSTONE_PORT);
-	private static final String keystone_path_tokens = PropertyManager
-			.getProperty(IDMProperty.IDM_FIWARE_KEYSTONE_PATH_TOKENS);
+  /** The Constant keystone_baseurl. */
+  private static final String keystone_baseurl = 
+      PropertyManager.getProperty(IdmProperty.IDM_PROTOCOL) + "://"
+      + PropertyManager.getProperty(IdmProperty.IDM_FIWARE_KEYSTONE_HOST) + ":"
+      + PropertyManager.getProperty(IdmProperty.IDM_FIWARE_KEYSTONE_PORT);
+  
+  /** The Constant keystone_path_tokens. */
+  private static final String keystone_path_tokens = PropertyManager
+      .getProperty(IdmProperty.IDM_FIWARE_KEYSTONE_PATH_TOKENS);
 
-	public Keyrock6Connector(String protocol, String host, int port, String client_id, String client_secret,
-			String redirectUri) {
-		super(protocol, host, port, client_id, client_secret, redirectUri);
-	}
+  /**
+   * Instantiates a new keyrock 6 connector.
+   *
+   * @param protocol the protocol
+   * @param host the host
+   * @param port the port
+   * @param clientId the client id
+   * @param clientSecret the client secret
+   * @param redirectUri the redirect uri
+   */
+  public Keyrock6Connector(String protocol, 
+      String host, int port, 
+      String clientId, String clientSecret,
+      String redirectUri) {
+    super(protocol, host, port, clientId, clientSecret, redirectUri);
+  }
 
-	public Token getToken(String code) throws Exception {
+ 
+  /**
+   * Gets the token.
+   *
+   * @param code the code
+   * @return the token
+   * @throws Exception the exception
+   */
+  public Token getToken(String code) throws Exception {
 
-		String url = baseUrl + path_token;
-		String auth = "Basic " + new String(Base64.getEncoder().encode((clientId + ":" + clientSecret).getBytes()));
+    String url = baseUrl + path_token;
+    String auth = "Basic " 
+        + new String(Base64.getEncoder().encode((clientId + ":" + clientSecret).getBytes()));
 
-		Map<String, String> headers = new HashMap<String, String>();
-		headers.put("Authorization", auth);
+    Map<String, String> headers = new HashMap<String, String>();
+    headers.put("Authorization", auth);
 
-		String reqData = "grant_type=authorization_code" + "&code=" + code + "&redirect_uri=" + redirectUri;
+    String reqData = "grant_type=authorization_code" 
+        + "&code=" + code + "&redirect_uri=" + redirectUri;
 
-		RestClient client = new RestClientImpl();
-		HttpResponse response = client.sendPostRequest(url, reqData, MediaType.APPLICATION_FORM_URLENCODED_TYPE,
-				headers);
+    RestClient client = new RestClientImpl();
+    HttpResponse response = client.sendPostRequest(url, 
+        reqData, MediaType.APPLICATION_FORM_URLENCODED_TYPE, headers);
 
-		int status = client.getStatus(response);
-		if (status != 200 && status != 201 && status != 301)
-			throw new Exception(
-					"Unable to retrieve token: " + status + ": " + response.getStatusLine().getReasonPhrase());
+    int status = client.getStatus(response);
+    if (status != 200 && status != 201 && status != 301) {
+      throw new Exception("Unable to retrieve token: " 
+         + status + ": " + response.getStatusLine().getReasonPhrase());
+    }
 
-		String returned_json = client.getHttpResponseBody(response);
+    String returnedJson = client.getHttpResponseBody(response);
 
-		return new Gson().fromJson(returned_json, Token.class);
+    return new Gson().fromJson(returnedJson, Token.class);
 
-	}
+  }
 
-	public Token getAdminToken(String adminuser, String adminpassword) throws Exception {
+  /**
+   * Gets the admin token.
+   *
+   * @param adminuser the adminuser
+   * @param adminpassword the adminpassword
+   * @return the admin token
+   * @throws Exception the exception
+   */
+  public Token getAdminToken(String adminuser, String adminpassword) throws Exception {
 
-		Domain domain = new Domain("default");
-		User user = new User(adminuser, domain, adminpassword);
+    Domain domain = new Domain("default");
+    User user = new User(adminuser, domain, adminpassword);
 
-		Password password = new Password(user);
-		Set<String> methods = new HashSet<String>();
-		methods.add("password");
+    Password password = new Password(user);
+    Set<String> methods = new HashSet<String>();
+    methods.add("password");
 
-		Identity identity = new Identity(methods, password);
-		Auth auth = new Auth(identity);
+    Identity identity = new Identity(methods, password);
+    Auth auth = new Auth(identity);
 
-		UserTokenBean utb = new UserTokenBean(auth);
-		Gson gson = new Gson();
-		String jsutb = gson.toJson(utb);
+    UserTokenBean utb = new UserTokenBean(auth);
+    Gson gson = new Gson();
+    String jsutb = gson.toJson(utb);
 
-		String idmEndpoint = keystone_baseurl + keystone_path_tokens;
+    String idmEndpoint = keystone_baseurl + keystone_path_tokens;
 
-		RestClient client = new RestClientImpl();
-		HttpResponse response = client.sendPostRequest(idmEndpoint, jsutb, MediaType.APPLICATION_JSON_TYPE,
-				new HashMap<String, String>());
+    RestClient client = new RestClientImpl();
+    HttpResponse response = client.sendPostRequest(idmEndpoint, 
+        jsutb, MediaType.APPLICATION_JSON_TYPE,
+        new HashMap<String, String>());
 
-		int status = client.getStatus(response);
-		if (status != 200 && status != 201 && status != 301)
-			throw new Exception("Unable to retrieve token: " + status);
+    int status = client.getStatus(response);
+    if (status != 200 && status != 201 && status != 301) {
+      throw new Exception("Unable to retrieve token: " + status);
+    }
 
-		Header respHeaders = response.getFirstHeader("X-Subject-Token");
-		String token = respHeaders.getValue();
+    Header respHeaders = response.getFirstHeader("X-Subject-Token");
+    String token = respHeaders.getValue();
 
-		return new Token(token, null, null, null, null, null);
-	}
+    return new Token(token, null, null, null, null, null);
+  }
 
-	public Token refreshToken(String token, String refresh_token, String client_id, String client_secret)
-			throws Exception {
-		String url = baseUrl + path_token;
+  /**
+   * Refresh token.
+   *
+   * @param token the token
+   * @param refreshToken the refresh token
+   * @param clientId the client id
+   * @param clientSecret the client secret
+   * @return the token
+   * @throws Exception the exception
+   */
+  public Token refreshToken(String token, 
+      String refreshToken, 
+      String clientId, 
+      String clientSecret)
+      throws Exception {
+    String url = baseUrl + path_token;
 
-		String contentType = MediaType.APPLICATION_FORM_URLENCODED;
-		String Authorization = "Basic "
-				+ new String(Base64.getEncoder().encode((client_id + ":" + client_secret).getBytes()));
+    String contentType = MediaType.APPLICATION_FORM_URLENCODED;
+    String authorization = "Basic "
+        + new String(Base64.getEncoder().encode((clientId + ":" + clientSecret).getBytes()));
 
-		Map<String, String> headers = new HashMap<String, String>();
-		headers.put("Content-Type", contentType);
-		headers.put("Authorization", Authorization);
+    Map<String, String> headers = new HashMap<String, String>();
+    headers.put("Content-Type", contentType);
+    headers.put("Authorization", authorization);
 
-		String reqData = "grant_type=refresh_token" + "&client_id=" + client_id + "&client_secret=" + client_secret
-				+ "&refresh_token=" + refresh_token;
+    String reqData = "grant_type=refresh_token" 
+        + "&client_id=" + clientId + "&client_secret=" + clientSecret
+        + "&refresh_token=" + refreshToken;
 
-		RestClient client = new RestClientImpl();
-		HttpResponse response = client.sendPostRequest(url, reqData, MediaType.APPLICATION_JSON_TYPE, headers);
+    RestClient client = new RestClientImpl();
+    HttpResponse response = client.sendPostRequest(url, 
+        reqData, MediaType.APPLICATION_JSON_TYPE, headers);
 
-		int status = client.getStatus(response);
-		if (status != 200 && status != 201 && status != 301)
-			throw new Exception("Unable to refresh token: " + status);
+    int status = client.getStatus(response);
+    if (status != 200 && status != 201 && status != 301) {
+      throw new Exception("Unable to refresh token: " + status);
+    }
 
-		String returned_json = client.getHttpResponseBody(response);
+    String returnedJson = client.getHttpResponseBody(response);
 
-		return new Gson().fromJson(returned_json, Token.class);
-	}
+    return new Gson().fromJson(returnedJson, Token.class);
+  }
 
-	public UserInfo getUserInfo(String token) throws Exception {
-		String url = baseUrl + path_user + "?access_token=" + token;
+  /**
+   * User Info.
+   *
+   * @param token the token
+   * @return userinfo
+   * @throws Exception the exception
+   */
+  public UserInfo getUserInfo(String token) throws Exception {
+    String url = baseUrl + path_user + "?access_token=" + token;
 
-		RestClient client = new RestClientImpl();
-		HttpResponse response = client.sendGetRequest(url, new HashMap<String, String>());
+    RestClient client = new RestClientImpl();
+    HttpResponse response = client.sendGetRequest(url, new HashMap<String, String>());
 
-		int status = client.getStatus(response);
-		if (status != 200 && status != 201 && status != 301)
-			throw new Exception("Unable to get user info: " + status);
+    int status = client.getStatus(response);
+    if (status != 200 && status != 201 && status != 301) {
+      throw new Exception("Unable to get user info: " + status);
+    }
 
-		String returned_json = client.getHttpResponseBody(response);
+    String returnedJson = client.getHttpResponseBody(response);
 
-		return new Gson().fromJson(returned_json, UserInfo.class);
+    return new Gson().fromJson(returnedJson, UserInfo.class);
 
-	}
+  }
 
-
-
-	public void logout(String token) {
-		return;
-	}
+  /**
+   * Logout.
+   *
+   * @param token the token
+   */
+  public void logout(String token) {
+    return;
+  }
 
 }

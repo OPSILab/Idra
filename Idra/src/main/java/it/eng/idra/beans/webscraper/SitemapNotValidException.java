@@ -15,15 +15,14 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
+
 package it.eng.idra.beans.webscraper;
 
 public class SitemapNotValidException extends Exception {
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
 
-	public SitemapNotValidException(String message) {
-        super(message);
-    }
+  private static final long serialVersionUID = 1L;
+
+  public SitemapNotValidException(String message) {
+    super(message);
+  }
 }

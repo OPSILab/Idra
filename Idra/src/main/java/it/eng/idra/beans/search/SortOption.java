@@ -15,40 +15,45 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
+
 package it.eng.idra.beans.search;
 
 public class SortOption {
 
-	private String field;
-	private SortMode mode;
+  private String field;
+  private SortMode mode;
 
-	public SortOption(String field, SortMode mode) {
-		super();
-		this.field = field;
-		this.mode = mode;
-	}
+  /**
+   * Instantiates a new sort option.
+   *
+   * @param field the field
+   * @param mode the mode
+   */
+  public SortOption(String field, SortMode mode) {
+    super();
+    this.field = field;
+    this.mode = mode;
+  }
 
-	public String getField() {
-		return field;
-	}
+  public String getField() {
+    return field;
+  }
 
-	public void setField(String field) {
-		this.field = field;
-	}
+  public void setField(String field) {
+    this.field = field;
+  }
 
-	public SortMode getMode() {
-		return mode;
-	}
+  public SortMode getMode() {
+    return mode;
+  }
 
-	public void setMode(SortMode mode) {
-		this.mode = mode;
-	}
+  public void setMode(SortMode mode) {
+    this.mode = mode;
+  }
 
-	@Override
-	public String toString() {
-		return "SortOption [field=" + field + ", mode=" + mode + "]";
-	}
+  @Override
+  public String toString() {
+    return "SortOption [field=" + field + ", mode=" + mode + "]";
+  }
 
-	
-	
 }

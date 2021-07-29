@@ -2,45 +2,50 @@ package it.eng.idra.statistics;
 
 public class DatasetUpdatedStatistics {
 
-	private String name;
-	private int added;
-	private int updated;
-	
-	public DatasetUpdatedStatistics() {
-		// TODO Auto-generated constructor stub
-	}
-	
-	public DatasetUpdatedStatistics(String name, int added, int updated) {
-		super();
-		this.name = name;
-		this.added = added;
-		this.updated = updated;
-	}
+  private String name;
+  private int added;
+  private int updated;
 
-	public String getName() {
-		return name;
-	}
+  public DatasetUpdatedStatistics() {
+    // TODO Auto-generated constructor stub
+  }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+  /**
+   * Instantiates a new dataset updated statistics.
+   *
+   * @param name the name
+   * @param added the added
+   * @param updated the updated
+   */
+  public DatasetUpdatedStatistics(String name, int added, int updated) {
+    super();
+    this.name = name;
+    this.added = added;
+    this.updated = updated;
+  }
 
-	public int getAdded() {
-		return added;
-	}
+  public String getName() {
+    return name;
+  }
 
-	public void setAdded(int added) {
-		this.added = added;
-	}
+  public void setName(String name) {
+    this.name = name;
+  }
 
-	public int getUpdated() {
-		return updated;
-	}
+  public int getAdded() {
+    return added;
+  }
 
-	public void setUpdated(int updated) {
-		this.updated = updated;
-	}
-	
-	
+  public void setAdded(int added) {
+    this.added = added;
+  }
+
+  public int getUpdated() {
+    return updated;
+  }
+
+  public void setUpdated(int updated) {
+    this.updated = updated;
+  }
 
 }

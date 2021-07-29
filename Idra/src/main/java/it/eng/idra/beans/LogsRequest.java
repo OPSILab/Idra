@@ -15,57 +15,65 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
+
 package it.eng.idra.beans;
+
+import it.eng.idra.utils.JsonRequired;
 
 import java.time.ZonedDateTime;
 import java.util.List;
 
-import it.eng.idra.utils.JsonRequired;
-
 public class LogsRequest {
 
-	@JsonRequired
-	private List<String> levelList;
-	@JsonRequired
-	private ZonedDateTime startDate;
-	@JsonRequired
-	private ZonedDateTime endDate;
+  @JsonRequired
+  private List<String> levelList;
+  @JsonRequired
+  private ZonedDateTime startDate;
+  @JsonRequired
+  private ZonedDateTime endDate;
 
-	public LogsRequest(List<String> levelList, ZonedDateTime startDate, ZonedDateTime endDate) {
-		super();
-		this.levelList = levelList;
-		this.startDate = startDate;
-		this.endDate = endDate;
-	}
+  /**
+   * Instantiates a new logs request.
+   *
+   * @param levelList the level list
+   * @param startDate the start date
+   * @param endDate the end date
+   */
+  public LogsRequest(List<String> levelList, ZonedDateTime startDate, ZonedDateTime endDate) {
+    super();
+    this.levelList = levelList;
+    this.startDate = startDate;
+    this.endDate = endDate;
+  }
 
-	public List<String> getLevelList() {
-		return levelList;
-	}
+  public List<String> getLevelList() {
+    return levelList;
+  }
 
-	public void setLevelList(List<String> level) {
-		this.levelList = level;
-	}
+  public void setLevelList(List<String> level) {
+    this.levelList = level;
+  }
 
-	public ZonedDateTime getStartDate() {
-		return startDate;
-	}
+  public ZonedDateTime getStartDate() {
+    return startDate;
+  }
 
-	public void setStartDate(ZonedDateTime startDate) {
-		this.startDate = startDate;
-	}
+  public void setStartDate(ZonedDateTime startDate) {
+    this.startDate = startDate;
+  }
 
-	public ZonedDateTime getEndDate() {
-		return endDate;
-	}
+  public ZonedDateTime getEndDate() {
+    return endDate;
+  }
 
-	public void setEndDate(ZonedDateTime endDate) {
-		this.endDate = endDate;
-	}
+  public void setEndDate(ZonedDateTime endDate) {
+    this.endDate = endDate;
+  }
 
-	@Override
-	public String toString() {
-		return "LogsRequest [levelList=" + levelList + ", startDate=" + startDate + ", endDate=" + endDate + "]";
-	}
+  @Override
+  public String toString() {
+    return "LogsRequest [levelList=" + levelList 
+        + ", startDate=" + startDate + ", endDate=" + endDate + "]";
+  }
 
-	
 }

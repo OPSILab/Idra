@@ -15,51 +15,51 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package it.eng.idra.beans.search;
 
-import java.util.List;
+package it.eng.idra.beans.search;
 
 import it.eng.idra.beans.EuroVocLanguage;
 import it.eng.idra.utils.JsonRequired;
 
+import java.util.List;
+
 public class SearchEuroVocFilter {
 
-	@JsonRequired
-	private boolean euroVoc;
+  @JsonRequired
+  private boolean euroVoc;
 
-	private EuroVocLanguage sourceLanguage;
-	private List<EuroVocLanguage> targetLanguages;
-	
-	public boolean isEuroVoc() {
-		return euroVoc;
-	}
+  private EuroVocLanguage sourceLanguage;
+  private List<EuroVocLanguage> targetLanguages;
 
-	public void setEuroVoc(boolean euroVoc) {
-		this.euroVoc = euroVoc;
-	}
+  public boolean isEuroVoc() {
+    return euroVoc;
+  }
 
-	public EuroVocLanguage getSourceLanguage() {
-		return sourceLanguage;
-	}
+  public void setEuroVoc(boolean euroVoc) {
+    this.euroVoc = euroVoc;
+  }
 
-	public void setSourceLanguage(EuroVocLanguage sourceLanguage) {
-		this.sourceLanguage = sourceLanguage;
-	}
+  public EuroVocLanguage getSourceLanguage() {
+    return sourceLanguage;
+  }
 
-	public List<EuroVocLanguage> getTargetLanguages() {
-		return targetLanguages;
-	}
+  public void setSourceLanguage(EuroVocLanguage sourceLanguage) {
+    this.sourceLanguage = sourceLanguage;
+  }
 
-	public void setTargetLanguages(List<EuroVocLanguage> targetLanguages) {
-		this.targetLanguages = targetLanguages;
-	}
+  public List<EuroVocLanguage> getTargetLanguages() {
+    return targetLanguages;
+  }
 
-	@Override
-	public String toString() {
-		return "SearchEuroVocFilter [euroVoc=" + euroVoc + ", sourceLanguage=" + sourceLanguage + ", targetLanguages="
-				+ targetLanguages + "]";
-	}
-	
-	
-	
+  public void setTargetLanguages(List<EuroVocLanguage> targetLanguages) {
+    this.targetLanguages = targetLanguages;
+  }
+
+  @Override
+  public String toString() {
+    return "SearchEuroVocFilter [euroVoc=" 
+        + euroVoc + ", sourceLanguage=" + sourceLanguage + ", targetLanguages="
+        + targetLanguages + "]";
+  }
+
 }

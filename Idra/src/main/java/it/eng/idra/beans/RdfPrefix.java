@@ -15,7 +15,10 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
+
 package it.eng.idra.beans;
+
+import it.eng.idra.utils.JsonRequired;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -24,63 +27,74 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-import it.eng.idra.utils.JsonRequired;
-
 @Entity
 @Table(name = "prefix")
 public class RdfPrefix {
 
-	@Id
-	@Column(name = "id")
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private int id;
+  @Id
+  @Column(name = "id")
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private int id;
 
-	@JsonRequired
-	@Column(name = "prefix")
-	private String prefix;
+  @JsonRequired
+  @Column(name = "prefix")
+  private String prefix;
 
-	@JsonRequired
-	@Column(name = "namespace")
-	private String namespace;
+  @JsonRequired
+  @Column(name = "namespace")
+  private String namespace;
 
-	public RdfPrefix() {
-	}
+  public RdfPrefix() {
+  }
 
-	public RdfPrefix(int id, String prefix, String namespace) {
-		super();
-		this.id = id;
-		this.prefix = prefix;
-		this.namespace = namespace;
-	}
+  /**
+   * Instantiates a new rdf prefix.
+   *
+   * @param id the id
+   * @param prefix the prefix
+   * @param namespace the namespace
+   */
+  public RdfPrefix(int id, String prefix, String namespace) {
+    super();
+    this.id = id;
+    this.prefix = prefix;
+    this.namespace = namespace;
+  }
 
-	public RdfPrefix(String prefix, String namespace) {
-		super();
-		this.prefix = prefix;
-		this.namespace = namespace;
-	}
+  /**
+   * Instantiates a new rdf prefix.
+   *
+   * @param prefix the prefix
+   * @param namespace the namespace
+   */
+  public RdfPrefix(String prefix, String namespace) {
+    super();
+    this.prefix = prefix;
+    this.namespace = namespace;
+  }
 
-	public int getId() {
-		return id;
-	}
+  public int getId() {
+    return id;
+  }
 
-	public void setId(int id) {
-		this.id = id;
-	}
+  public void setId(int id) {
+    this.id = id;
+  }
 
-	public String getPrefix() {
-		return prefix;
-	}
+  public String getPrefix() {
+    return prefix;
+  }
 
-	public void setPrefix(String prefix) {
-		this.prefix = prefix;
-	}
+  public void setPrefix(String prefix) {
+    this.prefix = prefix;
+  }
 
-	public String getNamespace() {
-		return namespace;
-	}
+  public String getNamespace() {
+    return namespace;
+  }
 
-	public void setNamespace(String namespace) {
-		this.namespace = namespace;
-	}
+  public void setNamespace(String namespace) {
+    this.namespace = namespace;
+  }
 
 }

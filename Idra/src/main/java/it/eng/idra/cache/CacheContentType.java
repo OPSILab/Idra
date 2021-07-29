@@ -15,10 +15,13 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
+
 package it.eng.idra.cache;
 
 public enum CacheContentType {
 
-	dataset, distribution, contactPoint, creator, rightsHolder, publisher, conformsTo, spatialCoverage, temporalCoverage, licenseDocument, linkedSchemas, checksum, theme, subject;
+  dataset, distribution, contactPoint, creator, rightsHolder,
+  publisher, conformsTo, spatialCoverage, temporalCoverage,
+  licenseDocument, linkedSchemas, checksum, theme, subject;
 
 }

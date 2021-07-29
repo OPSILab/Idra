@@ -15,8 +15,16 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
+
 package it.eng.idra.utils;
 
+import com.google.gson.JsonDeserializationContext;
+import com.google.gson.JsonDeserializer;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParseException;
+import com.google.gson.JsonPrimitive;
+import com.google.gson.JsonSerializationContext;
+import com.google.gson.JsonSerializer;
 import java.lang.reflect.Type;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -24,45 +32,39 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.TimeZone;
 
-import com.google.gson.*;
+public class CalendarAdapter implements JsonSerializer<Calendar>, JsonDeserializer<Calendar> {
 
-public class CalendarAdapter implements JsonSerializer<Calendar>,
-		JsonDeserializer<Calendar> {
+  public CalendarAdapter() {
 
-	 
-    public CalendarAdapter() {
-       
+  }
+
+  @Override
+  public JsonElement serialize(Calendar calendar, Type type, JsonSerializationContext context) {
+
+    String str = null;
+    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSSSS");
+    sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
+    if (calendar != null) {
+      str = sdf.format(calendar.getTime());
     }
- 
-    @Override
-    public JsonElement serialize(Calendar calendar, 
-        Type type, JsonSerializationContext context) {
-         
-        String str = null;
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSSSS");
-		sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
-        if (calendar != null) {
-            str = sdf.format(calendar.getTime());
-        }
- 
-        return new JsonPrimitive(str);
+
+    return new JsonPrimitive(str);
+  }
+
+  @Override
+  public Calendar deserialize(JsonElement json, Type type, JsonDeserializationContext context)
+      throws JsonParseException {
+
+    String strDate = json.getAsString();
+    GregorianCalendar calendar = null;
+    try {
+      calendar = new GregorianCalendar(TimeZone.getTimeZone("UTC"));
+      SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSSSS");
+      sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
+      calendar.setTimeInMillis(sdf.parse(strDate).getTime());
+    } catch (ParseException e) {
+      throw new JsonParseException("calendar parsing error");
     }
- 
-    @Override
-    public Calendar deserialize(JsonElement json, 
-        Type type, JsonDeserializationContext context) 
-        throws JsonParseException {
-         
-        String strDate = json.getAsString();
-        GregorianCalendar calendar = null;
-        try {
-        	calendar = new GregorianCalendar(TimeZone.getTimeZone("UTC"));
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSSSS");
-    		sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
-            calendar.setTimeInMillis(sdf.parse(strDate).getTime());
-        } catch (ParseException e) {
-            throw new JsonParseException("calendar parsing error");
-        }   
-        return calendar;
-    }
+    return calendar;
+  }
 }

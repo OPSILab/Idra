@@ -15,14 +15,18 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
+
 package it.eng.idra.scheduler.exception;
 
-
 public class SchedulerCannotBeInitialisedException extends Exception {
-    public SchedulerCannotBeInitialisedException(String message) {
-        super(message);
-    }
-    public SchedulerCannotBeInitialisedException(String message, Throwable t) {
-        super(message, t);
-    }
+  
+  private static final long serialVersionUID = -5194733344990785894L;
+
+  public SchedulerCannotBeInitialisedException(String message) {
+    super(message);
+  }
+
+  public SchedulerCannotBeInitialisedException(String message, Throwable t) {
+    super(message, t);
+  }
 }

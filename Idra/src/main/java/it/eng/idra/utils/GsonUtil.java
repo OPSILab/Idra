@@ -15,18 +15,8 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package it.eng.idra.utils;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Type;
-import java.time.ZoneOffset;
-import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
-import java.time.temporal.ChronoUnit;
-import java.util.GregorianCalendar;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Set;
+package it.eng.idra.utils;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -40,327 +30,404 @@ import com.google.gson.JsonSerializer;
 import com.google.gson.reflect.TypeToken;
 
 import it.eng.idra.authentication.basic.LoggedUser;
-import it.eng.idra.beans.*;
-import it.eng.idra.beans.ckan.CKANErrorResponse;
-import it.eng.idra.beans.ckan.CKANSuccessResponse;
-import it.eng.idra.beans.dcat.DCATDataset;
-import it.eng.idra.beans.dcat.DCATDistribution;
-import it.eng.idra.beans.dcat.DCATProperty;
-import it.eng.idra.beans.dcat.DCTLicenseDocument;
-import it.eng.idra.beans.dcat.DCTStandard;
-import it.eng.idra.beans.dcat.SKOSConcept;
-import it.eng.idra.beans.dcat.SKOSPrefLabel;
-import it.eng.idra.beans.dcat.SPDXChecksum;
-import it.eng.idra.beans.odms.ODMSCatalogue;
-import it.eng.idra.beans.odms.ODMSCatalogueImage;
-import it.eng.idra.beans.odms.ODMSCatalogueMessage;
+import it.eng.idra.beans.ConfigurationParameter;
+import it.eng.idra.beans.Datalet;
+import it.eng.idra.beans.ErrorResponse;
+import it.eng.idra.beans.Log;
+import it.eng.idra.beans.LogsRequest;
+import it.eng.idra.beans.PasswordChange;
+import it.eng.idra.beans.RdfPrefix;
+import it.eng.idra.beans.RemoteCatalogue;
+import it.eng.idra.beans.User;
+import it.eng.idra.beans.ckan.CkanErrorResponse;
+import it.eng.idra.beans.ckan.CkanSuccessResponse;
+import it.eng.idra.beans.dcat.DcatDataset;
+import it.eng.idra.beans.dcat.DcatDistribution;
+import it.eng.idra.beans.dcat.DcatProperty;
+import it.eng.idra.beans.dcat.DctLicenseDocument;
+import it.eng.idra.beans.dcat.DctStandard;
+import it.eng.idra.beans.dcat.SkosConcept;
+import it.eng.idra.beans.dcat.SkosPrefLabel;
+import it.eng.idra.beans.dcat.SpdxChecksum;
+import it.eng.idra.beans.odms.OdmsCatalogue;
+import it.eng.idra.beans.odms.OdmsCatalogueImage;
+import it.eng.idra.beans.odms.OdmsCatalogueMessage;
 import it.eng.idra.beans.orion.OrionDistributionConfig;
-import it.eng.idra.beans.search.DCATAPSearchResult;
+import it.eng.idra.beans.search.DcatApSearchResult;
 import it.eng.idra.beans.search.SearchFacet;
 import it.eng.idra.beans.search.SearchFilter;
 import it.eng.idra.beans.search.SearchRequest;
 import it.eng.idra.beans.search.SearchResult;
 import it.eng.idra.beans.search.SparqlSearchRequest;
-import it.eng.idra.beans.spod.SPODDataset;
-import it.eng.idra.beans.spod.SPODExtraDeserializer;
-import it.eng.idra.beans.spod.SPODGroupDeserializer;
-import it.eng.idra.beans.spod.SPODTagDeserializer;
+import it.eng.idra.beans.spod.SpodDataset;
+import it.eng.idra.beans.spod.SpodExtraDeserializer;
+import it.eng.idra.beans.spod.SpodGroupDeserializer;
+import it.eng.idra.beans.spod.SpodTagDeserializer;
 import it.eng.idra.beans.statistics.KeywordStatistics;
 import it.eng.idra.beans.statistics.KeywordStatisticsResult;
 import it.eng.idra.beans.statistics.StatisticsRequest;
 import it.eng.idra.statistics.PlatformStatistcs;
-import it.eng.idra.beans.RemoteCatalogue;
+
+import java.lang.reflect.Field;
+import java.lang.reflect.Type;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
+import java.util.GregorianCalendar;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Set;
+
+
 
 public final class GsonUtil {
 
-	private static DateTimeFormatter dtFormatter = DateTimeFormatter.ISO_OFFSET_DATE_TIME.withZone(ZoneOffset.UTC);
+  private static DateTimeFormatter dtFormatter = 
+      DateTimeFormatter.ISO_OFFSET_DATE_TIME.withZone(ZoneOffset.UTC);
 
-	public static Type nodeType = new TypeToken<ODMSCatalogue>() {
-	}.getType();
+  public static Type nodeType = new TypeToken<OdmsCatalogue>() {
+  }.getType();
 
-	public static Type nodeListType = new TypeToken<List<ODMSCatalogue>>() {
-	}.getType();
+  public static Type nodeListType = new TypeToken<List<OdmsCatalogue>>() {
+  }.getType();
 
-	public static Type messagesType = new TypeToken<HashMap<Integer, Long>>() {
-	}.getType();
+  public static Type messagesType = new TypeToken<HashMap<Integer, Long>>() {
+  }.getType();
 
-	public static Type messageListType = new TypeToken<List<ODMSCatalogueMessage>>() {
-	}.getType();
+  public static Type messageListType = new TypeToken<List<OdmsCatalogueMessage>>() {
+  }.getType();
 
-	public static Type stdListType = new TypeToken<List<DCTStandard>>() {
-	}.getType();
+  public static Type stdListType = new TypeToken<List<DctStandard>>() {
+  }.getType();
 
-	public static Type licenseType = new TypeToken<DCTLicenseDocument>() {
-	}.getType();
+  public static Type licenseType = new TypeToken<DctLicenseDocument>() {
+  }.getType();
 
-	public static Type checksumType = new TypeToken<SPDXChecksum>() {
-	}.getType();
+  public static Type checksumType = new TypeToken<SpdxChecksum>() {
+  }.getType();
 
-	public static Type messageType = new TypeToken<ODMSCatalogueMessage>() {
-	}.getType();
+  public static Type messageType = new TypeToken<OdmsCatalogueMessage>() {
+  }.getType();
 
-	public static Type configurationType = new TypeToken<HashMap<String, Object>>() {
-	}.getType();
+  public static Type configurationType = new TypeToken<HashMap<String, Object>>() {
+  }.getType();
 
-	public static Type prefixListType = new TypeToken<List<RdfPrefix>>() {
-	}.getType();
+  public static Type prefixListType = new TypeToken<List<RdfPrefix>>() {
+  }.getType();
 
-	public static Type prefixType = new TypeToken<RdfPrefix>() {
-	}.getType();
+  public static Type prefixType = new TypeToken<RdfPrefix>() {
+  }.getType();
 
-	public static Type remCatType = new TypeToken<RemoteCatalogue>() {
-	}.getType();
-	public static Type remCatListType = new TypeToken<List<RemoteCatalogue>>() {
-	}.getType();
-	
-	
+  public static Type remCatType = new TypeToken<RemoteCatalogue>() {
+  }.getType();
+  public static Type remCatListType = new TypeToken<List<RemoteCatalogue>>() {
+  }.getType();
 
-	public static Type userType = new TypeToken<User>() {
-	}.getType();
+  public static Type userType = new TypeToken<User>() {
+  }.getType();
 
-	public static Type loggedUserType = new TypeToken<LoggedUser>() {
-	}.getType();
+  public static Type loggedUserType = new TypeToken<LoggedUser>() {
+  }.getType();
 
-	public static Type stringListType = new TypeToken<List<String>>() {
-	}.getType();
+  public static Type stringListType = new TypeToken<List<String>>() {
+  }.getType();
 
-	public static Type keywordStatisticsResultListType = new TypeToken<List<KeywordStatisticsResult>>() {
-	}.getType();
+  public static Type keywordStatisticsResultListType = 
+      new TypeToken<List<KeywordStatisticsResult>>() {
+  }.getType();
 
-	public static Type keywordStatisticsType = new TypeToken<KeywordStatistics>() {
-	}.getType();
+  public static Type keywordStatisticsType = new TypeToken<KeywordStatistics>() {
+  }.getType();
 
-	public static Type statisticsRequestType = new TypeToken<StatisticsRequest>() {
-	}.getType();
+  public static Type statisticsRequestType = new TypeToken<StatisticsRequest>() {
+  }.getType();
 
-	public static Type logType = new TypeToken<Log>() {
-	}.getType();
+  public static Type logType = new TypeToken<Log>() {
+  }.getType();
 
-	public static Type logsListType = new TypeToken<List<Log>>() {
-	}.getType();
+  public static Type logsListType = new TypeToken<List<Log>>() {
+  }.getType();
 
-	public static Type logRequestType = new TypeToken<LogsRequest>() {
-	}.getType();
+  public static Type logRequestType = new TypeToken<LogsRequest>() {
+  }.getType();
 
-	public static Type logsRequestListType = new TypeToken<List<LogsRequest>>() {
-	}.getType();
+  public static Type logsRequestListType = new TypeToken<List<LogsRequest>>() {
+  }.getType();
 
-	public static Type searchFilterListType = new TypeToken<List<SearchFilter>>() {
-	}.getType();
+  public static Type searchFilterListType = new TypeToken<List<SearchFilter>>() {
+  }.getType();
 
-	public static Type searchRequestType = new TypeToken<SearchRequest>() {
-	}.getType();
+  public static Type searchRequestType = new TypeToken<SearchRequest>() {
+  }.getType();
 
-	public static Type searchResultType = new TypeToken<SearchResult>() {
-	}.getType();
+  public static Type searchResultType = new TypeToken<SearchResult>() {
+  }.getType();
 
-	public static Type dcatapSearchResultType = new TypeToken<DCATAPSearchResult>() {
-	}.getType();
+  public static Type dcatapSearchResultType = new TypeToken<DcatApSearchResult>() {
+  }.getType();
 
-	public static Type datasetType = new TypeToken<DCATDataset>() {
-	}.getType();
-	
+  public static Type datasetType = new TypeToken<DcatDataset>() {
+  }.getType();
 
-	public static Type distributionType = new TypeToken<DCATDistribution>() {
-	}.getType();
+  public static Type distributionType = new TypeToken<DcatDistribution>() {
+  }.getType();
 
-	public static Type distributionListType = new TypeToken<List<DCATDistribution>>() {
-	}.getType();
-	
-	public static Type spodDatasetType = new TypeToken<SPODDataset>() {
-	}.getType();
-	
-	public static Type datasetListType = new TypeToken<List<DCATDataset>>() {
-	}.getType();
-	
-	public static Type orionDistributionListType = new TypeToken<List<OrionDistributionConfig>>() {
-	}.getType();
-	
-	public static Type orionDistributionType = new TypeToken<OrionDistributionConfig>() {
-	}.getType();
-	
-	public static Type sparqlSearchRequestType = new TypeToken<SparqlSearchRequest>() {
-	}.getType();
+  public static Type distributionListType = new TypeToken<List<DcatDistribution>>() {
+  }.getType();
 
-	public static Type facetsType = new TypeToken<SearchFacet>() {
-	}.getType();
+  public static Type spodDatasetType = new TypeToken<SpodDataset>() {
+  }.getType();
 
-	public static Type facetsListType = new TypeToken<List<SearchFacet>>() {
-	}.getType();
+  public static Type datasetListType = new TypeToken<List<DcatDataset>>() {
+  }.getType();
 
-	public static Type errorResponseSetType = new TypeToken<Set<ErrorResponse>>() {
-	}.getType();
+  public static Type orionDistributionListType = new TypeToken<List<OrionDistributionConfig>>() {
+  }.getType();
 
-	public static Type dataletType = new TypeToken<Datalet>() {
-	}.getType();
+  public static Type orionDistributionType = new TypeToken<OrionDistributionConfig>() {
+  }.getType();
 
-	public static Type dataletListType = new TypeToken<List<Datalet>>() {
-	}.getType();
+  public static Type sparqlSearchRequestType = new TypeToken<SparqlSearchRequest>() {
+  }.getType();
 
-	public static Type conceptListType = new TypeToken<List<SKOSConcept>>() {
-	}.getType();
+  public static Type facetsType = new TypeToken<SearchFacet>() {
+  }.getType();
 
-	public static Type conceptType = new TypeToken<SKOSConcept>() {
-	}.getType();
-	
-	public static Type prefLabelListType = new TypeToken<List<SKOSPrefLabel>>() {
-	}.getType();
+  public static Type facetsListType = new TypeToken<List<SearchFacet>>() {
+  }.getType();
 
-	public static Type prefLabelType = new TypeToken<SKOSPrefLabel>() {
-	}.getType();
-	
-	public static Type extraListType = new TypeToken<List<org.ckan.Extra>>() {
-	}.getType();
-	
-	public static Type platformStatsType = new TypeToken<PlatformStatistcs>() {
-	}.getType();
-	
-	public static Type ckanSuccType = new TypeToken<CKANSuccessResponse<Object>>() {
-	}.getType();
-	public static Type ckanErrType = new TypeToken<CKANErrorResponse>() {
-	}.getType();
-	
-	private static GsonBuilder gsonBuilder = new GsonBuilder()
-			.registerTypeAdapter(ZonedDateTime.class, new JsonDeserializer<ZonedDateTime>() {
-				public ZonedDateTime deserialize(JsonElement jsonElement, Type type,
-						JsonDeserializationContext jsonDeserializationContext) throws JsonParseException {
-					return ZonedDateTime.from(dtFormatter.parse(jsonElement.getAsString()));
-				}
-			}).registerTypeAdapter(ZonedDateTime.class, new JsonSerializer<ZonedDateTime>() {
-				@Override
-				public JsonElement serialize(ZonedDateTime zonedDateTime, Type type,
-						JsonSerializationContext jsonSerializationContext) {
-					return new JsonPrimitive(dtFormatter.format(zonedDateTime.truncatedTo(ChronoUnit.SECONDS)));
-				}
-			})
-			 .registerTypeAdapter(DCATProperty.class, new JsonSerializer<DCATProperty>() {
-			 @Override
-			 public JsonElement serialize(DCATProperty property, Type type,
-			 JsonSerializationContext jsonSerializationContext) {
-			 return new JsonPrimitive(property.getValue().toString());
-			 }
-			 })
-			.registerTypeAdapter(ODMSCatalogue.class, new AnnotatedDeserializer<ODMSCatalogue>())
-			.registerTypeAdapter(ConfigurationParameter.class, new AnnotatedDeserializer<ConfigurationParameter>())
-			.registerTypeAdapter(RdfPrefix.class, new AnnotatedDeserializer<RdfPrefix>())
-			.registerTypeAdapter(User.class, new AnnotatedDeserializer<User>())
-			.registerTypeAdapter(PasswordChange.class, new AnnotatedDeserializer<PasswordChange>())
-			.registerTypeAdapter(StatisticsRequest.class, new AnnotatedDeserializer<StatisticsRequest>())
-			.registerTypeAdapter(LogsRequest.class, new AnnotatedDeserializer<LogsRequest>())
-			.registerTypeAdapter(SearchRequest.class, new AnnotatedDeserializer<LogsRequest>())
-			.registerTypeAdapter(SearchFilter.class, new AnnotatedDeserializer<LogsRequest>())
-			.registerTypeAdapter(ErrorResponse.class, new AnnotatedDeserializer<ErrorResponse>())
-			.registerTypeHierarchyAdapter(GregorianCalendar.class, new CalendarAdapter())
-			.registerTypeAdapter(ODMSCatalogueImage.class, new ImageSerializer())
-			
-			.registerTypeAdapter(org.ckan.Tag.class, new SPODTagDeserializer())
-			.registerTypeAdapter(org.ckan.Group.class, new SPODGroupDeserializer())
-			.registerTypeAdapter(extraListType , new SPODExtraDeserializer());
-	
-	private static Gson gson = gsonBuilder.create();
-	private static Gson gsonExcludeFields = gsonBuilder.excludeFieldsWithoutExposeAnnotation().create();
+  public static Type errorResponseSetType = new TypeToken<Set<ErrorResponse>>() {
+  }.getType();
 
-	public static <T> T json2Obj(String json, Class<T> t) throws GsonUtilException {
-		T obj = null;
-		try {
-			obj = gson.fromJson(json, t);
-		} catch (Exception e) {
+  public static Type dataletType = new TypeToken<Datalet>() {
+  }.getType();
 
-			throw new GsonUtilException("JSON to OBJECT failed: " + e.getMessage());
-		}
-		return obj;
-	}
+  public static Type dataletListType = new TypeToken<List<Datalet>>() {
+  }.getType();
 
-	public static <T> T json2Obj(String json, Type t) throws GsonUtilException {
+  public static Type conceptListType = new TypeToken<List<SkosConcept>>() {
+  }.getType();
 
-		T obj = null;
-		try {
-			obj = gson.fromJson(json, t);
-		} catch (Exception e) {
+  public static Type conceptType = new TypeToken<SkosConcept>() {
+  }.getType();
 
-			throw new GsonUtilException("JSON to OBJECT failed: " + e.getMessage());
-		}
-		return obj;
-	}
+  public static Type prefLabelListType = new TypeToken<List<SkosPrefLabel>>() {
+  }.getType();
 
-	public static <T> String obj2Json(Object obj, Class<T> t) throws GsonUtilException {
-		String json = null;
+  public static Type prefLabelType = new TypeToken<SkosPrefLabel>() {
+  }.getType();
 
-		try {
-			json = gson.toJson(obj, t);
-		} catch (Exception e) {
-			throw new GsonUtilException("Object to JSON failed: " + e.getMessage());
-		}
-		return json;
-	}
+  public static Type extraListType = new TypeToken<List<org.ckan.Extra>>() {
+  }.getType();
 
-	public static <T> String obj2Json(Object obj, Type t) throws GsonUtilException {
-		String json = null;
+  public static Type platformStatsType = new TypeToken<PlatformStatistcs>() {
+  }.getType();
 
-		try {
-			json = gson.toJson(obj, t);
-		} catch (Exception e) {
-			throw new GsonUtilException("Object to JSON failed: " + e.getMessage());
-		}
-		return json;
-	}
-	
-	public static <T> String obj2JsonWithExclude(Object obj, Class<T> t) throws GsonUtilException {
-		String json = null;
+  public static Type ckanSuccType = new TypeToken<CkanSuccessResponse<Object>>() {
+  }.getType();
+  public static Type ckanErrType = new TypeToken<CkanErrorResponse>() {
+  }.getType();
 
-		try {
-			json = gsonExcludeFields.toJson(obj, t);
-		} catch (Exception e) {
-			throw new GsonUtilException("Object to JSON failed: " + e.getMessage());
-		}
-		return json;
-	}
+  private static GsonBuilder gsonBuilder = new GsonBuilder()
+      .registerTypeAdapter(ZonedDateTime.class, new JsonDeserializer<ZonedDateTime>() {
+        public ZonedDateTime deserialize(JsonElement jsonElement, Type type,
+            JsonDeserializationContext jsonDeserializationContext) throws JsonParseException {
+          return ZonedDateTime.from(dtFormatter.parse(jsonElement.getAsString()));
+        }
+      }).registerTypeAdapter(ZonedDateTime.class, new JsonSerializer<ZonedDateTime>() {
+        @Override
+        public JsonElement serialize(ZonedDateTime zonedDateTime, Type type,
+            JsonSerializationContext jsonSerializationContext) {
+          return new JsonPrimitive(
+              dtFormatter.format(zonedDateTime.truncatedTo(ChronoUnit.SECONDS)));
+        }
+      }).registerTypeAdapter(DcatProperty.class, new JsonSerializer<DcatProperty>() {
+        @Override
+        public JsonElement serialize(DcatProperty property, Type type,
+            JsonSerializationContext jsonSerializationContext) {
+          return new JsonPrimitive(property.getValue().toString());
+        }
+      }).registerTypeAdapter(OdmsCatalogue.class, new AnnotatedDeserializer<OdmsCatalogue>())
+      .registerTypeAdapter(ConfigurationParameter.class, 
+          new AnnotatedDeserializer<ConfigurationParameter>())
+      .registerTypeAdapter(RdfPrefix.class, new AnnotatedDeserializer<RdfPrefix>())
+      .registerTypeAdapter(User.class, new AnnotatedDeserializer<User>())
+      .registerTypeAdapter(PasswordChange.class, new AnnotatedDeserializer<PasswordChange>())
+      .registerTypeAdapter(StatisticsRequest.class, new AnnotatedDeserializer<StatisticsRequest>())
+      .registerTypeAdapter(LogsRequest.class, new AnnotatedDeserializer<LogsRequest>())
+      .registerTypeAdapter(SearchRequest.class, new AnnotatedDeserializer<LogsRequest>())
+      .registerTypeAdapter(SearchFilter.class, new AnnotatedDeserializer<LogsRequest>())
+      .registerTypeAdapter(ErrorResponse.class, new AnnotatedDeserializer<ErrorResponse>())
+      .registerTypeHierarchyAdapter(GregorianCalendar.class, new CalendarAdapter())
+      .registerTypeAdapter(OdmsCatalogueImage.class, new ImageSerializer())
 
-	public static <T> String obj2JsonWithExclude(Object obj, Type t) throws GsonUtilException {
-		String json = null;
+      .registerTypeAdapter(org.ckan.Tag.class, new SpodTagDeserializer())
+      .registerTypeAdapter(org.ckan.Group.class, new SpodGroupDeserializer())
+      .registerTypeAdapter(extraListType, new SpodExtraDeserializer());
 
-		try {
-			json = gsonExcludeFields.toJson(obj, t);
-		} catch (Exception e) {
-			throw new GsonUtilException("Object to JSON failed: " + e.getMessage());
-		}
-		return json;
-	}
+  private static Gson gson = gsonBuilder.create();
+  private static Gson gsonExcludeFields = 
+      gsonBuilder.excludeFieldsWithoutExposeAnnotation().create();
 
-	static class AnnotatedDeserializer<T> implements JsonDeserializer<T> {
+  /**
+   * Json 2 obj.
+   *
+   * @param <T> the generic type
+   * @param json the json
+   * @param t the t
+   * @return the t
+   * @throws GsonUtilException the gson util exception
+   */
+  public static <T> T json2Obj(String json, Class<T> t) throws GsonUtilException {
+    T obj = null;
+    try {
+      obj = gson.fromJson(json, t);
+    } catch (Exception e) {
 
-		public T deserialize(JsonElement je, Type type, JsonDeserializationContext jdc) throws JsonParseException {
-			T pojo = new GsonBuilder().registerTypeAdapter(ZonedDateTime.class, new JsonDeserializer<ZonedDateTime>() {
-				public ZonedDateTime deserialize(JsonElement jsonElement, Type type,
-						JsonDeserializationContext jsonDeserializationContext) throws JsonParseException {
-					DateTimeFormatter fmt = DateTimeFormatter.ISO_OFFSET_DATE_TIME.withZone(ZoneOffset.UTC);
-					return ZonedDateTime.from(fmt.parse(jsonElement.getAsString()));
-				}
-			}).registerTypeAdapter(ZonedDateTime.class, new JsonSerializer<ZonedDateTime>() {
-				@Override
-				public JsonElement serialize(ZonedDateTime zonedDateTime, Type type,
-						JsonSerializationContext jsonSerializationContext) {
-					DateTimeFormatter fmt = DateTimeFormatter.ISO_OFFSET_DATE_TIME.withZone(ZoneOffset.UTC);
-					return new JsonPrimitive(fmt.format(zonedDateTime.truncatedTo(ChronoUnit.SECONDS)));
-				}
-			}).create().fromJson(je, type);
+      throw new GsonUtilException("JSON to OBJECT failed: " + e.getMessage());
+    }
+    return obj;
+  }
 
-			Field[] fields = pojo.getClass().getDeclaredFields();
-			for (Field f : fields) {
-				if (f.getAnnotation(JsonRequired.class) != null) {
-					try {
-						f.setAccessible(true);
-						if (f.get(pojo) == null) {
-							throw new JsonParseException("Missing field in JSON: " + f.getName());
-						}
-					} catch (IllegalArgumentException | IllegalAccessException ex) {
-						throw new JsonParseException("There was an exception while deserializing the json object: "
-								+ AnnotatedDeserializer.class.getName());
-					}
-				}
-			}
-			return pojo;
+  /**
+   * Json 2 obj.
+   *
+   * @param <T> the generic type
+   * @param json the json
+   * @param t the t
+   * @return the t
+   * @throws GsonUtilException the gson util exception
+   */
+  public static <T> T json2Obj(String json, Type t) throws GsonUtilException {
 
-		}
-	}	
+    T obj = null;
+    try {
+      obj = gson.fromJson(json, t);
+    } catch (Exception e) {
+
+      throw new GsonUtilException("JSON to OBJECT failed: " + e.getMessage());
+    }
+    return obj;
+  }
+
+  /**
+   * Obj 2 json.
+   *
+   * @param <T> the generic type
+   * @param obj the obj
+   * @param t the t
+   * @return the string
+   * @throws GsonUtilException the gson util exception
+   */
+  public static <T> String obj2Json(Object obj, Class<T> t) throws GsonUtilException {
+    String json = null;
+
+    try {
+      json = gson.toJson(obj, t);
+    } catch (Exception e) {
+      throw new GsonUtilException("Object to JSON failed: " + e.getMessage());
+    }
+    return json;
+  }
+
+  /**
+   * Obj 2 json.
+   *
+   * @param <T> the generic type
+   * @param obj the obj
+   * @param t the t
+   * @return the string
+   * @throws GsonUtilException the gson util exception
+   */
+  public static <T> String obj2Json(Object obj, Type t) throws GsonUtilException {
+    String json = null;
+
+    try {
+      json = gson.toJson(obj, t);
+    } catch (Exception e) {
+      throw new GsonUtilException("Object to JSON failed: " + e.getMessage());
+    }
+    return json;
+  }
+
+  /**
+   * Obj 2 json with exclude.
+   *
+   * @param <T> the generic type
+   * @param obj the obj
+   * @param t the t
+   * @return the string
+   * @throws GsonUtilException the gson util exception
+   */
+  public static <T> String obj2JsonWithExclude(Object obj, Class<T> t) throws GsonUtilException {
+    String json = null;
+
+    try {
+      json = gsonExcludeFields.toJson(obj, t);
+    } catch (Exception e) {
+      throw new GsonUtilException("Object to JSON failed: " + e.getMessage());
+    }
+    return json;
+  }
+
+  /**
+   * Obj 2 json with exclude.
+   *
+   * @param <T> the generic type
+   * @param obj the obj
+   * @param t the t
+   * @return the string
+   * @throws GsonUtilException the gson util exception
+   */
+  public static <T> String obj2JsonWithExclude(Object obj, Type t) throws GsonUtilException {
+    String json = null;
+
+    try {
+      json = gsonExcludeFields.toJson(obj, t);
+    } catch (Exception e) {
+      throw new GsonUtilException("Object to JSON failed: " + e.getMessage());
+    }
+    return json;
+  }
+
+  static class AnnotatedDeserializer<T> implements JsonDeserializer<T> {
+
+    public T deserialize(JsonElement je, Type type, 
+        JsonDeserializationContext jdc) throws JsonParseException {
+      T pojo = new GsonBuilder().registerTypeAdapter(ZonedDateTime.class, 
+          new JsonDeserializer<ZonedDateTime>() {
+          public ZonedDateTime deserialize(JsonElement jsonElement, Type type,
+              JsonDeserializationContext jsonDeserializationContext) throws JsonParseException {
+            DateTimeFormatter fmt = DateTimeFormatter.ISO_OFFSET_DATE_TIME.withZone(ZoneOffset.UTC);
+            return ZonedDateTime.from(fmt.parse(jsonElement.getAsString()));
+          }
+        }).registerTypeAdapter(ZonedDateTime.class, new JsonSerializer<ZonedDateTime>() {
+          @Override
+          public JsonElement serialize(ZonedDateTime zonedDateTime, Type type,
+              JsonSerializationContext jsonSerializationContext) {
+            DateTimeFormatter fmt = DateTimeFormatter.ISO_OFFSET_DATE_TIME.withZone(ZoneOffset.UTC);
+            return new JsonPrimitive(fmt.format(zonedDateTime.truncatedTo(ChronoUnit.SECONDS)));
+          }
+        }).create().fromJson(je, type);
+
+      Field[] fields = pojo.getClass().getDeclaredFields();
+      for (Field f : fields) {
+        if (f.getAnnotation(JsonRequired.class) != null) {
+          try {
+            f.setAccessible(true);
+            if (f.get(pojo) == null) {
+              throw new JsonParseException("Missing field in JSON: " + f.getName());
+            }
+          } catch (IllegalArgumentException | IllegalAccessException ex) {
+            throw new JsonParseException(
+                "There was an exception while deserializing the "
+                + "json object: " + AnnotatedDeserializer.class.getName());
+          }
+        }
+      }
+      return pojo;
+
+    }
+  }
 }

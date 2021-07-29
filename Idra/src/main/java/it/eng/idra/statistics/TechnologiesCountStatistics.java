@@ -1,38 +1,42 @@
 package it.eng.idra.statistics;
 
-import it.eng.idra.beans.odms.ODMSCatalogueType;
+import it.eng.idra.beans.odms.OdmsCatalogueType;
 
 public class TechnologiesCountStatistics {
 
-	private ODMSCatalogueType type;
-	private int count;
-	
-	public TechnologiesCountStatistics() {
-		// TODO Auto-generated constructor stub
-	}
+  private OdmsCatalogueType type;
+  private int count;
 
-	public TechnologiesCountStatistics(ODMSCatalogueType type, int count) {
-		super();
-		this.type = type;
-		this.count = count;
-	}
+  public TechnologiesCountStatistics() {
+    // TODO Auto-generated constructor stub
+  }
 
-	public ODMSCatalogueType getType() {
-		return type;
-	}
+  /**
+   * Instantiates a new technologies count statistics.
+   *
+   * @param type the type
+   * @param count the count
+   */
+  public TechnologiesCountStatistics(OdmsCatalogueType type, int count) {
+    super();
+    this.type = type;
+    this.count = count;
+  }
 
-	public void setType(ODMSCatalogueType type) {
-		this.type = type;
-	}
+  public OdmsCatalogueType getType() {
+    return type;
+  }
 
-	public int getCount() {
-		return count;
-	}
+  public void setType(OdmsCatalogueType type) {
+    this.type = type;
+  }
 
-	public void setCount(int count) {
-		this.count = count;
-	}
-	
-	
+  public int getCount() {
+    return count;
+  }
+
+  public void setCount(int count) {
+    this.count = count;
+  }
 
 }

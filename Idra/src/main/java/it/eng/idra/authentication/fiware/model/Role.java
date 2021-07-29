@@ -15,57 +15,64 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
+
 package it.eng.idra.authentication.fiware.model;
 
 public class Role {
-		
-	private String name;
-	private String id;
-	
-	public Role(String name, String id) {
-		this.name = name;
-		this.id = id;
-	}
 
-	public Role(){
-		this.name = "";
-		this.id = "";
-	}
+  private String name;
+  private String id;
 
-	public String getName() {
-		return name;
-	}
-	public void setName(String name) {
-		this.name = name;
-	}
-	public String getId() {
-		return id;
-	}
-	public void setId(String id) {
-		this.id = id;
-	}
+  public Role(String name, String id) {
+    this.name = name;
+    this.id = id;
+  }
 
-	@Override
-	public boolean equals(Object obj) {
+  public Role() {
+    this.name = "";
+    this.id = "";
+  }
 
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		Role other = (Role) obj;
+  public String getName() {
+    return name;
+  }
 
-		if (this.getName().equals(other.getName())) {
-			return true;
-		} else {
-			return false;
-		}
-	}
-	
-	@Override
-	public int hashCode() {
-		return this.getName().hashCode();
-	}
-	
+  public void setName(String name) {
+    this.name = name;
+  }
+
+  public String getId() {
+    return id;
+  }
+
+  public void setId(String id) {
+    this.id = id;
+  }
+
+  @Override
+  public boolean equals(Object obj) {
+
+    if (this == obj) {
+      return true;
+    }
+    if (obj == null) {
+      return false;
+    }
+    if (getClass() != obj.getClass()) {
+      return false;
+    }
+    Role other = (Role) obj;
+
+    if (this.getName().equals(other.getName())) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  @Override
+  public int hashCode() {
+    return this.getName().hashCode();
+  }
+
 }

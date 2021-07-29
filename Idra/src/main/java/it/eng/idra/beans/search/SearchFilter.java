@@ -15,62 +15,57 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
+
 package it.eng.idra.beans.search;
 
 import it.eng.idra.utils.JsonRequired;
 
 /**
- * This class represents a DCATDataset field on which to perform a search
+ * This class represents a DCATDataset field on which to perform a search.
  * 
  * @author ENG
  *
  */
 
-
 public class SearchFilter {
 
-	@JsonRequired
-	private String field;
-	
-	@JsonRequired
-	private String value;
-	
-	
-	public SearchFilter(String field, String value) {
-		super();
-		this.field = field;
-		this.value = value;
-	}
+  @JsonRequired
+  private String field;
 
+  @JsonRequired
+  private String value;
 
-	public String getField() {
-		return field;
-	}
+  /**
+   * Instantiates a new search filter.
+   *
+   * @param field the field
+   * @param value the value
+   */
+  public SearchFilter(String field, String value) {
+    super();
+    this.field = field;
+    this.value = value;
+  }
 
+  public String getField() {
+    return field;
+  }
 
-	public void setField(String field) {
-		this.field = field;
-	}
+  public void setField(String field) {
+    this.field = field;
+  }
 
+  public String getValue() {
+    return value;
+  }
 
-	public String getValue() {
-		return value;
-	}
+  public void setValue(String value) {
+    this.value = value;
+  }
 
+  @Override
+  public String toString() {
+    return "SearchFilter [field=" + field + ", value=" + value + "]";
+  }
 
-	public void setValue(String value) {
-		this.value = value;
-	}
-
-
-	@Override
-	public String toString() {
-		return "SearchFilter [field=" + field + ", value=" + value + "]";
-	}
-	
-	
-	
-	
-	
-	
 }

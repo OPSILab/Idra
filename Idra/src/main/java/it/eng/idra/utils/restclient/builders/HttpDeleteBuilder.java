@@ -15,6 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
+
 package it.eng.idra.utils.restclient.builders;
 
 import java.net.URL;
@@ -25,22 +26,29 @@ import javax.ws.rs.core.MediaType;
 import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpRequestBase;
 
-public class HttpDeleteBuilder extends HttpRequestBuilder<HttpDelete>{
-	
-	private HttpDeleteBuilder(URL url){
-		super.httpRequest = new HttpDelete(url.toString());
-	}
-	
-	public static HttpRequestBase getInstance(URL url, Map<String, String> headers) {
-		HttpDeleteBuilder builder = new HttpDeleteBuilder(url);
-		builder.addHeaders(headers);
-		
-		return builder.httpRequest;
-	}
-	
-	@Override
-	protected void addPayload(MediaType type, String data){
-		throw new RuntimeException("Payload not allowed in HTTP DELETE requests");
-	}
+public class HttpDeleteBuilder extends HttpRequestBuilder<HttpDelete> {
+
+  private HttpDeleteBuilder(URL url) {
+    super.httpRequest = new HttpDelete(url.toString());
+  }
+
+  /**
+   * Gets the single instance of HttpDeleteBuilder.
+   *
+   * @param url the url
+   * @param headers the headers
+   * @return single instance of HttpDeleteBuilder
+   */
+  public static HttpRequestBase getInstance(URL url, Map<String, String> headers) {
+    HttpDeleteBuilder builder = new HttpDeleteBuilder(url);
+    builder.addHeaders(headers);
+
+    return builder.httpRequest;
+  }
+
+  @Override
+  protected void addPayload(MediaType type, String data) {
+    throw new RuntimeException("Payload not allowed in HTTP DELETE requests");
+  }
 
 }

@@ -15,17 +15,15 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
+
 package it.eng.idra.utils;
 
 public class GsonUtilException extends Exception {
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-	public GsonUtilException(String message){
-		super(message);
-	}
-	
+  public GsonUtilException(String message) {
+    super(message);
+  }
+
 }

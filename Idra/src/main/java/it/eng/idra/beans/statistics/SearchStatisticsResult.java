@@ -15,106 +15,114 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
+
 package it.eng.idra.beans.statistics;
 
 public class SearchStatisticsResult {
 
-	private int live;
-	private int sparql;
-	private int cache;
-	// private int day;
-	// private int month;
-	// private int week;
-	// private int year;
+  private int live;
+  private int sparql;
+  private int cache;
+  // private int day;
+  // private int month;
+  // private int week;
+  // private int year;
 
-	private String startLabel;
-	private String endLabel;
+  private String startLabel;
+  private String endLabel;
 
-	public SearchStatisticsResult() {
+  public SearchStatisticsResult() {
 
-	}
+  }
 
-	public SearchStatisticsResult(int live, int cache, int sparql) {
-		this.live = live;
-		this.cache = cache;
-		this.sparql = sparql;
-	}
+  /**
+   * Instantiates a new search statistics result.
+   *
+   * @param live the live
+   * @param cache the cache
+   * @param sparql the sparql
+   */
+  public SearchStatisticsResult(int live, int cache, int sparql) {
+    this.live = live;
+    this.cache = cache;
+    this.sparql = sparql;
+  }
 
-	public int getLive() {
-		return live;
-	}
+  public int getLive() {
+    return live;
+  }
 
-	public void setLive(int live) {
-		this.live = live;
-	}
+  public void setLive(int live) {
+    this.live = live;
+  }
 
-	public int getSparql() {
-		return sparql;
-	}
+  public int getSparql() {
+    return sparql;
+  }
 
-	public void setSparql(int sparql) {
-		this.sparql = sparql;
-	}
+  public void setSparql(int sparql) {
+    this.sparql = sparql;
+  }
 
-	public int getCache() {
-		return cache;
-	}
+  public int getCache() {
+    return cache;
+  }
 
-	public void setCache(int cache) {
-		this.cache = cache;
-	}
+  public void setCache(int cache) {
+    this.cache = cache;
+  }
 
-	// public int getDay() {
-	// return day;
-	// }
-	//
-	// public void setDay(int day) {
-	// this.day = day;
-	// }
-	//
-	// public int getMonth() {
-	// return month;
-	// }
-	//
-	// public void setMonth(int month) {
-	// this.month = month;
-	// }
-	//
-	// public int getWeek() {
-	// return week;
-	// }
-	//
-	// public void setWeek(int week) {
-	// this.week = week;
-	// }
-	//
-	// public int getYear() {
-	// return year;
-	// }
-	//
-	// public void setYear(int year) {
-	// this.year = year;
-	// }
+  // public int getDay() {
+  // return day;
+  // }
+  //
+  // public void setDay(int day) {
+  // this.day = day;
+  // }
+  //
+  // public int getMonth() {
+  // return month;
+  // }
+  //
+  // public void setMonth(int month) {
+  // this.month = month;
+  // }
+  //
+  // public int getWeek() {
+  // return week;
+  // }
+  //
+  // public void setWeek(int week) {
+  // this.week = week;
+  // }
+  //
+  // public int getYear() {
+  // return year;
+  // }
+  //
+  // public void setYear(int year) {
+  // this.year = year;
+  // }
 
-	public String getStartLabel() {
-		return startLabel;
-	}
+  public String getStartLabel() {
+    return startLabel;
+  }
 
-	public void setStartLabel(String startLabel) {
-		this.startLabel = startLabel;
-	}
+  public void setStartLabel(String startLabel) {
+    this.startLabel = startLabel;
+  }
 
-	public String getEndLabel() {
-		return endLabel;
-	}
+  public String getEndLabel() {
+    return endLabel;
+  }
 
-	public void setEndLabel(String endLabel) {
-		this.endLabel = endLabel;
-	}
+  public void setEndLabel(String endLabel) {
+    this.endLabel = endLabel;
+  }
 
-	@Override
-	public String toString() {
-		return "SearchStatisticsResult [live=" + live + ", sparql=" + sparql + ", cache=" + cache + "]";
-	}
+  @Override
+  public String toString() {
+    return "SearchStatisticsResult [live=" + live + ", sparql=" + sparql + ", cache=" + cache + "]";
+  }
 
 }

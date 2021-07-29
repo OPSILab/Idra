@@ -15,75 +15,89 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
+
 package it.eng.idra.beans.search;
+
+import it.eng.idra.beans.dcat.DcatDataset;
 
 import java.util.List;
 
-import it.eng.idra.beans.dcat.DCATDataset;
-
 public class SearchResult {
 
-	private Long count;
-	private List<DCATDataset> results;
-	private List<SearchFacetsList> facets;
+  private Long count;
+  private List<DcatDataset> results;
+  private List<SearchFacetsList> facets;
 
-	public SearchResult(Long count, List<DCATDataset> result) {
-		super();
-		this.count = count;
-		this.results = result;
-	}
+  /**
+   * Instantiates a new search result.
+   *
+   * @param count the count
+   * @param result the result
+   */
+  public SearchResult(Long count, List<DcatDataset> result) {
+    super();
+    this.count = count;
+    this.results = result;
+  }
 
-	public SearchResult(Long count, List<DCATDataset> result, List<SearchFacetsList> facets) {
-		super();
-		this.count = count;
-		this.results = result;
-		this.setFacets(facets);
-	}
+  /**
+   * Instantiates a new search result.
+   *
+   * @param count the count
+   * @param result the result
+   * @param facets the facets
+   */
+  public SearchResult(Long count, List<DcatDataset> result, List<SearchFacetsList> facets) {
+    super();
+    this.count = count;
+    this.results = result;
+    this.setFacets(facets);
+  }
 
-	public Long getCount() {
-		return count;
-	}
+  public Long getCount() {
+    return count;
+  }
 
-	public void setCount(Long count) {
-		this.count = count;
-	}
+  public void setCount(Long count) {
+    this.count = count;
+  }
 
-	public List<DCATDataset> getResults() {
-		return results;
-	}
+  public List<DcatDataset> getResults() {
+    return results;
+  }
 
-	public void setResults(List<DCATDataset> result) {
-		this.results = result;
-	}
+  public void setResults(List<DcatDataset> result) {
+    this.results = result;
+  }
 
-	public List<SearchFacetsList> getFacets() {
-		return facets;
-	}
+  public List<SearchFacetsList> getFacets() {
+    return facets;
+  }
 
-	public void setFacets(List<SearchFacetsList> facets) {
-		this.facets = facets;
-	}
+  public void setFacets(List<SearchFacetsList> facets) {
+    this.facets = facets;
+  }
 
-	@Override
-	public String toString() {
-		StringBuilder sb = new StringBuilder();
-		sb.append("class ResourcesResult {\n");
+  @Override
+  public String toString() {
+    StringBuilder sb = new StringBuilder();
+    sb.append("class ResourcesResult {\n");
 
-		sb.append("    count: ").append(toIndentedString(count)).append("\n");
-		sb.append("    resources: ").append(toIndentedString(results.size())).append("\n");
-		sb.append("}");
-		return sb.toString();
-	}
+    sb.append("    count: ").append(toIndentedString(count)).append("\n");
+    sb.append("    resources: ").append(toIndentedString(results.size())).append("\n");
+    sb.append("}");
+    return sb.toString();
+  }
 
-	/**
-	 * Convert the given object to string with each line indented by 4 spaces
-	 * (except the first line).
-	 */
-	private String toIndentedString(java.lang.Object o) {
-		if (o == null) {
-			return "null";
-		}
-		return o.toString().replace("\n", "\n    ");
-	}
+  /**
+   * Convert the given object to string with each line indented by 4 spaces
+   * (except the first line).
+   */
+  private String toIndentedString(java.lang.Object o) {
+    if (o == null) {
+      return "null";
+    }
+    return o.toString().replace("\n", "\n    ");
+  }
 
 }

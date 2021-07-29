@@ -15,24 +15,25 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
+
 package it.eng.idra.authentication.fiware.model;
 
 @Deprecated
 public class Auth {
-	
-	private Identity identity;
 
-	public Auth(Identity identity) {
-		super();
-		this.identity = identity;
-	}
+  private Identity identity;
 
-	public Identity getIdentity() {
-		return identity;
-	}
+  public Auth(Identity identity) {
+    super();
+    this.identity = identity;
+  }
 
-	public void setIdentity(Identity identity) {
-		this.identity = identity;
-	}
-	
+  public Identity getIdentity() {
+    return identity;
+  }
+
+  public void setIdentity(Identity identity) {
+    this.identity = identity;
+  }
+
 }

@@ -1,0 +1,248 @@
+/*******************************************************************************
+ * Idra - Open Data Federation Platform
+ *  Copyright (C) 2020 Engineering Ingegneria Informatica S.p.A.
+ *  
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * at your option) any later version.
+ *  
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *  
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ ******************************************************************************/
+
+package it.eng.idra.beans.dcat;
+
+import it.eng.idra.cache.CacheContentType;
+
+import javax.persistence.AttributeOverride;
+import javax.persistence.AttributeOverrides;
+import javax.persistence.Column;
+import javax.persistence.Embedded;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.Table;
+import javax.persistence.Transient;
+
+import org.apache.commons.lang.StringUtils;
+import org.apache.jena.rdf.model.Resource;
+import org.apache.jena.sparql.vocabulary.FOAF;
+import org.apache.jena.vocabulary.DCTerms;
+import org.apache.jena.vocabulary.OWL;
+import org.apache.jena.vocabulary.RDFS;
+import org.apache.jena.vocabulary.SKOS;
+import org.apache.solr.common.SolrDocument;
+import org.apache.solr.common.SolrInputDocument;
+import org.hibernate.annotations.GenericGenerator;
+import org.json.JSONObject;
+
+@Entity
+@Table(name = "dcat_licenseDocument")
+public class DctLicenseDocument {
+
+  private static final transient Resource RDFClass = DCTerms.LicenseDocument;
+
+  private String id;
+  private transient String nodeID;
+
+  private String uri;
+  private DcatProperty name;
+  private DcatProperty type;
+  private DcatProperty versionInfo;
+
+  public DctLicenseDocument() {
+  }
+
+  /**
+   * Instantiates a new dct license document.
+   *
+   * @param uri the uri
+   * @param name the name
+   * @param type the type
+   * @param versionInfo the version info
+   * @param nodeID the node ID
+   */
+  public DctLicenseDocument(String uri, String name, String type, 
+      String versionInfo, String nodeID) {
+
+    setUri(uri);
+    this.nodeID = nodeID;
+    setName(new DcatProperty(FOAF.name, RDFS.Literal, name));
+    setVersionInfo(new DcatProperty(OWL.versionInfo, RDFS.Literal, versionInfo));
+    setType(new DcatProperty(DCTerms.type, SKOS.Concept, type));
+  }
+
+  @Id
+  @GeneratedValue(generator = "uuid")
+  @GenericGenerator(name = "uuid", strategy = "uuid2")
+  @Column(name = "licenseDocument_id")
+  public String getId() {
+    return id;
+  }
+
+  public void setId(String id) {
+    this.id = id;
+  }
+
+  @Embedded
+  @AttributeOverrides({ @AttributeOverride(name = "value", column = @Column(name = "name")) })
+  public DcatProperty getName() {
+    return name;
+  }
+
+  public void setName(DcatProperty name) {
+    this.name = name;
+  }
+
+  public void setName(String name) {
+    setName(new DcatProperty(FOAF.name, RDFS.Literal, name));
+  }
+
+  @Embedded
+  @AttributeOverrides({ @AttributeOverride(name = "value", column = @Column(name = "type")) })
+  public DcatProperty getType() {
+    return type;
+  }
+
+  public void setType(DcatProperty type) {
+    this.type = type;
+  }
+
+  public void setType(String type) {
+    setType(new DcatProperty(DCTerms.type, SKOS.Concept, type));
+  }
+
+  @Embedded
+  @AttributeOverrides({ 
+       @AttributeOverride(name = "value", column = @Column(name = "versionInfo")) })
+  public DcatProperty getVersionInfo() {
+    return versionInfo;
+  }
+
+  public void setVersionInfo(DcatProperty versionInfo) {
+    this.versionInfo = versionInfo;
+  }
+
+  public void setVersionInfo(String versionInfo) {
+    setVersionInfo(new DcatProperty(OWL.versionInfo, RDFS.Literal, versionInfo));
+  }
+
+  public String getUri() {
+    return uri;
+  }
+
+  public void setUri(String uri) {
+    this.uri = StringUtils.isNotBlank(uri) ? uri : DCTerms.license.getURI();
+  }
+
+  public String getNodeID() {
+    return nodeID;
+  }
+
+  public void setNodeID(String nodeID) {
+    this.nodeID = nodeID;
+  }
+
+  @Transient
+  public static Resource getRDFClass() {
+    return RDFClass;
+  }
+
+  /**
+   * To doc.
+   *
+   * @param contentType the content type
+   * @return the solr input document
+   */
+  public SolrInputDocument toDoc(CacheContentType contentType) {
+    SolrInputDocument doc = new SolrInputDocument();
+    doc.addField("id", this.id);
+    doc.addField("nodeID", this.nodeID);
+    doc.addField("content_type", contentType.toString());
+    doc.addField("uri", StringUtils.isNotBlank(this.uri) ? this.uri : "");
+    doc.addField("name", this.name != null ? this.name.getValue() : "");
+    doc.addField("type", this.type != null ? this.type.getValue() : "");
+    doc.addField("versionInfo", this.versionInfo != null ? this.versionInfo.getValue() : "");
+    return doc;
+
+  }
+
+  /**
+   * Json to DCT license document.
+   *
+   * @param json the json
+   * @param nodeId the node ID
+   * @return the dct license document
+   */
+  public static DctLicenseDocument jsonToDctLicenseDocument(JSONObject json,
+      String nodeId) {
+    return new DctLicenseDocument(
+        json.optString("uri"), json.optString("name"), json.optString("type"),
+        json.optString("versionInfo"), nodeId);
+  }
+
+  /**
+   * Doc to DCT license document.
+   *
+   * @param doc the doc
+   * @param nodeId the node ID
+   * @return the dct license document
+   */
+  public static DctLicenseDocument docToDctLicenseDocument(SolrDocument doc,
+      String nodeId) {
+    return jsonToDctLicenseDocument(
+        new JSONObject(doc.getFieldValue("license").toString()), nodeId);
+  }
+
+  @Override
+  public String toString() {
+    return "DCTLicenseDocument [id=" + id 
+        + ", uri=" + uri + ", name=" + name + ", type=" + type + ", versionInfo="
+        + versionInfo + "]";
+  }
+
+  @Override
+  public int hashCode() {
+    final int prime = 31;
+    int result = 1;
+    result = prime * result + ((name == null) ? 0 : name.hashCode());
+    result = prime * result + ((uri == null) ? 0 : uri.hashCode());
+    return result;
+  }
+
+  @Override
+  public boolean equals(Object obj) {
+    if (this == obj) {
+      return true;
+    }
+    if (obj == null) {
+      return false;
+    }
+    if (getClass() != obj.getClass()) {
+      return false;
+    }
+    DctLicenseDocument other = (DctLicenseDocument) obj;
+    if (name == null) {
+      if (other.name != null) {
+        return false;
+      }
+    } else if (!name.equals(other.name)) {
+      return false;
+    }
+    if (uri == null) {
+      if (other.uri != null) {
+        return false;
+      }
+    } else if (!uri.equals(other.uri)) {
+      return false;
+    }
+    return true;
+  }
+
+}

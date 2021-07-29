@@ -15,60 +15,95 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
+
 package it.eng.idra.management;
 
+import it.eng.idra.beans.RdfPrefix;
 import java.sql.SQLException;
 import java.util.List;
 
-import it.eng.idra.beans.RdfPrefix;
-
 public class RdfPrefixManager {
 
-	public static List<RdfPrefix> getAllPrefixes() throws SQLException {
-		PersistenceManager manageBeansJpa = new PersistenceManager();
-		try {
-			return manageBeansJpa.getAllPrefixes();
-		} finally {
-			manageBeansJpa.jpaClose();
-		}
-	}
+  /**
+   * Gets the all prefixes.
+   *
+   * @return the all prefixes
+   * @throws SQLException the SQL exception
+   */
+  public static List<RdfPrefix> getAllPrefixes() throws SQLException {
+    PersistenceManager manageBeansJpa = new PersistenceManager();
+    try {
+      return manageBeansJpa.getAllPrefixes();
+    } finally {
+      manageBeansJpa.jpaClose();
+    }
+  }
 
-	public static RdfPrefix getPrefix(int id) throws SQLException {
-		PersistenceManager manageBeansJpa = new PersistenceManager();
-		try {
-			return manageBeansJpa.getPrefix(id);
-		} finally {
-			manageBeansJpa.jpaClose();
-		}
-	}
+  /**
+   * Gets the prefix.
+   *
+   * @param id the id
+   * @return the prefix
+   * @throws SQLException the SQL exception
+   */
+  public static RdfPrefix getPrefix(int id) throws SQLException {
+    PersistenceManager manageBeansJpa = new PersistenceManager();
+    try {
+      return manageBeansJpa.getPrefix(id);
+    } finally {
+      manageBeansJpa.jpaClose();
+    }
+  }
 
-	public static boolean addPrefix(RdfPrefix prefix) throws SQLException {
-		PersistenceManager manageBeansJpa = new PersistenceManager();
-		try {
-			if (!manageBeansJpa.checkPrefixExists(prefix))
-				return manageBeansJpa.addPrefix(prefix);
-		} finally {
-			manageBeansJpa.jpaClose();
-		}
-		return false;
-	}
+  /**
+   * Adds the prefix.
+   *
+   * @param prefix the prefix
+   * @return true, if successful
+   * @throws SQLException the SQL exception
+   */
+  public static boolean addPrefix(RdfPrefix prefix) throws SQLException {
+    PersistenceManager manageBeansJpa = new PersistenceManager();
+    try {
+      if (!manageBeansJpa.checkPrefixExists(prefix)) {
+        return manageBeansJpa.addPrefix(prefix);
+      }
+    } finally {
+      manageBeansJpa.jpaClose();
+    }
+    return false;
+  }
 
-	public static boolean deletePrefix(int id) throws SQLException {
-		PersistenceManager manageBeansJpa = new PersistenceManager();
-		try {
-			return manageBeansJpa.deletePrefix(id);
-		} finally {
-			manageBeansJpa.jpaClose();
-		}
-	}
+  /**
+   * Delete prefix.
+   *
+   * @param id the id
+   * @return true, if successful
+   * @throws SQLException the SQL exception
+   */
+  public static boolean deletePrefix(int id) throws SQLException {
+    PersistenceManager manageBeansJpa = new PersistenceManager();
+    try {
+      return manageBeansJpa.deletePrefix(id);
+    } finally {
+      manageBeansJpa.jpaClose();
+    }
+  }
 
-	public static boolean updatePrefix(RdfPrefix prefix) throws SQLException {
-		PersistenceManager manageBeansJpa = new PersistenceManager();
-		try {
-			return manageBeansJpa.updatePrefix(prefix);
-		} finally {
-			manageBeansJpa.jpaClose();
-		}
-	}
+  /**
+   * Update prefix.
+   *
+   * @param prefix the prefix
+   * @return true, if successful
+   * @throws SQLException the SQL exception
+   */
+  public static boolean updatePrefix(RdfPrefix prefix) throws SQLException {
+    PersistenceManager manageBeansJpa = new PersistenceManager();
+    try {
+      return manageBeansJpa.updatePrefix(prefix);
+    } finally {
+      manageBeansJpa.jpaClose();
+    }
+  }
 
 }
