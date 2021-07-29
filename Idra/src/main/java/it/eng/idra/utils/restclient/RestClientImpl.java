@@ -82,8 +82,17 @@ public class RestClientImpl extends RestClientBaseImpl implements RestClient {
     return result.toString();
   }
 
+  /**
+   * getStatus.
+   *
+   * @return int
+   */
   public int getStatus(HttpResponse httpresponse) {
-    return httpresponse.getStatusLine().getStatusCode();
+    try {
+      return httpresponse.getStatusLine().getStatusCode();
+    } catch (Exception e) {
+      return -1;
+    }
   }
 
 }
