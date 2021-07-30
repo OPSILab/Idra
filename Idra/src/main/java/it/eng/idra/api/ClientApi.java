@@ -105,7 +105,6 @@ import org.glassfish.jersey.client.ClientProperties;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-
 // TODO: Auto-generated Javadoc
 /**
  * The Class ClientApi.
@@ -115,7 +114,7 @@ public class ClientApi {
 
   /** The logger. */
   private static Logger logger = LogManager.getLogger(ClientApi.class);
-  
+
   /** The client. */
   private static Client client;
 
@@ -123,15 +122,14 @@ public class ClientApi {
    * Search dataset.
    *
    * @param httpRequest the http request
-   * @param input the input
+   * @param input       the input
    * @return the response
    */
   @POST
   @Path("/search")
   @Consumes({ MediaType.APPLICATION_JSON })
-  @Produces({ 
-      MediaType.APPLICATION_JSON, "application/n-triples",
-      "application/rdf+xml", "text/turtle", "text/n3" })
+  @Produces({ MediaType.APPLICATION_JSON, "application/n-triples", "application/rdf+xml",
+      "text/turtle", "text/n3" })
   public Response searchDataset(@Context HttpServletRequest httpRequest, final String input) {
 
     SearchRequest request = null;
@@ -192,18 +190,17 @@ public class ClientApi {
 
         // Adds filters parameters in input to the search HashMap
         filters.stream()
-          .forEach(filter -> searchParameters.put(filter.getField(), (Object) filter.getValue()));
+            .forEach(filter -> searchParameters.put(filter.getField(), (Object) filter.getValue()));
 
         // Adds rows, start, sort parameters
         searchParameters.put("rows", request.getRows());
         searchParameters.put("start", request.getStart());
-        searchParameters.put("sort",
-            request.getSort().getField().trim() 
-            + "," + request.getSort().getMode().toString().trim());
+        searchParameters.put("sort", request.getSort().getField().trim() + ","
+            + request.getSort().getMode().toString().trim());
 
         if (searchParameters.containsKey("datasetThemes")) {
-          List<String> tmp = Arrays.asList(((String) 
-              searchParameters.remove("datasetThemes")).split(",")).stream()
+          List<String> tmp = Arrays
+              .asList(((String) searchParameters.remove("datasetThemes")).split(",")).stream()
               .distinct().collect(Collectors.toList());
           List<String> themeAbbr = tmp.stream().filter(x -> FederationCore.isDcatTheme(x))
               .collect(Collectors.toList());
@@ -218,8 +215,8 @@ public class ClientApi {
         List<Integer> ids = new ArrayList<Integer>();
         if (searchParameters.containsKey("catalogues")) {
 
-          List<String> catalogues = Arrays.asList(((String)
-              searchParameters.remove("catalogues")).split(",")).stream()
+          List<String> catalogues = Arrays
+              .asList(((String) searchParameters.remove("catalogues")).split(",")).stream()
               .distinct().collect(Collectors.toList());
 
           ids = catalogues.stream().map(x -> FederationCore.getOdmsCatalogueIdbyName(x)).distinct()
@@ -250,8 +247,7 @@ public class ClientApi {
 
         try {
           return Response.status(Response.Status.OK)
-              .entity(GsonUtil.obj2Json(result, GsonUtil.searchResultType))
-              .build();
+              .entity(GsonUtil.obj2Json(result, GsonUtil.searchResultType)).build();
         } catch (GsonUtilException e) {
           return handleErrorResponse500(e);
         }
@@ -276,17 +272,16 @@ public class ClientApi {
    * Search dataset dcat ap.
    *
    * @param httpRequest the http request
-   * @param input the input
-   * @param format the format
-   * @param profile the profile
+   * @param input       the input
+   * @param format      the format
+   * @param profile     the profile
    * @return the response
    */
   @POST
   @Path("/search/dcat-ap")
   @Consumes({ MediaType.APPLICATION_JSON })
-  @Produces({ 
-      MediaType.APPLICATION_JSON, "application/n-triples",
-      "application/rdf+xml", "text/turtle", "text/n3" })
+  @Produces({ MediaType.APPLICATION_JSON, "application/n-triples", "application/rdf+xml",
+      "text/turtle", "text/n3" })
 
   public Response searchDatasetDcatAp(@Context HttpServletRequest httpRequest, final String input,
       @DefaultValue("RDFXML") @QueryParam("format") DcatApFormat format,
@@ -350,21 +345,20 @@ public class ClientApi {
 
         // Adds filters parameters in input to the search HashMap
         filters.stream()
-          .forEach(filter -> searchParameters.put(filter.getField(), (Object) filter.getValue()));
+            .forEach(filter -> searchParameters.put(filter.getField(), (Object) filter.getValue()));
 
         // Adds rows, start, sort parameters
         searchParameters.put("rows", request.getRows());
         searchParameters.put("start", request.getStart());
-        searchParameters.put("sort",
-            request.getSort().getField().trim() 
-            + "," + request.getSort().getMode().toString().trim());
+        searchParameters.put("sort", request.getSort().getField().trim() + ","
+            + request.getSort().getMode().toString().trim());
 
         // Adds the id of the nodes to search on
         List<Integer> ids = new ArrayList<Integer>();
         if (searchParameters.containsKey("catalogues")) {
 
-          List<String> catalogues = Arrays.asList(((String) 
-              searchParameters.remove("catalogues")).split(",")).stream()
+          List<String> catalogues = Arrays
+              .asList(((String) searchParameters.remove("catalogues")).split(",")).stream()
               .distinct().collect(Collectors.toList());
 
           ids = catalogues.stream().map(x -> FederationCore.getOdmsCatalogueIdbyName(x)).distinct()
@@ -395,8 +389,8 @@ public class ClientApi {
         StatisticsManager.searchStatistics(ipAddress, liveSearch ? "live" : "cache");
 
         // try {
-        return Response.status(Response.Status.OK)
-            .type(format.mediaType()).entity(dcatResult).build();
+        return Response.status(Response.Status.OK).type(format.mediaType()).entity(dcatResult)
+            .build();
         // } catch (GsonUtilException e) {
         // return handleErrorResponse500(e);
         // }
@@ -421,7 +415,7 @@ public class ClientApi {
    * Count dataset.
    *
    * @param httpRequest the http request
-   * @param input the input
+   * @param input       the input
    * @return the response
    */
   @POST
@@ -484,7 +478,7 @@ public class ClientApi {
 
         // Adds filters parameters in input to the search HashMap
         filters.stream()
-          .forEach(filter -> searchParameters.put(filter.getField(), (Object) filter.getValue()));
+            .forEach(filter -> searchParameters.put(filter.getField(), (Object) filter.getValue()));
 
         // if ((!j.getString("filter").equals("rows") ||
         // j.getString("filter").equals("start")))
@@ -494,16 +488,15 @@ public class ClientApi {
         // Adds rows, start, sort parameters
         searchParameters.put("rows", request.getRows());
         searchParameters.put("start", request.getStart());
-        searchParameters.put("sort",
-            request.getSort().getField().trim() 
-            + "," + request.getSort().getMode().toString().trim());
+        searchParameters.put("sort", request.getSort().getField().trim() + ","
+            + request.getSort().getMode().toString().trim());
 
         // Adds the id of the nodes to search on
         List<Integer> ids = new ArrayList<Integer>();
         if (searchParameters.containsKey("catalogues")) {
 
-          List<String> catalogues = Arrays.asList(((String) 
-              searchParameters.remove("catalogues")).split(",")).stream()
+          List<String> catalogues = Arrays
+              .asList(((String) searchParameters.remove("catalogues")).split(",")).stream()
               .distinct().collect(Collectors.toList());
 
           ids = catalogues.stream().map(x -> FederationCore.getOdmsCatalogueIdbyName(x)).distinct()
@@ -557,7 +550,7 @@ public class ClientApi {
    * Run sparql query.
    *
    * @param httpRequest the http request
-   * @param input the input
+   * @param input       the input
    * @return the response
    */
   @POST
@@ -605,19 +598,19 @@ public class ClientApi {
   /**
    * Download from uri.
    *
-   * @param httpRequest the http request
-   * @param url the url
+   * @param httpRequest    the http request
+   * @param url            the url
    * @param distributionId the distribution id
-   * @param format the format
-   * @param downloadFile the download file
-   * @param isPreview the is preview
+   * @param format         the format
+   * @param downloadFile   the download file
+   * @param isPreview      the is preview
    * @return the response
    */
   @GET
   @Path("/downloadFromUri")
   public Response downloadFromUri(@Context HttpServletRequest httpRequest,
-      @QueryParam("url") String url,
-      @QueryParam("id") String distributionId, @QueryParam("format") String format,
+      @QueryParam("url") String url, @QueryParam("id") String distributionId,
+      @QueryParam("format") String format,
       @QueryParam("downloadFile") @DefaultValue("true") boolean downloadFile,
       @QueryParam("isPreview") @DefaultValue("false") boolean isPreview) {
 
@@ -628,8 +621,8 @@ public class ClientApi {
       String compiledUri = url;
       // client = ClientBuilder.newBuilder().readTimeout(10,
       // TimeUnit.SECONDS).build();
-      int timeout = Integer.parseInt(PropertyManager
-          .getProperty(IdraProperty.PREVIEW_TIMEOUT)) * 1000;
+      int timeout = Integer.parseInt(PropertyManager.getProperty(IdraProperty.PREVIEW_TIMEOUT))
+          * 1000;
       client = ClientBuilder.newClient().register(RedirectFilter.class);
       client.property(ClientProperties.CONNECT_TIMEOUT, timeout);
       client.property(ClientProperties.READ_TIMEOUT, timeout);
@@ -685,9 +678,8 @@ public class ClientApi {
                 logger.debug(headers.get(k));
                 logger.debug(headers.get(k).get(0).toString());
                 logger.debug(headers.get(k).get(0).toString().split("/")[1].replaceFirst("]", ""));
-                dimension = Long
-                    .parseLong((String) 
-                        headers.get(k).get(0).toString().split("/")[1].replaceFirst("]", ""));
+                dimension = Long.parseLong(
+                    (String) headers.get(k).get(0).toString().split("/")[1].replaceFirst("]", ""));
                 break;
               }
 
@@ -735,10 +727,10 @@ public class ClientApi {
   /**
    * Creates the datalet from distribution.
    *
-   * @param httpRequest the http request
-   * @param input the input
-   * @param nodeIdentifier the node identifier
-   * @param datasetIdentifier the dataset identifier
+   * @param httpRequest            the http request
+   * @param input                  the input
+   * @param nodeIdentifier         the node identifier
+   * @param datasetIdentifier      the dataset identifier
    * @param distributionIdentifier the distribution identifier
    * @return the response
    */
@@ -746,9 +738,9 @@ public class ClientApi {
   @Path("/catalogues/{nodeID}/dataset/{datasetID}/distribution/{distributionID}/createDatalet")
   @Consumes({ MediaType.APPLICATION_JSON })
   @Produces(MediaType.APPLICATION_JSON)
-  public Response createDataletFromDistribution(
-      @Context HttpServletRequest httpRequest, final String input,
-      @PathParam("nodeID") String nodeIdentifier, @PathParam("datasetID") String datasetIdentifier,
+  public Response createDataletFromDistribution(@Context HttpServletRequest httpRequest,
+      final String input, @PathParam("nodeID") String nodeIdentifier,
+      @PathParam("datasetID") String datasetIdentifier,
       @PathParam("distributionID") String distributionIdentifier) {
 
     CachePersistenceManager jpa = new CachePersistenceManager();
@@ -788,8 +780,8 @@ public class ClientApi {
       if (StringUtils.isBlank(datalet.getTitle())) {
         Integer newIdentifier = 1;
         if (existingDatalets != null && existingDatalets.size() != 0) {
-          newIdentifier = existingDatalets.stream()
-              .filter(x -> x.isCustomTitle()).collect(Collectors.toList()).stream()
+          newIdentifier = existingDatalets.stream().filter(x -> x.isCustomTitle())
+              .collect(Collectors.toList()).stream()
               .map(x -> Integer.parseInt(x.getTitle().split("_")[1]))
               .collect(Collectors.summarizingInt(Integer::intValue)).getMax() + 1;
         }
@@ -813,9 +805,9 @@ public class ClientApi {
   /**
    * Gets the datalet by distribution.
    *
-   * @param httpRequest the http request
-   * @param nodeIdentifier the node identifier
-   * @param datasetIdentifier the dataset identifier
+   * @param httpRequest            the http request
+   * @param nodeIdentifier         the node identifier
+   * @param datasetIdentifier      the dataset identifier
    * @param distributionIdentifier the distribution identifier
    * @return the datalet by distribution
    */
@@ -823,15 +815,14 @@ public class ClientApi {
   @Path("/catalogues/{nodeID}/dataset/{datasetID}/distribution/{distributionID}/datalets")
   // @Consumes({ MediaType.APPLICATION_JSON })
   @Produces(MediaType.APPLICATION_JSON)
-  public Response getDataletByDistribution(@Context HttpServletRequest httpRequest, 
-      @PathParam("nodeID") String nodeIdentifier,
-      @PathParam("datasetID") String datasetIdentifier, 
+  public Response getDataletByDistribution(@Context HttpServletRequest httpRequest,
+      @PathParam("nodeID") String nodeIdentifier, @PathParam("datasetID") String datasetIdentifier,
       @PathParam("distributionID") String distributionIdentifier) {
 
     CachePersistenceManager jpa = new CachePersistenceManager();
     try {
-      List<Datalet> datalets = 
-          jpa.jpaGetDataletByTripleId(nodeIdentifier, datasetIdentifier, distributionIdentifier);
+      List<Datalet> datalets = jpa.jpaGetDataletByTripleId(nodeIdentifier, datasetIdentifier,
+          distributionIdentifier);
       return Response.ok(GsonUtil.obj2Json(datalets, GsonUtil.dataletListType)).build();
     } catch (Exception e) {
       return handleErrorResponse500(e);
@@ -844,11 +835,11 @@ public class ClientApi {
   /**
    * Update datalet views.
    *
-   * @param httpRequest the http request
-   * @param nodeIdentifier the node identifier
-   * @param datasetIdentifier the dataset identifier
+   * @param httpRequest            the http request
+   * @param nodeIdentifier         the node identifier
+   * @param datasetIdentifier      the dataset identifier
    * @param distributionIdentifier the distribution identifier
-   * @param dataletIdentifier the datalet identifier
+   * @param dataletIdentifier      the datalet identifier
    * @return the response
    */
   @PUT
@@ -856,18 +847,16 @@ public class ClientApi {
       + "/distribution/{distributionID}/datalet/{dataletID}/updateViews")
   // @Consumes({ MediaType.APPLICATION_JSON })
   @Produces(MediaType.APPLICATION_JSON)
-  public Response updateDataletViews(@Context HttpServletRequest httpRequest, 
-      @PathParam("nodeID") String nodeIdentifier,
-      @PathParam("datasetID") String datasetIdentifier,
+  public Response updateDataletViews(@Context HttpServletRequest httpRequest,
+      @PathParam("nodeID") String nodeIdentifier, @PathParam("datasetID") String datasetIdentifier,
       @PathParam("distributionID") String distributionIdentifier,
       @PathParam("dataletID") String dataletIdentifier) {
 
     CachePersistenceManager jpa = new CachePersistenceManager();
     try {
 
-      Datalet datalet = 
-          jpa.jpaGetDataletByIds(nodeIdentifier, datasetIdentifier,
-              distributionIdentifier, dataletIdentifier);
+      Datalet datalet = jpa.jpaGetDataletByIds(nodeIdentifier, datasetIdentifier,
+          distributionIdentifier, dataletIdentifier);
       datalet.setLastSeenDate(ZonedDateTime.now());
       datalet.setViews(datalet.getViews() + 1);
 
@@ -896,8 +885,8 @@ public class ClientApi {
     try {
       JSONArray result = new JSONArray();
       List<OdmsCatalogue> nodes = FederationCore.getOdmsCatalogues().stream()
-          .filter(x -> x.isActive() && x.isCacheable() 
-              && !x.getSynchLock().equals(OdmsSynchLock.FIRST))
+          .filter(
+              x -> x.isActive() && x.isCacheable() && !x.getSynchLock().equals(OdmsSynchLock.FIRST))
           .collect(Collectors.toList());
       Collections.sort(nodes, CommonUtil.nameOrder);
       for (OdmsCatalogue n : nodes) {
@@ -921,11 +910,11 @@ public class ClientApi {
    *
    * @param withImage the with image
    * @param orderType the order type
-   * @param orderBy the order by
-   * @param rows the rows
-   * @param offset the offset
-   * @param name the name
-   * @param country the country
+   * @param orderBy   the order by
+   * @param rows      the rows
+   * @param offset    the offset
+   * @param name      the name
+   * @param country   the country
    * @return the odms catalogues
    */
   @GET
@@ -941,21 +930,22 @@ public class ClientApi {
 
     try {
       List<OdmsCatalogue> nodes = new ArrayList<OdmsCatalogue>(
-          FederationCore.getOdmsCatalogues(withImage)
-          .stream().filter(x -> x.isActive()).collect(Collectors.toList()));
+          FederationCore.getOdmsCatalogues(withImage).stream().filter(x -> x.isActive())
+              .collect(Collectors.toList()));
 
       if (StringUtils.isNotBlank(name) && StringUtils.isBlank(country)) {
         nodes = nodes.stream().filter(x -> x.getName().toLowerCase().contains(name.toLowerCase()))
             .collect(Collectors.toList());
       } else if (StringUtils.isBlank(name) && StringUtils.isNotBlank(country)) {
-        nodes = nodes.stream().filter(
-            x -> StringUtils.isNotBlank(x.getCountry()) 
-            && x.getCountry().toLowerCase().equals(country.toLowerCase()))
+        nodes = nodes.stream()
+            .filter(x -> StringUtils.isNotBlank(x.getCountry())
+                && x.getCountry().toLowerCase().equals(country.toLowerCase()))
             .collect(Collectors.toList());
       } else if (StringUtils.isNotBlank(name) && StringUtils.isNotBlank(country)) {
-        nodes = nodes.stream().filter(x -> x.getName().toLowerCase().contains(name.toLowerCase())
-            && (StringUtils.isNotBlank(x.getCountry()) 
-                && x.getCountry().toLowerCase().equals(country.toLowerCase())))
+        nodes = nodes.stream()
+            .filter(x -> x.getName().toLowerCase().contains(name.toLowerCase())
+                && (StringUtils.isNotBlank(x.getCountry())
+                    && x.getCountry().toLowerCase().equals(country.toLowerCase())))
             .collect(Collectors.toList());
       }
 
@@ -1069,31 +1059,30 @@ public class ClientApi {
   /**
    * Gets the single catalogue.
    *
-   * @param httpRequest the http request
+   * @param httpRequest    the http request
    * @param nodeIdentifier the node identifier
-   * @param withImage the with image
+   * @param withImage      the with image
    * @return the single catalogue
    */
   @GET
   @Path("/catalogues/{nodeID}")
   @Consumes({ MediaType.APPLICATION_JSON })
   @Produces("application/json")
-  public Response getSingleCatalogue(@Context HttpServletRequest httpRequest, 
+  public Response getSingleCatalogue(@Context HttpServletRequest httpRequest,
       @PathParam("nodeID") String nodeIdentifier,
       @QueryParam("withImage") @DefaultValue("true") boolean withImage) {
 
     try {
-      OdmsCatalogue result = 
-          FederationCore.getOdmsCatalogue(Integer.parseInt(nodeIdentifier), withImage);
+      OdmsCatalogue result = FederationCore.getOdmsCatalogue(Integer.parseInt(nodeIdentifier),
+          withImage);
       if (result.isActive()) {
         return Response.status(Response.Status.OK)
-            .entity(GsonUtil.obj2JsonWithExclude(result, GsonUtil.nodeType))
-            .build();
+            .entity(GsonUtil.obj2JsonWithExclude(result, GsonUtil.nodeType)).build();
       } else {
         ErrorResponse err = new ErrorResponse(
             String.valueOf(Response.Status.NOT_FOUND.getStatusCode()),
-            "Catalogues with id: " + nodeIdentifier 
-            + " not found", String.valueOf(Response.Status.NOT_FOUND.getStatusCode()),
+            "Catalogues with id: " + nodeIdentifier + " not found",
+            String.valueOf(Response.Status.NOT_FOUND.getStatusCode()),
             "Catalogues with id: " + nodeIdentifier + " not found");
         return Response.status(Response.Status.NOT_FOUND).entity(err.toJson()).build();
       }
@@ -1108,8 +1097,8 @@ public class ClientApi {
       // TODO Auto-generated catch block
       ErrorResponse err = new ErrorResponse(
           String.valueOf(Response.Status.NOT_FOUND.getStatusCode()),
-          "Catalogues with id: " + nodeIdentifier 
-          + " not found", String.valueOf(Response.Status.NOT_FOUND.getStatusCode()),
+          "Catalogues with id: " + nodeIdentifier + " not found",
+          String.valueOf(Response.Status.NOT_FOUND.getStatusCode()),
           "Catalogues with id: " + nodeIdentifier + " not found");
       return Response.status(Response.Status.NOT_FOUND).entity(err.toJson()).build();
     } catch (OdmsManagerException e) {
@@ -1121,10 +1110,10 @@ public class ClientApi {
   /**
    * Gets the catalogue datasets.
    *
-   * @param httpRequest the http request
+   * @param httpRequest    the http request
    * @param nodeIdentifier the node identifier
-   * @param rows the rows
-   * @param start the start
+   * @param rows           the rows
+   * @param start          the start
    * @return the catalogue datasets
    */
   @GET
@@ -1133,7 +1122,7 @@ public class ClientApi {
   @Produces("application/json")
   public Response getCatalogueDatasets(@Context HttpServletRequest httpRequest,
       @PathParam("nodeID") String nodeIdentifier,
-      @QueryParam("rows") @DefaultValue("1000") int rows, 
+      @QueryParam("rows") @DefaultValue("1000") int rows,
       @QueryParam("start") @DefaultValue("0") int start) {
 
     try {
@@ -1157,8 +1146,8 @@ public class ClientApi {
       } else {
         ErrorResponse err = new ErrorResponse(
             String.valueOf(Response.Status.NOT_FOUND.getStatusCode()),
-            "Catalogues with id: " + nodeIdentifier 
-            + " not found", String.valueOf(Response.Status.NOT_FOUND.getStatusCode()),
+            "Catalogues with id: " + nodeIdentifier + " not found",
+            String.valueOf(Response.Status.NOT_FOUND.getStatusCode()),
             "Catalogues with id: " + nodeIdentifier + " not found");
         return Response.status(Response.Status.NOT_FOUND).entity(err.toJson()).build();
       }
@@ -1182,8 +1171,8 @@ public class ClientApi {
       // TODO Auto-generated catch block
       ErrorResponse err = new ErrorResponse(
           String.valueOf(Response.Status.NOT_FOUND.getStatusCode()),
-          "Catalogues with id: " + nodeIdentifier 
-          + " not found", String.valueOf(Response.Status.NOT_FOUND.getStatusCode()),
+          "Catalogues with id: " + nodeIdentifier + " not found",
+          String.valueOf(Response.Status.NOT_FOUND.getStatusCode()),
           "Catalogues with id: " + nodeIdentifier + " not found");
       return Response.status(Response.Status.NOT_FOUND).entity(err.toJson()).build();
     }
@@ -1192,8 +1181,8 @@ public class ClientApi {
   /**
    * Gets the single dataset.
    *
-   * @param httpRequest the http request
-   * @param nodeIdentifier the node identifier
+   * @param httpRequest       the http request
+   * @param nodeIdentifier    the node identifier
    * @param datasetIdentifier the dataset identifier
    * @return the single dataset
    */
@@ -1216,8 +1205,8 @@ public class ClientApi {
         } else {
           ErrorResponse err = new ErrorResponse(
               String.valueOf(Response.Status.NOT_FOUND.getStatusCode()),
-              "Dataset with id: " + datasetIdentifier 
-              + " not found for catalogue: " + nodeIdentifier,
+              "Dataset with id: " + datasetIdentifier + " not found for catalogue: "
+                  + nodeIdentifier,
               String.valueOf(Response.Status.NOT_FOUND.getStatusCode()),
               "Catalogues with id: " + nodeIdentifier + " not found");
           return Response.status(Response.Status.NOT_FOUND).entity(err.toJson()).build();
@@ -1225,8 +1214,8 @@ public class ClientApi {
       } else {
         ErrorResponse err = new ErrorResponse(
             String.valueOf(Response.Status.NOT_FOUND.getStatusCode()),
-            "Catalogues with id: " + nodeIdentifier 
-            + " not found", String.valueOf(Response.Status.NOT_FOUND.getStatusCode()),
+            "Catalogues with id: " + nodeIdentifier + " not found",
+            String.valueOf(Response.Status.NOT_FOUND.getStatusCode()),
             "Catalogues with id: " + nodeIdentifier + " not found");
         return Response.status(Response.Status.NOT_FOUND).entity(err.toJson()).build();
       }
@@ -1255,9 +1244,9 @@ public class ClientApi {
   /**
    * Gets the dataset distribution.
    *
-   * @param httpRequest the http request
-   * @param nodeIdentifier the node identifier
-   * @param datasetIdentifier the dataset identifier
+   * @param httpRequest            the http request
+   * @param nodeIdentifier         the node identifier
+   * @param datasetIdentifier      the dataset identifier
    * @param distributionIdentifier the distribution identifier
    * @return the dataset distribution
    */
@@ -1266,8 +1255,7 @@ public class ClientApi {
   @Consumes({ MediaType.APPLICATION_JSON })
   @Produces("application/json")
   public Response getDatasetDistribution(@Context HttpServletRequest httpRequest,
-      @PathParam("nodeID") String nodeIdentifier,
-      @PathParam("datasetID") String datasetIdentifier,
+      @PathParam("nodeID") String nodeIdentifier, @PathParam("datasetID") String datasetIdentifier,
       @PathParam("distributionID") String distributionIdentifier) {
 
     try {
@@ -1276,16 +1264,15 @@ public class ClientApi {
       DcatDistribution distribution = MetadataCacheManager
           .getDistributionById(distributionIdentifier);
 
-      if ((distribution.getNodeId().equals(nodeIdentifier)) 
+      if ((distribution.getNodeId().equals(nodeIdentifier))
           && (dataset.getNodeId().equals(nodeIdentifier))) {
         return Response.status(Response.Status.OK)
-            .entity(GsonUtil.obj2Json(distribution, GsonUtil.distributionType))
-            .build();
+            .entity(GsonUtil.obj2Json(distribution, GsonUtil.distributionType)).build();
       } else {
         ErrorResponse err = new ErrorResponse(
             String.valueOf(Response.Status.NOT_FOUND.getStatusCode()),
-            "Distribution with id: " + distributionIdentifier 
-            + " not found for catalogue: " + nodeIdentifier,
+            "Distribution with id: " + distributionIdentifier + " not found for catalogue: "
+                + nodeIdentifier,
             String.valueOf(Response.Status.NOT_FOUND.getStatusCode()),
             "Dataset with id: " + datasetIdentifier + " not found");
         return Response.status(Response.Status.NOT_FOUND).entity(err.toJson()).build();
@@ -1315,8 +1302,8 @@ public class ClientApi {
   /**
    * Gets the dataset distributions.
    *
-   * @param httpRequest the http request
-   * @param nodeIdentifier the node identifier
+   * @param httpRequest       the http request
+   * @param nodeIdentifier    the node identifier
    * @param datasetIdentifier the dataset identifier
    * @return the dataset distributions
    */
@@ -1335,8 +1322,7 @@ public class ClientApi {
       List<DcatDistribution> result = dataset.getDistributions();
 
       return Response.status(Response.Status.OK)
-          .entity(GsonUtil.obj2Json(result, GsonUtil.distributionListType))
-          .build();
+          .entity(GsonUtil.obj2Json(result, GsonUtil.distributionListType)).build();
 
     } catch (DatasetNotFoundException e) {
       // TODO Auto-generated catch block
@@ -1357,7 +1343,7 @@ public class ClientApi {
    * Gets the dataset by id.
    *
    * @param httpRequest the http request
-   * @param id the id
+   * @param id          the id
    * @return the dataset by id
    */
   @GET
@@ -1376,8 +1362,8 @@ public class ClientApi {
         // TODO Auto-generated catch block
         ErrorResponse err = new ErrorResponse(
             String.valueOf(Response.Status.NOT_FOUND.getStatusCode()),
-            "Dataset with id: " + id 
-            + " not found", String.valueOf(Response.Status.NOT_FOUND.getStatusCode()),
+            "Dataset with id: " + id + " not found",
+            String.valueOf(Response.Status.NOT_FOUND.getStatusCode()),
             "Dataset with id: " + id + " not found");
         return Response.status(Response.Status.NOT_FOUND).entity(err.toJson()).build();
       }
@@ -1399,8 +1385,8 @@ public class ClientApi {
   /**
    * Execute orion query.
    *
-   * @param httpRequest the http request
-   * @param nodeIdentifier the node identifier
+   * @param httpRequest     the http request
+   * @param nodeIdentifier  the node identifier
    * @param queryIdentifier the query identifier
    * @return the response
    */
@@ -1427,8 +1413,8 @@ public class ClientApi {
     }
 
     try {
-      OdmsCatalogue catalogue = FederationCore
-          .getOdmsCatalogue(Integer.parseInt(nodeIdentifier), false);
+      OdmsCatalogue catalogue = FederationCore.getOdmsCatalogue(Integer.parseInt(nodeIdentifier),
+          false);
       if (!catalogue.getNodeType().equals(OdmsCatalogueType.ORION)) {
         err = new ErrorResponse(String.valueOf(Response.Status.BAD_REQUEST.getStatusCode()),
             "Catalogue: " + nodeIdentifier + " is not ORION",
@@ -1436,10 +1422,10 @@ public class ClientApi {
             "Catalogue: " + nodeIdentifier + " is not ORION");
       } else {
 
-        OrionCatalogueConfiguration catalogueConfig = 
-            (OrionCatalogueConfiguration) catalogue.getAdditionalConfig();
-        OrionDistributionConfig distributionConfig = 
-            MetadataCacheManager.getOrionDistributionConfig(queryIdentifier);
+        OrionCatalogueConfiguration catalogueConfig = (OrionCatalogueConfiguration) catalogue
+            .getAdditionalConfig();
+        OrionDistributionConfig distributionConfig = MetadataCacheManager
+            .getOrionDistributionConfig(queryIdentifier);
 
         String compiledUri = (!catalogue.getHost().endsWith("/") ? catalogue.getHost()
             : catalogue.getHost().substring(0, catalogue.getHost().length() - 1))
@@ -1519,9 +1505,8 @@ public class ClientApi {
 
     e.printStackTrace();
     ErrorResponse error = new ErrorResponse(
-        String.valueOf(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode()),
-        e.getMessage(), e.getClass().getSimpleName(),
-        "An error occurred, please contact the administrator!");
+        String.valueOf(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode()), e.getMessage(),
+        e.getClass().getSimpleName(), "An error occurred, please contact the administrator!");
     return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(error.toJson()).build();
   }
 

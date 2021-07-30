@@ -27,26 +27,37 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class OdmsCatalogueMessage.
+ */
 @Entity
 @Table(name = "node_messages")
 public class OdmsCatalogueMessage {
 
+  /** The id. */
   @Id
   @Column(name = "id")
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private int id;
 
+  /** The node id. */
   @Column(name = "nodeID", unique = false, nullable = false)
   @SerializedName(value = "nodeID")
   private int nodeId;
 
+  /** The message. */
   @Column(name = "message", unique = false, nullable = false, columnDefinition = "LONGTEXT")
   private String message;
 
+  /** The date. */
   @Column(name = "date")
-  //@Type(type="date")
+  // @Type(type="date")
   private ZonedDateTime date;
 
+  /**
+   * Instantiates a new odms catalogue message.
+   */
   public OdmsCatalogueMessage() {
 
   }
@@ -54,10 +65,10 @@ public class OdmsCatalogueMessage {
   /**
    * Instantiates a new odms catalogue message.
    *
-   * @param id the id
-   * @param nodeId the node ID
+   * @param id      the id
+   * @param nodeId  the node ID
    * @param message the message
-   * @param date the date
+   * @param date    the date
    */
   public OdmsCatalogueMessage(int id, int nodeId, String message, ZonedDateTime date) {
     super();
@@ -70,9 +81,9 @@ public class OdmsCatalogueMessage {
   /**
    * Instantiates a new odms catalogue message.
    *
-   * @param nodeId the node ID
+   * @param nodeId  the node ID
    * @param message the message
-   * @param date the date
+   * @param date    the date
    */
   public OdmsCatalogueMessage(int nodeId, String message, ZonedDateTime date) {
     super();
@@ -81,38 +92,83 @@ public class OdmsCatalogueMessage {
     this.date = date;
   }
 
+  /**
+   * Gets the id.
+   *
+   * @return the id
+   */
   public int getId() {
     return id;
   }
 
+  /**
+   * Sets the id.
+   *
+   * @param id the new id
+   */
   public void setId(int id) {
     this.id = id;
   }
 
+  /**
+   * Gets the node id.
+   *
+   * @return the node id
+   */
   public int getNodeId() {
     return nodeId;
   }
 
+  /**
+   * Sets the node id.
+   *
+   * @param nodeId the new node id
+   */
   public void setNodeId(int nodeId) {
     this.nodeId = nodeId;
   }
 
+  /**
+   * Gets the message.
+   *
+   * @return the message
+   */
   public String getMessage() {
     return message;
   }
 
+  /**
+   * Sets the message.
+   *
+   * @param message the new message
+   */
   public void setMessage(String message) {
     this.message = message;
   }
 
+  /**
+   * Gets the date.
+   *
+   * @return the date
+   */
   public ZonedDateTime getDate() {
     return date;
   }
 
+  /**
+   * Sets the date.
+   *
+   * @param date the new date
+   */
   public void setDate(ZonedDateTime date) {
     this.date = date;
   }
 
+  /*
+   * (non-Javadoc)
+   * 
+   * @see java.lang.Object#toString()
+   */
   @Override
   public String toString() {
     return "Message [id=" + id + ", message=" + message + ", date=" + date + "]";

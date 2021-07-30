@@ -59,6 +59,7 @@ import org.eclipse.rdf4j.repository.http.HTTPRepository;
 import org.eclipse.rdf4j.rio.RDFFormat;
 import org.eclipse.rdf4j.rio.RDFParseException;
 
+// TODO: Auto-generated Javadoc
 /**
  * Java class to manage Linked Open Data in the Open Data Federation. This class
  * allows to insert LOD, that is identified in ODMS of federation, on a RDF4J
@@ -71,23 +72,42 @@ import org.eclipse.rdf4j.rio.RDFParseException;
  **/
 public class LodCacheManager {
 
+  /** The logger. */
   private static Logger logger = LogManager.getLogger(LodCacheManager.class);
 
+  /** The repo. */
   public static Repository repo;
+
+  /** The test. */
   static int test = 0;
 
+  /**
+   * Instantiates a new lod cache manager.
+   */
   private LodCacheManager() {
   }
 
   static {
   }
 
+  /**
+   * Gets the repository.
+   *
+   * @return the repository
+   * @throws RepositoryException the repository exception
+   */
   private static Repository getRepository() throws RepositoryException {
     return getRepository(getRepositoryUrl());
   }
 
-  private static Repository getRepository(String repoUrl) 
-      throws RepositoryException {
+  /**
+   * Gets the repository.
+   *
+   * @param repoUrl the repo url
+   * @return the repository
+   * @throws RepositoryException the repository exception
+   */
+  private static Repository getRepository(String repoUrl) throws RepositoryException {
     if (repo == null) {
       repo = new HTTPRepository(repoUrl);
 
@@ -102,7 +122,7 @@ public class LodCacheManager {
    * @param link the link
    * @return the int
    * @throws RepositoryException the repository exception
-   * @throws IOException Signals that an I/O exception has occurred.
+   * @throws IOException         Signals that an I/O exception has occurred.
    */
   public static int addRdf(String link) throws RepositoryException, IOException {
 
@@ -138,7 +158,7 @@ public class LodCacheManager {
           rdfAdded++;
           logger.info("RDF file: " + link + " loading completed successfully!");
 
-          //test++;
+          // test++;
           // original.close();
           // rdfStream.close();
           // rdfStream1.close();
@@ -194,10 +214,9 @@ public class LodCacheManager {
    * @param links the links
    * @return the int
    * @throws RepositoryException the repository exception
-   * @throws IOException Signals that an I/O exception has occurred.
+   * @throws IOException         Signals that an I/O exception has occurred.
    */
-  public static int addRdfList(List<String> links) 
-      throws RepositoryException, IOException {
+  public static int addRdfList(List<String> links) throws RepositoryException, IOException {
 
     int rdfAdded = 0;
     // Resource resource = null;
@@ -266,8 +285,11 @@ public class LodCacheManager {
    * getNSPrefixMap() of Model class, that returns a list of namespaces. These
    * namespaces are then converted in RDF prefixes format. Prefixes are stored
    * into properties file.
-   * 
-   * @param link String url of RDF dataset.
+   *
+   * @param rdfStream the rdf stream
+   * @return the prefixes
+   * @throws JenaException the jena exception
+   * @throws HttpException the http exception
    */
 
   private static void getPrefixes(InputStream rdfStream) throws JenaException, HttpException {
@@ -301,7 +323,7 @@ public class LodCacheManager {
    * @param link the link
    * @return the int
    * @throws RepositoryException the repository exception
-   * @throws IOException Signals that an I/O exception has occurred.
+   * @throws IOException         Signals that an I/O exception has occurred.
    */
   public static int updateRdf(String link) throws RepositoryException, IOException {
 
@@ -310,7 +332,6 @@ public class LodCacheManager {
 
   }
 
-  
   /**
    * Delete rdf.
    *
@@ -341,17 +362,18 @@ public class LodCacheManager {
    * passed to QueryExecutionFactory to produce an instance of a query execution.
    * Result of query can be formatted in XML/RDF or JSON, according to the user's
    * choice.
-   * 
+   *
    * @param query      String
    * @param formatType String format of query result.
+   * @return the string
    */
   public static String runQuery(String query, SparqlResultFormat formatType) {
 
     logger.info("Running SPARQL query");
     // query=addPrefixes(QueryLanguage.SPARQL,query);
     final Query queryS = QueryFactory.create(query);
-    final QueryExecution exec = 
-        QueryExecutionFactory.createServiceRequest(getRepositoryUrl(), queryS);
+    final QueryExecution exec = QueryExecutionFactory.createServiceRequest(getRepositoryUrl(),
+        queryS);
     final ResultSet resultSet = exec.execSelect();
     // logger.info(resultSet.getRowNumber());
     String resultsAsString = "";
@@ -378,6 +400,11 @@ public class LodCacheManager {
     return resultsAsString;
   }
 
+  /**
+   * Gets the repository url.
+   *
+   * @return the repository url
+   */
   private static String getRepositoryUrl() {
     String repoUrl = "";
     repoUrl = PropertyManager.getProperty(IdraProperty.SESAME_SERVER_URI).trim();
@@ -407,10 +434,10 @@ public class LodCacheManager {
         HttpURLConnection httpcon = (HttpURLConnection) url.openConnection();
         httpcon.setRequestMethod("HEAD");
 
-        if (httpcon.getContentLength() 
-             >= Integer.parseInt(FederationCore.getSettings().get("rdf_max_dimension"))
-             * 1000000 && Boolean.parseBoolean(
-                FederationCore.getSettings().get("rdf_undefined_dimension"))) {
+        if (httpcon
+            .getContentLength() >= Integer
+                .parseInt(FederationCore.getSettings().get("rdf_max_dimension")) * 1000000
+            && Boolean.parseBoolean(FederationCore.getSettings().get("rdf_undefined_dimension"))) {
           // logger.info("RDF " + link + " dimension exceeds the
           // limit");
           logger.error("RDF " + link + " dimension exceeds the limit");

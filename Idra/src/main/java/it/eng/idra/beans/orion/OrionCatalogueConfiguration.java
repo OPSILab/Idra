@@ -23,20 +23,41 @@ import it.eng.idra.beans.odms.OdmsCatalogueAdditionalConfiguration;
 import javax.persistence.Entity;
 import javax.persistence.Transient;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class OrionCatalogueConfiguration.
+ */
 @Entity
 public class OrionCatalogueConfiguration extends OdmsCatalogueAdditionalConfiguration {
 
+  /** The is authenticated. */
   private boolean isAuthenticated;
+
+  /** The auth token. */
   private String authToken;
+
+  /** The oauth 2 endpoint. */
   private String oauth2Endpoint;
-  
+
+  /** The client id. */
   @SerializedName(value = "clientID")
   private String clientId;
+
+  /** The client secret. */
   private String clientSecret;
+
+  /** The orion dataset dump string. */
   private String orionDatasetDumpString;
+
+  /** The orion dataset file path. */
   private String orionDatasetFilePath;
+
+  /** The ngsild. */
   private boolean ngsild = false;
 
+  /**
+   * Instantiates a new orion catalogue configuration.
+   */
   public OrionCatalogueConfiguration() {
     this.setType("ORION");
   }
@@ -45,18 +66,15 @@ public class OrionCatalogueConfiguration extends OdmsCatalogueAdditionalConfigur
    * Instantiates a new orion catalogue configuration.
    *
    * @param isAuthenticated the is authenticated
-   * @param authToken the auth token
-   * @param oauth2Endpoint the oauth 2 endpoint
-   * @param clientId the client id
-   * @param clientSecret the client secret
-   * @param datasets the datasets
-   * @param ngsild the ngsild
+   * @param authToken       the auth token
+   * @param oauth2Endpoint  the oauth 2 endpoint
+   * @param clientId        the client id
+   * @param clientSecret    the client secret
+   * @param datasets        the datasets
+   * @param ngsild          the ngsild
    */
-  public OrionCatalogueConfiguration(boolean isAuthenticated, 
-      String authToken, String oauth2Endpoint, 
-      String clientId,
-      String clientSecret, 
-      String datasets, 
+  public OrionCatalogueConfiguration(boolean isAuthenticated, String authToken,
+      String oauth2Endpoint, String clientId, String clientSecret, String datasets,
       boolean ngsild) {
     super();
     this.isAuthenticated = isAuthenticated;
@@ -73,89 +91,171 @@ public class OrionCatalogueConfiguration extends OdmsCatalogueAdditionalConfigur
    * Instantiates a new orion catalogue configuration.
    *
    * @param isAuthenticated the is authenticated
-   * @param authToken the auth token
-   * @param oauth2Endpoint the oauth 2 endpoint
-   * @param clientId the client id
-   * @param clientSecret the client secret
-   * @param datasets the datasets
-   * @param dumpPath the dump path
-   * @param ngsild the ngsild
+   * @param authToken       the auth token
+   * @param oauth2Endpoint  the oauth 2 endpoint
+   * @param clientId        the client id
+   * @param clientSecret    the client secret
+   * @param datasets        the datasets
+   * @param dumpPath        the dump path
+   * @param ngsild          the ngsild
    */
-  public OrionCatalogueConfiguration(boolean isAuthenticated, 
-      String authToken, String oauth2Endpoint, 
-      String clientId,
-      String clientSecret, 
-      String datasets, 
-      String dumpPath, boolean ngsild) {
+  public OrionCatalogueConfiguration(boolean isAuthenticated, String authToken,
+      String oauth2Endpoint, String clientId, String clientSecret, String datasets, String dumpPath,
+      boolean ngsild) {
     this(isAuthenticated, authToken, oauth2Endpoint, clientId, clientSecret, datasets, ngsild);
     this.orionDatasetFilePath = dumpPath;
   }
 
+  /**
+   * Checks if is authenticated.
+   *
+   * @return true, if is authenticated
+   */
   public boolean isAuthenticated() {
     return isAuthenticated;
   }
 
+  /**
+   * Sets the authenticated.
+   *
+   * @param isAuthenticated the new authenticated
+   */
   public void setAuthenticated(boolean isAuthenticated) {
     this.isAuthenticated = isAuthenticated;
   }
 
+  /**
+   * Gets the auth token.
+   *
+   * @return the auth token
+   */
   public String getAuthToken() {
     return authToken;
   }
 
+  /**
+   * Sets the auth token.
+   *
+   * @param authToken the new auth token
+   */
   public void setAuthToken(String authToken) {
     this.authToken = authToken;
   }
 
+  /**
+   * Gets the orion dataset dump string.
+   *
+   * @return the orion dataset dump string
+   */
   @Transient
   public String getOrionDatasetDumpString() {
     return orionDatasetDumpString;
   }
 
+  /**
+   * Sets the orion dataset dump string.
+   *
+   * @param orionDatasetDump the new orion dataset dump string
+   */
   public void setOrionDatasetDumpString(String orionDatasetDump) {
     this.orionDatasetDumpString = orionDatasetDump;
   }
 
+  /**
+   * Gets the orion dataset file path.
+   *
+   * @return the orion dataset file path
+   */
   public String getOrionDatasetFilePath() {
     return orionDatasetFilePath;
   }
 
+  /**
+   * Sets the orion dataset file path.
+   *
+   * @param orionDatasetFilePath the new orion dataset file path
+   */
   public void setOrionDatasetFilePath(String orionDatasetFilePath) {
     this.orionDatasetFilePath = orionDatasetFilePath;
   }
 
+  /**
+   * Gets the oauth 2 endpoint.
+   *
+   * @return the oauth 2 endpoint
+   */
   public String getOauth2Endpoint() {
     return oauth2Endpoint;
   }
 
+  /**
+   * Sets the oauth 2 endpoint.
+   *
+   * @param oauth2Endpoint the new oauth 2 endpoint
+   */
   public void setOauth2Endpoint(String oauth2Endpoint) {
     this.oauth2Endpoint = oauth2Endpoint;
   }
 
+  /**
+   * Gets the client id.
+   *
+   * @return the client id
+   */
   public String getClientId() {
     return clientId;
   }
 
+  /**
+   * Sets the client id.
+   *
+   * @param clientId the new client id
+   */
   public void setClientId(String clientId) {
     this.clientId = clientId;
   }
 
+  /**
+   * Gets the client secret.
+   *
+   * @return the client secret
+   */
   public String getClientSecret() {
     return clientSecret;
   }
 
+  /**
+   * Sets the client secret.
+   *
+   * @param clientSecret the new client secret
+   */
   public void setClientSecret(String clientSecret) {
     this.clientSecret = clientSecret;
   }
 
+  /**
+   * Checks if is ngsild.
+   *
+   * @return true, if is ngsild
+   */
   public boolean isNgsild() {
     return ngsild;
   }
 
+  /**
+   * Sets the ngsild.
+   *
+   * @param ngsild the new ngsild
+   */
   public void setNgsild(boolean ngsild) {
     this.ngsild = ngsild;
   }
 
+  /*
+   * (non-Javadoc)
+   * 
+   * @see java.lang.Object#hashCode()
+   */
   @Override
   public int hashCode() {
     final int prime = 31;
@@ -165,13 +265,18 @@ public class OrionCatalogueConfiguration extends OdmsCatalogueAdditionalConfigur
     result = prime * result + ((clientSecret == null) ? 0 : clientSecret.hashCode());
     result = prime * result + (isAuthenticated ? 1231 : 1237);
     result = prime * result + ((oauth2Endpoint == null) ? 0 : oauth2Endpoint.hashCode());
-    result = prime * result + ((orionDatasetDumpString == null) 
-        ? 0 : orionDatasetDumpString.hashCode());
-    result = prime * result + ((orionDatasetFilePath == null) 
-        ? 0 : orionDatasetFilePath.hashCode());
+    result = prime * result
+        + ((orionDatasetDumpString == null) ? 0 : orionDatasetDumpString.hashCode());
+    result = prime * result
+        + ((orionDatasetFilePath == null) ? 0 : orionDatasetFilePath.hashCode());
     return result;
   }
 
+  /*
+   * (non-Javadoc)
+   * 
+   * @see java.lang.Object#equals(java.lang.Object)
+   */
   @Override
   public boolean equals(Object obj) {
     if (this == obj) {

@@ -18,10 +18,20 @@
 
 package it.eng.idra.beans.exception;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class DatasetNotValidException.
+ */
 public class DatasetNotValidException extends Exception {
 
+  /** The Constant serialVersionUID. */
   private static final long serialVersionUID = 1L;
 
+  /**
+   * Instantiates a new dataset not valid exception.
+   *
+   * @param message the message
+   */
   public DatasetNotValidException(String message) {
     super(message);
   }

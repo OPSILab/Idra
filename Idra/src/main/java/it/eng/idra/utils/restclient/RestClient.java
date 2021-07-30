@@ -23,27 +23,86 @@ import java.util.Map;
 import javax.ws.rs.core.MediaType;
 import org.apache.http.HttpResponse;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Interface RestClient.
+ */
 public interface RestClient {
 
-  public HttpResponse sendPostRequest(String urlString, String data,
-      MediaType type, Map<String, String> headers)
+  /**
+   * Send post request.
+   *
+   * @param urlString the url string
+   * @param data      the data
+   * @param type      the type
+   * @param headers   the headers
+   * @return the http response
+   * @throws MalformedURLException the malformed URL exception
+   */
+  public HttpResponse sendPostRequest(String urlString, String data, MediaType type,
+      Map<String, String> headers) throws MalformedURLException;
+
+  /**
+   * Send get request.
+   *
+   * @param urlString the url string
+   * @param headers   the headers
+   * @return the http response
+   * @throws MalformedURLException the malformed URL exception
+   */
+  public HttpResponse sendGetRequest(String urlString, Map<String, String> headers)
       throws MalformedURLException;
 
-  public HttpResponse sendGetRequest(String urlString,
-      Map<String, String> headers) throws MalformedURLException;
-
-  public HttpResponse sendHeadRequest(String urlString,
-      Map<String, String> headers) throws MalformedURLException;
-
-  public HttpResponse sendPutRequest(String urlString,
-      String data, MediaType type, Map<String, String> headers)
+  /**
+   * Send head request.
+   *
+   * @param urlString the url string
+   * @param headers   the headers
+   * @return the http response
+   * @throws MalformedURLException the malformed URL exception
+   */
+  public HttpResponse sendHeadRequest(String urlString, Map<String, String> headers)
       throws MalformedURLException;
 
-  public HttpResponse sendDeleteRequest(String urlString,
+  /**
+   * Send put request.
+   *
+   * @param urlString the url string
+   * @param data      the data
+   * @param type      the type
+   * @param headers   the headers
+   * @return the http response
+   * @throws MalformedURLException the malformed URL exception
+   */
+  public HttpResponse sendPutRequest(String urlString, String data, MediaType type,
       Map<String, String> headers) throws MalformedURLException;
 
+  /**
+   * Send delete request.
+   *
+   * @param urlString the url string
+   * @param headers   the headers
+   * @return the http response
+   * @throws MalformedURLException the malformed URL exception
+   */
+  public HttpResponse sendDeleteRequest(String urlString, Map<String, String> headers)
+      throws MalformedURLException;
+
+  /**
+   * Gets the http response body.
+   *
+   * @param httpresponse the httpresponse
+   * @return the http response body
+   * @throws Exception the exception
+   */
   public String getHttpResponseBody(HttpResponse httpresponse) throws Exception;
 
+  /**
+   * Gets the status.
+   *
+   * @param httpresponse the httpresponse
+   * @return the status
+   */
   public int getStatus(HttpResponse httpresponse);
 
 }

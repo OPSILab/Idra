@@ -18,10 +18,20 @@
 
 package it.eng.idra.beans.exception;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class DistributionNotFoundException.
+ */
 public class DistributionNotFoundException extends Exception {
 
+  /** The Constant serialVersionUID. */
   private static final long serialVersionUID = 7435848078563064042L;
 
+  /**
+   * Instantiates a new distribution not found exception.
+   *
+   * @param message the message
+   */
   public DistributionNotFoundException(String message) {
     super(message);
   }

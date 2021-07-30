@@ -77,9 +77,9 @@ public class MetadataCacheManager {
   public static Logger logger = LogManager.getLogger(MetadataCacheManager.class);
 
   /** The enable rdf. */
-  private static Boolean enableRdf = 
-      Boolean.parseBoolean(PropertyManager.getProperty(IdraProperty.ENABLE_RDF));
-  
+  private static Boolean enableRdf = Boolean
+      .parseBoolean(PropertyManager.getProperty(IdraProperty.ENABLE_RDF));
+
   /** The server. */
   private static SolrClient server;
 
@@ -90,16 +90,15 @@ public class MetadataCacheManager {
 
   }
 
-
   /**
    * Gets the dataset by identifier.
    *
    * @param nodeId the node id
-   * @param id the id
+   * @param id     the id
    * @return the dataset by identifier
    * @throws DatasetNotFoundException the dataset not found exception
-   * @throws IOException Signals that an I/O exception has occurred.
-   * @throws SolrServerException the solr server exception
+   * @throws IOException              Signals that an I/O exception has occurred.
+   * @throws SolrServerException      the solr server exception
    */
   public static DcatDataset getDatasetByIdentifier(int nodeId, String id)
       throws DatasetNotFoundException, IOException, SolrServerException {
@@ -135,8 +134,8 @@ public class MetadataCacheManager {
    * @param id the id
    * @return the dataset by id
    * @throws DatasetNotFoundException the dataset not found exception
-   * @throws IOException Signals that an I/O exception has occurred.
-   * @throws SolrServerException the solr server exception
+   * @throws IOException              Signals that an I/O exception has occurred.
+   * @throws SolrServerException      the solr server exception
    */
   public static DcatDataset getDatasetById(String id)
       throws DatasetNotFoundException, IOException, SolrServerException {
@@ -151,7 +150,7 @@ public class MetadataCacheManager {
     query.addFilterQuery("{!parent which=$parent_filter}");
     query.setParam("fl", "*,[child parentFilter=$parent_filter limit=1000]");
 
-    QueryResponse  rsp = server.query(query);
+    QueryResponse rsp = server.query(query);
     SolrDocumentList docs = rsp.getResults();
 
     DcatDataset tmp = null;
@@ -168,12 +167,13 @@ public class MetadataCacheManager {
   /**
    * Gets the distribution.
    *
-   * @param id the id
+   * @param id  the id
    * @param url the url
    * @return the distribution
    * @throws DistributionNotFoundException the distribution not found exception
-   * @throws IOException Signals that an I/O exception has occurred.
-   * @throws SolrServerException the solr server exception
+   * @throws IOException                   Signals that an I/O exception has
+   *                                       occurred.
+   * @throws SolrServerException           the solr server exception
    */
   public static DcatDistribution getDistribution(String id, String url)
       throws DistributionNotFoundException, IOException, SolrServerException {
@@ -201,15 +201,15 @@ public class MetadataCacheManager {
         "Distribution not found in cache for seoIdentifier:" + id);
   }
 
-
   /**
    * Gets the distribution by id.
    *
    * @param id the id
    * @return the distribution by id
    * @throws DistributionNotFoundException the distribution not found exception
-   * @throws IOException Signals that an I/O exception has occurred.
-   * @throws SolrServerException the solr server exception
+   * @throws IOException                   Signals that an I/O exception has
+   *                                       occurred.
+   * @throws SolrServerException           the solr server exception
    */
   public static DcatDistribution getDistributionById(String id)
       throws DistributionNotFoundException, IOException, SolrServerException {
@@ -237,15 +237,14 @@ public class MetadataCacheManager {
         "Distribution not found in cache for seoIdentifier:" + id);
   }
 
-
   /**
    * Gets the all datasets by odms catalogue.
    *
    * @param nodeId the node id
    * @return the all datasets by odms catalogue
    * @throws DatasetNotFoundException the dataset not found exception
-   * @throws IOException Signals that an I/O exception has occurred.
-   * @throws SolrServerException the solr server exception
+   * @throws IOException              Signals that an I/O exception has occurred.
+   * @throws SolrServerException      the solr server exception
    */
   public static List<DcatDataset> getAllDatasetsByOdmsCatalogue(int nodeId)
       throws DatasetNotFoundException, IOException, SolrServerException {
@@ -260,12 +259,12 @@ public class MetadataCacheManager {
    * Gets the all datasets by odms catalogue.
    *
    * @param nodeId the node id
-   * @param rows the rows
-   * @param start the start
+   * @param rows   the rows
+   * @param start  the start
    * @return the all datasets by odms catalogue
    * @throws DatasetNotFoundException the dataset not found exception
-   * @throws IOException Signals that an I/O exception has occurred.
-   * @throws SolrServerException the solr server exception
+   * @throws IOException              Signals that an I/O exception has occurred.
+   * @throws SolrServerException      the solr server exception
    */
   public static SearchResult getAllDatasetsByOdmsCatalogue(int nodeId, int rows, int start)
       throws DatasetNotFoundException, IOException, SolrServerException {
@@ -283,8 +282,8 @@ public class MetadataCacheManager {
    * @param nodeId the node id
    * @return the all datasets by odms catalogue id
    * @throws DatasetNotFoundException the dataset not found exception
-   * @throws IOException Signals that an I/O exception has occurred.
-   * @throws SolrServerException the solr server exception
+   * @throws IOException              Signals that an I/O exception has occurred.
+   * @throws SolrServerException      the solr server exception
    */
   public static SearchResult getAllDatasetsByOdmsCatalogueId(int nodeId)
       throws DatasetNotFoundException, IOException, SolrServerException {
@@ -295,17 +294,16 @@ public class MetadataCacheManager {
     return searchDatasets(idParam);
   }
 
-
   /**
    * Gets the all datasets id.
    *
-   * @param limit the limit
+   * @param limit  the limit
    * @param offset the offset
    * @return the all datasets id
    * @throws SolrServerException the solr server exception
-   * @throws IOException Signals that an I/O exception has occurred.
+   * @throws IOException         Signals that an I/O exception has occurred.
    */
-  public static List<String> getAllDatasetsId(int limit, int offset) 
+  public static List<String> getAllDatasetsId(int limit, int offset)
       throws SolrServerException, IOException {
     SolrQuery query = new SolrQuery();
     List<String> idList = new ArrayList<String>();
@@ -328,16 +326,15 @@ public class MetadataCacheManager {
     return idList;
   }
 
-
   /**
    * Gets the all datasets id by catalogue.
    *
    * @param catalogueId the catalogue id
-   * @param limit the limit
-   * @param offset the offset
+   * @param limit       the limit
+   * @param offset      the offset
    * @return the all datasets id by catalogue
    * @throws SolrServerException the solr server exception
-   * @throws IOException Signals that an I/O exception has occurred.
+   * @throws IOException         Signals that an I/O exception has occurred.
    */
   public static List<String> getAllDatasetsIdByCatalogue(String catalogueId, int limit, int offset)
       throws SolrServerException, IOException {
@@ -364,15 +361,14 @@ public class MetadataCacheManager {
     return idList;
   }
 
-
   /**
    * Gets the ckan dataset names identifiers.
    *
    * @param nodeId the node id
    * @return the ckan dataset names identifiers
    * @throws DatasetNotFoundException the dataset not found exception
-   * @throws IOException Signals that an I/O exception has occurred.
-   * @throws SolrServerException the solr server exception
+   * @throws IOException              Signals that an I/O exception has occurred.
+   * @throws SolrServerException      the solr server exception
    */
   public static HashMap<String, ArrayList<String>> getCkanDatasetNamesIdentifiers(int nodeId)
       throws DatasetNotFoundException, IOException, SolrServerException {
@@ -386,8 +382,8 @@ public class MetadataCacheManager {
     query.addFilterQuery("{!parent which=$parent_filter}");
     // query.setParam("fl", (nativeID ? "identifier" : "id") + ",[child
     // parentFilter=$parent_filter limit=1000]");
-    query.setParam("fl", "otherIdentifier,identifier" 
-        + ",[child parentFilter=$parent_filter limit=1000]");
+    query.setParam("fl",
+        "otherIdentifier,identifier" + ",[child parentFilter=$parent_filter limit=1000]");
     query.set("rows", "1000000");
     // query.set("fl", nativeID ? "otherIdentifier" : "id");
 
@@ -400,14 +396,13 @@ public class MetadataCacheManager {
     return idMap;
   }
 
-  
   /**
    * Delete dataset.
    *
-   * @param nodeId the node id
+   * @param nodeId  the node id
    * @param dataset the dataset
-   * @throws SolrServerException the solr server exception
-   * @throws IOException Signals that an I/O exception has occurred.
+   * @throws SolrServerException      the solr server exception
+   * @throws IOException              Signals that an I/O exception has occurred.
    * @throws DatasetNotFoundException the dataset not found exception
    */
   public static void deleteDataset(int nodeId, DcatDataset dataset)
@@ -418,15 +413,14 @@ public class MetadataCacheManager {
     // Deletes dataset from DB
     // DCATDataset matchingDataset = getDataset(nodeID,
     // dataset.getLegacyIdentifier());
-    DcatDataset matchingDataset = 
-        getDatasetByIdentifier(nodeId, dataset.getIdentifier().getValue());
+    DcatDataset matchingDataset = getDatasetByIdentifier(nodeId,
+        dataset.getIdentifier().getValue());
     jpaInstance.jpaDeleteDataset(matchingDataset);
 
     // Deletes dataset from SOLR server
     // System.out.println(dataset.getId()+" "+dataset.getNodeID());
-    server.deleteByQuery(
-        "_root_:" + "\"" + matchingDataset.getId() 
-        + "\"" + " AND nodeID:" + matchingDataset.getNodeId());
+    server.deleteByQuery("_root_:" + "\"" + matchingDataset.getId() + "\"" + " AND nodeID:"
+        + matchingDataset.getNodeId());
     server.commit();
 
     jpaInstance.jpaClose();
@@ -435,13 +429,12 @@ public class MetadataCacheManager {
     dataset = null;
   }
 
-  
   /**
    * Delete all datasets by odms catalogue.
    *
    * @param node the node
-   * @throws IOException Signals that an I/O exception has occurred.
-   * @throws SolrServerException the solr server exception
+   * @throws IOException              Signals that an I/O exception has occurred.
+   * @throws SolrServerException      the solr server exception
    * @throws DatasetNotFoundException the dataset not found exception
    */
   public static void deleteAllDatasetsByOdmsCatalogue(OdmsCatalogue node)
@@ -453,8 +446,8 @@ public class MetadataCacheManager {
     // List<DCATDataset> matchingDatasets =
     // getAllDatasetsByODMSNode(node.getId());
 
-    logger.info("Deleting all datasets of ODMS Node " 
-        + node.getName() + " with Id: " + node.getId());
+    logger
+        .info("Deleting all datasets of ODMS Node " + node.getName() + " with Id: " + node.getId());
     // Deletes dataset from DB
     // if (matchingDatasets != null && matchingDatasets.size() != 0)
     // jpaInstance.jpaDeleteDatasets(matchingDatasets);
@@ -505,16 +498,15 @@ public class MetadataCacheManager {
     logger.info("Deleting datasets completed successfully");
   }
 
- 
   /**
    * Adds the dataset.
    *
    * @param dataset the dataset
-   * @throws IOException Signals that an I/O exception has occurred.
-   * @throws SolrServerException the solr server exception
+   * @throws IOException           Signals that an I/O exception has occurred.
+   * @throws SolrServerException   the solr server exception
    * @throws EntityExistsException the entity exists exception
    */
-  public static void addDataset(DcatDataset dataset) 
+  public static void addDataset(DcatDataset dataset)
       throws IOException, SolrServerException, EntityExistsException {
 
     CachePersistenceManager jpaInstance;
@@ -539,10 +531,10 @@ public class MetadataCacheManager {
    * Searches Dataset matching the passed id on local cache to forward the
    * operation to persistence Manager in order to propagate operation to DB.
    *
-   * @param nodeId the node ID
+   * @param nodeId  the node ID
    * @param dataset the dataset
-   * @throws SolrServerException the solr server exception
-   * @throws IOException Signals that an I/O exception has occurred.
+   * @throws SolrServerException      the solr server exception
+   * @throws IOException              Signals that an I/O exception has occurred.
    * @throws DatasetNotFoundException the dataset not found exception
    * @returns void
    */
@@ -558,8 +550,8 @@ public class MetadataCacheManager {
     // dataset.getOtherIdentifier().get(0).getValue());
     // DCATDataset matchingDataset = getDataset(nodeID,
     // dataset.getLegacyIdentifier());
-    DcatDataset matchingDataset = 
-        getDatasetByIdentifier(nodeId, dataset.getIdentifier().getValue());
+    DcatDataset matchingDataset = getDatasetByIdentifier(nodeId,
+        dataset.getIdentifier().getValue());
 
     // Settiamo i vecchi id e seoid
     dataset.setId(matchingDataset.getId());
@@ -588,10 +580,10 @@ public class MetadataCacheManager {
   /**
    * Update dataset insert datalet.
    *
-   * @param nodeId the node ID
+   * @param nodeId  the node ID
    * @param dataset the dataset
-   * @throws SolrServerException the solr server exception
-   * @throws IOException Signals that an I/O exception has occurred.
+   * @throws SolrServerException      the solr server exception
+   * @throws IOException              Signals that an I/O exception has occurred.
    * @throws DatasetNotFoundException the dataset not found exception
    */
   public static synchronized void updateDatasetInsertDatalet(int nodeId, DcatDataset dataset)
@@ -618,9 +610,9 @@ public class MetadataCacheManager {
    * @param searchParameters the search parameters
    * @return the dataset number
    * @throws SolrServerException the solr server exception
-   * @throws IOException Signals that an I/O exception has occurred.
+   * @throws IOException         Signals that an I/O exception has occurred.
    */
-  public static int getDatasetNumber(HashMap<String, Object> searchParameters) 
+  public static int getDatasetNumber(HashMap<String, Object> searchParameters)
       throws SolrServerException, IOException {
     SolrQuery query = new SolrQuery();
 
@@ -661,14 +653,13 @@ public class MetadataCacheManager {
 
   /**
    * Performs the fulltext federated search on local cache created by nodes
-   * synchronization
-   * Builds a SOLR query to run on Embedded SOLR Server, which holds datasets
-   * metadata cache.
+   * synchronization Builds a SOLR query to run on Embedded SOLR Server, which
+   * holds datasets metadata cache.
    *
    * @param searchParameters list of key,value pairs relative to keywords and
    *                         fields to search in
    * @return the search result
-   * @throws IOException Signals that an I/O exception has occurred.
+   * @throws IOException         Signals that an I/O exception has occurred.
    * @throws SolrServerException the solr server exception
    * @returns SearchResult
    * 
@@ -678,7 +669,7 @@ public class MetadataCacheManager {
   public static SearchResult searchDatasets(HashMap<String, Object> searchParameters)
       throws IOException, SolrServerException {
     SolrQuery query = new SolrQuery();
-    
+
     List<DcatDataset> resultDatasets = new ArrayList<DcatDataset>();
     List<SearchFacetsList> facets = new ArrayList<SearchFacetsList>();
 
@@ -734,7 +725,7 @@ public class MetadataCacheManager {
     Long count = docs.getNumFound();
     docs = null;
     rsp = null;
-   
+
     return new SearchResult(count, resultDatasets, facets);
 
   }
@@ -742,20 +733,19 @@ public class MetadataCacheManager {
   /**
    * Search datasets by query.
    *
-   * @param q the q
-   * @param sort the sort
-   * @param rows the rows
-   * @param offset the offset
+   * @param q       the q
+   * @param sort    the sort
+   * @param rows    the rows
+   * @param offset  the offset
    * @param nodeIds the node IDS
    * @return the search result
-   * @throws IOException Signals that an I/O exception has occurred.
+   * @throws IOException         Signals that an I/O exception has occurred.
    * @throws SolrServerException the solr server exception
    */
-  public static SearchResult searchDatasetsByQuery(String q, String sort,
-      int rows, int offset, List<String> nodeIds)
-      throws IOException, SolrServerException {
+  public static SearchResult searchDatasetsByQuery(String q, String sort, int rows, int offset,
+      List<String> nodeIds) throws IOException, SolrServerException {
     SolrQuery query = new SolrQuery();
-    
+
     List<DcatDataset> resultDatasets = new ArrayList<DcatDataset>();
     // Set the filters in order to match parent and childs
     logger.info(q + " AND nodeID:(" + String.join(" OR ", nodeIds) + ")");
@@ -780,7 +770,7 @@ public class MetadataCacheManager {
     QueryResponse rsp = server.query(query);
 
     SolrDocumentList docs = rsp.getResults();
-    
+
     // Collect resulting datasets
     for (SolrDocument doc : docs) {
       DcatDataset d = DcatDataset.docToDataset(doc);
@@ -801,20 +791,19 @@ public class MetadataCacheManager {
    *
    * @param searchParameters the search parameters
    * @return the search result
-   * @throws IOException Signals that an I/O exception has occurred.
+   * @throws IOException         Signals that an I/O exception has occurred.
    * @throws SolrServerException the solr server exception
    */
   public static SearchResult searchForDistributionStatistics(
-      HashMap<String, Object> searchParameters)
-      throws IOException, SolrServerException {
+      HashMap<String, Object> searchParameters) throws IOException, SolrServerException {
     SolrQuery query = new SolrQuery();
 
     List<SearchFacetsList> facets = new ArrayList<SearchFacetsList>();
 
     if (searchParameters.containsKey("nodes") && !searchParameters.containsKey("nodeID")) {
       ArrayList<Integer> nodes = (ArrayList<Integer>) searchParameters.remove("nodes");
-      String nodeIdstring = nodes.stream().map(i -> 
-          i.toString()).collect(Collectors.joining(" OR ", "(", ")"));
+      String nodeIdstring = nodes.stream().map(i -> i.toString())
+          .collect(Collectors.joining(" OR ", "(", ")"));
       if (!"()".equals(nodeIdstring)) {
         query.setQuery("nodeID:" + searchParameters.get("nodeID").toString());
       }
@@ -827,7 +816,7 @@ public class MetadataCacheManager {
 
     // Facets
     query.addFacetField("format");
-    //query.addFacetField("license");
+    // query.addFacetField("license");
     // query.setFacetLimit(40);
     query.setFacetMinCount(1);
 
@@ -861,7 +850,7 @@ public class MetadataCacheManager {
    *
    * @param searchParameters the search parameters
    * @return the all licenses info
-   * @throws IOException Signals that an I/O exception has occurred.
+   * @throws IOException         Signals that an I/O exception has occurred.
    * @throws SolrServerException the solr server exception
    */
   public static HashMap<String, String> getAllLicensesInfo(HashMap<String, Object> searchParameters)
@@ -872,8 +861,8 @@ public class MetadataCacheManager {
 
     if (searchParameters.containsKey("nodes") && !searchParameters.containsKey("nodeID")) {
       ArrayList<Integer> nodes = (ArrayList<Integer>) searchParameters.remove("nodes");
-      String nodeIdstring = nodes.stream()
-          .map(i -> i.toString()).collect(Collectors.joining(" OR ", "(", ")"));
+      String nodeIdstring = nodes.stream().map(i -> i.toString())
+          .collect(Collectors.joining(" OR ", "(", ")"));
       if (!"()".equals(nodeIdstring)) {
         query.setQuery("nodeID:" + searchParameters.get("nodeID").toString());
       }
@@ -884,7 +873,7 @@ public class MetadataCacheManager {
 
     // Set the filters in order to match parent and childs
     query.set("parent_filter", "content_type:" + CacheContentType.distribution);
-    //query.set("defType", "edismax");
+    // query.set("defType", "edismax");
     query.addFilterQuery("{!parent which=$parent_filter}");
 
     query.setParam("fl", "license");
@@ -915,7 +904,7 @@ public class MetadataCacheManager {
    * Search all datasets.
    *
    * @return the search result
-   * @throws IOException Signals that an I/O exception has occurred.
+   * @throws IOException         Signals that an I/O exception has occurred.
    * @throws SolrServerException the solr server exception
    */
   public static SearchResult searchAllDatasets() throws IOException, SolrServerException {
@@ -955,8 +944,8 @@ public class MetadataCacheManager {
    * @param nodeId the node id
    * @return the search result
    * @throws DatasetNotFoundException the dataset not found exception
-   * @throws IOException Signals that an I/O exception has occurred.
-   * @throws SolrServerException the solr server exception
+   * @throws IOException              Signals that an I/O exception has occurred.
+   * @throws SolrServerException      the solr server exception
    * @returns SearchResult containing the list of DCAT Datasets of the node
    */
   public static SearchResult searchAllDatasetsByOdmsNode(int nodeId)
@@ -1032,8 +1021,8 @@ public class MetadataCacheManager {
 
     if (searchParameters.containsKey("nodes") && !searchParameters.containsKey("nodeID")) {
       ArrayList<Integer> nodes = (ArrayList<Integer>) searchParameters.remove("nodes");
-      String nodeIdstring = nodes.stream()
-          .map(i -> i.toString()).collect(Collectors.joining(" OR ", "(", ")"));
+      String nodeIdstring = nodes.stream().map(i -> i.toString())
+          .collect(Collectors.joining(" OR ", "(", ")"));
       if (!"()".equals(nodeIdstring)) {
         searchParameters.put("nodeID", nodeIdstring);
       }
@@ -1094,13 +1083,12 @@ public class MetadataCacheManager {
 
       } else if (key.equals("tags")) {
 
-        queryString += (isFirst ? "" : " AND ") 
-            + "keywords" + ":" + "(\"" + value.replace(",", "\" AND \"") + "\")";
+        queryString += (isFirst ? "" : " AND ") + "keywords" + ":" + "(\""
+            + value.replace(",", "\" AND \"") + "\")";
         isFirst = false;
 
-      } else if (!key.equals("sort") 
-          && !key.equals("rows") && !key.equals("start") && !key.equals("releaseDate")
-          && !key.equals("updateDate")) {
+      } else if (!key.equals("sort") && !key.equals("rows") && !key.equals("start")
+          && !key.equals("releaseDate") && !key.equals("updateDate")) {
 
         // Add passed keywords to statistics DB
         StatisticsManager.storeKeywordsStatistic((String) value);
@@ -1120,15 +1108,15 @@ public class MetadataCacheManager {
 
     if (searchParameters.containsKey("releaseDate")) {
       String[] startEnd = (String[]) searchParameters.remove("releaseDate");
-      queryString += (isFirst ? "" : " AND ") 
-          + "releaseDate:[" + startEnd[0] + " TO " + startEnd[1] + "]";
+      queryString += (isFirst ? "" : " AND ") + "releaseDate:[" + startEnd[0] + " TO " + startEnd[1]
+          + "]";
       isFirst = false;
     }
 
     if (searchParameters.containsKey("updateDate")) {
       String[] startEnd = (String[]) searchParameters.remove("updateDate");
-      queryString += ((isFirst ? "" : " AND ") 
-          + "updateDate:[" + startEnd[0] + " TO " + startEnd[1] + "]");
+      queryString += ((isFirst ? "" : " AND ") + "updateDate:[" + startEnd[0] + " TO " + startEnd[1]
+          + "]");
       isFirst = false;
     }
     logger.info(queryString);
@@ -1163,14 +1151,13 @@ public class MetadataCacheManager {
 
   /**
    * Performs the fulltext federated search on local cache created by nodes
-   * synchronization
-   * Builds a SOLR query to run on Embedded SOLR Server, which holds datasets
-   * metadata cache.
+   * synchronization Builds a SOLR query to run on Embedded SOLR Server, which
+   * holds datasets metadata cache.
    *
    * @param searchParameters list of key,value pairs relative to keywords and
    *                         fields to search in
    * @return the list
-   * @throws IOException Signals that an I/O exception has occurred.
+   * @throws IOException         Signals that an I/O exception has occurred.
    * @throws SolrServerException the solr server exception
    * @returns void
    */
@@ -1228,7 +1215,7 @@ public class MetadataCacheManager {
    * @param searchParameters the search parameters
    * @return the int
    * @throws SolrServerException the solr server exception
-   * @throws IOException Signals that an I/O exception has occurred.
+   * @throws IOException         Signals that an I/O exception has occurred.
    */
   public static int countDriverSearch(HashMap<String, Object> searchParameters)
       throws SolrServerException, IOException {
@@ -1403,7 +1390,7 @@ public class MetadataCacheManager {
    * SOLR Server.
    *
    * @param createCache the create cache
-   * @param configPath the config path
+   * @param configPath  the config path
    */
   public static void init(boolean createCache, String configPath) {
 
@@ -1430,8 +1417,8 @@ public class MetadataCacheManager {
       toLoad = jpaInstance.jpaGetDatasets();
       LocalTime time2 = LocalTime.now();
       logger.info("Dataset Loaded " + toLoad.size());
-      logger.info("LOAD CACHE from DB - init - end in " 
-          + Duration.between(time1, time2) + " milliseconds");
+      logger.info(
+          "LOAD CACHE from DB - init - end in " + Duration.between(time1, time2) + " milliseconds");
       logger.info("LOAD DB CACHE to SOLR - start");
 
       try {
@@ -1483,13 +1470,13 @@ public class MetadataCacheManager {
    * Loads all datasets of passed node into the Persistence Manager, to persist
    * them to DB, in the SOLR cache and LOD RDF Cache.
    *
-   * @param node ODMSCatalogue which datasets are to be loaded
+   * @param node             ODMSCatalogue which datasets are to be loaded
    * @param isProtocolChange the is protocol change
    * @throws InvocationTargetException the invocation target exception
-   * @throws SecurityException the security exception
-   * @throws IllegalArgumentException the illegal argument exception
-   * @throws RDFParseException the RDF parse exception
-   * @throws RepositoryException the repository exception
+   * @throws SecurityException         the security exception
+   * @throws IllegalArgumentException  the illegal argument exception
+   * @throws RDFParseException         the RDF parse exception
+   * @throws RepositoryException       the repository exception
    * @returns void
    */
   public static void loadCacheFromOdmsCatalogue(OdmsCatalogue node, boolean isProtocolChange)
@@ -1531,7 +1518,7 @@ public class MetadataCacheManager {
        * been retrieved
        * 
        */
-      if (!node.getNodeType().equals(OdmsCatalogueType.SOCRATA) 
+      if (!node.getNodeType().equals(OdmsCatalogueType.SOCRATA)
           && !node.getNodeType().equals(OdmsCatalogueType.DKAN)) {
         initialDatasetsCount = OdmsManager.getOdmsCatalogueConnector(node).countDatasets();
         if (!(initialDatasetsCount > 0)) {
@@ -1585,14 +1572,13 @@ public class MetadataCacheManager {
             server.add(dataset.toDoc());
 
           } catch (EntityExistsException e) {
-            logger.info("Dataset with Id: " 
-                 + dataset.getId() + " is already present, then skipped");
+            logger
+                .info("Dataset with Id: " + dataset.getId() + " is already present, then skipped");
             currentSkipped++;
 
           } catch (SolrServerException | IOException | SolrException e) {
-            logger.info("Problem during SOLR adding of dataset with Id: " 
-                + dataset.getId() + " , then skipped:"
-                + e.getClass() + " - " + e.getMessage());
+            logger.info("Problem during SOLR adding of dataset with Id: " + dataset.getId()
+                + " , then skipped:" + e.getClass() + " - " + e.getMessage());
             currentSkipped++;
             cachePersistence.jpaRemoveDataset(dataset);
 
@@ -1619,12 +1605,11 @@ public class MetadataCacheManager {
            * If there was an error while committing the whole transaction, start to
            * persist datasets one by one
            */
-        } catch (IllegalStateException | RollbackException 
-            | SolrServerException | IOException | SolrException e) {
+        } catch (IllegalStateException | RollbackException | SolrServerException | IOException
+            | SolrException e) {
 
-          logger.info("There was an error while committing "
-              + "the current datasets page: " + e.getClass() + " - "
-              + e.getMessage());
+          logger.info("There was an error while committing " + "the current datasets page: "
+              + e.getClass() + " - " + e.getMessage());
           logger.info("Starting to persist datasets one by one");
           e.printStackTrace();
 
@@ -1652,17 +1637,15 @@ public class MetadataCacheManager {
               server.commit();
 
             } catch (RollbackException | IllegalStateException ex) {
-              logger.info("Transaction Failed while committing "
-                  + "dataset with Id: " + dataset.getId() + " - "
-                  + e.getClass() + " - " + e.getMessage());
+              logger.info("Transaction Failed while committing " + "dataset with Id: "
+                  + dataset.getId() + " - " + e.getClass() + " - " + e.getMessage());
               skipped++;
             } catch (Exception ex) {
 
-              logger.info("Problem during committing of "
-                  + "dataset with Id: " + dataset.getId() + " , then skipped: "
-                  + ex.getClass() + " - " + ex.getMessage());
+              logger.info("Problem during committing of " + "dataset with Id: " + dataset.getId()
+                  + " , then skipped: " + ex.getClass() + " - " + ex.getMessage());
               skipped++;
-              if (ex.getClass().equals(IOException.class) 
+              if (ex.getClass().equals(IOException.class)
                   || ex.getClass().equals(SolrServerException.class)) {
                 cachePersistence.jpaRemoveDataset(dataset);
               }
@@ -1692,11 +1675,10 @@ public class MetadataCacheManager {
         node.setDatasetStart(node.getDatasetStart() + currentDatasetCount);
         OdmsManager.updateOdmsCatalogue(node, true);
 
-        if (node.getNodeType().equals(OdmsCatalogueType.CKAN) 
+        if (node.getNodeType().equals(OdmsCatalogueType.CKAN)
             || node.getNodeType().equals(OdmsCatalogueType.NATIVE)) {
-          if (node.getDatasetCount() == node.getDatasetStart() 
-              || node.getDatasetStart() > node.getDatasetCount()
-              || currentDatasetCount == 0) {
+          if (node.getDatasetCount() == node.getDatasetStart()
+              || node.getDatasetStart() > node.getDatasetCount() || currentDatasetCount == 0) {
             stop = true;
           }
         } else {
@@ -1740,8 +1722,8 @@ public class MetadataCacheManager {
       logger.info("NODE: " + node.getHost());
       logger.info("ADDED DATASET: " + node.getDatasetCount());
       logger.info("ADDED RDF: " + node.getRdfCount());
-      StatisticsManager.odmsStatistics(node, 
-          node.getDatasetCount(), 0, 0, node.getRdfCount(), 0, 0);
+      StatisticsManager.odmsStatistics(node, node.getDatasetCount(), 0, 0, node.getRdfCount(), 0,
+          0);
 
       System.gc();
 
@@ -1776,9 +1758,8 @@ public class MetadataCacheManager {
   private static DcatDataset handleRfdDistributions(DcatDataset dataset) {
 
     boolean hasStoredRdf = false;
-    List<DcatDistribution> distributionsToAdd = 
-        dataset.getDistributions().stream().filter(x -> x.isRdf())
-        .collect(Collectors.toList());
+    List<DcatDistribution> distributionsToAdd = dataset.getDistributions().stream()
+        .filter(x -> x.isRdf()).collect(Collectors.toList());
 
     if (distributionsToAdd != null && !distributionsToAdd.isEmpty()) {
 
@@ -1803,19 +1784,18 @@ public class MetadataCacheManager {
             dist.setStoredRdf(true);
 
             // cachePersistence.jpaUpdateDistribution(dist, getTransaction);
-            logger.info("Adding new RDF to LODCache - " 
-                 + dist.getAccessUrl().getValue() + " -Successful");
+            logger.info(
+                "Adding new RDF to LODCache - " + dist.getAccessUrl().getValue() + " -Successful");
           } else {
-            logger.info("Adding new RDF to LODCache - " 
-                 + dist.getAccessUrl().getValue() + " - Skipped");
+            logger.info(
+                "Adding new RDF to LODCache - " + dist.getAccessUrl().getValue() + " - Skipped");
 
           }
 
         } catch (Exception e) {
 
-          logger.error("Exception while adding rdf: " 
-              + dist.getAccessUrl().getValue() + " " + e.getMessage()
-              + "\n Then this RDF was skipped and not stored on LODCache");
+          logger.error("Exception while adding rdf: " + dist.getAccessUrl().getValue() + " "
+              + e.getMessage() + "\n Then this RDF was skipped and not stored on LODCache");
 
         }
       }
@@ -1839,28 +1819,26 @@ public class MetadataCacheManager {
    * Handle ORION distribution.
    *
    * @param cachePersistence the cache persistence
-   * @param node the node
-   * @param dataset the dataset
+   * @param node             the node
+   * @param dataset          the dataset
    */
   private static void handleOrionDistribution(CachePersistenceManager cachePersistence,
-      OdmsCatalogue node,
-      DcatDataset dataset) {
+      OdmsCatalogue node, DcatDataset dataset) {
     String internalApi = PropertyManager.getProperty(IdraProperty.ORION_INTERNAL_API);
     OrionCatalogueConfiguration nodeConf = (OrionCatalogueConfiguration) node.getAdditionalConfig();
     for (DcatDistribution distribution : dataset.getDistributions()) {
       String url = "";
-      OrionDistributionConfig distroConf = 
-          (OrionDistributionConfig) distribution.getDistributionAdditionalConfig();
+      OrionDistributionConfig distroConf = (OrionDistributionConfig) distribution
+          .getDistributionAdditionalConfig();
       if (!nodeConf.isAuthenticated() && StringUtils.isBlank(distroConf.getFiwareService())
           && (StringUtils.isBlank(distroConf.getFiwareServicePath())
               || distroConf.getFiwareServicePath().equals("/"))) {
         url = (!node.getHost().endsWith("/") ? node.getHost()
             : node.getHost().substring(0, node.getHost().length() - 1))
-            + (!nodeConf.isNgsild() ? "/v2/entities" 
-                : "/ngsi-ld/v1/entities") + "?" + distroConf.getQuery();
+            + (!nodeConf.isNgsild() ? "/v2/entities" : "/ngsi-ld/v1/entities") + "?"
+            + distroConf.getQuery();
       } else {
-        url = internalApi + "/" + distroConf.getId() 
-            + "/catalogue/" + node.getId(); // dovrei mettere l'id
+        url = internalApi + "/" + distroConf.getId() + "/catalogue/" + node.getId();
       }
       distribution.setDownloadUrl(url);
       distribution.setAccessUrl(url);
@@ -1869,11 +1847,11 @@ public class MetadataCacheManager {
   }
 
   /**
-  * Gets the orion distribution config.
-  *
-  * @param orionDistrbutionConfig the orion distrbution config
-  * @return the orion distribution config
-  */
+   * Gets the orion distribution config.
+   *
+   * @param orionDistrbutionConfig the orion distrbution config
+   * @return the orion distribution config
+   */
   public static OrionDistributionConfig getOrionDistributionConfig(String orionDistrbutionConfig) {
     CachePersistenceManager jpaInstance;
     jpaInstance = new CachePersistenceManager();

@@ -25,11 +25,22 @@ import com.google.gson.JsonParseException;
 import java.lang.reflect.Type;
 import org.ckan.Group;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class SpodGroupDeserializer.
+ */
 public class SpodGroupDeserializer implements JsonDeserializer<Group> {
 
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * com.google.gson.JsonDeserializer#deserialize(com.google.gson.JsonElement,
+   * java.lang.reflect.Type, com.google.gson.JsonDeserializationContext)
+   */
   @Override
-  public Group deserialize(JsonElement arg0, Type arg1,
-      JsonDeserializationContext arg2) throws JsonParseException {
+  public Group deserialize(JsonElement arg0, Type arg1, JsonDeserializationContext arg2)
+      throws JsonParseException {
     // TODO Auto-generated method stub
     Group t = new Group();
     t.setName(arg0.toString());

@@ -24,27 +24,38 @@ import java.util.Optional;
 import org.hibernate.HibernateException;
 import org.hibernate.hikaricp.internal.HikariCPConnectionProvider;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class CustomConnectionProvider.
+ */
 public class CustomConnectionProvider extends HikariCPConnectionProvider {
 
+  /** The Constant serialVersionUID. */
   private static final long serialVersionUID = -5309283059350710680L;
 
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * org.hibernate.hikaricp.internal.HikariCPConnectionProvider#configure(java.
+   * util.Map)
+   */
   @SuppressWarnings({ "rawtypes", "unchecked" })
   @Override
   public void configure(Map conf) throws HibernateException {
 
     if (Optional.ofNullable(System.getenv(IdraProperty.DB_USERNAME.toString())).isPresent()) {
-      conf.put("hibernate.hikari.dataSource.user", 
+      conf.put("hibernate.hikari.dataSource.user",
           System.getenv(IdraProperty.DB_USERNAME.toString()));
     }
 
     if (Optional.ofNullable(System.getenv(IdraProperty.DB_PASSWORD.toString())).isPresent()) {
-      conf.put("hibernate.hikari.dataSource.password", 
+      conf.put("hibernate.hikari.dataSource.password",
           System.getenv(IdraProperty.DB_PASSWORD.toString()));
     }
 
     if (Optional.ofNullable(System.getenv(IdraProperty.DB_HOST.toString())).isPresent()) {
-      conf.put("hibernate.hikari.dataSource.url", 
-          System.getenv(IdraProperty.DB_HOST.toString()));
+      conf.put("hibernate.hikari.dataSource.url", System.getenv(IdraProperty.DB_HOST.toString()));
     }
 
     super.configure(conf);

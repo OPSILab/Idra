@@ -25,13 +25,25 @@ import java.util.stream.Collectors;
 import org.apache.commons.lang.StringUtils;
 import org.apache.solr.client.solrj.response.FacetField;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class SearchFacetsList.
+ */
 public class SearchFacetsList {
 
+  /** The display name. */
   private String displayName;
+
+  /** The search parameter. */
   @SerializedName(value = "search_parameter")
   private String searchParameter;
+
+  /** The values. */
   private List<SearchFacet> values;
 
+  /**
+   * Instantiates a new search facets list.
+   */
   public SearchFacetsList() {
     super();
   }
@@ -39,9 +51,9 @@ public class SearchFacetsList {
   /**
    * Instantiates a new search facets list.
    *
-   * @param displayName the display name
+   * @param displayName     the display name
    * @param searchParameter the search parameter
-   * @param values the values
+   * @param values          the values
    */
   public SearchFacetsList(String displayName, String searchParameter, List<SearchFacet> values) {
     super();
@@ -86,31 +98,60 @@ public class SearchFacetsList {
     }
 
     this.values = new ArrayList<SearchFacet>();
-    this.values.addAll(
-        f.getValues().stream().map(x -> 
-        new SearchFacet(x, this.searchParameter)).collect(Collectors.toList()));
+    this.values.addAll(f.getValues().stream().map(x -> new SearchFacet(x, this.searchParameter))
+        .collect(Collectors.toList()));
   }
 
+  /**
+   * Gets the display name.
+   *
+   * @return the display name
+   */
   public String getDisplayName() {
     return displayName;
   }
 
+  /**
+   * Sets the display name.
+   *
+   * @param displayName the new display name
+   */
   public void setDisplayName(String displayName) {
     this.displayName = displayName;
   }
 
+  /**
+   * Gets the search parameter.
+   *
+   * @return the search parameter
+   */
   public String getSearchParameter() {
     return searchParameter;
   }
 
+  /**
+   * Sets the search parameter.
+   *
+   * @param searchParameter the new search parameter
+   */
   public void setSearchParameter(String searchParameter) {
     this.searchParameter = searchParameter;
   }
 
+  /**
+   * Gets the values.
+   *
+   * @return the values
+   */
   public List<SearchFacet> getValues() {
     return values;
   }
 
+  /**
+   * Sets the values.
+   *
+   * @param values the new values
+   */
   public void setValues(List<SearchFacet> values) {
     this.values = values;
   }

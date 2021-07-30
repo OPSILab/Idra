@@ -22,8 +22,12 @@ import org.hibernate.dialect.MySQL5Dialect;
 import org.hibernate.dialect.function.SQLFunctionTemplate;
 import org.hibernate.type.StandardBasicTypes;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class IdraSqlDialect.
+ */
 public class IdraSqlDialect extends MySQL5Dialect {
-  
+
   /**
    * Instantiates a new idra sql dialect.
    */

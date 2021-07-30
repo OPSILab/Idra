@@ -35,10 +35,19 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class EuroVocTranslator.
+ */
 public class EuroVocTranslator {
 
+  /** The logger. */
   private static Logger logger = LogManager.getLogger(EuroVocTranslator.class);
+
+  /** The emf. */
   private static EntityManagerFactory emf;
+
+  /** The em. */
   private static EntityManager em;
 
   /**
@@ -55,8 +64,8 @@ public class EuroVocTranslator {
   /**
    * Gets the eurovoc exact terms.
    *
-   * @param term the term
-   * @param sourceLanguage the source language
+   * @param term            the term
+   * @param sourceLanguage  the source language
    * @param targetLanguages the target languages
    * @return the eurovoc exact terms
    */
@@ -71,10 +80,10 @@ public class EuroVocTranslator {
 
       String whereClause = " WHERE " + sourceLanguage.name() + " LIKE '" + term + "'";
 
-      String query = "SELECT " + targetLanguages.stream()
-             .filter(lang -> !lang.equals(sourceLanguage)).distinct()
-          .map(EuroVocLanguage::name)
-          .collect(Collectors.joining(",")) + " from eurovoc_terms" + whereClause;
+      String query = "SELECT "
+          + targetLanguages.stream().filter(lang -> !lang.equals(sourceLanguage)).distinct()
+              .map(EuroVocLanguage::name).collect(Collectors.joining(","))
+          + " from eurovoc_terms" + whereClause;
 
       logger.info(query);
 
@@ -185,11 +194,11 @@ public class EuroVocTranslator {
    *
    * @param searchParameters the search parameters
    * @return the hash map
-   * @throws EuroVocTranslationNotFoundException the euro voc translation not found exception
+   * @throws EuroVocTranslationNotFoundException the euro voc translation not
+   *                                             found exception
    */
   public static HashMap<String, Object> replaceEuroVocTerms(
-      HashMap<String, Object> searchParameters)
-      throws EuroVocTranslationNotFoundException {
+      HashMap<String, Object> searchParameters) throws EuroVocTranslationNotFoundException {
     EuroVocLanguage sourceLanguage = null;
     List<EuroVocLanguage> targetLanguages = null;
 
@@ -200,17 +209,16 @@ public class EuroVocTranslator {
     }
 
     try {
-      targetLanguages = Arrays.asList(((String) searchParameters
-          .remove("targetLanguages")).split(",")).stream()
+      targetLanguages = Arrays
+          .asList(((String) searchParameters.remove("targetLanguages")).split(",")).stream()
           .map(item -> EuroVocLanguage.valueOf(item)).collect(Collectors.toList());
 
     } catch (NullPointerException e) {
       targetLanguages = Arrays.asList(EuroVocLanguage.values());
     }
 
-    boolean selectedLanguages = (sourceLanguage != null) 
-        && StringUtils.isNotBlank(sourceLanguage.name())
-        && targetLanguages != null;
+    boolean selectedLanguages = (sourceLanguage != null)
+        && StringUtils.isNotBlank(sourceLanguage.name()) && targetLanguages != null;
 
     String key;
     String value;
@@ -218,11 +226,9 @@ public class EuroVocTranslator {
     for (Entry<String, Object> e : searchParameters.entrySet()) {
       key = e.getKey();
 
-      if (!key.equals("releaseDate") && !key.equals("updateDate") 
-          && !key.equals("sort") && !key.equals("rows")
-          && !key.equals("start") && !key.equals("nodes") 
-          && !key.equals("nodeID") && !key.equals("live")
-          && !key.equals("euroVoc")) {
+      if (!key.equals("releaseDate") && !key.equals("updateDate") && !key.equals("sort")
+          && !key.equals("rows") && !key.equals("start") && !key.equals("nodes")
+          && !key.equals("nodeID") && !key.equals("live") && !key.equals("euroVoc")) {
 
         value = ((String) e.getValue()).replaceAll("\"", "").trim();
 
@@ -234,8 +240,8 @@ public class EuroVocTranslator {
 
           while (it.hasNext()) {
 
-            String termEurovoc = 
-                getEurovocExactTerms(it.next(), sourceLanguage, targetLanguages).stream()
+            String termEurovoc = getEurovocExactTerms(it.next(), sourceLanguage, targetLanguages)
+                .stream()
                 .map(item -> /* new String("(" + */item.trim()/*
                                                                * .replaceAll("\\s"," AND ") + ")")
                                                                */).collect(Collectors.joining(","));

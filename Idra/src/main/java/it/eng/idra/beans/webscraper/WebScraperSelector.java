@@ -31,44 +31,65 @@ import javax.persistence.MappedSuperclass;
 import javax.persistence.Transient;
 import org.hibernate.annotations.GenericGenerator;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class WebScraperSelector.
+ */
 @MappedSuperclass
 // @Table(name = "odms_sitemap_selector")
 public abstract class WebScraperSelector {
 
+  /** The id. */
   private transient String id;
+
+  /** The parent selectors. */
   protected List<String> parentSelectors;
+
+  /** The type. */
   private WebScraperSelectorType type;
+
+  /** The extract attribute. */
   private String extractAttribute;
+
+  /** The multiple. */
   private Boolean multiple;
+
+  /** The regex. */
   private String regex;
 
+  /** The name. */
   @SerializedName("id")
   private String name;
+
+  /** The selector. */
   private String selector;
 
+  /** The stop values. */
   protected List<String> stopValues;
-  private static List<String> defaultStopValues = Arrays
-      .asList(PropertyManager.getProperty(
-          IdraProperty.WEB_CONNECTOR_DEFAULT_STOP_VALUES).split(","));
 
+  /** The default stop values. */
+  private static List<String> defaultStopValues = Arrays.asList(
+      PropertyManager.getProperty(IdraProperty.WEB_CONNECTOR_DEFAULT_STOP_VALUES).split(","));
+
+  /**
+   * Instantiates a new web scraper selector.
+   */
   public WebScraperSelector() {
   }
 
-  
   /**
    * Instantiates a new web scraper selector.
    *
    * @param parentSelectors the parent selectors
-   * @param type the type
-   * @param multiple the multiple
-   * @param name the name
-   * @param selector the selector
-   * @param regex the regex
-   * @param stopValues the stop values
+   * @param type            the type
+   * @param multiple        the multiple
+   * @param name            the name
+   * @param selector        the selector
+   * @param regex           the regex
+   * @param stopValues      the stop values
    */
-  public WebScraperSelector(List<String> parentSelectors,
-      WebScraperSelectorType type, Boolean multiple, String name,
-      String selector, String regex, List<String> stopValues) {
+  public WebScraperSelector(List<String> parentSelectors, WebScraperSelectorType type,
+      Boolean multiple, String name, String selector, String regex, List<String> stopValues) {
     super();
     this.parentSelectors = parentSelectors;
     this.type = type;
@@ -79,6 +100,11 @@ public abstract class WebScraperSelector {
     this.setStopValues(stopValues);
   }
 
+  /**
+   * Gets the id.
+   *
+   * @return the id
+   */
   @Id
   @GeneratedValue(generator = "uuid")
   @GenericGenerator(name = "uuid", strategy = "uuid2")
@@ -86,6 +112,11 @@ public abstract class WebScraperSelector {
     return id;
   }
 
+  /**
+   * Sets the id.
+   *
+   * @param id the new id
+   */
   public void setId(String id) {
     this.id = id;
   }
@@ -93,91 +124,189 @@ public abstract class WebScraperSelector {
   // @LazyCollection(LazyCollectionOption.FALSE)
   // @ElementCollection
   // @CollectionTable(name = "odms_sitemap_selector_parentSelector",
+  /**
+   * Gets the parent selectors.
+   *
+   * @return the parent selectors
+   */
   // joinColumns = { @JoinColumn(name = "selector_id") })
   @Transient
   public List<String> getParentSelectors() {
     return parentSelectors;
   }
 
+  /**
+   * Sets the parent selectors.
+   *
+   * @param parentSelectors the new parent selectors
+   */
   public void setParentSelectors(List<String> parentSelectors) {
     this.parentSelectors = parentSelectors;
   }
 
+  /**
+   * Gets the type.
+   *
+   * @return the type
+   */
   @Enumerated(EnumType.STRING)
   public WebScraperSelectorType getType() {
     return type;
   }
 
+  /**
+   * Sets the type.
+   *
+   * @param type the new type
+   */
   public void setType(WebScraperSelectorType type) {
     this.type = type;
   }
 
+  /**
+   * Gets the multiple.
+   *
+   * @return the multiple
+   */
   public Boolean getMultiple() {
     return multiple;
   }
 
+  /**
+   * Sets the multiple.
+   *
+   * @param multiple the new multiple
+   */
   public void setMultiple(Boolean multiple) {
     this.multiple = multiple;
   }
 
+  /**
+   * Gets the name.
+   *
+   * @return the name
+   */
   public String getName() {
     return name;
   }
 
+  /**
+   * Sets the name.
+   *
+   * @param title the new name
+   */
   public void setName(String title) {
     this.name = title;
   }
 
+  /**
+   * Gets the selector.
+   *
+   * @return the selector
+   */
   public String getSelector() {
     return selector;
   }
 
+  /**
+   * Sets the selector.
+   *
+   * @param selector the new selector
+   */
   public void setSelector(String selector) {
     this.selector = selector;
   }
 
+  /**
+   * Gets the stop values.
+   *
+   * @return the stop values
+   */
   @Transient
   public List<String> getStopValues() {
     return stopValues;
   }
 
+  /**
+   * Sets the stop values.
+   *
+   * @param stopValues the new stop values
+   */
   public void setStopValues(List<String> stopValues) {
     this.stopValues = stopValues;
   }
 
+  /**
+   * Gets the default stop values.
+   *
+   * @return the default stop values
+   */
   public static List<String> getDefaultStopValues() {
     return defaultStopValues;
   }
 
+  /**
+   * Sets the default stop values.
+   *
+   * @param defaultStopValues the new default stop values
+   */
   public static void setDefaultStopValues(List<String> defaultStopValues) {
     WebScraperSelector.defaultStopValues = defaultStopValues;
   }
 
+  /**
+   * Gets the extract attribute.
+   *
+   * @return the extract attribute
+   */
   public String getExtractAttribute() {
     return extractAttribute;
   }
 
+  /**
+   * Sets the extract attribute.
+   *
+   * @param extractAttribute the new extract attribute
+   */
   public void setExtractAttribute(String extractAttribute) {
     this.extractAttribute = extractAttribute;
   }
 
+  /**
+   * Gets the regex.
+   *
+   * @return the regex
+   */
   public String getRegex() {
     return regex;
   }
 
+  /**
+   * Sets the regex.
+   *
+   * @param regex the new regex
+   */
   public void setRegex(String regex) {
     this.regex = regex;
   }
 
+  /*
+   * (non-Javadoc)
+   * 
+   * @see java.lang.Object#toString()
+   */
   @Override
   public String toString() {
-    return "WebScraperSelector [parentSelectors=" + parentSelectors 
-        + ", type=" + type + ", extractAttribute="
-        + extractAttribute + ", multiple=" + multiple 
-        + ", name=" + name + ", selector=" + selector + ", stopValues="
-        + stopValues + "]";
+    return "WebScraperSelector [parentSelectors=" + parentSelectors + ", type=" + type
+        + ", extractAttribute=" + extractAttribute + ", multiple=" + multiple + ", name=" + name
+        + ", selector=" + selector + ", stopValues=" + stopValues + "]";
   }
 
+  /*
+   * (non-Javadoc)
+   * 
+   * @see java.lang.Object#hashCode()
+   */
   @Override
   public int hashCode() {
     final int prime = 31;
@@ -190,6 +319,11 @@ public abstract class WebScraperSelector {
     return result;
   }
 
+  /*
+   * (non-Javadoc)
+   * 
+   * @see java.lang.Object#equals(java.lang.Object)
+   */
   @Override
   public boolean equals(Object obj) {
     if (this == obj) {

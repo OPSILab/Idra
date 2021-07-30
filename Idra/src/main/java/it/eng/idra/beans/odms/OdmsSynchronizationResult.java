@@ -22,10 +22,19 @@ import it.eng.idra.beans.dcat.DcatDataset;
 import java.util.ArrayList;
 import java.util.List;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class OdmsSynchronizationResult.
+ */
 public class OdmsSynchronizationResult {
 
+  /** The added datasets. */
   private List<DcatDataset> addedDatasets;
+
+  /** The deleted datasets. */
   private List<DcatDataset> deletedDatasets;
+
+  /** The changed datasets. */
   private List<DcatDataset> changedDatasets;
 
   /**
@@ -38,45 +47,95 @@ public class OdmsSynchronizationResult {
 
   }
 
+  /**
+   * Gets the added datasets.
+   *
+   * @return the added datasets
+   */
   public List<DcatDataset> getAddedDatasets() {
     return addedDatasets;
   }
 
+  /**
+   * Sets the added datasets.
+   *
+   * @param addedDatasets the new added datasets
+   */
   public void setAddedDatasets(List<DcatDataset> addedDatasets) {
     this.addedDatasets = addedDatasets;
   }
 
+  /**
+   * Gets the deleted datasets.
+   *
+   * @return the deleted datasets
+   */
   public List<DcatDataset> getDeletedDatasets() {
     return deletedDatasets;
   }
 
+  /**
+   * Sets the deleted datasets.
+   *
+   * @param deletedDatasets the new deleted datasets
+   */
   public void setDeletedDatasets(List<DcatDataset> deletedDatasets) {
     this.deletedDatasets = deletedDatasets;
   }
 
+  /**
+   * Gets the changed datasets.
+   *
+   * @return the changed datasets
+   */
   public List<DcatDataset> getChangedDatasets() {
     return changedDatasets;
   }
 
+  /**
+   * Sets the changed datasets.
+   *
+   * @param changedDatasets the new changed datasets
+   */
   public void setChangedDatasets(List<DcatDataset> changedDatasets) {
     this.changedDatasets = changedDatasets;
   }
 
+  /**
+   * Adds the to added list.
+   *
+   * @param dataset the dataset
+   */
   public void addToAddedList(DcatDataset dataset) {
     this.addedDatasets.add(dataset);
   }
 
+  /**
+   * Adds the to changed list.
+   *
+   * @param dataset the dataset
+   */
   public void addToChangedList(DcatDataset dataset) {
     this.changedDatasets.add(dataset);
   }
 
+  /**
+   * Adds the to deleted list.
+   *
+   * @param dataset the dataset
+   */
   public void addToDeletedList(DcatDataset dataset) {
     this.deletedDatasets.add(dataset);
   }
 
+  /**
+   * Checks if is empty.
+   *
+   * @return true, if is empty
+   */
   public boolean isEmpty() {
-    return (changedDatasets.size() == 0 
-        && addedDatasets.size() == 0 && deletedDatasets.size() == 0);
+    return (changedDatasets.size() == 0 && addedDatasets.size() == 0
+        && deletedDatasets.size() == 0);
   }
 
 }

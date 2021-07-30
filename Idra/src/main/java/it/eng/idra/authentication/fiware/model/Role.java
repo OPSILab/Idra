@@ -18,37 +18,78 @@
 
 package it.eng.idra.authentication.fiware.model;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class Role.
+ */
 public class Role {
 
+  /** The name. */
   private String name;
+
+  /** The id. */
   private String id;
 
+  /**
+   * Instantiates a new role.
+   *
+   * @param name the name
+   * @param id   the id
+   */
   public Role(String name, String id) {
     this.name = name;
     this.id = id;
   }
 
+  /**
+   * Instantiates a new role.
+   */
   public Role() {
     this.name = "";
     this.id = "";
   }
 
+  /**
+   * Gets the name.
+   *
+   * @return the name
+   */
   public String getName() {
     return name;
   }
 
+  /**
+   * Sets the name.
+   *
+   * @param name the new name
+   */
   public void setName(String name) {
     this.name = name;
   }
 
+  /**
+   * Gets the id.
+   *
+   * @return the id
+   */
   public String getId() {
     return id;
   }
 
+  /**
+   * Sets the id.
+   *
+   * @param id the new id
+   */
   public void setId(String id) {
     this.id = id;
   }
 
+  /*
+   * (non-Javadoc)
+   * 
+   * @see java.lang.Object#equals(java.lang.Object)
+   */
   @Override
   public boolean equals(Object obj) {
 
@@ -70,6 +111,11 @@ public class Role {
     }
   }
 
+  /*
+   * (non-Javadoc)
+   * 
+   * @see java.lang.Object#hashCode()
+   */
   @Override
   public int hashCode() {
     return this.getName().hashCode();

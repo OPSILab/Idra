@@ -18,20 +18,44 @@
 
 package it.eng.idra.beans.dcat;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Enum DcatApProfile.
+ */
 public enum DcatApProfile {
 
-  DCATAP("DCATAP"), DCATAP_IT("DCATAP_IT");
+  /** The dcatap. */
+  DCATAP("DCATAP"),
+  /** The dcatap it. */
+  DCATAP_IT("DCATAP_IT");
 
+  /** The profile name. */
   private String profileName;
 
+  /**
+   * Instantiates a new dcat ap profile.
+   *
+   * @param name the name
+   */
   DcatApProfile(String name) {
     this.profileName = name;
   }
 
+  /**
+   * Profile name.
+   *
+   * @return the string
+   */
   public String profileName() {
     return profileName;
   }
 
+  /**
+   * From string.
+   *
+   * @param name the name
+   * @return the dcat ap profile
+   */
   public static DcatApProfile fromString(String name) {
     return valueOf(name.toUpperCase());
   }

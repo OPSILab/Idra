@@ -95,21 +95,53 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class SocrataConnector.
+ */
 public class SocrataConnector implements IodmsConnector {
 
+  /** The node. */
   private OdmsCatalogue node;
+
+  /** The node id. */
   private String nodeId;
+
+  /** The datasets array. */
   private JSONArray datasetsArray;
+
+  /** The Constant JSON_TYPE. */
   public static final MediaType JSON_TYPE = MediaType.APPLICATION_JSON_TYPE;
+
+  /** The logger. */
   private static Logger logger = LogManager.getLogger(SocrataConnector.class);
 
+  /**
+   * Instantiates a new socrata connector.
+   *
+   * @param node the node
+   */
   public SocrataConnector(OdmsCatalogue node) {
     this.node = node;
     this.nodeId = String.valueOf(node.getId());
   }
 
-  private JSONArray getJsonDatasets() throws 
-      JSONException, URISyntaxException, OdmsCatalogueOfflineException,
+  /**
+   * Gets the json datasets.
+   *
+   * @return the json datasets
+   * @throws JSONException                   the JSON exception
+   * @throws URISyntaxException              the URI syntax exception
+   * @throws OdmsCatalogueOfflineException   the odms catalogue offline exception
+   * @throws OdmsCatalogueForbiddenException the odms catalogue forbidden
+   *                                         exception
+   * @throws OdmsCatalogueNotFoundException  the odms catalogue not found
+   *                                         exception
+   * @throws IOException                     Signals that an I/O exception has
+   *                                         occurred.
+   */
+  private JSONArray getJsonDatasets()
+      throws JSONException, URISyntaxException, OdmsCatalogueOfflineException,
       OdmsCatalogueForbiddenException, OdmsCatalogueNotFoundException, IOException {
 
     logger.info("-- SOCRATA Connector Request sent -- " + node.getHost());
@@ -134,8 +166,14 @@ public class SocrataConnector implements IodmsConnector {
     return jsonArray;
   }
 
+  /*
+   * (non-Javadoc)
+   * 
+   * @see it.eng.idra.connectors.IodmsConnector#datasetToDcat(java.lang.Object,
+   * it.eng.idra.beans.odms.OdmsCatalogue)
+   */
   @Override
-  public DcatDataset datasetToDcat(Object d, OdmsCatalogue node) 
+  public DcatDataset datasetToDcat(Object d, OdmsCatalogue node)
       throws JSONException, ParseException {
 
     JSONObject dataset = (JSONObject) d;
@@ -199,22 +237,29 @@ public class SocrataConnector implements IodmsConnector {
         try {
           distributionList.add(distributionToDcat(distrArray.getJSONObject(i), license, nodeId));
         } catch (Exception e) {
-          logger.info("There was an error while deserializing a Distribution: " 
-                  + e.getMessage() + " - SKIPPED");
+          logger.info("There was an error while deserializing a Distribution: " + e.getMessage()
+              + " - SKIPPED");
         }
       }
     }
 
-    return new DcatDataset(nodeId, identifier, title, description,
-        distributionList, themeList, publisher,
-        contactPointList, keywords, null, null, null,
-        null, null, null, landingPage, null, null, issued, modified, null,
-        null, null, null, null, null, null, null, null, null, null, null);
+    return new DcatDataset(nodeId, identifier, title, description, distributionList, themeList,
+        publisher, contactPointList, keywords, null, null, null, null, null, null, landingPage,
+        null, null, issued, modified, null, null, null, null, null, null, null, null, null, null,
+        null, null);
   }
 
-  protected DcatDistribution distributionToDcat(JSONObject obj,
-      DctLicenseDocument license, String nodeId)
-      throws Exception {
+  /**
+   * Distribution to dcat.
+   *
+   * @param obj     the obj
+   * @param license the license
+   * @param nodeId  the node id
+   * @return the dcat distribution
+   * @throws Exception the exception
+   */
+  protected DcatDistribution distributionToDcat(JSONObject obj, DctLicenseDocument license,
+      String nodeId) throws Exception {
 
     String accessUrl = null;
     String description = null;
@@ -235,14 +280,18 @@ public class SocrataConnector implements IodmsConnector {
     mediaType = obj.optString("mediaType");
     accessUrl = downloadUrl = obj.getString("downloadURL");
 
-    return new DcatDistribution(nodeId, accessUrl,
-        description, format, license, byteSize,
-        checksum, documentation,
-        downloadUrl, language, linkedSchemas,
-        mediaType, releaseDate, updateDate, rights, status, title);
+    return new DcatDistribution(nodeId, accessUrl, description, format, license, byteSize, checksum,
+        documentation, downloadUrl, language, linkedSchemas, mediaType, releaseDate, updateDate,
+        rights, status, title);
 
   }
 
+  /**
+   * Deserialize contact point.
+   *
+   * @param dataset the dataset
+   * @return the list
+   */
   protected List<VCardOrganization> deserializeContactPoint(JSONObject dataset) {
 
     List<VCardOrganization> result = new ArrayList<VCardOrganization>();
@@ -251,9 +300,8 @@ public class SocrataConnector implements IodmsConnector {
 
       JSONObject contactObj = dataset.optJSONObject("contactPoint");
       if (contactObj != null) {
-        result.add(new VCardOrganization(DCAT.contactPoint.getURI(),
-            null, contactObj.optString("fn"),
-            contactObj.optString("hasEmail"),
+        result.add(new VCardOrganization(DCAT.contactPoint.getURI(), null,
+            contactObj.optString("fn"), contactObj.optString("hasEmail"),
             contactObj.optString("hasURL"), contactObj.optString("hasTelephoneValue"),
             contactObj.optString("hasTelephoneType"), nodeId));
       }
@@ -261,22 +309,36 @@ public class SocrataConnector implements IodmsConnector {
     return result;
   }
 
-
-  protected FoafAgent deserializeFoafAgent(JSONObject dataset, String fieldName,
-      Property property, String nodeId) {
+  /**
+   * Deserialize foaf agent.
+   *
+   * @param dataset   the dataset
+   * @param fieldName the field name
+   * @param property  the property
+   * @param nodeId    the node id
+   * @return the foaf agent
+   */
+  protected FoafAgent deserializeFoafAgent(JSONObject dataset, String fieldName, Property property,
+      String nodeId) {
 
     try {
       JSONObject obj = dataset.getJSONObject(fieldName);
       return new FoafAgent(property.getURI(), obj.optString("resourceUri"), obj.optString("name"),
-          obj.optString("mbox"), obj.optString("homepage"),
-          obj.optString("type"), obj.optString("identifier"), nodeId);
+          obj.optString("mbox"), obj.optString("homepage"), obj.optString("type"),
+          obj.optString("identifier"), nodeId);
     } catch (JSONException ignore) {
       logger.info("Agent object not valid! - Skipped");
     }
     return null;
   }
 
-
+  /**
+   * Deserialize license.
+   *
+   * @param obj    the obj
+   * @param nodeId the node id
+   * @return the dct license document
+   */
   protected DctLicenseDocument deserializeLicense(JSONObject obj, String nodeId) {
 
     try {
@@ -291,9 +353,20 @@ public class SocrataConnector implements IodmsConnector {
 
   }
 
-  protected <T extends SkosConcept> List<T> deserializeConcept(JSONObject obj, 
-      String fieldName, Property property,
-      String nodeId, Class<T> type) throws JSONException {
+  /**
+   * Deserialize concept.
+   *
+   * @param           <T> the generic type
+   * @param obj       the obj
+   * @param fieldName the field name
+   * @param property  the property
+   * @param nodeId    the node id
+   * @param type      the type
+   * @return the list
+   * @throws JSONException the JSON exception
+   */
+  protected <T extends SkosConcept> List<T> deserializeConcept(JSONObject obj, String fieldName,
+      Property property, String nodeId, Class<T> type) throws JSONException {
 
     List<T> result = new ArrayList<T>();
     JSONArray conceptArray = obj.optJSONArray(fieldName);
@@ -320,15 +393,25 @@ public class SocrataConnector implements IodmsConnector {
     return result;
   }
 
+  /*
+   * (non-Javadoc)
+   * 
+   * @see it.eng.idra.connectors.IodmsConnector#countDatasets()
+   */
   @Override
-  public int countDatasets() throws 
-      ParseException, URISyntaxException, OdmsCatalogueOfflineException,
+  public int countDatasets()
+      throws ParseException, URISyntaxException, OdmsCatalogueOfflineException,
       OdmsCatalogueForbiddenException, OdmsCatalogueNotFoundException, IOException {
 
     return getAllDatasets().size();
 
   }
 
+  /*
+   * (non-Javadoc)
+   * 
+   * @see it.eng.idra.connectors.IodmsConnector#findDatasets(java.util.HashMap)
+   */
   // Live search is not available on current SODA API
   @Override
   public List<DcatDataset> findDatasets(HashMap<String, Object> searchParameters) {
@@ -336,15 +419,25 @@ public class SocrataConnector implements IodmsConnector {
     return resultDatasets;
   }
 
+  /*
+   * (non-Javadoc)
+   * 
+   * @see it.eng.idra.connectors.IodmsConnector#getDataset(java.lang.String)
+   */
   // Individual get of the datasets is not available on current SODA API
   @Override
   public DcatDataset getDataset(String datasetId) {
     return null;
   }
 
+  /*
+   * (non-Javadoc)
+   * 
+   * @see it.eng.idra.connectors.IodmsConnector#getAllDatasets()
+   */
   @Override
-  public List<DcatDataset> getAllDatasets() throws 
-      ParseException, URISyntaxException, OdmsCatalogueOfflineException,
+  public List<DcatDataset> getAllDatasets()
+      throws ParseException, URISyntaxException, OdmsCatalogueOfflineException,
       OdmsCatalogueForbiddenException, OdmsCatalogueNotFoundException, IOException {
 
     ArrayList<DcatDataset> dcatDatasets = new ArrayList<DcatDataset>();
@@ -357,8 +450,8 @@ public class SocrataConnector implements IodmsConnector {
         dataset = null;
 
       } catch (Exception e) {
-        logger.info("There was an error: " 
-               + e.getMessage() + " while deserializing Dataset - " + i + " - SKIPPED");
+        logger.info("There was an error: " + e.getMessage() + " while deserializing Dataset - " + i
+            + " - SKIPPED");
       }
     }
 
@@ -368,13 +461,17 @@ public class SocrataConnector implements IodmsConnector {
     return dcatDatasets;
   }
 
-
+  /*
+   * (non-Javadoc)
+   * 
+   * @see it.eng.idra.connectors.IodmsConnector#getChangedDatasets(java.util.List,
+   * java.lang.String)
+   */
   @Override
-  public OdmsSynchronizationResult getChangedDatasets(
-      List<DcatDataset> oldDatasets, String startingDateString)
-      throws ParseException, URISyntaxException, 
-      OdmsCatalogueOfflineException, OdmsCatalogueForbiddenException,
-      OdmsCatalogueNotFoundException, IOException {
+  public OdmsSynchronizationResult getChangedDatasets(List<DcatDataset> oldDatasets,
+      String startingDateString)
+      throws ParseException, URISyntaxException, OdmsCatalogueOfflineException,
+      OdmsCatalogueForbiddenException, OdmsCatalogueNotFoundException, IOException {
 
     ArrayList<DcatDataset> newDatasets = (ArrayList<DcatDataset>) getAllDatasets();
 
@@ -383,7 +480,7 @@ public class SocrataConnector implements IodmsConnector {
     ImmutableSet<DcatDataset> newSets = ImmutableSet.copyOf(newDatasets);
     ImmutableSet<DcatDataset> oldSets = ImmutableSet.copyOf(oldDatasets);
 
-    int deleted = 0; 
+    int deleted = 0;
     int added = 0;
     int changed = 0;
 
@@ -448,6 +545,12 @@ public class SocrataConnector implements IodmsConnector {
     return syncrhoResult;
   }
 
+  /**
+   * Send get request 1.
+   *
+   * @param urlString the url string
+   * @return the string
+   */
   private String sendGetRequest1(String urlString) {
 
     try {
@@ -458,13 +561,13 @@ public class SocrataConnector implements IodmsConnector {
         }
 
         @Override
-        public void checkServerTrusted(X509Certificate[] chain,
-            String authType) throws CertificateException {
+        public void checkServerTrusted(X509Certificate[] chain, String authType)
+            throws CertificateException {
         }
 
         @Override
-        public void checkClientTrusted(X509Certificate[] chain,
-            String authType) throws CertificateException {
+        public void checkClientTrusted(X509Certificate[] chain, String authType)
+            throws CertificateException {
         }
       } };
 
@@ -511,6 +614,13 @@ public class SocrataConnector implements IodmsConnector {
 
   }
 
+  /**
+   * Send get request.
+   *
+   * @param urlString the url string
+   * @return the string
+   * @throws IOException Signals that an I/O exception has occurred.
+   */
   private String sendGetRequest(String urlString) throws IOException {
     URL url = null;
 
@@ -544,15 +654,15 @@ public class SocrataConnector implements IodmsConnector {
      * http/examples/client/ClientExecuteProxy.java
      */
     if (Boolean.parseBoolean(PropertyManager.getProperty(IdraProperty.HTTP_PROXY_ENABLED).trim())
-        && StringUtils.isNotBlank(
-            PropertyManager.getProperty(IdraProperty.HTTP_PROXY_HOST).trim())) {
+        && StringUtils
+            .isNotBlank(PropertyManager.getProperty(IdraProperty.HTTP_PROXY_HOST).trim())) {
 
       int port = 80;
       if (isSet(PropertyManager.getProperty(IdraProperty.HTTP_PROXY_PORT))) {
         port = Integer.parseInt(PropertyManager.getProperty(IdraProperty.HTTP_PROXY_PORT));
       }
-      HttpHost proxy = new HttpHost(
-          PropertyManager.getProperty(IdraProperty.HTTP_PROXY_HOST), port, "http");
+      HttpHost proxy = new HttpHost(PropertyManager.getProperty(IdraProperty.HTTP_PROXY_HOST), port,
+          "http");
       httpclient.getParams().setParameter(ConnRoutePNames.DEFAULT_PROXY, proxy);
       if (isSet(PropertyManager.getProperty(IdraProperty.HTTP_PROXY_USER))) {
         ((AbstractHttpClient) httpclient).getCredentialsProvider().setCredentials(
@@ -570,8 +680,8 @@ public class SocrataConnector implements IodmsConnector {
       HttpResponse response = httpclient.execute(getRequest);
 
       if (response.getStatusLine().getStatusCode() != 200) {
-        throw new RuntimeException("Failed : HTTP error code : " 
-                  + response.getStatusLine().getStatusCode());
+        throw new RuntimeException(
+            "Failed : HTTP error code : " + response.getStatusLine().getStatusCode());
       }
 
       BufferedReader rd = new BufferedReader(
@@ -592,10 +702,22 @@ public class SocrataConnector implements IodmsConnector {
     return body;
   }
 
+  /**
+   * Checks if is sets the.
+   *
+   * @param string the string
+   * @return true, if is sets the
+   */
   private static boolean isSet(String string) {
     return string != null && string.length() > 0;
   }
 
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * it.eng.idra.connectors.IodmsConnector#countSearchDatasets(java.util.HashMap)
+   */
   @Override
   public int countSearchDatasets(HashMap<String, Object> searchParameters) throws Exception {
     // TODO Auto-generated method stub

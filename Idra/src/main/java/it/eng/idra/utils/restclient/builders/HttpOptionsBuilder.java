@@ -24,8 +24,17 @@ import javax.ws.rs.core.MediaType;
 import org.apache.http.client.methods.HttpOptions;
 import org.apache.http.client.methods.HttpRequestBase;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class HttpOptionsBuilder.
+ */
 public class HttpOptionsBuilder extends HttpRequestBuilder<HttpOptions> {
 
+  /**
+   * Instantiates a new http options builder.
+   *
+   * @param url the url
+   */
   private HttpOptionsBuilder(URL url) {
     super.httpRequest = new HttpOptions(url.toString());
   }
@@ -33,20 +42,27 @@ public class HttpOptionsBuilder extends HttpRequestBuilder<HttpOptions> {
   /**
    * Gets the single instance of HttpOptionsBuilder.
    *
-   * @param url the url
+   * @param url     the url
    * @param headers the headers
-   * @param type the type
-   * @param data the data
+   * @param type    the type
+   * @param data    the data
    * @return single instance of HttpOptionsBuilder
    */
-  public static HttpRequestBase getInstance(URL url, Map<String, String> headers,
-      MediaType type, String data) {
+  public static HttpRequestBase getInstance(URL url, Map<String, String> headers, MediaType type,
+      String data) {
     HttpOptionsBuilder builder = new HttpOptionsBuilder(url);
     builder.addHeaders(headers);
 
     return builder.httpRequest;
   }
 
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * it.eng.idra.utils.restclient.builders.HttpRequestBuilder#addPayload(javax.ws.
+   * rs.core.MediaType, java.lang.String)
+   */
   @Override
   protected void addPayload(MediaType type, String data) {
     throw new RuntimeException("Payload not allowed in HTTP OPTIONS requests");

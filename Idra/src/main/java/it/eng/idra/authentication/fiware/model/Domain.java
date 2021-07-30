@@ -18,20 +18,40 @@
 
 package it.eng.idra.authentication.fiware.model;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class Domain.
+ */
 @Deprecated
 public class Domain {
 
+  /** The id. */
   private String id;
 
+  /**
+   * Instantiates a new domain.
+   *
+   * @param id the id
+   */
   public Domain(String id) {
     super();
     this.id = id;
   }
 
+  /**
+   * Gets the id.
+   *
+   * @return the id
+   */
   public String getId() {
     return id;
   }
 
+  /**
+   * Sets the id.
+   *
+   * @param id the new id
+   */
   public void setId(String id) {
     this.id = id;
   }

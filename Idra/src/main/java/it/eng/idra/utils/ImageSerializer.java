@@ -25,8 +25,18 @@ import com.google.gson.JsonSerializer;
 import it.eng.idra.beans.odms.OdmsCatalogueImage;
 import java.lang.reflect.Type;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class ImageSerializer.
+ */
 public class ImageSerializer implements JsonSerializer<OdmsCatalogueImage> {
 
+  /*
+   * (non-Javadoc)
+   * 
+   * @see com.google.gson.JsonSerializer#serialize(java.lang.Object,
+   * java.lang.reflect.Type, com.google.gson.JsonSerializationContext)
+   */
   @Override
   public JsonElement serialize(OdmsCatalogueImage image, Type arg1, JsonSerializationContext arg2) {
 

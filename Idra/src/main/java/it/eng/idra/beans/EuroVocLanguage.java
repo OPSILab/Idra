@@ -18,23 +18,91 @@
 
 package it.eng.idra.beans;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Enum EuroVocLanguage.
+ */
 public enum EuroVocLanguage {
 
-  BG("Български"), ES("Español"), CS("Čeština"), 
-  DA("Dansk"), DE("Deutsch"), ET("Eesti"), EL("λληνικά"), EN("English"),
-  FR("Français"), GA("Gaeilge"), HR("Hrvatski"), 
-  IT("Italiano"), LV("Latviešu"), 
-  LT("Lietuvių"), HU("Magyar"),
-  MT("Malti"), NL("Nederlands"), PL("Polski"), 
-  PT("Português"), RO("Română"), SK("Slovenčina"), SL("Slovenščina"),
-  FI("Suomi"), SV("Svenska"), MK("Македонски"), SQ("Shqip"), SR("Српски");
+  /** The bg. */
+  BG("Български"),
+  /** The es. */
+  ES("Español"),
+  /** The cs. */
+  CS("Čeština"),
 
+  /** The da. */
+  DA("Dansk"),
+  /** The de. */
+  DE("Deutsch"),
+  /** The et. */
+  ET("Eesti"),
+  /** The el. */
+  EL("λληνικά"),
+  /** The en. */
+  EN("English"),
+
+  /** The fr. */
+  FR("Français"),
+  /** The ga. */
+  GA("Gaeilge"),
+  /** The hr. */
+  HR("Hrvatski"),
+
+  /** The it. */
+  IT("Italiano"),
+  /** The lv. */
+  LV("Latviešu"),
+
+  /** The lt. */
+  LT("Lietuvių"),
+  /** The hu. */
+  HU("Magyar"),
+
+  /** The mt. */
+  MT("Malti"),
+  /** The nl. */
+  NL("Nederlands"),
+  /** The pl. */
+  PL("Polski"),
+
+  /** The pt. */
+  PT("Português"),
+  /** The ro. */
+  RO("Română"),
+  /** The sk. */
+  SK("Slovenčina"),
+  /** The sl. */
+  SL("Slovenščina"),
+
+  /** The fi. */
+  FI("Suomi"),
+  /** The sv. */
+  SV("Svenska"),
+  /** The mk. */
+  MK("Македонски"),
+  /** The sq. */
+  SQ("Shqip"),
+  /** The sr. */
+  SR("Српски");
+
+  /** The language name. */
   private String languageName;
 
+  /**
+   * Instantiates a new euro voc language.
+   *
+   * @param name the name
+   */
   EuroVocLanguage(String name) {
     this.languageName = name;
   }
 
+  /**
+   * Language name.
+   *
+   * @return the string
+   */
   public String languageName() {
     return languageName;
   }

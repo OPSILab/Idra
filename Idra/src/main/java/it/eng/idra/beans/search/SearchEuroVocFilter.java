@@ -22,43 +22,85 @@ import it.eng.idra.beans.EuroVocLanguage;
 import it.eng.idra.utils.JsonRequired;
 import java.util.List;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class SearchEuroVocFilter.
+ */
 public class SearchEuroVocFilter {
 
+  /** The euro voc. */
   @JsonRequired
   private boolean euroVoc;
 
+  /** The source language. */
   private EuroVocLanguage sourceLanguage;
+
+  /** The target languages. */
   private List<EuroVocLanguage> targetLanguages;
 
+  /**
+   * Checks if is euro voc.
+   *
+   * @return true, if is euro voc
+   */
   public boolean isEuroVoc() {
     return euroVoc;
   }
 
+  /**
+   * Sets the euro voc.
+   *
+   * @param euroVoc the new euro voc
+   */
   public void setEuroVoc(boolean euroVoc) {
     this.euroVoc = euroVoc;
   }
 
+  /**
+   * Gets the source language.
+   *
+   * @return the source language
+   */
   public EuroVocLanguage getSourceLanguage() {
     return sourceLanguage;
   }
 
+  /**
+   * Sets the source language.
+   *
+   * @param sourceLanguage the new source language
+   */
   public void setSourceLanguage(EuroVocLanguage sourceLanguage) {
     this.sourceLanguage = sourceLanguage;
   }
 
+  /**
+   * Gets the target languages.
+   *
+   * @return the target languages
+   */
   public List<EuroVocLanguage> getTargetLanguages() {
     return targetLanguages;
   }
 
+  /**
+   * Sets the target languages.
+   *
+   * @param targetLanguages the new target languages
+   */
   public void setTargetLanguages(List<EuroVocLanguage> targetLanguages) {
     this.targetLanguages = targetLanguages;
   }
 
+  /*
+   * (non-Javadoc)
+   * 
+   * @see java.lang.Object#toString()
+   */
   @Override
   public String toString() {
-    return "SearchEuroVocFilter [euroVoc=" 
-        + euroVoc + ", sourceLanguage=" + sourceLanguage + ", targetLanguages="
-        + targetLanguages + "]";
+    return "SearchEuroVocFilter [euroVoc=" + euroVoc + ", sourceLanguage=" + sourceLanguage
+        + ", targetLanguages=" + targetLanguages + "]";
   }
 
 }

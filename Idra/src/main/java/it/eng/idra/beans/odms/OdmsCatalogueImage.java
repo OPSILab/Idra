@@ -26,38 +26,73 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class OdmsCatalogueImage.
+ */
 @Entity
 @Table(name = "odms_image")
 public class OdmsCatalogueImage {
 
+  /** The image id. */
   @Id
   @Column(name = "image_id")
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Expose
   private int imageId;
+
+  /** The image data. */
   @Column(columnDefinition = "LONGTEXT")
   @Expose
   private String imageData;
 
+  /**
+   * Instantiates a new odms catalogue image.
+   */
   public OdmsCatalogueImage() {
   }
 
+  /**
+   * Instantiates a new odms catalogue image.
+   *
+   * @param imageData the image data
+   */
   public OdmsCatalogueImage(String imageData) {
     this.imageData = imageData;
   }
 
+  /**
+   * Gets the image id.
+   *
+   * @return the image id
+   */
   public int getImageId() {
     return imageId;
   }
 
+  /**
+   * Sets the image id.
+   *
+   * @param imageId the new image id
+   */
   public void setImageId(int imageId) {
     this.imageId = imageId;
   }
 
+  /**
+   * Gets the image data.
+   *
+   * @return the image data
+   */
   public String getImageData() {
     return imageData;
   }
 
+  /**
+   * Sets the image data.
+   *
+   * @param imageData the new image data
+   */
   public void setImageData(String imageData) {
     this.imageData = imageData;
   }

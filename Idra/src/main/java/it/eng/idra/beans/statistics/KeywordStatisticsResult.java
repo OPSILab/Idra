@@ -18,12 +18,24 @@
 
 package it.eng.idra.beans.statistics;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class KeywordStatisticsResult.
+ */
 public class KeywordStatisticsResult {
 
+  /** The keyword. */
   private String keyword;
+
+  /** The counter. */
   private int counter;
+
+  /** The percentage. */
   private double percentage;
 
+  /**
+   * Instantiates a new keyword statistics result.
+   */
   public KeywordStatisticsResult() {
 
   }
@@ -31,8 +43,8 @@ public class KeywordStatisticsResult {
   /**
    * Instantiates a new keyword statistics result.
    *
-   * @param keyword the keyword
-   * @param counter the counter
+   * @param keyword    the keyword
+   * @param counter    the counter
    * @param percentage the percentage
    */
   public KeywordStatisticsResult(String keyword, int counter, double percentage) {
@@ -41,34 +53,69 @@ public class KeywordStatisticsResult {
     this.percentage = percentage;
   }
 
+  /**
+   * Gets the keyword.
+   *
+   * @return the keyword
+   */
   public String getKeyword() {
     return keyword;
   }
 
+  /**
+   * Sets the keyword.
+   *
+   * @param keyword the new keyword
+   */
   public void setKeyword(String keyword) {
     this.keyword = keyword;
   }
 
+  /**
+   * Gets the counter.
+   *
+   * @return the counter
+   */
   public int getCounter() {
     return counter;
   }
 
+  /**
+   * Sets the counter.
+   *
+   * @param counter the new counter
+   */
   public void setCounter(int counter) {
     this.counter = counter;
   }
 
+  /**
+   * Gets the percentage.
+   *
+   * @return the percentage
+   */
   public double getPercentage() {
     return percentage;
   }
 
+  /**
+   * Sets the percentage.
+   *
+   * @param percentage the new percentage
+   */
   public void setPercentage(double percentage) {
     this.percentage = percentage;
   }
 
+  /*
+   * (non-Javadoc)
+   * 
+   * @see java.lang.Object#toString()
+   */
   @Override
   public String toString() {
-    return "KeywordStatisticsResult [keyword=" + keyword 
-        + ", counter=" + counter + ", percentage=" + percentage + "]";
+    return "KeywordStatisticsResult [keyword=" + keyword + ", counter=" + counter + ", percentage="
+        + percentage + "]";
   }
 
 }

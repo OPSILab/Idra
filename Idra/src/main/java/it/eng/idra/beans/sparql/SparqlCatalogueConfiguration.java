@@ -23,13 +23,23 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class SparqlCatalogueConfiguration.
+ */
 @Entity
 @Table(name = "odms_sparql_config")
 public class SparqlCatalogueConfiguration extends OdmsCatalogueAdditionalConfiguration {
 
+  /** The sparql dataset dump string. */
   private String sparqlDatasetDumpString;
+
+  /** The sparql dataset file path. */
   private String sparqlDatasetFilePath;
 
+  /**
+   * Instantiates a new sparql catalogue configuration.
+   */
   public SparqlCatalogueConfiguration() {
     this.setType("SPARQL");
   }
@@ -57,19 +67,39 @@ public class SparqlCatalogueConfiguration extends OdmsCatalogueAdditionalConfigu
     this.setType("SPARQL");
   }
 
+  /**
+   * Gets the sparql dataset dump string.
+   *
+   * @return the sparql dataset dump string
+   */
   @Transient
   public String getSparqlDatasetDumpString() {
     return sparqlDatasetDumpString;
   }
 
+  /**
+   * Sets the sparql dataset dump string.
+   *
+   * @param sparqlDatasetDumpString the new sparql dataset dump string
+   */
   public void setSparqlDatasetDumpString(String sparqlDatasetDumpString) {
     this.sparqlDatasetDumpString = sparqlDatasetDumpString;
   }
 
+  /**
+   * Gets the sparql dataset file path.
+   *
+   * @return the sparql dataset file path
+   */
   public String getSparqlDatasetFilePath() {
     return sparqlDatasetFilePath;
   }
 
+  /**
+   * Sets the sparql dataset file path.
+   *
+   * @param sparqlDatasetFilePath the new sparql dataset file path
+   */
   public void setSparqlDatasetFilePath(String sparqlDatasetFilePath) {
     this.sparqlDatasetFilePath = sparqlDatasetFilePath;
   }

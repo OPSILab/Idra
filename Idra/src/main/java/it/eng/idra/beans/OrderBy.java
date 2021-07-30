@@ -18,19 +18,53 @@
 
 package it.eng.idra.beans;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Enum OrderBy.
+ */
 public enum OrderBy {
 
-  ID("ID"), NAME("NAME"), HOST("HOST"), NODETYPE("NODETYPE"), FEDERATIONLEVEL("FEDERATIONLEVEL"),
-  DATASETCOUNT("DATASETCOUNT"), NODESTATE("NODESTATE"), 
-  REGISTERDATE("REGISTERDATE"), LASTUPDATEDATE("LASTUPDATEDATE"),
+  /** The id. */
+  ID("ID"),
+  /** The name. */
+  NAME("NAME"),
+  /** The host. */
+  HOST("HOST"),
+  /** The nodetype. */
+  NODETYPE("NODETYPE"),
+  /** The federationlevel. */
+  FEDERATIONLEVEL("FEDERATIONLEVEL"),
+
+  /** The datasetcount. */
+  DATASETCOUNT("DATASETCOUNT"),
+  /** The nodestate. */
+  NODESTATE("NODESTATE"),
+
+  /** The registerdate. */
+  REGISTERDATE("REGISTERDATE"),
+  /** The lastupdatedate. */
+  LASTUPDATEDATE("LASTUPDATEDATE"),
+
+  /** The refreshperiod. */
   REFRESHPERIOD("REFRESHPERIOD");
 
+  /** The value. */
   private String value;
 
+  /**
+   * Instantiates a new order by.
+   *
+   * @param value the value
+   */
   OrderBy(String value) {
     this.value = value;
   }
 
+  /*
+   * (non-Javadoc)
+   * 
+   * @see java.lang.Enum#toString()
+   */
   @Override
   public String toString() {
     return String.valueOf(value);

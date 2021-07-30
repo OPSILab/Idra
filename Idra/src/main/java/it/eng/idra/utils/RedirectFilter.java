@@ -7,11 +7,21 @@ import javax.ws.rs.client.ClientResponseContext;
 import javax.ws.rs.client.ClientResponseFilter;
 import javax.ws.rs.core.Response;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class RedirectFilter.
+ */
 public class RedirectFilter implements ClientResponseFilter {
 
+  /*
+   * (non-Javadoc)
+   * 
+   * @see javax.ws.rs.client.ClientResponseFilter#filter(javax.ws.rs.client.
+   * ClientRequestContext, javax.ws.rs.client.ClientResponseContext)
+   */
   @Override
-  public void filter(ClientRequestContext requestContext, 
-      ClientResponseContext responseContext) throws IOException {
+  public void filter(ClientRequestContext requestContext, ClientResponseContext responseContext)
+      throws IOException {
     // TODO Auto-generated method stub
     if (responseContext.getStatusInfo().getFamily() != Response.Status.Family.REDIRECTION) {
       return;

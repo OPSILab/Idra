@@ -18,7 +18,13 @@
 
 package it.eng.idra.beans.odms;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Enum OdmsCatalogueFederationLevel.
+ */
 public enum OdmsCatalogueFederationLevel {
+
+  /** The level 0. */
   /*
    * LEVEL_0: Catalogue added to the federation, no dataset added, no searches
    * enabled LEVEL_1: Catalogue added to the federation, no dataset added, live
@@ -28,6 +34,14 @@ public enum OdmsCatalogueFederationLevel {
    * LEVEL_4: Catalogue added to the federation, dataset added, cache search
    * enabled, synchronization not enabled
    */
-  LEVEL_0, LEVEL_1, LEVEL_2, LEVEL_3, LEVEL_4
+  LEVEL_0,
+  /** The level 1. */
+  LEVEL_1,
+  /** The level 2. */
+  LEVEL_2,
+  /** The level 3. */
+  LEVEL_3,
+  /** The level 4. */
+  LEVEL_4
 
 }

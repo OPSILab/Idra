@@ -33,31 +33,55 @@ import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class NavigationParameter.
+ */
 @Entity
 @Table(name = "odms_sitemap_navigationParameter")
 public class NavigationParameter {
 
+  /** The id. */
   private String id;
+
+  /** The name. */
   private String name;
+
+  /** The type. */
   private NavigationType type;
+
+  /** The start value. */
   private String startValue;
+
+  /** The end value. */
   private String endValue;
+
+  /** The pages number. */
   private Integer pagesNumber;
+
+  /** The datasets per page. */
   private Integer datasetsPerPage;
+
+  /** The enum values. */
   private List<String> enumValues;
+
+  /** The page selectors. */
   private List<PageSelector> pageSelectors;
 
+  /**
+   * Instantiates a new navigation parameter.
+   */
   public NavigationParameter() {
   }
 
   /**
    * Instantiates a new navigation parameter.
    *
-   * @param name the name
-   * @param type the type
-   * @param startValue the start value
-   * @param endValue the end value
-   * @param enumValues the enum values
+   * @param name                the name
+   * @param type                the type
+   * @param startValue          the start value
+   * @param endValue            the end value
+   * @param enumValues          the enum values
    * @param navigationSelectors the navigation selectors
    */
   public NavigationParameter(String name, NavigationType type, String startValue, String endValue,
@@ -71,14 +95,13 @@ public class NavigationParameter {
     this.pageSelectors = navigationSelectors;
   }
 
-
   /**
    * Instantiates a new navigation parameter.
    *
-   * @param name the name
-   * @param type the type
+   * @param name       the name
+   * @param type       the type
    * @param startValue the start value
-   * @param endValue the end value
+   * @param endValue   the end value
    */
   public NavigationParameter(String name, NavigationType type, String startValue, String endValue) {
     super();
@@ -88,6 +111,11 @@ public class NavigationParameter {
     this.endValue = endValue;
   }
 
+  /**
+   * Gets the id.
+   *
+   * @return the id
+   */
   @Id
   @GeneratedValue(generator = "uuid")
   @GenericGenerator(name = "uuid", strategy = "uuid2")
@@ -95,50 +123,110 @@ public class NavigationParameter {
     return id;
   }
 
+  /**
+   * Sets the id.
+   *
+   * @param id the new id
+   */
   public void setId(String id) {
     this.id = id;
   }
 
+  /**
+   * Gets the name.
+   *
+   * @return the name
+   */
   public String getName() {
     return name;
   }
 
+  /**
+   * Sets the name.
+   *
+   * @param name the new name
+   */
   public void setName(String name) {
     this.name = name;
   }
 
+  /**
+   * Gets the type.
+   *
+   * @return the type
+   */
   public NavigationType getType() {
     return type;
   }
 
+  /**
+   * Sets the type.
+   *
+   * @param type the new type
+   */
   public void setType(NavigationType type) {
     this.type = type;
   }
 
+  /**
+   * Gets the start value.
+   *
+   * @return the start value
+   */
   public String getStartValue() {
     return startValue;
   }
 
+  /**
+   * Sets the start value.
+   *
+   * @param startValue the new start value
+   */
   public void setStartValue(String startValue) {
     this.startValue = startValue;
   }
 
+  /**
+   * Gets the end value.
+   *
+   * @return the end value
+   */
   public String getEndValue() {
     return endValue;
   }
 
+  /**
+   * Sets the end value.
+   *
+   * @param endValue the new end value
+   */
   public void setEndValue(String endValue) {
     this.endValue = endValue;
   }
 
+  /**
+   * Gets the datasets per page.
+   *
+   * @return the datasets per page
+   */
   public Integer getDatasetsPerPage() {
     return datasetsPerPage;
   }
 
+  /**
+   * Sets the datasets per page.
+   *
+   * @param datasetsPerPage the new datasets per page
+   */
   public void setDatasetsPerPage(Integer datasetsPerPage) {
     this.datasetsPerPage = datasetsPerPage;
   }
 
+  /**
+   * Gets the enum values.
+   *
+   * @return the enum values
+   */
   @LazyCollection(LazyCollectionOption.FALSE)
   @ElementCollection
   @CollectionTable(name = "odms_sitemap_navigationParameter_enumValues", joinColumns = {
@@ -147,10 +235,20 @@ public class NavigationParameter {
     return enumValues;
   }
 
+  /**
+   * Sets the enum values.
+   *
+   * @param enumValues the new enum values
+   */
   public void setEnumValues(List<String> enumValues) {
     this.enumValues = enumValues;
   }
 
+  /**
+   * Gets the page selectors.
+   *
+   * @return the page selectors
+   */
   @LazyCollection(LazyCollectionOption.FALSE)
   @OneToMany(cascade = { CascadeType.ALL })
   // @Fetch(FetchMode.SELECT)
@@ -159,18 +257,38 @@ public class NavigationParameter {
     return pageSelectors;
   }
 
+  /**
+   * Sets the page selectors.
+   *
+   * @param pageSelectors the new page selectors
+   */
   public void setPageSelectors(List<PageSelector> pageSelectors) {
     this.pageSelectors = pageSelectors;
   }
 
+  /**
+   * Gets the pages number.
+   *
+   * @return the pages number
+   */
   public Integer getPagesNumber() {
     return pagesNumber;
   }
 
+  /**
+   * Sets the pages number.
+   *
+   * @param pagesNumber the new pages number
+   */
   public void setPagesNumber(Integer pagesNumber) {
     this.pagesNumber = pagesNumber;
   }
 
+  /*
+   * (non-Javadoc)
+   * 
+   * @see java.lang.Object#hashCode()
+   */
   @Override
   public int hashCode() {
     final int prime = 31;
@@ -186,6 +304,11 @@ public class NavigationParameter {
     return result;
   }
 
+  /*
+   * (non-Javadoc)
+   * 
+   * @see java.lang.Object#equals(java.lang.Object)
+   */
   @Override
   public boolean equals(Object obj) {
     if (this == obj) {
@@ -253,13 +376,16 @@ public class NavigationParameter {
     return true;
   }
 
+  /*
+   * (non-Javadoc)
+   * 
+   * @see java.lang.Object#toString()
+   */
   @Override
   public String toString() {
-    return "NavigationParameter [id=" + id + ", name=" 
-        + name + ", type=" + type + ", startValue=" + startValue
-        + ", endValue=" + endValue + ", datasetsPerPage=" 
-        + datasetsPerPage + ", enumValues=" + enumValues
-        + ", pageSelectors=" + pageSelectors + "]";
+    return "NavigationParameter [id=" + id + ", name=" + name + ", type=" + type + ", startValue="
+        + startValue + ", endValue=" + endValue + ", datasetsPerPage=" + datasetsPerPage
+        + ", enumValues=" + enumValues + ", pageSelectors=" + pageSelectors + "]";
   }
 
 }

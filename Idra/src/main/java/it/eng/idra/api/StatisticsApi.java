@@ -30,8 +30,8 @@ public class StatisticsApi {
    *
    * @param httpRequest parameter
    * @param catalogueId parameter
-   * @param startDate parameter
-   * @param endDate parameter
+   * @param startDate   parameter
+   * @param endDate     parameter
    * @return the global statistics
    */
   @GET
@@ -39,13 +39,12 @@ public class StatisticsApi {
   @Produces("application/json")
   public Response getGlobalStatistics(@Context HttpServletRequest httpRequest,
       @QueryParam("catalogueID") @DefaultValue("") String catalogueId,
-      @QueryParam("startDate") String startDate,
-      @QueryParam("endDate") String endDate) {
+      @QueryParam("startDate") String startDate, @QueryParam("endDate") String endDate) {
 
     try {
 
       // CatalogueID -> comma separated values of ids
-      //if (StringUtils.isNotBlank(catalogueId)){}
+      // if (StringUtils.isNotBlank(catalogueId)){}
 
       if (StringUtils.isBlank(endDate)) {
         ZonedDateTime end = ZonedDateTime.now();
@@ -55,8 +54,8 @@ public class StatisticsApi {
         ;
       }
 
-      PlatformStatistcs stat = PlatformStatisticsManager
-          .getCatalogueStatistics(catalogueId, startDate, endDate);
+      PlatformStatistcs stat = PlatformStatisticsManager.getCatalogueStatistics(catalogueId,
+          startDate, endDate);
       return Response.status(Response.Status.OK)
           .entity(GsonUtil.obj2Json(stat, GsonUtil.platformStatsType)).build();
     } catch (GsonUtilException e) {

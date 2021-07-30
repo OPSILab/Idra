@@ -47,88 +47,110 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class CommonUtil.
+ */
 public class CommonUtil {
 
+  /** The logger. */
   private static Logger logger = LogManager.getLogger(CommonUtil.class);
-  private static DateTimeFormatter dtFormatter = 
-      DateTimeFormatter.ISO_OFFSET_DATE_TIME.withZone(ZoneOffset.UTC);
-  private static String[] dateFormats = 
-      { "yyyy", "dd/MM/yyyy", "yyyy-MM-dd", 
-        "EEE MMM dd HH:mm:ss zzz yyyy",
-        "EEEE dd MMMM yyyy", "dd MMMM yyyy",
-        "yyyy-MM-dd'T'HH:mm:ss[XXX][X]", "EEEE, dd MMMM yyyy" };
 
+  /** The dt formatter. */
+  private static DateTimeFormatter dtFormatter = DateTimeFormatter.ISO_OFFSET_DATE_TIME
+      .withZone(ZoneOffset.UTC);
+
+  /** The date formats. */
+  private static String[] dateFormats = { "yyyy", "dd/MM/yyyy", "yyyy-MM-dd",
+      "EEE MMM dd HH:mm:ss zzz yyyy", "EEEE dd MMMM yyyy", "dd MMMM yyyy",
+      "yyyy-MM-dd'T'HH:mm:ss[XXX][X]", "EEEE, dd MMMM yyyy" };
+
+  /** The id order. */
   public static Ordering<OdmsCatalogue> idOrder = new Ordering<OdmsCatalogue>() {
     public int compare(OdmsCatalogue one, OdmsCatalogue other) {
       return one.getId() - other.getId();
     }
   };
 
+  /** The name order. */
   public static Ordering<OdmsCatalogue> nameOrder = new Ordering<OdmsCatalogue>() {
     public int compare(OdmsCatalogue one, OdmsCatalogue other) {
       return one.getName().compareTo(other.getName());
     }
   };
 
+  /** The host order. */
   public static Ordering<OdmsCatalogue> hostOrder = new Ordering<OdmsCatalogue>() {
     public int compare(OdmsCatalogue one, OdmsCatalogue other) {
       return one.getHost().compareTo(other.getHost());
     }
   };
 
+  /** The type order. */
   public static Ordering<OdmsCatalogue> typeOrder = new Ordering<OdmsCatalogue>() {
     public int compare(OdmsCatalogue one, OdmsCatalogue other) {
       return one.getNodeType().compareTo(other.getNodeType());
     }
   };
 
+  /** The federation level order. */
   public static Ordering<OdmsCatalogue> federationLevelOrder = new Ordering<OdmsCatalogue>() {
     public int compare(OdmsCatalogue one, OdmsCatalogue other) {
       return one.getFederationLevel().compareTo(other.getFederationLevel());
     }
   };
 
+  /** The state order. */
   public static Ordering<OdmsCatalogue> stateOrder = new Ordering<OdmsCatalogue>() {
     public int compare(OdmsCatalogue one, OdmsCatalogue other) {
       return one.getNodeState().compareTo(other.getNodeState());
     }
   };
 
+  /** The is active order. */
   public static Ordering<OdmsCatalogue> isActiveOrder = new Ordering<OdmsCatalogue>() {
     public int compare(OdmsCatalogue one, OdmsCatalogue other) {
       return one.isActive().compareTo(other.isActive());
     }
   };
 
+  /** The refresh period order. */
   public static Ordering<OdmsCatalogue> refreshPeriodOrder = new Ordering<OdmsCatalogue>() {
     public int compare(OdmsCatalogue one, OdmsCatalogue other) {
       return one.getRefreshPeriod() - other.getRefreshPeriod();
     }
   };
 
+  /** The dataset count order. */
   public static Ordering<OdmsCatalogue> datasetCountOrder = new Ordering<OdmsCatalogue>() {
     public int compare(OdmsCatalogue one, OdmsCatalogue other) {
       return one.getDatasetCount() - other.getDatasetCount();
     }
   };
 
+  /** The register date order. */
   public static Ordering<OdmsCatalogue> registerDateOrder = new Ordering<OdmsCatalogue>() {
     public int compare(OdmsCatalogue one, OdmsCatalogue other) {
       return one.getRegisterDate().compareTo(other.getRegisterDate());
     }
   };
 
+  /** The last update order. */
   public static Ordering<OdmsCatalogue> lastUpdateOrder = new Ordering<OdmsCatalogue>() {
     public int compare(OdmsCatalogue one, OdmsCatalogue other) {
       return one.getLastUpdateDate().compareTo(other.getLastUpdateDate());
     }
   };
 
+  /** The Constant ROWSDEFAULT. */
   public static final Integer ROWSDEFAULT = 10;
+
+  /** The Constant OFFSETDEFAULT. */
   public static final Integer OFFSETDEFAULT = 0;
 
-  private static Pattern emailPattern = 
-      Pattern.compile("\\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,4}\\b");
+  /** The email pattern. */
+  private static Pattern emailPattern = Pattern
+      .compile("\\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,4}\\b");
 
   /**
    * Encode password.
@@ -160,18 +182,17 @@ public class CommonUtil {
    * @return the string
    * @throws IllegalArgumentException the illegal argument exception
    */
-  public static String toUtcDate(String dateString) 
-      throws IllegalArgumentException {
+  public static String toUtcDate(String dateString) throws IllegalArgumentException {
     for (String dateFormat : dateFormats) {
       try {
 
         if (dateFormat.contains("H")) {
-          return dtFormatter.format(
-              DateTimeFormatter.ofPattern(dateFormat, Locale.US).parse(dateString));
+          return dtFormatter
+              .format(DateTimeFormatter.ofPattern(dateFormat, Locale.US).parse(dateString));
         } else {
-          return dtFormatter.format(LocalDate.parse(
-              dateString, DateTimeFormatter.ofPattern(dateFormat, Locale.US))
-              .atStartOfDay().atZone(ZoneOffset.UTC));
+          return dtFormatter.format(
+              LocalDate.parse(dateString, DateTimeFormatter.ofPattern(dateFormat, Locale.US))
+                  .atStartOfDay().atZone(ZoneOffset.UTC));
         }
       } catch (DateTimeParseException ignore) {
         logger.debug(ignore.getLocalizedMessage());
@@ -186,7 +207,7 @@ public class CommonUtil {
    * From local to utc date.
    *
    * @param originalDateString the original date string
-   * @param locale the locale
+   * @param locale             the locale
    * @return the string
    */
   public static String fromLocalToUtcDate(String originalDateString, Locale locale) {
@@ -202,12 +223,12 @@ public class CommonUtil {
             try {
 
               if (dateFormat.contains("H")) {
-                return dtFormatter.format(
-                    DateTimeFormatter.ofPattern(dateFormat, l).parse(dateString));
+                return dtFormatter
+                    .format(DateTimeFormatter.ofPattern(dateFormat, l).parse(dateString));
               } else {
-                return dtFormatter.format(
-                    LocalDate.parse(dateString, DateTimeFormatter.ofPattern(dateFormat, l))
-                    .atStartOfDay().atZone(ZoneOffset.UTC));
+                return dtFormatter
+                    .format(LocalDate.parse(dateString, DateTimeFormatter.ofPattern(dateFormat, l))
+                        .atStartOfDay().atZone(ZoneOffset.UTC));
               }
 
             } catch (DateTimeParseException ignore) {
@@ -222,12 +243,12 @@ public class CommonUtil {
           try {
 
             if (dateFormat.contains("H")) {
-              return dtFormatter.format(
-                  DateTimeFormatter.ofPattern(dateFormat, locale).parse(dateString));
+              return dtFormatter
+                  .format(DateTimeFormatter.ofPattern(dateFormat, locale).parse(dateString));
             } else {
               return dtFormatter.format(
                   LocalDate.parse(dateString, DateTimeFormatter.ofPattern(dateFormat, locale))
-                  .atStartOfDay().atZone(ZoneOffset.UTC));
+                      .atStartOfDay().atZone(ZoneOffset.UTC));
             }
           } catch (DateTimeParseException ignore) {
             logger.debug(ignore.getLocalizedMessage());
@@ -242,11 +263,23 @@ public class CommonUtil {
 
   }
 
+  /**
+   * Format date.
+   *
+   * @param dt the dt
+   * @return the string
+   */
   public static String formatDate(ZonedDateTime dt) {
     return dtFormatter.format(dt.truncatedTo(ChronoUnit.SECONDS));
 
   }
 
+  /**
+   * Parses the date.
+   *
+   * @param dateString the date string
+   * @return the zoned date time
+   */
   public static ZonedDateTime parseDate(String dateString) {
     return ZonedDateTime.from(dtFormatter.parse(dateString));
   }
@@ -259,42 +292,42 @@ public class CommonUtil {
    */
   public static String fixBadUtcDate(String date) {
 
-    Pattern pattern1 = 
-        Pattern.compile("([0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}.[0-9]{6})$");
+    Pattern pattern1 = Pattern
+        .compile("([0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}.[0-9]{6})$");
     if (pattern1.matcher(date).find()) {
       return date.substring(0, date.length() - 7) + "Z";
     }
 
-    Pattern pattern2 = 
-        Pattern.compile("([0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}.[0-9]{3})$");
+    Pattern pattern2 = Pattern
+        .compile("([0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}.[0-9]{3})$");
     if (pattern2.matcher(date).find()) {
       return date.substring(0, date.length() - 4) + "Z";
     }
-    
+
     Pattern pattern3 = Pattern.compile("([0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2})$");
     if (pattern3.matcher(date).find()) {
       return date + "Z";
     }
-    
-    Pattern pattern4 = Pattern.compile("([0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}"
-        + ":[0-9]{2}:[0-9]{2}\\+[0-9]{2}:[0-9]{2})$");
+
+    Pattern pattern4 = Pattern.compile(
+        "([0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}" + ":[0-9]{2}:[0-9]{2}\\+[0-9]{2}:[0-9]{2})$");
     if (pattern4.matcher(date).find()) {
       return date.substring(0, date.length() - 6) + "Z";
     }
-    Pattern pattern5 = Pattern.compile("([0-9]{4}-[0-9]{2}-[0-9]{2}"
-        + "T[0-9]{2}:[0-9]{2}:[0-9]{2}.[0-9]{3}Z)$");
+    Pattern pattern5 = Pattern
+        .compile("([0-9]{4}-[0-9]{2}-[0-9]{2}" + "T[0-9]{2}:[0-9]{2}:[0-9]{2}.[0-9]{3}Z)$");
     if (pattern5.matcher(date).find()) {
       return date.substring(0, date.length() - 5) + "Z";
     }
 
-    Pattern pattern6 = 
-        Pattern.compile("([0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2})(.[0-9]*)?$");
+    Pattern pattern6 = Pattern
+        .compile("([0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2})(.[0-9]*)?$");
     Matcher m6 = pattern6.matcher(date);
     if (m6.find()) {
       return m6.group(1) + "Z";
     }
-    Pattern pattern7 = 
-        Pattern.compile("([0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2})(.*)?$");
+    Pattern pattern7 = Pattern
+        .compile("([0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2})(.*)?$");
     Matcher m7 = pattern7.matcher(date);
     if (m7.find()) {
       return m7.group(1) + "Z";
@@ -326,15 +359,20 @@ public class CommonUtil {
    */
   public static String extractFrequencyFromUri(String uri) {
 
-    Matcher matcher = Pattern
-        .compile("http:\\/\\/publications\\.europa\\."
-            + "eu\\/resource\\/authority\\/frequency(\\/|#)(\\w*)").matcher(uri);
+    Matcher matcher = Pattern.compile("http:\\/\\/publications\\.europa\\."
+        + "eu\\/resource\\/authority\\/frequency(\\/|#)(\\w*)").matcher(uri);
     String result = null;
 
     return (matcher.find() && (result = matcher.group(2)) != null) ? result : "";
 
   }
 
+  /**
+   * Check if is email.
+   *
+   * @param emailValue the email value
+   * @return true, if successful
+   */
   public static boolean checkIfIsEmail(String emailValue) {
 
     return emailPattern.matcher(emailValue).find();
@@ -343,20 +381,20 @@ public class CommonUtil {
   /**
    * Extract seo identifier.
    *
-   * @param title the title
+   * @param title              the title
    * @param internalIdentifier the internal identifier
-   * @param nodeId the node ID
+   * @param nodeId             the node ID
    * @return the string
    */
-  public static String extractSeoIdentifier(String title, 
-      String internalIdentifier, String nodeId) {
-    //String title1 = unaccent(title).toLowerCase().replaceAll("[^\\p{L}\\p{Z}\\p{N}]","");
-    //String title1 = unaccent(title).toLowerCase().replaceAll("[^\\w\\s]","");
-    //String title1 = unaccent(title.toLowerCase())
-    //.replaceAll("[_+-.,!@#$%^*():?=\\\\;&amp;\\/|&gt;&lt;&quot;']","");
-    String title1 = StringUtils
-        .normalizeSpace(unaccent(title.trim().toLowerCase())
-            .replaceAll("[^\\p{L}\\p{Z}\\p{N}]", ""));
+  public static String extractSeoIdentifier(String title, String internalIdentifier,
+      String nodeId) {
+    // String title1 =
+    // unaccent(title).toLowerCase().replaceAll("[^\\p{L}\\p{Z}\\p{N}]","");
+    // String title1 = unaccent(title).toLowerCase().replaceAll("[^\\w\\s]","");
+    // String title1 = unaccent(title.toLowerCase())
+    // .replaceAll("[_+-.,!@#$%^*():?=\\\\;&amp;\\/|&gt;&lt;&quot;']","");
+    String title1 = StringUtils.normalizeSpace(
+        unaccent(title.trim().toLowerCase()).replaceAll("[^\\p{L}\\p{Z}\\p{N}]", ""));
 
     // In order to support this features for non ASCII characters, the
     // internalIdentifier is used
@@ -402,11 +440,11 @@ public class CommonUtil {
    *
    * @param filePath the file path
    * @param fileName the file name
-   * @param content the content
+   * @param content  the content
    * @throws IOException Signals that an I/O exception has occurred.
    */
-  public static void storeFile(String filePath,
-      String fileName, String content) throws IOException {
+  public static void storeFile(String filePath, String fileName, String content)
+      throws IOException {
     FileWriter out = null;
     logger.info("Writing model to file: " + filePath + fileName);
 
@@ -442,6 +480,12 @@ public class CommonUtil {
     }
   }
 
+  /**
+   * From millis to utc date.
+   *
+   * @param time the time
+   * @return the string
+   */
   public static String fromMillisToUtcDate(Long time) {
     return dtFormatter.format(new Date(time * 1000).toInstant());
   }

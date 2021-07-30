@@ -44,20 +44,41 @@ import org.apache.jena.vocabulary.DCAT;
 import org.apache.jena.vocabulary.DCTerms;
 import org.apache.jena.vocabulary.OWL;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class DcatApItDeserializer.
+ */
 public class DcatApItDeserializer extends DcatApDeserializer {
 
+  /** The Constant DCATAP_IT_BASE_URI. */
   private static final String DCATAP_IT_BASE_URI = "http://dati.gov.it/onto/dcatapit#";
+
+  /** The Constant datasetPattern. */
   private static final Pattern datasetPattern = Pattern
       .compile("\\w*<(dcat|dcatapit):Dataset rdf:about=\\\"(.*)\\\"");
+
+  /** The start date prop. */
   private static Property startDateProp = ResourceFactory
       .createProperty(DCATAP_IT_BASE_URI + "startDate");
+
+  /** The end date prop. */
   private static Property endDateProp = ResourceFactory
       .createProperty(DCATAP_IT_BASE_URI + "endDate");
 
+  /**
+   * Instantiates a new dcat ap it deserializer.
+   */
   public DcatApItDeserializer() {
     super();
   }
 
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * it.eng.idra.dcat.dump.DcatApDeserializer#resourceToDataset(java.lang.String,
+   * org.apache.jena.rdf.model.Resource)
+   */
   @Override
   public DcatDataset resourceToDataset(String nodeId, Resource datasetResource)
       throws DcatApProfileNotValidException {
@@ -275,6 +296,9 @@ public class DcatApItDeserializer extends DcatApDeserializer {
   /**
    * deserializeTemporalCoverage.
    *
+   * @param nodeId          the node id
+   * @param datasetResource the dataset resource
+   * @return the dct period of time
    */
   public DctPeriodOfTime deserializeTemporalCoverage(String nodeId, Resource datasetResource) {
     DcatProperty startDate = null;

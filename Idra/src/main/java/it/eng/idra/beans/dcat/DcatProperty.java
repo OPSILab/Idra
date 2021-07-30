@@ -28,15 +28,25 @@ import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.rdf.model.ResourceFactory;
 import org.apache.solr.common.SolrInputDocument;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class DcatProperty.
+ */
 @Embeddable
 public class DcatProperty {
 
   // private String id;
 
+  /** The uri. */
   private transient String uri;
+
+  /** The property. */
   private transient Property property;
+
+  /** The range. */
   private transient Resource range;
 
+  /** The value. */
   private String value;
   // @LazyCollection(LazyCollectionOption.FALSE)
 
@@ -46,13 +56,16 @@ public class DcatProperty {
 
   // private List<String> values;
 
+  /**
+   * Instantiates a new dcat property.
+   */
   public DcatProperty() {
   }
 
   /**
    * Instantiates a new dcat property.
    *
-   * @param uri the uri
+   * @param uri   the uri
    * @param value the value
    */
   public DcatProperty(String uri, String value) {
@@ -71,8 +84,8 @@ public class DcatProperty {
    * Instantiates a new dcat property.
    *
    * @param property the property
-   * @param range the range
-   * @param value the value
+   * @param range    the range
+   * @param value    the value
    */
   public DcatProperty(Property property, Resource range, String value) {
     // values = null;
@@ -85,7 +98,7 @@ public class DcatProperty {
   /**
    * Instantiates a new dcat property.
    *
-   * @param uri the uri
+   * @param uri   the uri
    * @param range the range
    * @param value the value
    */
@@ -111,28 +124,58 @@ public class DcatProperty {
   // this.id = id;
   // }
 
+  /**
+   * Gets the uri.
+   *
+   * @return the uri
+   */
   @Transient
   public String getUri() {
     return uri;
   }
 
+  /**
+   * Sets the uri.
+   *
+   * @param uri the new uri
+   */
   public void setUri(String uri) {
     this.uri = uri != null ? uri : "";
   }
 
+  /**
+   * Gets the range.
+   *
+   * @return the range
+   */
   @Transient
   public Resource getRange() {
     return range;
   }
 
+  /**
+   * Sets the range.
+   *
+   * @param range the new range
+   */
   public void setRange(Resource range) {
     this.range = range != null ? range : ResourceFactory.createResource();
   }
 
+  /**
+   * Gets the value.
+   *
+   * @return the value
+   */
   public String getValue() {
     return value;
   }
 
+  /**
+   * Sets the value.
+   *
+   * @param value the new value
+   */
   public void setValue(String value) {
     this.value = value != null ? value : "";
   }
@@ -150,17 +193,32 @@ public class DcatProperty {
   // this.values = values;
   // }
 
+  /*
+   * (non-Javadoc)
+   * 
+   * @see java.lang.Object#toString()
+   */
   @Override
   public String toString() {
-    return "DCATProperty [uri=" + uri 
-        + ", property=" + property + ", range=" + range + ", value=" + value + "]";
+    return "DCATProperty [uri=" + uri + ", property=" + property + ", range=" + range + ", value="
+        + value + "]";
   }
 
+  /**
+   * Gets the property.
+   *
+   * @return the property
+   */
   @Transient
   public Property getProperty() {
     return property;
   }
 
+  /**
+   * Sets the property.
+   *
+   * @param property the new property
+   */
   public void setProperty(Property property) {
     this.property = property;
   }
@@ -169,7 +227,7 @@ public class DcatProperty {
    * To doc.
    *
    * @param contentType the content type
-   * @param fieldName the field name
+   * @param fieldName   the field name
    * @return the solr input document
    */
   public SolrInputDocument toDoc(CacheContentType contentType, String fieldName) {
@@ -180,6 +238,11 @@ public class DcatProperty {
     return doc;
   }
 
+  /*
+   * (non-Javadoc)
+   * 
+   * @see java.lang.Object#hashCode()
+   */
   @Override
   public int hashCode() {
     final int prime = 31;
@@ -188,6 +251,11 @@ public class DcatProperty {
     return result;
   }
 
+  /*
+   * (non-Javadoc)
+   * 
+   * @see java.lang.Object#equals(java.lang.Object)
+   */
   @Override
   public boolean equals(Object obj) {
     if (this == obj) {

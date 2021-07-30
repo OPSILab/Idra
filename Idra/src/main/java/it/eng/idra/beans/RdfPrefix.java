@@ -26,31 +26,41 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class RdfPrefix.
+ */
 @Entity
 @Table(name = "prefix")
 public class RdfPrefix {
 
+  /** The id. */
   @Id
   @Column(name = "id")
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private int id;
 
+  /** The prefix. */
   @JsonRequired
   @Column(name = "prefix")
   private String prefix;
 
+  /** The namespace. */
   @JsonRequired
   @Column(name = "namespace")
   private String namespace;
 
+  /**
+   * Instantiates a new rdf prefix.
+   */
   public RdfPrefix() {
   }
 
   /**
    * Instantiates a new rdf prefix.
    *
-   * @param id the id
-   * @param prefix the prefix
+   * @param id        the id
+   * @param prefix    the prefix
    * @param namespace the namespace
    */
   public RdfPrefix(int id, String prefix, String namespace) {
@@ -63,7 +73,7 @@ public class RdfPrefix {
   /**
    * Instantiates a new rdf prefix.
    *
-   * @param prefix the prefix
+   * @param prefix    the prefix
    * @param namespace the namespace
    */
   public RdfPrefix(String prefix, String namespace) {
@@ -72,26 +82,56 @@ public class RdfPrefix {
     this.namespace = namespace;
   }
 
+  /**
+   * Gets the id.
+   *
+   * @return the id
+   */
   public int getId() {
     return id;
   }
 
+  /**
+   * Sets the id.
+   *
+   * @param id the new id
+   */
   public void setId(int id) {
     this.id = id;
   }
 
+  /**
+   * Gets the prefix.
+   *
+   * @return the prefix
+   */
   public String getPrefix() {
     return prefix;
   }
 
+  /**
+   * Sets the prefix.
+   *
+   * @param prefix the new prefix
+   */
   public void setPrefix(String prefix) {
     this.prefix = prefix;
   }
 
+  /**
+   * Gets the namespace.
+   *
+   * @return the namespace
+   */
   public String getNamespace() {
     return namespace;
   }
 
+  /**
+   * Sets the namespace.
+   *
+   * @param namespace the new namespace
+   */
   public void setNamespace(String namespace) {
     this.namespace = namespace;
   }

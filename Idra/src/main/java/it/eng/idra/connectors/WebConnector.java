@@ -66,25 +66,54 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class WebConnector.
+ */
 public class WebConnector implements IodmsConnector {
 
+  /** The node id. */
   private String nodeId;
+
+  /** The node. */
   private OdmsCatalogue node;
+
+  /** The logger. */
   private static Logger logger = LogManager.getLogger(WebConnector.class);
 
+  /** The static pattern. */
   private static Pattern staticPattern = Pattern.compile("(distribution_)(\\d)_(\\w+)");
+
+  /** The dinamic pattern. */
   private static Pattern dinamicPattern = Pattern.compile("(distribution_)((?!((\\d+)_)).*)$");
+
+  /** The shift pattern. */
   private static Pattern shiftPattern = Pattern.compile("div:nth-of-type\\((\\d+)\\)");
+
+  /** The download url pattern. */
   private static Pattern downloadUrlPattern = Pattern.compile("\\w*\\(([^)]+)\\);*");
 
+  /**
+   * Instantiates a new web connector.
+   */
   public WebConnector() {
   }
 
+  /**
+   * Instantiates a new web connector.
+   *
+   * @param node the node
+   */
   public WebConnector(OdmsCatalogue node) {
     this.node = node;
     this.nodeId = String.valueOf(node.getId());
   }
 
+  /*
+   * (non-Javadoc)
+   * 
+   * @see it.eng.idra.connectors.IodmsConnector#findDatasets(java.util.HashMap)
+   */
   // Live search is not available
   @Override
   public List<DcatDataset> findDatasets(HashMap<String, Object> searchParameters) throws Exception {
@@ -92,11 +121,22 @@ public class WebConnector implements IodmsConnector {
     return resultDatasets;
   }
 
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * it.eng.idra.connectors.IodmsConnector#countSearchDatasets(java.util.HashMap)
+   */
   @Override
   public int countSearchDatasets(HashMap<String, Object> searchParameters) throws Exception {
     return 0;
   }
 
+  /*
+   * (non-Javadoc)
+   * 
+   * @see it.eng.idra.connectors.IodmsConnector#countDatasets()
+   */
   @Override
   public int countDatasets() throws Exception {
     // Return -1 in order to keep the node as ONLINE, but is not possible to
@@ -111,8 +151,14 @@ public class WebConnector implements IodmsConnector {
     }
   }
 
+  /*
+   * (non-Javadoc)
+   * 
+   * @see it.eng.idra.connectors.IodmsConnector#datasetToDcat(java.lang.Object,
+   * it.eng.idra.beans.odms.OdmsCatalogue)
+   */
   @Override
-  public DcatDataset datasetToDcat(Object dataset, OdmsCatalogue node) 
+  public DcatDataset datasetToDcat(Object dataset, OdmsCatalogue node)
       throws DatasetNotValidException {
 
     List<DatasetSelector> selectors = new ArrayList<DatasetSelector>();
@@ -186,9 +232,8 @@ public class WebConnector implements IodmsConnector {
      * "div:nth-of-type(N). In order to manage the DIV shifting caused by the Distribution divs"
      */
 
-    Map<Boolean, List<DatasetSelector>> partitions =
-        node.getSitemap().getDatasetSelectors().stream()
-        .collect(Collectors.partitioningBy(d -> d.getName().startsWith("distribution_")));
+    Map<Boolean, List<DatasetSelector>> partitions = node.getSitemap().getDatasetSelectors()
+        .stream().collect(Collectors.partitioningBy(d -> d.getName().startsWith("distribution_")));
     distrSelectors.addAll(partitions.get(true));
     selectors.addAll(partitions.get(false));
 
@@ -425,12 +470,10 @@ public class WebConnector implements IodmsConnector {
 
     }
 
-    if (StringUtils.isNotBlank(geographicalIdentifier) 
-        || StringUtils.isNotBlank(geographicalName)
+    if (StringUtils.isNotBlank(geographicalIdentifier) || StringUtils.isNotBlank(geographicalName)
         || StringUtils.isNotBlank(geometry)) {
-      spatialCoverage = new DctLocation(DCTerms.spatial.getURI(),
-          geographicalIdentifier, geographicalName, geometry,
-          nodeId);
+      spatialCoverage = new DctLocation(DCTerms.spatial.getURI(), geographicalIdentifier,
+          geographicalName, geometry, nodeId);
     }
 
     if (StringUtils.isNotBlank(startDate) && StringUtils.isNotBlank(endDate)) {
@@ -439,37 +482,29 @@ public class WebConnector implements IodmsConnector {
 
     // Contact Point
     String vcardUri = null;
-    if (vcardUri != null || vcardFn != null 
-        || vcardHasEmail != null) {
-      contactPointList.add(new VCardOrganization(DCAT.contactPoint.getURI(),
-          vcardUri, vcardFn, vcardHasEmail,
-          vcardHasUrl, vcardHasTelephone, "", nodeId));
+    if (vcardUri != null || vcardFn != null || vcardHasEmail != null) {
+      contactPointList.add(new VCardOrganization(DCAT.contactPoint.getURI(), vcardUri, vcardFn,
+          vcardHasEmail, vcardHasUrl, vcardHasTelephone, "", nodeId));
     }
 
     // Publisher
-    if (publisherUri != null || publisherName != null 
-        || publisherMbox != null || publisherHomepage != null
-        || publisherType != null || publisherIdentifier != null) {
-      publisher = new FoafAgent(DCTerms.publisher.getURI(),
-          publisherUri, publisherName, publisherMbox,
-          publisherHomepage, publisherType, publisherIdentifier, nodeId);
+    if (publisherUri != null || publisherName != null || publisherMbox != null
+        || publisherHomepage != null || publisherType != null || publisherIdentifier != null) {
+      publisher = new FoafAgent(DCTerms.publisher.getURI(), publisherUri, publisherName,
+          publisherMbox, publisherHomepage, publisherType, publisherIdentifier, nodeId);
     }
     // Rights Holder
     String holderHomepage = null;
-    if (holderUri != null || holderName != null 
-        || holderMbox != null || holderHomepage != null || holderType != null
-        || holderIdentifier != null) {
-      rightsHolder = new FoafAgent(DCTerms.rightsHolder.getURI(), 
-          holderUri, holderName, holderMbox, holderHomepage,
-          holderType, holderIdentifier, nodeId);
+    if (holderUri != null || holderName != null || holderMbox != null || holderHomepage != null
+        || holderType != null || holderIdentifier != null) {
+      rightsHolder = new FoafAgent(DCTerms.rightsHolder.getURI(), holderUri, holderName, holderMbox,
+          holderHomepage, holderType, holderIdentifier, nodeId);
     }
     // Creator
-    if (creatorUri != null || creatorName != null 
-        || creatorMbox != null || creatorHomepage != null
+    if (creatorUri != null || creatorName != null || creatorMbox != null || creatorHomepage != null
         || creatorType != null || creatorIdentifier != null) {
-      creator = new FoafAgent(DCTerms.creator.getURI(), 
-          creatorUri, creatorName, creatorMbox, creatorHomepage,
-          creatorType, creatorIdentifier, nodeId);
+      creator = new FoafAgent(DCTerms.creator.getURI(), creatorUri, creatorName, creatorMbox,
+          creatorHomepage, creatorType, creatorIdentifier, nodeId);
     }
 
     if (StringUtils.isBlank(releaseDate)) {
@@ -484,14 +519,12 @@ public class WebConnector implements IodmsConnector {
     String identifier = null;
     identifier = landingPage;
     DcatDataset mapped;
-    mapped = new DcatDataset(nodeId, identifier, 
-        title, description, distributionList, themeList, publisher,
-        contactPointList, keywords, accessRights, new ArrayList<DctStandard>(),
-        documentation, frequency, hasVersion, isVersionOf,
-        landingPage, language, provenance, releaseDate,
-        updateDate, new ArrayList<String>(), sample, source, spatialCoverage,
-        temporalCoverage, type, version, versionNotes, 
-        rightsHolder, creator, null, new ArrayList<String>());
+    mapped = new DcatDataset(nodeId, identifier, title, description, distributionList, themeList,
+        publisher, contactPointList, keywords, accessRights, new ArrayList<DctStandard>(),
+        documentation, frequency, hasVersion, isVersionOf, landingPage, language, provenance,
+        releaseDate, updateDate, new ArrayList<String>(), sample, source, spatialCoverage,
+        temporalCoverage, type, version, versionNotes, rightsHolder, creator, null,
+        new ArrayList<String>());
 
     distributionList = null;
     publisher = null;
@@ -503,10 +536,11 @@ public class WebConnector implements IodmsConnector {
   /**
    * Extract one or more values from the HTML document, using the input Selector
    * and depending on its type (text, Link, ecc).
-   * 
-   * @param DatasetSelector sel - The Selector to be used to extract values from
-   *                        the document
-   * @return
+   *
+   * @param selectors   the selectors
+   * @param elementList the element list
+   * @param document    the document
+   * @return the list
    */
 
   /*
@@ -515,9 +549,8 @@ public class WebConnector implements IodmsConnector {
    * of extracted multiple elements
    */
 
-  private List<DcatDistribution> manageDistributionSelectors(List<DatasetSelector> selectors, 
-      Elements elementList,
-      Document document) {
+  private List<DcatDistribution> manageDistributionSelectors(List<DatasetSelector> selectors,
+      Elements elementList, Document document) {
 
     Map<String, DcatDistribution> staticMap = new HashMap<String, DcatDistribution>();
     Map<String, DcatDistribution> dinamicMap = new HashMap<String, DcatDistribution>();
@@ -547,17 +580,15 @@ public class WebConnector implements IodmsConnector {
           DcatDistribution distr = staticMap.getOrDefault(index, new DcatDistribution(nodeId));
 
           try {
-            Method method = distr.getClass().getMethod("set"
-                + WordUtils.capitalize(staticMatcher.group(3)),
-                String.class);
+            Method method = distr.getClass()
+                .getMethod("set" + WordUtils.capitalize(staticMatcher.group(3)), String.class);
 
             method.invoke(distr, fetchValueBySelector(document, sel));
             staticMap.put(index, distr);
 
           } catch (Exception e) {
-            logger.info("Error while retrieving Distribution "
-                + "setter method from Selector Name:" + selName + " - "
-                + e.getMessage());
+            logger.info("Error while retrieving Distribution " + "setter method from Selector Name:"
+                + selName + " - " + e.getMessage());
           }
         }
 
@@ -620,38 +651,34 @@ public class WebConnector implements IodmsConnector {
               for (Map.Entry<String, DcatDistribution> entry : dinamicMap.entrySet()) {
                 try {
                   DcatDistribution distr = entry.getValue();
-                  Method method = distr.getClass().getMethod("set" 
-                      + WordUtils.capitalize(dinamicMatcher.group(2)),
-                      String.class);
+                  Method method = distr.getClass().getMethod(
+                      "set" + WordUtils.capitalize(dinamicMatcher.group(2)), String.class);
 
                   method.invoke(distr, values.get(0));
                   dinamicMap.put(entry.getKey(), distr);
                 } catch (Exception e) {
                   logger.info("Error while retrieving Distribution "
-                      + "setter method from Selector Name:" + selName + " - "
-                      + e.getMessage());
+                      + "setter method from Selector Name:" + selName + " - " + e.getMessage());
                 }
               }
 
             } else if (values.size() == dinamicMap.size()) {
               ListIterator<String> valuesIt = values.listIterator();
-              Iterator<Entry<String, DcatDistribution>> entriesIt = 
-                  dinamicMap.entrySet().iterator();
+              Iterator<Entry<String, DcatDistribution>> entriesIt = dinamicMap.entrySet()
+                  .iterator();
 
               while (valuesIt.hasNext()) {
                 try {
                   Entry<String, DcatDistribution> entry = entriesIt.next();
                   DcatDistribution distr = entry.getValue();
-                  Method method = distr.getClass().getMethod("set" 
-                      + WordUtils.capitalize(dinamicMatcher.group(2)),
-                      String.class);
+                  Method method = distr.getClass().getMethod(
+                      "set" + WordUtils.capitalize(dinamicMatcher.group(2)), String.class);
 
                   method.invoke(distr, valuesIt.next());
                   dinamicMap.put(entry.getKey(), distr);
                 } catch (Exception e) {
                   logger.info("Error while retrieving Distribution "
-                      + "setter method from Selector Name:" + selName + " - "
-                      + e.getMessage());
+                      + "setter method from Selector Name:" + selName + " - " + e.getMessage());
                 }
               }
             }
@@ -666,25 +693,35 @@ public class WebConnector implements IodmsConnector {
     if (dinamicMap.isEmpty()) {
       return staticMap.values().stream().map(distr -> {
         return StringUtils.isNotBlank(distr.getFormat().getValue()) ? distr
-            : distr.setFormat(CommonUtil.extractFormatFromFileExtension(
-                distr.getDownloadUrl().getValue()));
+            : distr.setFormat(
+                CommonUtil.extractFormatFromFileExtension(distr.getDownloadUrl().getValue()));
       }).collect(Collectors.toList());
     } else {
       return dinamicMap.values().stream().map(distr -> {
         return StringUtils.isNotBlank(distr.getFormat().getValue()) ? distr
-            : distr.setFormat(CommonUtil.extractFormatFromFileExtension(
-                distr.getDownloadUrl().getValue()));
+            : distr.setFormat(
+                CommonUtil.extractFormatFromFileExtension(distr.getDownloadUrl().getValue()));
       }).collect(Collectors.toList());
     }
 
   }
 
+  /*
+   * (non-Javadoc)
+   * 
+   * @see it.eng.idra.connectors.IodmsConnector#getDataset(java.lang.String)
+   */
   @Override
   public DcatDataset getDataset(String datasetId) throws Exception {
 
     return null;
   }
 
+  /*
+   * (non-Javadoc)
+   * 
+   * @see it.eng.idra.connectors.IodmsConnector#getAllDatasets()
+   */
   @Override
   public List<DcatDataset> getAllDatasets() throws Exception {
 
@@ -713,10 +750,15 @@ public class WebConnector implements IodmsConnector {
 
   }
 
+  /*
+   * (non-Javadoc)
+   * 
+   * @see it.eng.idra.connectors.IodmsConnector#getChangedDatasets(java.util.List,
+   * java.lang.String)
+   */
   @Override
-  public OdmsSynchronizationResult getChangedDatasets(List<DcatDataset> oldDatasets, 
-      String startingDate)
-      throws Exception {
+  public OdmsSynchronizationResult getChangedDatasets(List<DcatDataset> oldDatasets,
+      String startingDate) throws Exception {
 
     ArrayList<DcatDataset> newDatasets = (ArrayList<DcatDataset>) getAllDatasets();
     OdmsSynchronizationResult syncrhoResult = new OdmsSynchronizationResult();
@@ -764,12 +806,26 @@ public class WebConnector implements IodmsConnector {
     return syncrhoResult;
   }
 
+  /**
+   * Distinct by key.
+   *
+   * @param              <T> the generic type
+   * @param keyExtractor the key extractor
+   * @return the predicate
+   */
   private static <T> Predicate<T> distinctByKey(Function<? super T, Object> keyExtractor) {
     Map<Object, Boolean> map = new ConcurrentHashMap<>();
     return t -> map.putIfAbsent(keyExtractor.apply(t), Boolean.TRUE) == null;
   }
 
-  private static List<String> fetchMultipleValuesBySelector(Document document, 
+  /**
+   * Fetch multiple values by selector.
+   *
+   * @param document the document
+   * @param sel      the sel
+   * @return the list
+   */
+  private static List<String> fetchMultipleValuesBySelector(Document document,
       DatasetSelector sel) {
     Elements extractedElements = document.select(sel.getSelector().replaceAll("'", ""));
     List<String> extractedValues = null;
@@ -829,6 +885,12 @@ public class WebConnector implements IodmsConnector {
     return extractedValues;
   }
 
+  /**
+   * Extract download url.
+   *
+   * @param extractedText the extracted text
+   * @return the string
+   */
   private static String extractDownloadUrl(String extractedText) {
     Matcher downloadMatcher = downloadUrlPattern.matcher(extractedText);
     if (downloadMatcher.find()) {
@@ -840,6 +902,13 @@ public class WebConnector implements IodmsConnector {
     return extractedText;
   }
 
+  /**
+   * Fetch value by selector.
+   *
+   * @param document the document
+   * @param sel      the sel
+   * @return the string
+   */
   private static String fetchValueBySelector(Document document, DatasetSelector sel) {
 
     String fetchValue = null;
@@ -867,18 +936,25 @@ public class WebConnector implements IodmsConnector {
    * String list.
    */
 
+  /**
+   * Extract concept list.
+   *
+   * @param             <T> the generic type
+   * @param propertyUri the property uri
+   * @param concepts    the concepts
+   * @param type        the type
+   * @return the list
+   */
   private <T extends SkosConcept> List<T> extractConceptList(String propertyUri,
       List<String> concepts, Class<T> type) {
     List<T> result = new ArrayList<T>();
 
     for (String label : concepts) {
       try {
-        result.add(type.getDeclaredConstructor(SkosConcept.class).newInstance(
-            new SkosConcept(propertyUri, "",
-                Arrays.asList(new SkosPrefLabel("", label, nodeId)), nodeId)));
-      } catch (InstantiationException | IllegalAccessException 
-          | IllegalArgumentException | InvocationTargetException
-          | NoSuchMethodException | SecurityException e) {
+        result.add(type.getDeclaredConstructor(SkosConcept.class).newInstance(new SkosConcept(
+            propertyUri, "", Arrays.asList(new SkosPrefLabel("", label, nodeId)), nodeId)));
+      } catch (InstantiationException | IllegalAccessException | IllegalArgumentException
+          | InvocationTargetException | NoSuchMethodException | SecurityException e) {
         e.printStackTrace();
       }
     }

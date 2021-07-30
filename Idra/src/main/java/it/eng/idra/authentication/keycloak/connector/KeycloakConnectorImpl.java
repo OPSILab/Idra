@@ -42,16 +42,15 @@ public class KeycloakConnectorImpl extends KeycloakConnector {
   /**
    * Instantiates a new keycloak connector impl.
    *
-   * @param protocol the protocol
-   * @param host the host
-   * @param port the port
-   * @param clientId the client id
+   * @param protocol     the protocol
+   * @param host         the host
+   * @param port         the port
+   * @param clientId     the client id
    * @param clientSecret the client secret
-   * @param redirectUri the redirect uri
+   * @param redirectUri  the redirect uri
    */
-  public KeycloakConnectorImpl(String protocol, 
-      String host, int port, String clientId, String clientSecret,
-      String redirectUri) {
+  public KeycloakConnectorImpl(String protocol, String host, int port, String clientId,
+      String clientSecret, String redirectUri) {
     super(protocol, host, port, clientId, clientSecret, redirectUri);
   }
 
@@ -60,25 +59,25 @@ public class KeycloakConnectorImpl extends KeycloakConnector {
    *
    * @param code the code
    * @return the token
+   * @throws Exception the exception
    */
   public Token getToken(String code) throws Exception {
 
     Optional<Token> token = Optional.empty();
 
     String url = baseUrl + path_token;
-    String auth = "Basic " 
+    String auth = "Basic "
         + new String(Base64.getEncoder().encode((clientId + ":" + clientSecret).getBytes()));
 
     Map<String, String> headers = new HashMap<String, String>();
     headers.put("Authorization", auth);
 
-    String reqData = "grant_type=authorization_code" 
-        + "&code=" + code + "&redirect_uri=" + redirectUri
-        + "&scope=openid";
+    String reqData = "grant_type=authorization_code" + "&code=" + code + "&redirect_uri="
+        + redirectUri + "&scope=openid";
 
     RestClient client = new RestClientImpl();
-    HttpResponse response = 
-        client.sendPostRequest(url, reqData, MediaType.APPLICATION_FORM_URLENCODED_TYPE, headers);
+    HttpResponse response = client.sendPostRequest(url, reqData,
+        MediaType.APPLICATION_FORM_URLENCODED_TYPE, headers);
 
     String returnedjson = client.getHttpResponseBody(response);
     switch (client.getStatus(response)) {
@@ -99,6 +98,7 @@ public class KeycloakConnectorImpl extends KeycloakConnector {
    *
    * @param token the token
    * @return the user
+   * @throws Exception the exception
    */
   public KeycloakUser getUserInfo(String token) throws Exception {
 

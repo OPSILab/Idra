@@ -18,10 +18,20 @@
 
 package it.eng.idra.beans.exception;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class InvalidPasswordException.
+ */
 public class InvalidPasswordException extends Exception {
 
+  /** The Constant serialVersionUID. */
   private static final long serialVersionUID = 1L;
 
+  /**
+   * Instantiates a new invalid password exception.
+   *
+   * @param message the message
+   */
   public InvalidPasswordException(String message) {
     super(message);
   }

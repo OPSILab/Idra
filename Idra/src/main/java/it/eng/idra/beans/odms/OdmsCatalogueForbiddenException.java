@@ -18,10 +18,20 @@
 
 package it.eng.idra.beans.odms;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class OdmsCatalogueForbiddenException.
+ */
 public class OdmsCatalogueForbiddenException extends Exception {
 
+  /** The Constant serialVersionUID. */
   private static final long serialVersionUID = 1L;
 
+  /**
+   * Instantiates a new odms catalogue forbidden exception.
+   *
+   * @param message the message
+   */
   public OdmsCatalogueForbiddenException(String message) {
     super(message);
   }

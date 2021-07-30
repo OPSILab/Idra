@@ -68,14 +68,28 @@ import org.ckan.Extra;
 import org.ckan.Resource;
 import org.ckan.Tag;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class CkanConnector.
+ */
 public class CkanConnector implements IodmsConnector {
 
+  /** The node id. */
   private String nodeId;
+
+  /** The node. */
   private OdmsCatalogue node;
+
+  /** The DCA tto CKA nmap. */
   private static HashMap<String, String> DCATtoCKANmap = new HashMap<String, String>();
+
+  /** The logger. */
   private static Logger logger = LogManager.getLogger(CkanConnector.class);
 
+  /** The Constant GEO_BASE_URI. */
   private static final String GEO_BASE_URI = "http://publications.europa.eu/resource/authority/place/";
+
+  /** The Constant GEOJSON_IMT. */
   private static final String GEOJSON_IMT = "https://www.iana.org/assignments/media-types/application/vnd.geo+json";
 
   /**
@@ -103,22 +117,18 @@ public class CkanConnector implements IodmsConnector {
 
   /**
    * Counts the datasets present in the node.
-   * 
    *
-   * 
-   * @param none
-   * 
-   * @throws MalformedURLException excp
-   * @throws CKANException excp
-   * @throws OdmsCatalogueOfflineException excp
-   * @throws OdmsCatalogueNotFoundException excp
+   * @return the int
+   * @throws CKANException                   excp
+   * @throws MalformedURLException           excp
+   * @throws OdmsCatalogueOfflineException   excp
+   * @throws OdmsCatalogueNotFoundException  excp
    * @throws OdmsCatalogueForbiddenException excp
    * @returns int resulting datasets count
-   *
    */
   @Override
-  public int countDatasets() throws 
-      CKANException, MalformedURLException, OdmsCatalogueOfflineException,
+  public int countDatasets()
+      throws CKANException, MalformedURLException, OdmsCatalogueOfflineException,
       OdmsCatalogueNotFoundException, OdmsCatalogueForbiddenException {
 
     Client c = new Client(new Connection(node.getHost()), node.getApiKey());
@@ -144,20 +154,19 @@ public class CkanConnector implements IodmsConnector {
 
   /**
    * Performs dataset query on a federated CKAN node using CKAN API Client.
-   * 
    *
-   * 
-   * @throws CKANException excp
-   * @throws MalformedURLException excp
-   * @throws OdmsCatalogueOfflineException excp
-   * @throws OdmsCatalogueNotFoundException excp
+   * @param searchParameters the search parameters
+   * @return the list
+   * @throws CKANException                   excp
+   * @throws MalformedURLException           excp
+   * @throws OdmsCatalogueNotFoundException  excp
    * @throws OdmsCatalogueForbiddenException excp
+   * @throws OdmsCatalogueOfflineException   excp
    */
   @Override
   public List<DcatDataset> findDatasets(HashMap<String, Object> searchParameters)
-      throws CKANException, MalformedURLException,
-      OdmsCatalogueNotFoundException, OdmsCatalogueForbiddenException,
-      OdmsCatalogueOfflineException {
+      throws CKANException, MalformedURLException, OdmsCatalogueNotFoundException,
+      OdmsCatalogueForbiddenException, OdmsCatalogueOfflineException {
 
     String query = buildLiveQueryString(searchParameters);
 
@@ -231,11 +240,13 @@ public class CkanConnector implements IodmsConnector {
   }
 
   /**
-   * Performs mapping from CKAN Dataset object to DCATDataset object.
-   * In addition iterates over extras and tags object of a CKAN Dataset
+   * Performs mapping from CKAN Dataset object to DCATDataset object. In addition
+   * iterates over extras and tags object of a CKAN Dataset
    *
+   * @param dataset the dataset
+   * @param node    the node
+   * @return the dcat dataset
    * @returns DCATDataset resulting mapped object
-   * @throws An Exception if the request fails
    */
   public DcatDataset datasetToDcat(Object dataset, OdmsCatalogue node) {
 
@@ -293,9 +304,9 @@ public class CkanConnector implements IodmsConnector {
     List<String> keywords = new ArrayList<String>();
     List<String> documentation = new ArrayList<String>();
     List<String> hasVersion = new ArrayList<String>();
-    List<String> isVersionOf = new ArrayList<String>(); 
+    List<String> isVersionOf = new ArrayList<String>();
     List<String> language = new ArrayList<String>();
-    List<String> provenance = new ArrayList<String>(); 
+    List<String> provenance = new ArrayList<String>();
     List<String> otherIdentifier = new ArrayList<String>();
     List<String> sample = new ArrayList<String>();
     List<String> source = new ArrayList<String>();
@@ -365,7 +376,6 @@ public class CkanConnector implements IodmsConnector {
             } else {
               geographicalName = input.trim();
             }
-
             break;
           case "temporal_start":
             startDate = e.getValue();
@@ -387,7 +397,6 @@ public class CkanConnector implements IodmsConnector {
           case "version_notes":
             versionNotes = extractValueList(e.getValue());
             break;
-
           case "publisher_identifier":
             publisherIdentifier = e.getValue();
             break;
@@ -486,14 +495,13 @@ public class CkanConnector implements IodmsConnector {
 
       if (StringUtils.isNotBlank(geographicalIdentifier) || StringUtils.isNotBlank(geographicalName)
           || StringUtils.isNotBlank(geometry)) {
-        spatialCoverage = new DctLocation(DCTerms.spatial.getURI(),
-            geographicalIdentifier, geographicalName, geometry,
-            nodeId);
+        spatialCoverage = new DctLocation(DCTerms.spatial.getURI(), geographicalIdentifier,
+            geographicalName, geometry, nodeId);
       }
 
       if (StringUtils.isNotBlank(startDate) && StringUtils.isNotBlank(endDate)) {
-        temporalCoverage = new DctPeriodOfTime(DCTerms.temporal.getURI(),
-            startDate, endDate, nodeId);
+        temporalCoverage = new DctPeriodOfTime(DCTerms.temporal.getURI(), startDate, endDate,
+            nodeId);
       }
 
       // Contact Point
@@ -510,40 +518,33 @@ public class CkanConnector implements IodmsConnector {
       }
 
       if (vcardUri != null || vcardFn != null || vcardHasEmail != null) {
-        contactPointList.add(
-            new VCardOrganization(DCAT.contactPoint.getURI(),
-                vcardUri, vcardFn, vcardHasEmail, "", "", "", nodeId));
+        contactPointList.add(new VCardOrganization(DCAT.contactPoint.getURI(), vcardUri, vcardFn,
+            vcardHasEmail, "", "", "", nodeId));
       }
 
       // Publisher
-      if (publisherUri != null || publisherName != null
-          || publisherMbox != null || publisherHomepage != null
-          || publisherType != null || publisherIdentifier != null) {
-        publisher = new FoafAgent(DCTerms.publisher.getURI(), 
-            publisherUri, publisherName, publisherMbox,
-            publisherHomepage, publisherType, publisherIdentifier, nodeId);
+      if (publisherUri != null || publisherName != null || publisherMbox != null
+          || publisherHomepage != null || publisherType != null || publisherIdentifier != null) {
+        publisher = new FoafAgent(DCTerms.publisher.getURI(), publisherUri, publisherName,
+            publisherMbox, publisherHomepage, publisherType, publisherIdentifier, nodeId);
       }
       // Rights Holder
-      if (holderUri != null || holderName != null 
-          || holderMbox != null || holderHomepage != null || holderType != null
-          || holderIdentifier != null) {
-        rightsHolder = new FoafAgent(DCTerms.rightsHolder.getURI(),
-            holderUri, holderName, holderMbox, holderHomepage,
-            holderType, holderIdentifier, nodeId);
+      if (holderUri != null || holderName != null || holderMbox != null || holderHomepage != null
+          || holderType != null || holderIdentifier != null) {
+        rightsHolder = new FoafAgent(DCTerms.rightsHolder.getURI(), holderUri, holderName,
+            holderMbox, holderHomepage, holderType, holderIdentifier, nodeId);
       }
       // Creator
-      if (creatorUri != null || creatorName != null 
-          || creatorMbox != null || creatorHomepage != null
-          || creatorType != null || creatorIdentifier != null) {
-        creator = new FoafAgent(DCTerms.creator.getURI(), 
-            creatorUri, creatorName, creatorMbox, creatorHomepage,
-            creatorType, creatorIdentifier, nodeId);
+      if (creatorUri != null || creatorName != null || creatorMbox != null
+          || creatorHomepage != null || creatorType != null || creatorIdentifier != null) {
+        creator = new FoafAgent(DCTerms.creator.getURI(), creatorUri, creatorName, creatorMbox,
+            creatorHomepage, creatorType, creatorIdentifier, nodeId);
       }
       // License
       String licenseName = StringUtils.isNotBlank(d.getLicense_id()) ? d.getLicense_id()
           : (StringUtils.isNotBlank(d.getLicense_title()) ? d.getLicense_title() : "unknown");
-      license = new DctLicenseDocument(d.getLicense_url(),
-          licenseName, d.getLicense_id(), "", nodeId);
+      license = new DctLicenseDocument(d.getLicense_url(), licenseName, d.getLicense_id(), "",
+          nodeId);
 
       // Keywords
       if (d.getTags() != null) {
@@ -556,8 +557,8 @@ public class CkanConnector implements IodmsConnector {
       // landingPage = d.getUrl();
       String nodeHost = node.getHost();
       if (nodeHost.contains("http://datos.santander.es/catalogo")) {
-        landingPage = nodeHost.replace("catalogo" 
-         + (nodeHost.endsWith("/") ? "/" : ""), "dataset/?id=" + d.getName());
+        landingPage = nodeHost.replace("catalogo" + (nodeHost.endsWith("/") ? "/" : ""),
+            "dataset/?id=" + d.getName());
       } else {
         landingPage = nodeHost + (nodeHost.endsWith("/") ? "" : "/") + "dataset/" + identifier;
       }
@@ -571,14 +572,11 @@ public class CkanConnector implements IodmsConnector {
       }
     }
 
-    mapped = new DcatDataset(nodeId, identifier,
-        title, description, distributionList, themeList, publisher,
-        contactPointList, keywords, accessRights,
-        conformsTo, documentation, frequency, hasVersion, isVersionOf,
-        landingPage, language, provenance, 
-        releaseDate, updateDate, otherIdentifier, sample, source, spatialCoverage,
-        temporalCoverage, type, version, versionNotes,
-        rightsHolder, creator, subjectList, relatedResource);
+    mapped = new DcatDataset(nodeId, identifier, title, description, distributionList, themeList,
+        publisher, contactPointList, keywords, accessRights, conformsTo, documentation, frequency,
+        hasVersion, isVersionOf, landingPage, language, provenance, releaseDate, updateDate,
+        otherIdentifier, sample, source, spatialCoverage, temporalCoverage, type, version,
+        versionNotes, rightsHolder, creator, subjectList, relatedResource);
 
     distributionList = null;
     publisher = null;
@@ -587,22 +585,29 @@ public class CkanConnector implements IodmsConnector {
     return mapped;
   }
 
+  /**
+   * Extract concept list.
+   *
+   * @param             <T> the generic type
+   * @param propertyUri the property uri
+   * @param concepts    the concepts
+   * @param type        the type
+   * @return the list
+   */
   /*
    * Return a List of SKOSConcept, each of them containing a prefLabel from input
    * String list.
    */
-  private <T extends SkosConcept> List<T> extractConceptList(
-      String propertyUri, List<String> concepts, Class<T> type) {
+  private <T extends SkosConcept> List<T> extractConceptList(String propertyUri,
+      List<String> concepts, Class<T> type) {
     List<T> result = new ArrayList<T>();
 
     for (String label : concepts) {
       try {
-        result.add(type.getDeclaredConstructor(SkosConcept.class).newInstance(
-            new SkosConcept(propertyUri, "",
-                Arrays.asList(new SkosPrefLabel("", label, nodeId)), nodeId)));
-      } catch (InstantiationException | IllegalAccessException 
-          | IllegalArgumentException | InvocationTargetException
-          | NoSuchMethodException | SecurityException e) {
+        result.add(type.getDeclaredConstructor(SkosConcept.class).newInstance(new SkosConcept(
+            propertyUri, "", Arrays.asList(new SkosPrefLabel("", label, nodeId)), nodeId)));
+      } catch (InstantiationException | IllegalAccessException | IllegalArgumentException
+          | InvocationTargetException | NoSuchMethodException | SecurityException e) {
         // TODO Auto-generated catch block
         e.printStackTrace();
       }
@@ -611,6 +616,12 @@ public class CkanConnector implements IodmsConnector {
     return result;
   }
 
+  /**
+   * Extract value list.
+   *
+   * @param value the value
+   * @return the list
+   */
   private List<String> extractValueList(String value) {
 
     // TODO: regex & groups
@@ -646,6 +657,12 @@ public class CkanConnector implements IodmsConnector {
 
   }
 
+  /**
+   * Extract conforms to.
+   *
+   * @param value the value
+   * @return the list
+   */
   private List<DctStandard> extractConformsTo(String value) {
 
     List<DctStandard> result = new ArrayList<DctStandard>();
@@ -660,8 +677,8 @@ public class CkanConnector implements IodmsConnector {
       } catch (GsonUtilException ex) {
         if (StringUtils.isNotBlank(value)) {
           for (String s : value.substring(1, value.lastIndexOf("}")).split(",")) {
-            result.add(new DctStandard(DCTerms.conformsTo.getURI(),
-                s, "", "", new ArrayList<String>(), nodeId));
+            result.add(new DctStandard(DCTerms.conformsTo.getURI(), s, "", "",
+                new ArrayList<String>(), nodeId));
           }
         } else {
           result = null;
@@ -669,25 +686,33 @@ public class CkanConnector implements IodmsConnector {
       }
     } else if (value.startsWith("{")) {
       for (String s : value.substring(1, value.lastIndexOf("}")).split(",")) {
-        result.add(new DctStandard(DCTerms.conformsTo.getURI(),
-            s, "", "", new ArrayList<String>(), nodeId));
+        result.add(new DctStandard(DCTerms.conformsTo.getURI(), s, "", "", new ArrayList<String>(),
+            nodeId));
       }
     } else {
       for (String s : value.split(",")) {
-        result.add(new DctStandard(DCTerms.conformsTo.getURI(),
-            s, "", "", new ArrayList<String>(), nodeId));
+        result.add(new DctStandard(DCTerms.conformsTo.getURI(), s, "", "", new ArrayList<String>(),
+            nodeId));
       }
     }
     return result;
   }
 
-  private DcatDistribution resourceToDcat(Resource r, 
-      String datasetLandingPage, DctLicenseDocument datasetLicense) {
+  /**
+   * Resource to dcat.
+   *
+   * @param r                  the r
+   * @param datasetLandingPage the dataset landing page
+   * @param datasetLicense     the dataset license
+   * @return the dcat distribution
+   */
+  private DcatDistribution resourceToDcat(Resource r, String datasetLandingPage,
+      DctLicenseDocument datasetLicense) {
 
-    String accessUrl = null; 
-    String description = null; 
+    String accessUrl = null;
+    String description = null;
     String format = null;
-    String downloadUrl = null;  
+    String downloadUrl = null;
 
     accessUrl = downloadUrl = StringUtils.isNotBlank(r.getUrl()) ? r.getUrl() : datasetLandingPage;
     description = r.getDescription();
@@ -695,7 +720,8 @@ public class CkanConnector implements IodmsConnector {
     String byteSize = null;
     byteSize = String.valueOf(r.getSize());
     SpdxChecksum checksum = null;
-    checksum = new SpdxChecksum("http://spdx.org/rdf/terms#checksum", "checksumAlgorithm_sha1", r.getHash(), nodeId);
+    checksum = new SpdxChecksum("http://spdx.org/rdf/terms#checksum", "checksumAlgorithm_sha1",
+        r.getHash(), nodeId);
     // documentation = r.get ?
     // language = r.get ?
     // linkedSchemas = r.get ?
@@ -705,7 +731,7 @@ public class CkanConnector implements IodmsConnector {
     releaseDate = StringUtils.isNotBlank(r.getCreated()) ? CommonUtil.fixBadUtcDate(r.getCreated())
         : "1970-01-01T00:00:00Z";
     String updateDate = null;
-    updateDate = StringUtils.isNotBlank(r.getLast_modified()) 
+    updateDate = StringUtils.isNotBlank(r.getLast_modified())
         ? CommonUtil.fixBadUtcDate(r.getLast_modified())
         : "1970-01-01T00:00:00Z";
     // rights = r.get ?
@@ -713,16 +739,19 @@ public class CkanConnector implements IodmsConnector {
     String title = null;
     title = r.getName();
 
-    return new DcatDistribution(nodeId, accessUrl, description, format, 
-        datasetLicense, byteSize, checksum,
-        new ArrayList<String>(), downloadUrl, 
-        new ArrayList<String>(),  new ArrayList<DctStandard>(), 
-        mediaType, releaseDate, updateDate, null, null, title);
+    return new DcatDistribution(nodeId, accessUrl, description, format, datasetLicense, byteSize,
+        checksum, new ArrayList<String>(), downloadUrl, new ArrayList<String>(),
+        new ArrayList<DctStandard>(), mediaType, releaseDate, updateDate, null, null, title);
   }
 
+  /*
+   * (non-Javadoc)
+   * 
+   * @see it.eng.idra.connectors.IodmsConnector#getDataset(java.lang.String)
+   */
   @Override
-  public DcatDataset getDataset(String datasetId) throws CKANException, MalformedURLException,
-      OdmsCatalogueOfflineException, 
+  public DcatDataset getDataset(String datasetId)
+      throws CKANException, MalformedURLException, OdmsCatalogueOfflineException,
       OdmsCatalogueNotFoundException, OdmsCatalogueForbiddenException {
 
     Client c = new Client(new Connection(node.getHost()), node.getApiKey());
@@ -748,13 +777,19 @@ public class CkanConnector implements IodmsConnector {
   /**
    * Retrieves all datasets belonging to a federated CKAN node using CKAN API.
    * Client
-   * 
-   * @throws OdmsCatalogueForbiddenException
-   * 
+   *
+   * @return the all datasets
+   * @throws CKANException                   the CKAN exception
+   * @throws MalformedURLException           the malformed URL exception
+   * @throws OdmsCatalogueOfflineException   the odms catalogue offline exception
+   * @throws OdmsCatalogueNotFoundException  the odms catalogue not found
+   *                                         exception
+   * @throws OdmsCatalogueForbiddenException the odms catalogue forbidden
+   *                                         exception
    */
   @Override
-  public List<DcatDataset> getAllDatasets() throws CKANException,
-      MalformedURLException, OdmsCatalogueOfflineException,
+  public List<DcatDataset> getAllDatasets()
+      throws CKANException, MalformedURLException, OdmsCatalogueOfflineException,
       OdmsCatalogueNotFoundException, OdmsCatalogueForbiddenException {
 
     ArrayList<DcatDataset> dcatResults = new ArrayList<DcatDataset>();
@@ -775,8 +810,8 @@ public class CkanConnector implements IodmsConnector {
 
       try {
 
-        result = c.findDatasets("metadata_modified:[* TO " 
-            + CommonUtil.formatDate(node.getRegisterDate()) + "]",
+        result = c.findDatasets(
+            "metadata_modified:[* TO " + CommonUtil.formatDate(node.getRegisterDate()) + "]",
             Integer.toString(node.getDatasetStart()), "10000000", "metadata_modified asc");
         retry = false;
         logger.info("-- CKAN Connector Response - Result count:" + result.results.size());
@@ -808,10 +843,21 @@ public class CkanConnector implements IodmsConnector {
   }
 
   /**
-   * Retrieves all recent activities on datasets of a node
-   * Makes an Hashmap where every key-value pair is a corrispondence between
-   * DCATDataset and related activity on it, starting from a passed date string.
-   * 
+   * Retrieves all recent activities on datasets of a node Makes an Hashmap where
+   * every key-value pair is a corrispondence between DCATDataset and related
+   * activity on it, starting from a passed date string.
+   *
+   * @param oldDatasets        the old datasets
+   * @param startingDateString the starting date string
+   * @return the changed datasets
+   * @throws ParseException                  the parse exception
+   * @throws CKANException                   the CKAN exception
+   * @throws MalformedURLException           the malformed URL exception
+   * @throws OdmsCatalogueOfflineException   the odms catalogue offline exception
+   * @throws OdmsCatalogueNotFoundException  the odms catalogue not found
+   *                                         exception
+   * @throws OdmsCatalogueForbiddenException the odms catalogue forbidden
+   *                                         exception
    */
   @Override
   public OdmsSynchronizationResult getChangedDatasets(List<DcatDataset> oldDatasets,
@@ -891,8 +937,8 @@ public class CkanConnector implements IodmsConnector {
           syncrhoResult.addToDeletedList(
               MetadataCacheManager.getDatasetByIdentifier(Integer.parseInt(nodeId), k));
           deleted++;
-        } catch (NumberFormatException 
-            | DatasetNotFoundException | IOException | SolrServerException e) {
+        } catch (NumberFormatException | DatasetNotFoundException | IOException
+            | SolrServerException e) {
           // TODO Auto-generated catch block
           e.printStackTrace();
         }
@@ -933,10 +979,9 @@ public class CkanConnector implements IodmsConnector {
     // Get the count of changed datasets, in order to calculate the number
     // of successive calls (datasets pages)
     int count = 0;
-    count = c.findDatasets(
-        "metadata_created:[" + startingDateString 
-        + " TO *] OR metadata_modified:[" + startingDateString + " TO * ]",
-        "0", "0", "metadata_created desc").count;
+    count = c.findDatasets("metadata_created:[" + startingDateString
+        + " TO *] OR metadata_modified:[" + startingDateString + " TO * ]", "0", "0",
+        "metadata_created desc").count;
 
     logger.info("-- CKAN Connector Response - Result TOTAL count:" + count);
     int offset = 0;
@@ -947,9 +992,9 @@ public class CkanConnector implements IodmsConnector {
       do {
 
         try {
-          result = c.findDatasets("metadata_created:[" 
-              + startingDateString + " TO *] OR metadata_modified:["
-              + startingDateString + " TO * ]",
+          result = c.findDatasets(
+              "metadata_created:[" + startingDateString + " TO *] OR metadata_modified:["
+                  + startingDateString + " TO * ]",
               String.valueOf(offset), "1000", "metadata_created desc");
           retry = false;
 
@@ -981,8 +1026,8 @@ public class CkanConnector implements IodmsConnector {
       logger.info("NodeID: " + nodeId + " Changed " + syncrhoResult.getChangedDatasets().size());
       logger.info("NodeID: " + nodeId + " Added " + syncrhoResult.getAddedDatasets().size());
       logger.info("NodeID: " + nodeId + " Deleted " + syncrhoResult.getDeletedDatasets().size());
-      logger.info("NodeID: " + nodeId 
-          + " Expected new dataset count: " + (node.getDatasetCount() - deleted + added));
+      logger.info("NodeID: " + nodeId + " Expected new dataset count: "
+          + (node.getDatasetCount() - deleted + added));
       offset += result.results.size();
       logger.info("\n\n Collected \n\n" + result.results.size() + "new/changed datasets\n");
 
@@ -1220,14 +1265,30 @@ public class CkanConnector implements IodmsConnector {
   //
   // }
 
+  /**
+   * Gets the node.
+   *
+   * @return the node
+   */
   public OdmsCatalogue getNode() {
     return node;
   }
 
+  /**
+   * Sets the node.
+   *
+   * @param node the new node
+   */
   public void setNode(OdmsCatalogue node) {
     this.node = node;
   }
 
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * it.eng.idra.connectors.IodmsConnector#countSearchDatasets(java.util.HashMap)
+   */
   @Override
   public int countSearchDatasets(HashMap<String, Object> searchParameters) throws Exception {
 
@@ -1272,6 +1333,12 @@ public class CkanConnector implements IodmsConnector {
     }
   }
 
+  /**
+   * Check if json object.
+   *
+   * @param input the input
+   * @return true, if successful
+   */
   private static boolean checkIfJsonObject(String input) {
 
     try {
@@ -1284,6 +1351,12 @@ public class CkanConnector implements IodmsConnector {
     }
   }
 
+  /**
+   * Builds the live query string.
+   *
+   * @param searchParameters the search parameters
+   * @return the string
+   */
   private String buildLiveQueryString(HashMap<String, Object> searchParameters) {
 
     String query = "";
@@ -1311,8 +1384,8 @@ public class CkanConnector implements IodmsConnector {
     if (searchParameters.containsKey("modified")) {
       modified = (String[]) searchParameters.remove("modified");
       query += isFirst ? ""
-          : " AND " + DCATtoCKANmap.get("modified") 
-          + ":[" + modified[0] + " TO " + modified[1] + "] ";
+          : " AND " + DCATtoCKANmap.get("modified") + ":[" + modified[0] + " TO " + modified[1]
+              + "] ";
       isFirst = false;
     }
 
@@ -1372,8 +1445,8 @@ public class CkanConnector implements IodmsConnector {
             // ((String) value).trim().replace(",", "\\\" \\\"")
             // + "\\\")";
             query += DCATtoCKANmap.get(key) + ":" + "(\\\""
-                + ((String) value).trim()
-                .replace(",", "\\\" " + defaultOperator + " \\\"") + "\\\")";
+                + ((String) value).trim().replace(",", "\\\" " + defaultOperator + " \\\"")
+                + "\\\")";
             // query += DCATtoCKANmap.get(key) + ":" + "(" +
             // ((String) value).trim().replace(",", " OR ")
             // + ")";
@@ -1383,8 +1456,8 @@ public class CkanConnector implements IodmsConnector {
             // + ((String) value).trim().replace(",", "\\\" \\\"") +
             // "\\\")";
             query += " AND " + DCATtoCKANmap.get(key) + ":" + "(\\\""
-                + ((String) value).trim()
-                .replace(",", "\\\" " + defaultOperator + " \\\"") + "\\\")";
+                + ((String) value).trim().replace(",", "\\\" " + defaultOperator + " \\\"")
+                + "\\\")";
             // query += " OR " + DCATtoCKANmap.get(key) + ":" + "("
             // + ((String) value).trim().replace(",", " OR ") + ")";
 
@@ -1415,14 +1488,15 @@ public class CkanConnector implements IodmsConnector {
    * Handle error.
    *
    * @param e the e
-   * @throws OdmsCatalogueNotFoundException the odms catalogue not found exception
-   * @throws OdmsCatalogueForbiddenException the odms catalogue forbidden exception
-   * @throws OdmsCatalogueOfflineException the odms catalogue offline exception
-   * @throws CKANException the CKAN exception
+   * @throws OdmsCatalogueNotFoundException  the odms catalogue not found
+   *                                         exception
+   * @throws OdmsCatalogueForbiddenException the odms catalogue forbidden
+   *                                         exception
+   * @throws OdmsCatalogueOfflineException   the odms catalogue offline exception
+   * @throws CKANException                   the CKAN exception
    */
-  public void handleError(CKANException e) 
-      throws OdmsCatalogueNotFoundException, OdmsCatalogueForbiddenException,
-      OdmsCatalogueOfflineException, CKANException {
+  public void handleError(CKANException e) throws OdmsCatalogueNotFoundException,
+      OdmsCatalogueForbiddenException, OdmsCatalogueOfflineException, CKANException {
 
     String message = e.getMessage();
 

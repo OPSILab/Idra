@@ -37,47 +37,70 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class PageWorker.
+ */
 public class PageWorker implements Runnable {
 
+  /** The Constant PAGE_RETRY_NUM. */
   private static final int PAGE_RETRY_NUM;
+
+  /** The Constant DATASET_RETRY_NUM. */
   private static final int DATASET_RETRY_NUM;
+
+  /** The Constant PAGE_TIMEOUT. */
   private static final int PAGE_TIMEOUT;
+
+  /** The Constant DATASET_TIMEOUT. */
   private static final int DATASET_TIMEOUT;
+
+  /** The Constant JSOUP_THROTTLING. */
   private static final int JSOUP_THROTTLING;
 
+  /** The output scraper. */
   private List<Document> outputScraper;
+
+  /** The count down latch. */
   private CountDownLatch countDownLatch;
+
+  /** The page number. */
   private int pageNumber;
+
+  /** The start url. */
   private String startUrl;
+
+  /** The nav param. */
   private NavigationParameter navParam;
+
+  /** The logger. */
   private Logger logger = LogManager.getLogger(PageWorker.class);
 
   static {
-    PAGE_RETRY_NUM = 
-        Integer.parseInt(PropertyManager.getProperty(IdraProperty.WEB_SCRAPER_PAGE_RETRY_NUM));
-    DATASET_RETRY_NUM = 
-        Integer.parseInt(PropertyManager.getProperty(IdraProperty.WEB_SCRAPER_DATASET_RETRY_NUM));
-    PAGE_TIMEOUT = 
-        Integer.parseInt(PropertyManager.getProperty(IdraProperty.WEB_SCRAPER_PAGE_TIMEOUT));
-    DATASET_TIMEOUT = 
-        Integer.parseInt(PropertyManager.getProperty(IdraProperty.WEB_SCRAPER_DATASET_TIMEOUT));
-    JSOUP_THROTTLING = 
-        Integer.parseInt(PropertyManager.getProperty(IdraProperty.WEB_SCRAPER_GLOBAL_THROTTILING));
+    PAGE_RETRY_NUM = Integer
+        .parseInt(PropertyManager.getProperty(IdraProperty.WEB_SCRAPER_PAGE_RETRY_NUM));
+    DATASET_RETRY_NUM = Integer
+        .parseInt(PropertyManager.getProperty(IdraProperty.WEB_SCRAPER_DATASET_RETRY_NUM));
+    PAGE_TIMEOUT = Integer
+        .parseInt(PropertyManager.getProperty(IdraProperty.WEB_SCRAPER_PAGE_TIMEOUT));
+    DATASET_TIMEOUT = Integer
+        .parseInt(PropertyManager.getProperty(IdraProperty.WEB_SCRAPER_DATASET_TIMEOUT));
+    JSOUP_THROTTLING = Integer
+        .parseInt(PropertyManager.getProperty(IdraProperty.WEB_SCRAPER_GLOBAL_THROTTILING));
 
   }
 
   /**
    * Instantiates a new page worker.
    *
-   * @param startUrl the start url
-   * @param navParam the nav param
-   * @param pageNumber the page number
-   * @param outputScraper the output scraper
+   * @param startUrl       the start url
+   * @param navParam       the nav param
+   * @param pageNumber     the page number
+   * @param outputScraper  the output scraper
    * @param countDownLatch the count down latch
    */
-  public PageWorker(String startUrl, NavigationParameter navParam, 
-      int pageNumber, List<Document> outputScraper,
-      CountDownLatch countDownLatch) {
+  public PageWorker(String startUrl, NavigationParameter navParam, int pageNumber,
+      List<Document> outputScraper, CountDownLatch countDownLatch) {
     this.outputScraper = outputScraper;
     this.countDownLatch = countDownLatch;
     this.navParam = navParam;
@@ -86,10 +109,15 @@ public class PageWorker implements Runnable {
 
   }
 
+  /**
+   * Extract base url from start url.
+   *
+   * @return the string
+   * @throws UrlNotParseableException the url not parseable exception
+   */
   private String extractBaseUrlFromStartUrl() throws UrlNotParseableException {
     String result = null;
-    Pattern p = Pattern.compile(
-        "((?:http|https):\\/\\/(?:[\\w-]+)(?:\\.[\\w-]+)+)"
+    Pattern p = Pattern.compile("((?:http|https):\\/\\/(?:[\\w-]+)(?:\\.[\\w-]+)+)"
         + "(?:[\\w.,@?^=%&amp;:\\/~+#-]*[\\w@?^=%&amp;\\/~+#-])?");
 
     Matcher matcher = p.matcher(startUrl);
@@ -97,11 +125,21 @@ public class PageWorker implements Runnable {
     if (matcher.find() && (result = matcher.group(1)) != null) {
       return result;
     } else {
-      throw new UrlNotParseableException("It was not "
-          + "possible to extract the Base Url from Start Url");
+      throw new UrlNotParseableException(
+          "It was not " + "possible to extract the Base Url from Start Url");
     }
   }
 
+  /**
+   * Builds the page url.
+   *
+   * @param startUrl  the start url
+   * @param param     the param
+   * @param pageValue the page value
+   * @return the string
+   * @throws NavigationTypeNotValidException the navigation type not valid
+   *                                         exception
+   */
   private static String buildPageUrl(String startUrl, NavigationParameter param, int pageValue)
       throws NavigationTypeNotValidException {
 
@@ -119,6 +157,15 @@ public class PageWorker implements Runnable {
     }
   }
 
+  /**
+   * Gets the page document.
+   *
+   * @return the page document
+   * @throws IOException                     Signals that an I/O exception has
+   *                                         occurred.
+   * @throws NavigationTypeNotValidException the navigation type not valid
+   *                                         exception
+   */
   private Document getPageDocument() throws IOException, NavigationTypeNotValidException {
 
     int retryNum = 1;
@@ -146,7 +193,15 @@ public class PageWorker implements Runnable {
     throw new IOException("It was reached the max connection attempts for Page Document retrieval");
   }
 
-  private Document getDatasetDocument(Element linkElement) 
+  /**
+   * Gets the dataset document.
+   *
+   * @param linkElement the link element
+   * @return the dataset document
+   * @throws IOException              Signals that an I/O exception has occurred.
+   * @throws UrlNotParseableException the url not parseable exception
+   */
+  private Document getDatasetDocument(Element linkElement)
       throws IOException, UrlNotParseableException {
 
     int retryNum = 1;
@@ -164,9 +219,9 @@ public class PageWorker implements Runnable {
 
         return Jsoup.connect(link).timeout(DATASET_TIMEOUT).get();
       } catch (IOException e) {
-        logger.info("\nThread: " + Thread.currentThread().getId() 
-            + "Page: " + pageNumber + " Error: " + e.getMessage()
-            + " retrieving Dataset Document: " + link + " - Attempt n: " + retryNum);
+        logger.info("\nThread: " + Thread.currentThread().getId() + "Page: " + pageNumber
+            + " Error: " + e.getMessage() + " retrieving Dataset Document: " + link
+            + " - Attempt n: " + retryNum);
         retry = true;
         retryNum++;
         if (retryNum == DATASET_RETRY_NUM) {
@@ -177,17 +232,22 @@ public class PageWorker implements Runnable {
 
     } while (retry);
 
-    throw new IOException("It was reached the "
-        + "max connection attempts for Dataset Document retrieval");
+    throw new IOException(
+        "It was reached the " + "max connection attempts for Dataset Document retrieval");
 
   }
 
+  /*
+   * (non-Javadoc)
+   * 
+   * @see java.lang.Runnable#run()
+   */
   @Override
   public void run() {
 
     List<Document> pageResult = new ArrayList<Document>();
 
-    logger.info("Thread: " + Thread.currentThread().getId() 
+    logger.info("Thread: " + Thread.currentThread().getId()
         + " Starting to retrieve Page Document: " + pageNumber);
 
     /*
@@ -205,9 +265,8 @@ public class PageWorker implements Runnable {
           List<Element> itemElements = pageDocument.select(selector.getSelector());
 
           if (itemElements != null && !itemElements.isEmpty()) {
-            logger.info("Thread: " + Thread.currentThread().getId() 
-                + " Page Document: " + pageNumber
-                + " Starting to retrieve datasets documents "
+            logger.info("Thread: " + Thread.currentThread().getId() + " Page Document: "
+                + pageNumber + " Starting to retrieve datasets documents "
                 + "from Datasets List with size: " + itemElements.size());
 
             for (Element e : itemElements) {
@@ -231,9 +290,8 @@ public class PageWorker implements Runnable {
           + " retrieved documents to shared total List");
       outputScraper.addAll(pageResult);
       countDownLatch.countDown();
-      logger.debug(
-          "Thread: " + Thread.currentThread().getId() 
-          + " Decremented Latch to count: " + countDownLatch.getCount());
+      logger.debug("Thread: " + Thread.currentThread().getId() + " Decremented Latch to count: "
+          + countDownLatch.getCount());
       System.out.println("____________________________________________________");
 
     } catch (IOException | NavigationTypeNotValidException e1) {

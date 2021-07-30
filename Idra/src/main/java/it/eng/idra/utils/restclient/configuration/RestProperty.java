@@ -18,18 +18,45 @@
 
 package it.eng.idra.utils.restclient.configuration;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Enum RestProperty.
+ */
 public enum RestProperty {
+
+  /** The http proxy enabled. */
   HTTP_PROXY_ENABLED("http.proxyEnabled"),
-  HTTP_PROXY_HOST("http.proxyHost"), HTTP_PROXY_USER("http.proxyUser"),
-  HTTP_PROXY_PORT("http.proxyPort"), HTTP_PROXY_PASSWORD("http.proxyPassword"),
+
+  /** The http proxy host. */
+  HTTP_PROXY_HOST("http.proxyHost"),
+  /** The http proxy user. */
+  HTTP_PROXY_USER("http.proxyUser"),
+
+  /** The http proxy port. */
+  HTTP_PROXY_PORT("http.proxyPort"),
+  /** The http proxy password. */
+  HTTP_PROXY_PASSWORD("http.proxyPassword"),
+
+  /** The http proxy nonproxyhosts. */
   HTTP_PROXY_NONPROXYHOSTS("http.nonProxyHosts");
 
+  /** The text. */
   private final String text;
 
+  /**
+   * Instantiates a new rest property.
+   *
+   * @param text the text
+   */
   private RestProperty(final String text) {
     this.text = text;
   }
 
+  /*
+   * (non-Javadoc)
+   * 
+   * @see java.lang.Enum#toString()
+   */
   @Override
   public String toString() {
     return text;

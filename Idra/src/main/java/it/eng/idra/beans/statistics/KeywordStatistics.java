@@ -28,6 +28,10 @@ import javax.persistence.Id;
 import javax.persistence.SqlResultSetMapping;
 import javax.persistence.Table;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class KeywordStatistics.
+ */
 @SqlResultSetMapping(name = "KeywordStatisticsResult", classes = {
     @ConstructorResult(targetClass = KeywordStatisticsResult.class, columns = {
         @ColumnResult(name = "keyword", type = String.class),
@@ -38,10 +42,18 @@ import javax.persistence.Table;
 @Table(name = "keyword_statistics")
 public class KeywordStatistics {
 
+  /** The id. */
   private int id;
+
+  /** The keyword. */
   private String keyword;
+
+  /** The counter. */
   private int counter;
 
+  /**
+   * Instantiates a new keyword statistics.
+   */
   public KeywordStatistics() {
 
   }
@@ -58,6 +70,11 @@ public class KeywordStatistics {
     this.counter = counter;
   }
 
+  /**
+   * Gets the id.
+   *
+   * @return the id
+   */
   @Id
   @Column(name = "id")
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -65,32 +82,65 @@ public class KeywordStatistics {
     return id;
   }
 
+  /**
+   * Sets the id.
+   *
+   * @param id the new id
+   */
   public void setId(int id) {
     this.id = id;
   }
 
+  /**
+   * Gets the keyword.
+   *
+   * @return the keyword
+   */
   @Column(name = "keyword")
   public String getKeyword() {
     return keyword;
   }
 
+  /**
+   * Sets the keyword.
+   *
+   * @param keyword the new keyword
+   */
   public void setKeyword(String keyword) {
     this.keyword = keyword;
   }
 
+  /**
+   * Gets the counter.
+   *
+   * @return the counter
+   */
   @Column(name = "counter")
   public int getCounter() {
     return counter;
   }
 
+  /**
+   * Sets the counter.
+   *
+   * @param counter the new counter
+   */
   public void setCounter(int counter) {
     this.counter = counter;
   }
 
+  /**
+   * Inc counter.
+   */
   public void incCounter() {
     this.counter++;
   }
 
+  /*
+   * (non-Javadoc)
+   * 
+   * @see java.lang.Object#toString()
+   */
   @Override
   public String toString() {
     return "KeywordStatistics [id=" + id + ", keyword=" + keyword + ", counter=" + counter + "]";

@@ -18,10 +18,20 @@
 
 package it.eng.idra.beans.webscraper;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class SitemapNotValidException.
+ */
 public class SitemapNotValidException extends Exception {
 
+  /** The Constant serialVersionUID. */
   private static final long serialVersionUID = 1L;
 
+  /**
+   * Instantiates a new sitemap not valid exception.
+   *
+   * @param message the message
+   */
   public SitemapNotValidException(String message) {
     super(message);
   }

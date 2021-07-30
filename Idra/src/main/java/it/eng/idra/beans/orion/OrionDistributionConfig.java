@@ -21,14 +21,26 @@ package it.eng.idra.beans.orion;
 import it.eng.idra.beans.DistributionAdditionalConfiguration;
 import javax.persistence.Entity;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class OrionDistributionConfig.
+ */
 @Entity
 //@Table(name = "distribution_orion_config")
 public class OrionDistributionConfig extends DistributionAdditionalConfiguration {
 
+  /** The fiware service. */
   private String fiwareService;
+
+  /** The fiware service path. */
   private String fiwareServicePath;
+
+  /** The link header. */
   private String linkHeader;
 
+  /**
+   * Instantiates a new orion distribution config.
+   */
   public OrionDistributionConfig() {
     this.setType("ORION");
   }
@@ -36,13 +48,13 @@ public class OrionDistributionConfig extends DistributionAdditionalConfiguration
   /**
    * Instantiates a new orion distribution config.
    *
-   * @param query the query
-   * @param fiwareService the fiware service
+   * @param query             the query
+   * @param fiwareService     the fiware service
    * @param fiwareServicePath the fiware service path
-   * @param nodeId the node ID
+   * @param nodeId            the node ID
    */
-  public OrionDistributionConfig(String query, String fiwareService,
-      String fiwareServicePath, String nodeId) {
+  public OrionDistributionConfig(String query, String fiwareService, String fiwareServicePath,
+      String nodeId) {
     super();
     this.fiwareService = fiwareService;
     this.fiwareServicePath = fiwareServicePath;
@@ -51,26 +63,56 @@ public class OrionDistributionConfig extends DistributionAdditionalConfiguration
     this.setQuery(query);
   }
 
+  /**
+   * Gets the fiware service.
+   *
+   * @return the fiware service
+   */
   public String getFiwareService() {
     return fiwareService;
   }
 
+  /**
+   * Sets the fiware service.
+   *
+   * @param fiwareService the new fiware service
+   */
   public void setFiwareService(String fiwareService) {
     this.fiwareService = fiwareService;
   }
 
+  /**
+   * Gets the fiware service path.
+   *
+   * @return the fiware service path
+   */
   public String getFiwareServicePath() {
     return fiwareServicePath;
   }
 
+  /**
+   * Sets the fiware service path.
+   *
+   * @param fiwareServicePath the new fiware service path
+   */
   public void setFiwareServicePath(String fiwareServicePath) {
     this.fiwareServicePath = fiwareServicePath;
   }
 
+  /**
+   * Gets the link header.
+   *
+   * @return the link header
+   */
   public String getLinkHeader() {
     return linkHeader;
   }
 
+  /**
+   * Sets the link header.
+   *
+   * @param linkHeader the new link header
+   */
   public void setLinkHeader(String linkHeader) {
     this.linkHeader = linkHeader;
   }

@@ -42,16 +42,15 @@ public class Keyrock7Connector extends FiwareIdmConnector {
   /**
    * Instantiates a new keyrock 7 connector.
    *
-   * @param protocol the protocol
-   * @param host the host
-   * @param port the port
-   * @param clientId the client id
+   * @param protocol     the protocol
+   * @param host         the host
+   * @param port         the port
+   * @param clientId     the client id
    * @param clientSecret the client secret
-   * @param redirectUri the redirect uri
+   * @param redirectUri  the redirect uri
    */
-  public Keyrock7Connector(String protocol, String host, 
-      int port, String clientId, String clientSecret,
-      String redirectUri) {
+  public Keyrock7Connector(String protocol, String host, int port, String clientId,
+      String clientSecret, String redirectUri) {
     super(protocol, host, port, clientId, clientSecret, redirectUri);
   }
 
@@ -73,12 +72,12 @@ public class Keyrock7Connector extends FiwareIdmConnector {
     Map<String, String> headers = new HashMap<String, String>();
     headers.put("Authorization", auth);
 
-    String reqData = "grant_type=authorization_code" 
-        + "&code=" + code + "&redirect_uri=" + redirectUri;
+    String reqData = "grant_type=authorization_code" + "&code=" + code + "&redirect_uri="
+        + redirectUri;
 
     RestClient client = new RestClientImpl();
-    HttpResponse response = client.sendPostRequest(url, 
-        reqData, MediaType.APPLICATION_FORM_URLENCODED_TYPE, headers);
+    HttpResponse response = client.sendPostRequest(url, reqData,
+        MediaType.APPLICATION_FORM_URLENCODED_TYPE, headers);
 
     String returnedJson = client.getHttpResponseBody(response);
     switch (client.getStatus(response)) {
@@ -122,6 +121,5 @@ public class Keyrock7Connector extends FiwareIdmConnector {
 
     return userinfo.get();
   }
-
 
 }

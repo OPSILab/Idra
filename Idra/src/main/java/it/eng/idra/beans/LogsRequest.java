@@ -22,12 +22,21 @@ import it.eng.idra.utils.JsonRequired;
 import java.time.ZonedDateTime;
 import java.util.List;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class LogsRequest.
+ */
 public class LogsRequest {
 
+  /** The level list. */
   @JsonRequired
   private List<String> levelList;
+
+  /** The start date. */
   @JsonRequired
   private ZonedDateTime startDate;
+
+  /** The end date. */
   @JsonRequired
   private ZonedDateTime endDate;
 
@@ -36,7 +45,7 @@ public class LogsRequest {
    *
    * @param levelList the level list
    * @param startDate the start date
-   * @param endDate the end date
+   * @param endDate   the end date
    */
   public LogsRequest(List<String> levelList, ZonedDateTime startDate, ZonedDateTime endDate) {
     super();
@@ -45,34 +54,69 @@ public class LogsRequest {
     this.endDate = endDate;
   }
 
+  /**
+   * Gets the level list.
+   *
+   * @return the level list
+   */
   public List<String> getLevelList() {
     return levelList;
   }
 
+  /**
+   * Sets the level list.
+   *
+   * @param level the new level list
+   */
   public void setLevelList(List<String> level) {
     this.levelList = level;
   }
 
+  /**
+   * Gets the start date.
+   *
+   * @return the start date
+   */
   public ZonedDateTime getStartDate() {
     return startDate;
   }
 
+  /**
+   * Sets the start date.
+   *
+   * @param startDate the new start date
+   */
   public void setStartDate(ZonedDateTime startDate) {
     this.startDate = startDate;
   }
 
+  /**
+   * Gets the end date.
+   *
+   * @return the end date
+   */
   public ZonedDateTime getEndDate() {
     return endDate;
   }
 
+  /**
+   * Sets the end date.
+   *
+   * @param endDate the new end date
+   */
   public void setEndDate(ZonedDateTime endDate) {
     this.endDate = endDate;
   }
 
+  /*
+   * (non-Javadoc)
+   * 
+   * @see java.lang.Object#toString()
+   */
   @Override
   public String toString() {
-    return "LogsRequest [levelList=" + levelList 
-        + ", startDate=" + startDate + ", endDate=" + endDate + "]";
+    return "LogsRequest [levelList=" + levelList + ", startDate=" + startDate + ", endDate="
+        + endDate + "]";
   }
 
 }

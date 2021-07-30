@@ -18,10 +18,20 @@
 
 package it.eng.idra.beans.odms;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class OdmsCatalogueNotFoundException.
+ */
 public class OdmsCatalogueNotFoundException extends Exception {
 
+  /** The Constant serialVersionUID. */
   private static final long serialVersionUID = 1L;
 
+  /**
+   * Instantiates a new odms catalogue not found exception.
+   *
+   * @param message the message
+   */
   public OdmsCatalogueNotFoundException(String message) {
     super(message);
   }

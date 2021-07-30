@@ -18,16 +18,36 @@
 
 package it.eng.idra.beans.odms;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Enum OdmsSynchLock.
+ */
 public enum OdmsSynchLock {
 
-  FIRST("FIRST"), PERIODIC("PERIODIC"), NONE("NONE");
+  /** The first. */
+  FIRST("FIRST"),
+  /** The periodic. */
+  PERIODIC("PERIODIC"),
+  /** The none. */
+  NONE("NONE");
 
+  /** The text. */
   private final String text;
 
+  /**
+   * Instantiates a new odms synch lock.
+   *
+   * @param text the text
+   */
   private OdmsSynchLock(final String text) {
     this.text = text;
   }
 
+  /*
+   * (non-Javadoc)
+   * 
+   * @see java.lang.Enum#toString()
+   */
   @Override
   public String toString() {
     return text;

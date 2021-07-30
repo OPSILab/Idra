@@ -24,13 +24,29 @@ import java.util.List;
 import javax.persistence.AttributeConverter;
 import org.apache.commons.lang3.StringUtils;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class DcatPropertyConverter.
+ */
 public class DcatPropertyConverter implements AttributeConverter<List<String>, String> {
 
+  /*
+   * (non-Javadoc)
+   * 
+   * @see javax.persistence.AttributeConverter#convertToDatabaseColumn(java.lang.
+   * Object)
+   */
   @Override
   public String convertToDatabaseColumn(List<String> attribute) {
     return attribute == null ? null : String.join(";;", attribute);
   }
 
+  /*
+   * (non-Javadoc)
+   * 
+   * @see javax.persistence.AttributeConverter#convertToEntityAttribute(java.lang.
+   * Object)
+   */
   @Override
   public List<String> convertToEntityAttribute(String dbData) {
     if (StringUtils.isBlank(dbData)) {

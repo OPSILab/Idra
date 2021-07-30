@@ -18,12 +18,24 @@
 
 package it.eng.idra.connectors.webscraper;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class GetDatasetPage.
+ */
 public class GetDatasetPage implements Runnable {
 
+  /**
+   * Instantiates a new gets the dataset page.
+   */
   public GetDatasetPage() {
 
   }
 
+  /*
+   * (non-Javadoc)
+   * 
+   * @see java.lang.Runnable#run()
+   */
   @Override
   public void run() {
 

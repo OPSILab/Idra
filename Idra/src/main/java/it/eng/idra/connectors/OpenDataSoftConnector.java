@@ -44,30 +44,61 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.json.JSONObject;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class OpenDataSoftConnector.
+ */
 public class OpenDataSoftConnector implements IodmsConnector {
 
+  /** The Constant datasetsPath. */
   private static final String datasetsPath = "/api/v2/catalog/datasets";
 
+  /** The node id. */
   private String nodeId;
+
+  /** The node. */
   private OdmsCatalogue node;
+
+  /** The logger. */
   private static Logger logger = LogManager.getLogger(OpenDataSoftConnector.class);
 
+  /**
+   * Instantiates a new open data soft connector.
+   *
+   * @param node the node
+   */
   public OpenDataSoftConnector(OdmsCatalogue node) {
     this.node = node;
     this.nodeId = String.valueOf(node.getId());
   }
 
+  /*
+   * (non-Javadoc)
+   * 
+   * @see it.eng.idra.connectors.IodmsConnector#findDatasets(java.util.HashMap)
+   */
   @Override
   public List<DcatDataset> findDatasets(HashMap<String, Object> searchParameters) throws Exception {
     ArrayList<DcatDataset> resultDatasets = new ArrayList<DcatDataset>();
     return resultDatasets;
   }
 
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * it.eng.idra.connectors.IodmsConnector#countSearchDatasets(java.util.HashMap)
+   */
   @Override
   public int countSearchDatasets(HashMap<String, Object> searchParameters) throws Exception {
     return 0;
   }
 
+  /*
+   * (non-Javadoc)
+   * 
+   * @see it.eng.idra.connectors.IodmsConnector#countDatasets()
+   */
   @Override
   public int countDatasets() throws Exception {
     String sjson = sendGetRequest(node.getHost().concat(datasetsPath).concat("?rows=0"));
@@ -84,12 +115,11 @@ public class OpenDataSoftConnector implements IodmsConnector {
    * Distribution to dcat.
    *
    * @param datasource the datasource
-   * @param license the license
-   * @param node the node
+   * @param license    the license
+   * @param node       the node
    * @return the dcat distribution
    */
-  public DcatDistribution distributionToDcat(Link datasource, 
-      String license, OdmsCatalogue node) {
+  public DcatDistribution distributionToDcat(Link datasource, String license, OdmsCatalogue node) {
     String format = datasource.getRel();
 
     if ("self".equalsIgnoreCase(format)) {
@@ -111,12 +141,18 @@ public class OpenDataSoftConnector implements IodmsConnector {
     return dcatDistrib;
   }
 
+  /*
+   * (non-Javadoc)
+   * 
+   * @see it.eng.idra.connectors.IodmsConnector#datasetToDcat(java.lang.Object,
+   * it.eng.idra.beans.odms.OdmsCatalogue)
+   */
   @Override
   public DcatDataset datasetToDcat(Object dataset, OdmsCatalogue node) throws Exception {
 
     Dataset ds = (Dataset) dataset;
     InnerDatasetMetaDefault metadata = ds.getDataset().getMetas().get_default();
-    
+
     String license = metadata.getLicense();
 
     List<DcatDistribution> distributionList = new ArrayList<DcatDistribution>();
@@ -126,8 +162,8 @@ public class OpenDataSoftConnector implements IodmsConnector {
         DatasourceDto datasourcesDto = new Gson().fromJson(sendGetRequest(link.getHref()),
             DatasourceDto.class);
         datasourcesDto.getLinks().forEach(l -> {
-          Optional<DcatDistribution> optDcatDistrib = Optional.ofNullable(distributionToDcat(l,
-              license, node));
+          Optional<DcatDistribution> optDcatDistrib = Optional
+              .ofNullable(distributionToDcat(l, license, node));
           if (optDcatDistrib.isPresent()) {
             distributionList.add(optDcatDistrib.get());
           }
@@ -175,39 +211,39 @@ public class OpenDataSoftConnector implements IodmsConnector {
     FoafAgent rightsHolder = null;
     List<SkosConceptSubject> subjectList = new ArrayList<SkosConceptSubject>();
     List<String> relatedResources = new ArrayList<String>();
-    
+
     String title = metadata.getTitle();
     String description = metadata.getDescription();
 
     List<SkosConceptTheme> datasetTheme = extractConceptList(DCAT.theme.getURI(),
-        metadata.getTheme(),
-        SkosConceptTheme.class);
+        metadata.getTheme(), SkosConceptTheme.class);
     Optional<String> publisherName = Optional.ofNullable(metadata.getPublisher());
     Optional<String> publisherUri = Optional.empty();
     Optional<String> publisherMbox = Optional.empty();
     Optional<String> publisherHomepage = Optional.empty();
     Optional<String> publisherType = Optional.empty();
     Optional<String> publisherIdentifier = Optional.empty();
-    
+
     FoafAgent publisher = new FoafAgent(DCTerms.publisher.getURI(), publisherUri.orElse(null),
         publisherName.orElse(null), publisherMbox.orElse(null), publisherHomepage.orElse(null),
         publisherType.orElse(null), publisherIdentifier.orElse(null), nodeId);
 
     List<String> keywords = metadata.getKeyword();
-    
-    DcatDataset mapped = new DcatDataset(nodeId, identifier,
-        title, description, distributionList, datasetTheme,
-        publisher, contactPointList, keywords, accessRights,
-        conformsTo, documentation, frequency, hasVersion,
-        isVersionOf, landingPage, languages, provenance,
-        releaseDate, updateDate, otherIdentifier, sample, source,
-        spatialCoverage, temporalCoverage, type, version,
-        versionNotes, rightsHolder, publisher, subjectList,
-        relatedResources);
+
+    DcatDataset mapped = new DcatDataset(nodeId, identifier, title, description, distributionList,
+        datasetTheme, publisher, contactPointList, keywords, accessRights, conformsTo,
+        documentation, frequency, hasVersion, isVersionOf, landingPage, languages, provenance,
+        releaseDate, updateDate, otherIdentifier, sample, source, spatialCoverage, temporalCoverage,
+        type, version, versionNotes, rightsHolder, publisher, subjectList, relatedResources);
 
     return mapped;
   }
 
+  /*
+   * (non-Javadoc)
+   * 
+   * @see it.eng.idra.connectors.IodmsConnector#getDataset(java.lang.String)
+   */
   @Override
   public DcatDataset getDataset(String datasetId) throws Exception {
     String sjson = sendGetRequest(node.getHost().concat(datasetsPath).concat(datasetId));
@@ -215,6 +251,11 @@ public class OpenDataSoftConnector implements IodmsConnector {
     return datasetToDcat(dataset, node);
   }
 
+  /*
+   * (non-Javadoc)
+   * 
+   * @see it.eng.idra.connectors.IodmsConnector#getAllDatasets()
+   */
   @Override
   public List<DcatDataset> getAllDatasets() throws Exception {
 
@@ -231,8 +272,8 @@ public class OpenDataSoftConnector implements IodmsConnector {
     Set<DcatDataset> out = new HashSet<DcatDataset>();
 
     do {
-      String url = node.getHost().concat(datasetsPath)
-          .concat("?rows=100&start=").concat(String.valueOf(startIndex));
+      String url = node.getHost().concat(datasetsPath).concat("?rows=100&start=")
+          .concat(String.valueOf(startIndex));
       logger.debug(url);
       String sjson = sendGetRequest(url);
       DatasetDto datasets = new Gson().fromJson(sjson, DatasetDto.class);
@@ -263,6 +304,15 @@ public class OpenDataSoftConnector implements IodmsConnector {
     return new ArrayList<DcatDataset>(out);
   }
 
+  /**
+   * Extract concept list.
+   *
+   * @param             <T> the generic type
+   * @param propertyUri the property uri
+   * @param concepts    the concepts
+   * @param type        the type
+   * @return the list
+   */
   private <T extends SkosConcept> List<T> extractConceptList(String propertyUri,
       List<String> concepts, Class<T> type) {
     List<T> result = new ArrayList<T>();
@@ -270,12 +320,10 @@ public class OpenDataSoftConnector implements IodmsConnector {
     if (concepts != null) {
       for (String label : concepts) {
         try {
-          result.add(type.getDeclaredConstructor(SkosConcept.class).newInstance(
-              new SkosConcept(propertyUri,
-                  "", Arrays.asList(new SkosPrefLabel("", label, nodeId)), nodeId)));
-        } catch (InstantiationException | IllegalAccessException 
-            | IllegalArgumentException | InvocationTargetException
-            | NoSuchMethodException | SecurityException e) {
+          result.add(type.getDeclaredConstructor(SkosConcept.class).newInstance(new SkosConcept(
+              propertyUri, "", Arrays.asList(new SkosPrefLabel("", label, nodeId)), nodeId)));
+        } catch (InstantiationException | IllegalAccessException | IllegalArgumentException
+            | InvocationTargetException | NoSuchMethodException | SecurityException e) {
           e.printStackTrace();
         } catch (Exception ex) {
           ex.printStackTrace();
@@ -286,6 +334,13 @@ public class OpenDataSoftConnector implements IodmsConnector {
     return result;
   }
 
+  /**
+   * Send get request.
+   *
+   * @param urlString the url string
+   * @return the string
+   * @throws Exception the exception
+   */
   private String sendGetRequest(String urlString) throws Exception {
     try {
       RestClient client = new RestClientImpl();
@@ -296,10 +351,15 @@ public class OpenDataSoftConnector implements IodmsConnector {
     }
   }
 
+  /*
+   * (non-Javadoc)
+   * 
+   * @see it.eng.idra.connectors.IodmsConnector#getChangedDatasets(java.util.List,
+   * java.lang.String)
+   */
   @Override
-  public OdmsSynchronizationResult getChangedDatasets(
-      List<DcatDataset> oldDatasets, String startingDate)
-      throws Exception {
+  public OdmsSynchronizationResult getChangedDatasets(List<DcatDataset> oldDatasets,
+      String startingDate) throws Exception {
     ArrayList<DcatDataset> newDatasets = (ArrayList<DcatDataset>) getAllDatasets();
 
     OdmsSynchronizationResult syncrhoResult = new OdmsSynchronizationResult();

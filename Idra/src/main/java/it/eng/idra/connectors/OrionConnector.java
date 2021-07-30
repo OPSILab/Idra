@@ -56,40 +56,80 @@ import org.apache.logging.log4j.Logger;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class OrionConnector.
+ */
 public class OrionConnector implements IodmsConnector {
 
+  /** The node id. */
   private String nodeId;
+
+  /** The node. */
   private OdmsCatalogue node;
   // The internal API used in case the query must be authenticated or if headers
+  /** The orion file path. */
   // has to be set
-  private static String orionFilePath = 
-      PropertyManager.getProperty(IdraProperty.ORION_FILE_DUMP_PATH);
+  private static String orionFilePath = PropertyManager
+      .getProperty(IdraProperty.ORION_FILE_DUMP_PATH);
+
+  /** The logger. */
   private static Logger logger = LogManager.getLogger(OrionConnector.class);
 
+  /**
+   * Instantiates a new orion connector.
+   */
   public OrionConnector() {
   }
 
+  /**
+   * Instantiates a new orion connector.
+   *
+   * @param node the node
+   */
   public OrionConnector(OdmsCatalogue node) {
     this.node = node;
     this.nodeId = String.valueOf(node.getId());
   }
 
+  /*
+   * (non-Javadoc)
+   * 
+   * @see it.eng.idra.connectors.IodmsConnector#findDatasets(java.util.HashMap)
+   */
   @Override
   public List<DcatDataset> findDatasets(HashMap<String, Object> searchParameters) throws Exception {
     ArrayList<DcatDataset> resultDatasets = new ArrayList<DcatDataset>();
     return resultDatasets;
   }
 
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * it.eng.idra.connectors.IodmsConnector#countSearchDatasets(java.util.HashMap)
+   */
   @Override
   public int countSearchDatasets(HashMap<String, Object> searchParameters) throws Exception {
     return 0;
   }
 
+  /*
+   * (non-Javadoc)
+   * 
+   * @see it.eng.idra.connectors.IodmsConnector#countDatasets()
+   */
   @Override
   public int countDatasets() throws Exception {
     return -1;
   }
 
+  /*
+   * (non-Javadoc)
+   * 
+   * @see it.eng.idra.connectors.IodmsConnector#datasetToDcat(java.lang.Object,
+   * it.eng.idra.beans.odms.OdmsCatalogue)
+   */
   @Override
   public DcatDataset datasetToDcat(Object dataset, OdmsCatalogue node) throws Exception {
     JSONObject j = (JSONObject) dataset;
@@ -128,8 +168,8 @@ public class OrionConnector implements IodmsConnector {
 
     // Themes
     if (j.has("theme")) {
-      List<String> themes = GsonUtil.json2Obj(
-          j.getJSONArray("theme").toString(), GsonUtil.stringListType);
+      List<String> themes = GsonUtil.json2Obj(j.getJSONArray("theme").toString(),
+          GsonUtil.stringListType);
       if (themes.size() > 0) {
         themeList.addAll(extractConceptList(DCAT.theme.getURI(), themes, SkosConceptTheme.class));
       }
@@ -137,36 +177,33 @@ public class OrionConnector implements IodmsConnector {
 
     // Subject
     if (j.has("subject")) {
-      List<String> subjects = GsonUtil.json2Obj(
-          j.getJSONArray("subject").toString(), GsonUtil.stringListType);
+      List<String> subjects = GsonUtil.json2Obj(j.getJSONArray("subject").toString(),
+          GsonUtil.stringListType);
       if (subjects.size() > 0) {
-        subjectList.addAll(extractConceptList(DCTerms.subject.getURI(), 
-            subjects, SkosConceptSubject.class));
+        subjectList.addAll(
+            extractConceptList(DCTerms.subject.getURI(), subjects, SkosConceptSubject.class));
       }
     }
 
     // Publisher
     if (j.has("publisher")) {
       JSONObject pub = j.getJSONObject("publisher");
-      if (pub.has("name") || pub.has("mbox") || pub.has("homepage") 
-          || pub.has("type") || pub.has("identifier")
-          || pub.has("propertyUri")) {
+      if (pub.has("name") || pub.has("mbox") || pub.has("homepage") || pub.has("type")
+          || pub.has("identifier") || pub.has("propertyUri")) {
         publisher = new FoafAgent(DCTerms.publisher.getURI(), pub.optString("propertyUri", null),
-            pub.optString("name", null), pub.optString("mbox", null), 
-            pub.optString("homepage", null),
-            pub.optString("type", null), pub.optString("identifier", null), nodeId);
+            pub.optString("name", null), pub.optString("mbox", null),
+            pub.optString("homepage", null), pub.optString("type", null),
+            pub.optString("identifier", null), nodeId);
       }
     }
 
     // Creator
     if (j.has("creator")) {
       JSONObject pub = j.getJSONObject("creator");
-      if (pub.has("name") || pub.has("mbox") 
-          || pub.has("homepage") || pub.has("type") || pub.has("identifier")
-          || pub.has("propertyUri")) {
+      if (pub.has("name") || pub.has("mbox") || pub.has("homepage") || pub.has("type")
+          || pub.has("identifier") || pub.has("propertyUri")) {
         rightsHolder = new FoafAgent(DCTerms.rightsHolder.getURI(),
-            pub.optString("propertyUri", null),
-            pub.optString("name", null), 
+            pub.optString("propertyUri", null), pub.optString("name", null),
             pub.optString("mbox", null), pub.optString("homepage", null),
             pub.optString("type", null), pub.optString("identifier", null), nodeId);
       }
@@ -175,13 +212,12 @@ public class OrionConnector implements IodmsConnector {
     // RightsHolder
     if (j.has("rightsHolder")) {
       JSONObject pub = j.getJSONObject("rightsHolder");
-      if (pub.has("name") || pub.has("mbox") 
-          || pub.has("homepage") || pub.has("type") || pub.has("identifier")
-          || pub.has("propertyUri")) {
+      if (pub.has("name") || pub.has("mbox") || pub.has("homepage") || pub.has("type")
+          || pub.has("identifier") || pub.has("propertyUri")) {
         creator = new FoafAgent(DCTerms.creator.getURI(), pub.optString("propertyUri", null),
             pub.optString("name", null), pub.optString("mbox", null),
-            pub.optString("homepage", null),
-            pub.optString("type", null), pub.optString("identifier", null), nodeId);
+            pub.optString("homepage", null), pub.optString("type", null),
+            pub.optString("identifier", null), nodeId);
       }
     }
 
@@ -197,12 +233,11 @@ public class OrionConnector implements IodmsConnector {
         JSONObject tmp = tmpArr.getJSONObject(i);
         if (tmp.has("resourceUri") || tmp.has("fn") || tmp.has("hasEmail") || tmp.has("hasURL")
             || tmp.has("hasTelephoneValue") || tmp.has("hasTelephoneType")) {
-          contactPointList.add(new VCardOrganization(DCAT.contactPoint.getURI(),
-              tmp.optString("resourceUri", null),
-              tmp.optString("fn", null), tmp.optString("hasEmail", null), 
-              tmp.optString("hasURL", null),
-              tmp.optString("hasTelephoneValue", null), 
-              tmp.optString("hasTelephoneType", null), nodeId));
+          contactPointList.add(
+              new VCardOrganization(DCAT.contactPoint.getURI(), tmp.optString("resourceUri", null),
+                  tmp.optString("fn", null), tmp.optString("hasEmail", null),
+                  tmp.optString("hasURL", null), tmp.optString("hasTelephoneValue", null),
+                  tmp.optString("hasTelephoneType", null), nodeId));
         }
       }
     }
@@ -212,16 +247,15 @@ public class OrionConnector implements IodmsConnector {
       JSONArray tmpArr = j.getJSONArray("conformsTo");
       for (int i = 0; i < tmpArr.length(); i++) {
         JSONObject tmp = tmpArr.getJSONObject(i);
-        if (tmp.has("identifier") || tmp.has("title") 
-            || tmp.has("description") || tmp.has("referenceDocumentation")) {
+        if (tmp.has("identifier") || tmp.has("title") || tmp.has("description")
+            || tmp.has("referenceDocumentation")) {
           JSONArray refDoc = j.optJSONArray("referenceDocumentation");
           List<String> refDoclList = null;
           if (refDoc != null && refDoc.length() > 0) {
             refDoclList = GsonUtil.json2Obj(refDoc.toString(), GsonUtil.stringListType);
           }
           conformsTo.add(new DctStandard(DCTerms.conformsTo.getURI(),
-              tmp.optString("identifier", null),
-              tmp.optString("title", null), 
+              tmp.optString("identifier", null), tmp.optString("title", null),
               tmp.optString("description", null), refDoclList, nodeId));
         }
       }
@@ -229,23 +263,23 @@ public class OrionConnector implements IodmsConnector {
 
     // Documentation
     if (j.has("documentation")) {
-      documentation = GsonUtil.json2Obj(
-          j.getJSONArray("documentation").toString(), GsonUtil.stringListType);
+      documentation = GsonUtil.json2Obj(j.getJSONArray("documentation").toString(),
+          GsonUtil.stringListType);
     }
 
     if (j.has("relatedResource")) {
-      relatedResource = GsonUtil.json2Obj(
-          j.getJSONArray("relatedResource").toString(), GsonUtil.stringListType);
+      relatedResource = GsonUtil.json2Obj(j.getJSONArray("relatedResource").toString(),
+          GsonUtil.stringListType);
     }
 
     if (j.has("hasVersion")) {
-      hasVersion = GsonUtil.json2Obj(
-          j.getJSONArray("hasVersion").toString(), GsonUtil.stringListType);
+      hasVersion = GsonUtil.json2Obj(j.getJSONArray("hasVersion").toString(),
+          GsonUtil.stringListType);
     }
 
     if (j.has("isVersionOf")) {
-      isVersionOf = GsonUtil.json2Obj(
-          j.getJSONArray("isVersionOf").toString(), GsonUtil.stringListType);
+      isVersionOf = GsonUtil.json2Obj(j.getJSONArray("isVersionOf").toString(),
+          GsonUtil.stringListType);
     }
 
     if (j.has("language")) {
@@ -253,13 +287,13 @@ public class OrionConnector implements IodmsConnector {
     }
 
     if (j.has("provenance")) {
-      provenance = GsonUtil.json2Obj(
-          j.getJSONArray("provenance").toString(), GsonUtil.stringListType);
+      provenance = GsonUtil.json2Obj(j.getJSONArray("provenance").toString(),
+          GsonUtil.stringListType);
     }
 
     if (j.has("otherIdentifier")) {
-      otherIdentifier = GsonUtil.json2Obj(
-          j.getJSONArray("otherIdentifier").toString(), GsonUtil.stringListType);
+      otherIdentifier = GsonUtil.json2Obj(j.getJSONArray("otherIdentifier").toString(),
+          GsonUtil.stringListType);
     }
 
     if (j.has("sample")) {
@@ -271,8 +305,8 @@ public class OrionConnector implements IodmsConnector {
     }
 
     if (j.has("versionNotes")) {
-      versionNotes = GsonUtil.json2Obj(
-          j.getJSONArray("versionNotes").toString(), GsonUtil.stringListType);
+      versionNotes = GsonUtil.json2Obj(j.getJSONArray("versionNotes").toString(),
+          GsonUtil.stringListType);
     }
     String accessRights = null;
     accessRights = j.optString("accessRight", null);
@@ -301,8 +335,7 @@ public class OrionConnector implements IodmsConnector {
 
     String startDate = null;
     String endDate = null;
-    if (StringUtils.isNotBlank(startDate) 
-        && StringUtils.isNotBlank(endDate)) {
+    if (StringUtils.isNotBlank(startDate) && StringUtils.isNotBlank(endDate)) {
       temporalCoverage = new DctPeriodOfTime(DCTerms.temporal.getURI(), startDate, endDate, nodeId);
     }
 
@@ -361,17 +394,16 @@ public class OrionConnector implements IodmsConnector {
           if (tmp.has("license")) {
             JSONObject l = tmp.getJSONObject("license");
             if (l.has("name") || l.has("uri") || l.has("type") || l.has("versionInfo")) {
-              distro.setLicense(new DctLicenseDocument(l.optString("uri"),
-                  l.optString("name"), l.optString("type"),
-                  l.optString("versionInfo"), nodeId));
+              distro.setLicense(new DctLicenseDocument(l.optString("uri"), l.optString("name"),
+                  l.optString("type"), l.optString("versionInfo"), nodeId));
             }
           }
 
           if (tmp.has("distributionAdditionalConfig")) {
             JSONObject o = tmp.getJSONObject("distributionAdditionalConfig");
             if (!o.has("query") || StringUtils.isBlank(o.optString("query", null))) {
-              throw new Exception("Each distribution must have the "
-                  + "orionDistributionConfig with a query");
+              throw new Exception(
+                  "Each distribution must have the " + "orionDistributionConfig with a query");
             }
             OrionDistributionConfig conf = new OrionDistributionConfig();
             conf.setFiwareService(o.optString("fiwareService", null));
@@ -391,29 +423,36 @@ public class OrionConnector implements IodmsConnector {
       throw new Exception("Orion Dataset must contain at least one distribution");
     }
 
-    return new DcatDataset(nodeId, identifier, title,
-        description, distributionList, themeList, publisher,
-        contactPointList, keywords, accessRights, conformsTo, 
-        documentation, frequency, hasVersion, isVersionOf,
-        landingPage, language, provenance, releaseDate, 
-        updateDate, otherIdentifier, sample, source, spatialCoverage,
-        temporalCoverage, type, version, versionNotes, rightsHolder, creator, subjectList, null);
+    return new DcatDataset(nodeId, identifier, title, description, distributionList, themeList,
+        publisher, contactPointList, keywords, accessRights, conformsTo, documentation, frequency,
+        hasVersion, isVersionOf, landingPage, language, provenance, releaseDate, updateDate,
+        otherIdentifier, sample, source, spatialCoverage, temporalCoverage, type, version,
+        versionNotes, rightsHolder, creator, subjectList, null);
   }
 
+  /*
+   * (non-Javadoc)
+   * 
+   * @see it.eng.idra.connectors.IodmsConnector#getDataset(java.lang.String)
+   */
   @Override
   public DcatDataset getDataset(String datasetId) throws Exception {
     return null;
   }
 
+  /*
+   * (non-Javadoc)
+   * 
+   * @see it.eng.idra.connectors.IodmsConnector#getAllDatasets()
+   */
   @Override
   public List<DcatDataset> getAllDatasets() throws Exception {
-    OrionCatalogueConfiguration orionConfig = 
-        (OrionCatalogueConfiguration) node.getAdditionalConfig();
+    OrionCatalogueConfiguration orionConfig = (OrionCatalogueConfiguration) node
+        .getAdditionalConfig();
 
     if (StringUtils.isBlank(orionConfig.getOrionDatasetDumpString())) {
-      orionConfig
-          .setOrionDatasetDumpString(new String(Files.readAllBytes(
-              Paths.get(orionConfig.getOrionDatasetFilePath()))));
+      orionConfig.setOrionDatasetDumpString(
+          new String(Files.readAllBytes(Paths.get(orionConfig.getOrionDatasetFilePath()))));
     }
 
     List<DcatDataset> result = new ArrayList<DcatDataset>();
@@ -425,8 +464,8 @@ public class OrionConnector implements IodmsConnector {
     // if(StringUtils.isBlank(orionConfig.getOrionDatasetFilePath())) {
 
     try {
-      CommonUtil.storeFile(orionFilePath, "orionDump_" 
-           + nodeId, orionConfig.getOrionDatasetDumpString());
+      CommonUtil.storeFile(orionFilePath, "orionDump_" + nodeId,
+          orionConfig.getOrionDatasetDumpString());
       orionConfig.setOrionDatasetFilePath(orionFilePath + "orionDump_" + nodeId);
       orionConfig.setOrionDatasetDumpString(null);
       node.setAdditionalConfig(orionConfig);
@@ -439,25 +478,37 @@ public class OrionConnector implements IodmsConnector {
 
   }
 
+  /*
+   * (non-Javadoc)
+   * 
+   * @see it.eng.idra.connectors.IodmsConnector#getChangedDatasets(java.util.List,
+   * java.lang.String)
+   */
   @Override
   public OdmsSynchronizationResult getChangedDatasets(List<DcatDataset> oldDatasets,
-      String startingDate)
-      throws Exception {
+      String startingDate) throws Exception {
     return null;
   }
 
+  /**
+   * Extract concept list.
+   *
+   * @param             <T> the generic type
+   * @param propertyUri the property uri
+   * @param concepts    the concepts
+   * @param type        the type
+   * @return the list
+   */
   private <T extends SkosConcept> List<T> extractConceptList(String propertyUri,
       List<String> concepts, Class<T> type) {
     List<T> result = new ArrayList<T>();
 
     for (String label : concepts) {
       try {
-        result.add(type.getDeclaredConstructor(SkosConcept.class).newInstance(
-            new SkosConcept(propertyUri, "", Arrays.asList(
-                new SkosPrefLabel("", label, nodeId)), nodeId)));
-      } catch (InstantiationException 
-          | IllegalAccessException | IllegalArgumentException | InvocationTargetException
-          | NoSuchMethodException | SecurityException e) {
+        result.add(type.getDeclaredConstructor(SkosConcept.class).newInstance(new SkosConcept(
+            propertyUri, "", Arrays.asList(new SkosPrefLabel("", label, nodeId)), nodeId)));
+      } catch (InstantiationException | IllegalAccessException | IllegalArgumentException
+          | InvocationTargetException | NoSuchMethodException | SecurityException e) {
         // TODO Auto-generated catch block
         e.printStackTrace();
       }

@@ -18,20 +18,40 @@
 
 package it.eng.idra.authentication.fiware.model;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class Auth.
+ */
 @Deprecated
 public class Auth {
 
+  /** The identity. */
   private Identity identity;
 
+  /**
+   * Instantiates a new auth.
+   *
+   * @param identity the identity
+   */
   public Auth(Identity identity) {
     super();
     this.identity = identity;
   }
 
+  /**
+   * Gets the identity.
+   *
+   * @return the identity
+   */
   public Identity getIdentity() {
     return identity;
   }
 
+  /**
+   * Sets the identity.
+   *
+   * @param identity the new identity
+   */
   public void setIdentity(Identity identity) {
     this.identity = identity;
   }

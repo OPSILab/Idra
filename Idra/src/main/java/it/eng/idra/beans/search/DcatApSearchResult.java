@@ -20,16 +20,25 @@ package it.eng.idra.beans.search;
 
 import java.util.List;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class DcatApSearchResult.
+ */
 public class DcatApSearchResult {
 
+  /** The count. */
   private Long count;
+
+  /** The results. */
   private List<String> results;
+
+  /** The facets. */
   private List<SearchFacet> facets;
 
   /**
    * Instantiates a new dcat ap search result.
    *
-   * @param count the count
+   * @param count  the count
    * @param result the result
    */
   public DcatApSearchResult(Long count, List<String> result) {
@@ -41,7 +50,7 @@ public class DcatApSearchResult {
   /**
    * Instantiates a new dcat ap search result.
    *
-   * @param count the count
+   * @param count  the count
    * @param result the result
    * @param facets the facets
    */
@@ -52,30 +61,65 @@ public class DcatApSearchResult {
     this.setFacets(facets);
   }
 
+  /**
+   * Gets the count.
+   *
+   * @return the count
+   */
   public Long getCount() {
     return count;
   }
 
+  /**
+   * Sets the count.
+   *
+   * @param count the new count
+   */
   public void setCount(Long count) {
     this.count = count;
   }
 
+  /**
+   * Gets the results.
+   *
+   * @return the results
+   */
   public List<String> getResults() {
     return results;
   }
 
+  /**
+   * Sets the results.
+   *
+   * @param result the new results
+   */
   public void setResults(List<String> result) {
     this.results = result;
   }
 
+  /**
+   * Gets the facets.
+   *
+   * @return the facets
+   */
   public List<SearchFacet> getFacets() {
     return facets;
   }
 
+  /**
+   * Sets the facets.
+   *
+   * @param facets the new facets
+   */
   public void setFacets(List<SearchFacet> facets) {
     this.facets = facets;
   }
 
+  /*
+   * (non-Javadoc)
+   * 
+   * @see java.lang.Object#toString()
+   */
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
@@ -90,6 +134,9 @@ public class DcatApSearchResult {
   /**
    * Convert the given object to string with each line indented by 4 spaces
    * (except the first line).
+   *
+   * @param o the o
+   * @return the string
    */
   private String toIndentedString(java.lang.Object o) {
     if (o == null) {

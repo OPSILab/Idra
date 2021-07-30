@@ -18,10 +18,41 @@
 
 package it.eng.idra.cache;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Enum CacheContentType.
+ */
 public enum CacheContentType {
 
-  dataset, distribution, contactPoint, creator, rightsHolder,
-  publisher, conformsTo, spatialCoverage, temporalCoverage,
-  licenseDocument, linkedSchemas, checksum, theme, subject;
+  /** The dataset. */
+  dataset,
+  /** The distribution. */
+  distribution,
+  /** The contact point. */
+  contactPoint,
+  /** The creator. */
+  creator,
+  /** The rights holder. */
+  rightsHolder,
+
+  /** The publisher. */
+  publisher,
+  /** The conforms to. */
+  conformsTo,
+  /** The spatial coverage. */
+  spatialCoverage,
+  /** The temporal coverage. */
+  temporalCoverage,
+
+  /** The license document. */
+  licenseDocument,
+  /** The linked schemas. */
+  linkedSchemas,
+  /** The checksum. */
+  checksum,
+  /** The theme. */
+  theme,
+  /** The subject. */
+  subject;
 
 }

@@ -23,21 +23,28 @@ import it.eng.idra.cache.LodCacheManager;
 import org.apache.http.HttpException;
 import org.apache.jena.query.QueryParseException;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class SparqlFederatedSearch.
+ */
 public class SparqlFederatedSearch {
 
+  /**
+   * Instantiates a new sparql federated search.
+   */
   public SparqlFederatedSearch() {
   }
 
   /**
    * Run query.
    *
-   * @param query the query
+   * @param query      the query
    * @param formatType the format type
    * @return the string
    * @throws QueryParseException the query parse exception
-   * @throws HttpException the http exception
+   * @throws HttpException       the http exception
    */
-  public static String runQuery(String query, SparqlResultFormat formatType) 
+  public static String runQuery(String query, SparqlResultFormat formatType)
       throws QueryParseException, HttpException {
 
     return LodCacheManager.runQuery(query, formatType);

@@ -30,7 +30,7 @@ public class LoggedUser {
   /** The username. */
   @JsonRequired
   private String username;
-  
+
   /** The token. */
   @JsonRequired
   private String token;
@@ -41,7 +41,7 @@ public class LoggedUser {
   /**
    * Instantiates a new logged user.
    *
-   * @param us the us
+   * @param us  the us
    * @param tok the tok
    */
   public LoggedUser(String us, String tok) {

@@ -18,7 +18,33 @@
 
 package it.eng.idra.beans.odms;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Enum OdmsCatalogueType.
+ */
 public enum OdmsCatalogueType {
-  CKAN, SOCRATA, DCATDUMP, DKAN, 
-  JUNAR, ORION, OPENDATASOFT, SPARQL, SPOD, NATIVE, WEB
+
+  /** The ckan. */
+  CKAN,
+  /** The socrata. */
+  SOCRATA,
+  /** The dcatdump. */
+  DCATDUMP,
+  /** The dkan. */
+  DKAN,
+
+  /** The junar. */
+  JUNAR,
+  /** The orion. */
+  ORION,
+  /** The opendatasoft. */
+  OPENDATASOFT,
+  /** The sparql. */
+  SPARQL,
+  /** The spod. */
+  SPOD,
+  /** The native. */
+  NATIVE,
+  /** The web. */
+  WEB
 }

@@ -13,8 +13,15 @@ import java.util.List;
 import java.util.stream.Collectors;
 import org.apache.commons.lang.StringUtils;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class PlatformStatisticsManager.
+ */
 public class PlatformStatisticsManager {
 
+  /**
+   * Instantiates a new platform statistics manager.
+   */
   public PlatformStatisticsManager() {
     // TODO Auto-generated constructor stub
   }
@@ -23,12 +30,12 @@ public class PlatformStatisticsManager {
    * Gets the catalogue statistics.
    *
    * @param catalogueId the catalogue id
-   * @param startDate the start date
-   * @param endDate the end date
+   * @param startDate   the start date
+   * @param endDate     the end date
    * @return the catalogue statistics
    */
-  public static PlatformStatistcs getCatalogueStatistics(
-      String catalogueId, String startDate, String endDate) {
+  public static PlatformStatistcs getCatalogueStatistics(String catalogueId, String startDate,
+      String endDate) {
     PlatformStatistcs result = new PlatformStatistcs();
     // Prendiamo tutti i cataloghi attivi
     try {
@@ -36,19 +43,17 @@ public class PlatformStatisticsManager {
       endDate = CommonUtil.fixBadUtcDate(endDate);
 
       List<OdmsCatalogue> nodes = FederationCore.getOdmsCatalogues().stream()
-          .filter(x -> x.isActive() && x.isCacheable() 
-              && !x.getSynchLock().equals(OdmsSynchLock.FIRST))
+          .filter(
+              x -> x.isActive() && x.isCacheable() && !x.getSynchLock().equals(OdmsSynchLock.FIRST))
           .collect(Collectors.toList());
 
       if (StringUtils.isNotBlank(catalogueId)) {
-        List<Integer> ids = Arrays.asList(catalogueId.split(","))
-            .stream().map(x -> Integer.parseInt(x))
-            .collect(Collectors.toList());
+        List<Integer> ids = Arrays.asList(catalogueId.split(",")).stream()
+            .map(x -> Integer.parseInt(x)).collect(Collectors.toList());
         nodes = nodes.stream().filter(x -> ids.contains(x.getId())).collect(Collectors.toList());
       }
 
-      List<Integer> cataloguesIds = nodes.stream()
-          .map(x -> x.getId()).collect(Collectors.toList());
+      List<Integer> cataloguesIds = nodes.stream().map(x -> x.getId()).collect(Collectors.toList());
 
       // Prendo le facets con rows=0;
       HashMap<String, Object> searchParameters = new HashMap<String, Object>();
@@ -65,16 +70,16 @@ public class PlatformStatisticsManager {
       /* MANAGE FACETS */
       FacetsStatistics facetsStats = new FacetsStatistics(
           distributionFormats.getFacets().stream()
-          .filter(x -> x.getSearchParameter().equals("format"))
+              .filter(x -> x.getSearchParameter().equals("format")).map(x -> x.getValues())
+              .findFirst().get(),
+
+          resultForFacets.getFacets().stream()
+              .filter(x -> x.getSearchParameter().equals("distributionLicenses"))
               .map(x -> x.getValues()).findFirst().get(),
 
           resultForFacets.getFacets().stream()
-          .filter(x -> x.getSearchParameter().equals("distributionLicenses"))
-              .map(x -> x.getValues()).findFirst().get(),
-
-          resultForFacets.getFacets().stream()
-          .filter(x -> x.getSearchParameter().equals("datasetThemes"))
-              .map(x -> x.getValues()).findFirst().get());
+              .filter(x -> x.getSearchParameter().equals("datasetThemes")).map(x -> x.getValues())
+              .findFirst().get());
       result.setFacets(facetsStats);
 
       searchParameters.put("live", false);

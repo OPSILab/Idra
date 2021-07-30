@@ -34,28 +34,44 @@ import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.quartz.PersistJobDataAfterExecution;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class DcatApDumpJob.
+ */
 @PersistJobDataAfterExecution
 @DisallowConcurrentExecution
 public class DcatApDumpJob implements Job {
 
+  /** The logger. */
   public static Logger logger = LogManager.getLogger(DcatApDumpJob.class);
 
+  /** The Constant dumpFormat. */
   private static final DcatApFormat dumpFormat = DcatApFormat
       .fromString(PropertyManager.getProperty(IdraProperty.DUMP_FORMAT));
+
+  /** The Constant dumpProfile. */
   private static final DcatApProfile dumpProfile = DcatApProfile
       .fromString(PropertyManager.getProperty(IdraProperty.DUMP_PROFILE));
 
+  /**
+   * Instantiates a new dcat ap dump job.
+   */
   public DcatApDumpJob() {
   }
 
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.quartz.Job#execute(org.quartz.JobExecutionContext)
+   */
   @Override
   public void execute(JobExecutionContext context) throws JobExecutionException {
     // TODO Auto-generated method stub
     try {
       logger.info("Executing Dump procedure");
       SearchResult globalResult = MetadataCacheManager.searchAllDatasets();
-      DcatApSerializer.searchResultToDcatAp(globalResult,
-          dumpFormat, dumpProfile, DcatApWriteType.FILE);
+      DcatApSerializer.searchResultToDcatAp(globalResult, dumpFormat, dumpProfile,
+          DcatApWriteType.FILE);
     } catch (Exception e) {
       logger.error("Error during Dump procedure: " + e.getMessage());
     }

@@ -18,7 +18,18 @@
 
 package it.eng.idra.beans.webscraper;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Enum NavigationType.
+ */
 public enum NavigationType {
 
-  QUERY_RANGE, PATH_RANGE, QUERY_PAGE, PATH_PAGE;
+  /** The query range. */
+  QUERY_RANGE,
+  /** The path range. */
+  PATH_RANGE,
+  /** The query page. */
+  QUERY_PAGE,
+  /** The path page. */
+  PATH_PAGE;
 }

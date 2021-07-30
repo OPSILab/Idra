@@ -32,14 +32,24 @@ import java.lang.reflect.Type;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class OdmsCatalogueAdditionalConfigurationDeserializer implements
-    JsonDeserializer<OdmsCatalogueAdditionalConfiguration>,
+// TODO: Auto-generated Javadoc
+/**
+ * The Class OdmsCatalogueAdditionalConfigurationDeserializer.
+ */
+public class OdmsCatalogueAdditionalConfigurationDeserializer
+    implements JsonDeserializer<OdmsCatalogueAdditionalConfiguration>,
     JsonSerializer<OdmsCatalogueAdditionalConfiguration> {
 
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * com.google.gson.JsonDeserializer#deserialize(com.google.gson.JsonElement,
+   * java.lang.reflect.Type, com.google.gson.JsonDeserializationContext)
+   */
   @Override
-  public OdmsCatalogueAdditionalConfiguration deserialize(JsonElement arg0, 
-      Type arg1, JsonDeserializationContext arg2)
-      throws JsonParseException {
+  public OdmsCatalogueAdditionalConfiguration deserialize(JsonElement arg0, Type arg1,
+      JsonDeserializationContext arg2) throws JsonParseException {
     // TODO Auto-generated method stub
     JSONObject j = new JSONObject(arg0.toString());
     if (j.has("orionDatasetDumpString")) {
@@ -65,9 +75,8 @@ public class OdmsCatalogueAdditionalConfigurationDeserializer implements
       }
       // return new OrionCatalogueConfiguration(isAuth, authToken, refreshToken,
       // oauth2Endpoint, client_id, client_secret, datasets,dumpPath);
-      return new OrionCatalogueConfiguration(isAuth, authToken, 
-          oauth2Endpoint, clientId, clientSecret, datasets,
-          dumpPath, isNgsild);
+      return new OrionCatalogueConfiguration(isAuth, authToken, oauth2Endpoint, clientId,
+          clientSecret, datasets, dumpPath, isNgsild);
     } else if (j.has("sparqlDatasetDumpString")) {
       String datasets = j.optString("sparqlDatasetDumpString", "");
       String dumpPath = j.optString("sparqlDatasetFilePath", "");
@@ -76,9 +85,15 @@ public class OdmsCatalogueAdditionalConfigurationDeserializer implements
     return null;
   }
 
+  /*
+   * (non-Javadoc)
+   * 
+   * @see com.google.gson.JsonSerializer#serialize(java.lang.Object,
+   * java.lang.reflect.Type, com.google.gson.JsonSerializationContext)
+   */
   @Override
-  public JsonElement serialize(OdmsCatalogueAdditionalConfiguration arg0, 
-      Type arg1, JsonSerializationContext arg2) {
+  public JsonElement serialize(OdmsCatalogueAdditionalConfiguration arg0, Type arg1,
+      JsonSerializationContext arg2) {
     // TODO Auto-generated method stub
     final JsonObject jsonObject = new JsonObject();
     jsonObject.addProperty("id", arg0.getId());

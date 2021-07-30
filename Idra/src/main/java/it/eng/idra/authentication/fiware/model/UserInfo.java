@@ -30,34 +30,34 @@ public class UserInfo {
 
   /** The organizations. */
   private Set<Organization> organizations;
-  
+
   /** The display name. */
   private String displayName;
-  
+
   /** The roles. */
   private Set<Role> roles;
-  
+
   /** The app id. */
   @SerializedName(value = "app_id")
   private String appId;
-  
+
   /** The is gravatar enabled. */
   private boolean isGravatarEnabled;
-  
+
   /** The email. */
   private String email;
-  
+
   /** The id. */
   private String id;
-  
+
   /** The authorization decision. */
   @SerializedName(value = "authorization_decision")
   private String authorizationDecision;
-  
+
   /** The app azf domain. */
   @SerializedName(value = "app_azf_domain")
   private String appAzfDomain;
-  
+
   /** The username. */
   private String username;
 
@@ -80,16 +80,15 @@ public class UserInfo {
   /**
    * Instantiates a new user info.
    *
-   * @param organizations the organizations
-   * @param displayName the display name
-   * @param role the role
-   * @param appId the app id
+   * @param organizations     the organizations
+   * @param displayName       the display name
+   * @param role              the role
+   * @param appId             the app id
    * @param isGravatarEnabled the is gravatar enabled
-   * @param email the email
-   * @param id the id
+   * @param email             the email
+   * @param id                the id
    */
-  public UserInfo(Set<Organization> organizations,
-      String displayName, Set<Role> role, String appId,
+  public UserInfo(Set<Organization> organizations, String displayName, Set<Role> role, String appId,
       boolean isGravatarEnabled, String email, String id) {
     this.organizations = organizations;
     this.displayName = displayName;

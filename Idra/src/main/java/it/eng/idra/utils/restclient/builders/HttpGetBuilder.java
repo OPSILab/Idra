@@ -24,8 +24,17 @@ import javax.ws.rs.core.MediaType;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpRequestBase;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class HttpGetBuilder.
+ */
 public class HttpGetBuilder extends HttpRequestBuilder<HttpGet> {
 
+  /**
+   * Instantiates a new http get builder.
+   *
+   * @param url the url
+   */
   private HttpGetBuilder(URL url) {
     super.httpRequest = new HttpGet(url.toString());
   }
@@ -33,7 +42,7 @@ public class HttpGetBuilder extends HttpRequestBuilder<HttpGet> {
   /**
    * Gets the single instance of HttpGetBuilder.
    *
-   * @param url the url
+   * @param url     the url
    * @param headers the headers
    * @return single instance of HttpGetBuilder
    */
@@ -44,6 +53,13 @@ public class HttpGetBuilder extends HttpRequestBuilder<HttpGet> {
     return builder.httpRequest;
   }
 
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * it.eng.idra.utils.restclient.builders.HttpRequestBuilder#addPayload(javax.ws.
+   * rs.core.MediaType, java.lang.String)
+   */
   @Override
   protected void addPayload(MediaType type, String data) {
     throw new RuntimeException("Payload not allowed in HTTP GET requests");

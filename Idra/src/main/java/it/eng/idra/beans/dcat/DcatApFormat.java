@@ -20,32 +20,79 @@ package it.eng.idra.beans.dcat;
 
 import javax.ws.rs.core.MediaType;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Enum DcatApFormat.
+ */
 public enum DcatApFormat {
 
-  RDFXML("RDF/XML", "application/rdf+xml"), TURTLE("TURTLE", "text/turtle"),
-  NTRIPLES("NTRIPLES", "application/n-triples"), N3("N3", "text/n3"), JSONLD("JSON-LD"),
-  RDFJSON("RDF/JSON", MediaType.APPLICATION_JSON), ODF("ODF", MediaType.APPLICATION_JSON);
+  /** The rdfxml. */
+  RDFXML("RDF/XML", "application/rdf+xml"),
+  /** The turtle. */
+  TURTLE("TURTLE", "text/turtle"),
 
+  /** The ntriples. */
+  NTRIPLES("NTRIPLES", "application/n-triples"),
+  /** The n3. */
+  N3("N3", "text/n3"),
+  /** The jsonld. */
+  JSONLD("JSON-LD"),
+
+  /** The rdfjson. */
+  RDFJSON("RDF/JSON", MediaType.APPLICATION_JSON),
+  /** The odf. */
+  ODF("ODF", MediaType.APPLICATION_JSON);
+
+  /** The format name. */
   private String formatName;
+
+  /** The media type. */
   private String mediaType;
 
+  /**
+   * Instantiates a new dcat ap format.
+   *
+   * @param name the name
+   */
   DcatApFormat(String name) {
     this.formatName = name;
   }
 
+  /**
+   * Instantiates a new dcat ap format.
+   *
+   * @param name the name
+   * @param type the type
+   */
   private DcatApFormat(String name, String type) {
     this.formatName = name;
     this.mediaType = type;
   }
 
+  /**
+   * Media type.
+   *
+   * @return the string
+   */
   public String mediaType() {
     return mediaType;
   }
 
+  /**
+   * Format name.
+   *
+   * @return the string
+   */
   public String formatName() {
     return formatName;
   }
 
+  /**
+   * From string.
+   *
+   * @param name the name
+   * @return the dcat ap format
+   */
   public static DcatApFormat fromString(String name) {
     return valueOf(name.toUpperCase());
   }

@@ -37,47 +37,64 @@ import org.apache.solr.common.SolrDocument;
 import org.apache.solr.common.SolrInputDocument;
 import org.hibernate.annotations.GenericGenerator;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class DctPeriodOfTime.
+ */
 @Entity
 @Table(name = "dcat_periodOfTime")
 public class DctPeriodOfTime {
 
+  /** The Constant RDFClass. */
   private static final transient Resource RDFClass = DCTerms.PeriodOfTime;
 
+  /** The id. */
   private String id;
+
+  /** The node id. */
   @SerializedName(value = "nodeID")
   private transient String nodeId;
+
+  /** The uri. */
   private String uri;
 
+  /** The start date. */
   private DcatProperty startDate;
+
+  /** The end date. */
   private DcatProperty endDate;
 
+  /**
+   * Instantiates a new dct period of time.
+   */
   public DctPeriodOfTime() {
   }
 
   /**
    * Instantiates a new dct period of time.
    *
-   * @param uri the uri
+   * @param uri       the uri
    * @param startDate the start date
-   * @param endDate the end date
-   * @param nodeId the node id
+   * @param endDate   the end date
+   * @param nodeId    the node id
    */
   public DctPeriodOfTime(String uri, String startDate, String endDate, String nodeId) {
     super();
     setUri(uri);
     this.nodeId = nodeId;
-    setStartDate(
-        new DcatProperty(ResourceFactory.createProperty("http://schema.org#startDate"), RDFS.Literal, startDate));
-    setEndDate(new DcatProperty(ResourceFactory.createProperty("http://schema.org#endDate"), RDFS.Literal, endDate));
+    setStartDate(new DcatProperty(ResourceFactory.createProperty("http://schema.org#startDate"),
+        RDFS.Literal, startDate));
+    setEndDate(new DcatProperty(ResourceFactory.createProperty("http://schema.org#endDate"),
+        RDFS.Literal, endDate));
   }
 
   /**
    * Instantiates a new dct period of time.
    *
-   * @param uri the uri
+   * @param uri       the uri
    * @param startDate the start date
-   * @param endDate the end date
-   * @param nodeId the node ID
+   * @param endDate   the end date
+   * @param nodeId    the node ID
    */
   public DctPeriodOfTime(String uri, DcatProperty startDate, DcatProperty endDate, String nodeId) {
     super();
@@ -87,6 +104,11 @@ public class DctPeriodOfTime {
     setEndDate(endDate);
   }
 
+  /**
+   * Gets the id.
+   *
+   * @return the id
+   */
   @Id
   @GeneratedValue(generator = "uuid")
   @GenericGenerator(name = "uuid", strategy = "uuid2")
@@ -95,38 +117,78 @@ public class DctPeriodOfTime {
     return id;
   }
 
+  /**
+   * Sets the id.
+   *
+   * @param id the new id
+   */
   public void setId(String id) {
     this.id = id;
   }
 
+  /**
+   * Gets the uri.
+   *
+   * @return the uri
+   */
   public String getUri() {
     return uri;
   }
 
+  /**
+   * Sets the uri.
+   *
+   * @param uri the new uri
+   */
   public void setUri(String uri) {
     this.uri = uri;
   }
 
+  /**
+   * Gets the start date.
+   *
+   * @return the start date
+   */
   @Embedded
   @AttributeOverrides({ @AttributeOverride(name = "value", column = @Column(name = "startDate")) })
   public DcatProperty getStartDate() {
     return startDate;
   }
 
+  /**
+   * Sets the start date.
+   *
+   * @param startDate the new start date
+   */
   public void setStartDate(DcatProperty startDate) {
     this.startDate = startDate;
   }
 
+  /**
+   * Gets the end date.
+   *
+   * @return the end date
+   */
   @Embedded
   @AttributeOverrides({ @AttributeOverride(name = "value", column = @Column(name = "endDate")) })
   public DcatProperty getEndDate() {
     return endDate;
   }
 
+  /**
+   * Sets the end date.
+   *
+   * @param endDate the new end date
+   */
   public void setEndDate(DcatProperty endDate) {
     this.endDate = endDate;
   }
 
+  /**
+   * Gets the rdf class.
+   *
+   * @return the rdf class
+   */
   @Transient
   public static Resource getRdfClass() {
     return RDFClass;
@@ -151,8 +213,8 @@ public class DctPeriodOfTime {
   /**
    * Doc to dct period of time.
    *
-   * @param doc the doc
-   * @param uri the uri
+   * @param doc    the doc
+   * @param uri    the uri
    * @param nodeId the node ID
    * @return the dct period of time
    */
@@ -164,16 +226,31 @@ public class DctPeriodOfTime {
 
   }
 
+  /*
+   * (non-Javadoc)
+   * 
+   * @see java.lang.Object#toString()
+   */
   @Override
   public String toString() {
-    return "DCTPeriodOfTime [id=" + id + ", uri=" + uri 
-        + ", startDate=" + startDate + ", endDate=" + endDate + "]";
+    return "DCTPeriodOfTime [id=" + id + ", uri=" + uri + ", startDate=" + startDate + ", endDate="
+        + endDate + "]";
   }
 
+  /**
+   * Gets the node id.
+   *
+   * @return the node id
+   */
   public String getNodeId() {
     return nodeId;
   }
 
+  /**
+   * Sets the node id.
+   *
+   * @param nodeId the new node id
+   */
   public void setNodeId(String nodeId) {
     this.nodeId = nodeId;
   }

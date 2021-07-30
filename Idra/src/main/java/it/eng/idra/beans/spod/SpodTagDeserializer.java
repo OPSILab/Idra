@@ -25,11 +25,22 @@ import com.google.gson.JsonParseException;
 import java.lang.reflect.Type;
 import org.ckan.Tag;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class SpodTagDeserializer.
+ */
 public class SpodTagDeserializer implements JsonDeserializer<Tag> {
 
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * com.google.gson.JsonDeserializer#deserialize(com.google.gson.JsonElement,
+   * java.lang.reflect.Type, com.google.gson.JsonDeserializationContext)
+   */
   @Override
-  public Tag deserialize(JsonElement arg0, Type arg1,
-      JsonDeserializationContext arg2) throws JsonParseException {
+  public Tag deserialize(JsonElement arg0, Type arg1, JsonDeserializationContext arg2)
+      throws JsonParseException {
     // TODO Auto-generated method stub
     Tag t = new Tag();
     t.setName(arg0.getAsString());

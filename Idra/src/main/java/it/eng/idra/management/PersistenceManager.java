@@ -67,7 +67,7 @@ public class PersistenceManager {
 
   /** The em. */
   private EntityManager em;
-  
+
   /** The logger. */
   private static Logger logger = LogManager.getLogger(PersistenceManager.class);
 
@@ -322,7 +322,7 @@ public class PersistenceManager {
   /**
    * Jpa delete odms message.
    *
-   * @param id the id
+   * @param id     the id
    * @param nodeId the node id
    */
   public void jpaDeleteOdmsMessage(int id, int nodeId) {
@@ -373,7 +373,7 @@ public class PersistenceManager {
    * Jpa insert odms message.
    *
    * @param message the message
-   * @param nodeId the node id
+   * @param nodeId  the node id
    * @return the int
    */
   public int jpaInsertOdmsMessage(String message, int nodeId) {
@@ -709,8 +709,8 @@ public class PersistenceManager {
    * Builds the logs query.
    *
    * @param levelList the level list
-   * @param from the from
-   * @param to the to
+   * @param from      the from
+   * @param to        the to
    * @return the string
    */
   private String buildLogsQuery(List<String> levelList, ZonedDateTime from, ZonedDateTime to) {
@@ -743,8 +743,8 @@ public class PersistenceManager {
    * Gets the logs.
    *
    * @param level the level
-   * @param from the from
-   * @param to the to
+   * @param from  the from
+   * @param to    the to
    * @return the logs
    */
   public List<Log> getLogs(List<String> level, ZonedDateTime from, ZonedDateTime to) {
@@ -805,11 +805,11 @@ public class PersistenceManager {
   /**
    * Gets the country statistics.
    *
-   * @param country the country
+   * @param country    the country
    * @param searchType the search type
-   * @param day the day
-   * @param month the month
-   * @param year the year
+   * @param day        the day
+   * @param month      the month
+   * @param year       the year
    * @return the country statistics
    */
   public SearchStatistics getCountryStatistics(String country, String searchType, int day,
@@ -867,10 +867,10 @@ public class PersistenceManager {
   /**
    * Gets the ODMS statistics.
    *
-   * @param node the node
-   * @param year the year
+   * @param node  the node
+   * @param year  the year
    * @param month the month
-   * @param day the day
+   * @param day   the day
    * @return the ODMS statistics
    */
   public OdmsStatistics getOdmsStatistics(OdmsCatalogue node, int year, int month, int day) {
@@ -1152,7 +1152,7 @@ public class PersistenceManager {
   /**
    * Update user password.
    *
-   * @param user the user
+   * @param user        the user
    * @param newPassword the new password
    * @throws InvalidPasswordException the invalid password exception
    */
@@ -1246,7 +1246,7 @@ public class PersistenceManager {
   /**
    * Initialize and unproxy.
    *
-   * @param <T> the generic type
+   * @param        <T> the generic type
    * @param entity the entity
    * @return the t
    */

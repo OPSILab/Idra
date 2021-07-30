@@ -41,36 +41,53 @@ import org.apache.solr.common.SolrInputDocument;
 import org.hibernate.annotations.GenericGenerator;
 import org.json.JSONObject;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class DctLicenseDocument.
+ */
 @Entity
 @Table(name = "dcat_licenseDocument")
 public class DctLicenseDocument {
 
+  /** The Constant RDFClass. */
   private static final transient Resource RDFClass = DCTerms.LicenseDocument;
 
+  /** The id. */
   private String id;
-  
+
+  /** The node id. */
   @SerializedName(value = "nodeID")
   private transient String nodeId;
 
+  /** The uri. */
   private String uri;
+
+  /** The name. */
   private DcatProperty name;
+
+  /** The type. */
   private DcatProperty type;
+
+  /** The version info. */
   private DcatProperty versionInfo;
 
+  /**
+   * Instantiates a new dct license document.
+   */
   public DctLicenseDocument() {
   }
 
   /**
    * Instantiates a new dct license document.
    *
-   * @param uri the uri
-   * @param name the name
-   * @param type the type
+   * @param uri         the uri
+   * @param name        the name
+   * @param type        the type
    * @param versionInfo the version info
-   * @param nodeId the node ID
+   * @param nodeId      the node ID
    */
-  public DctLicenseDocument(String uri, String name, String type, 
-      String versionInfo, String nodeId) {
+  public DctLicenseDocument(String uri, String name, String type, String versionInfo,
+      String nodeId) {
 
     setUri(uri);
     this.nodeId = nodeId;
@@ -79,6 +96,11 @@ public class DctLicenseDocument {
     setType(new DcatProperty(DCTerms.type, SKOS.Concept, type));
   }
 
+  /**
+   * Gets the id.
+   *
+   * @return the id
+   */
   @Id
   @GeneratedValue(generator = "uuid")
   @GenericGenerator(name = "uuid", strategy = "uuid2")
@@ -87,69 +109,144 @@ public class DctLicenseDocument {
     return id;
   }
 
+  /**
+   * Sets the id.
+   *
+   * @param id the new id
+   */
   public void setId(String id) {
     this.id = id;
   }
 
+  /**
+   * Gets the name.
+   *
+   * @return the name
+   */
   @Embedded
   @AttributeOverrides({ @AttributeOverride(name = "value", column = @Column(name = "name")) })
   public DcatProperty getName() {
     return name;
   }
 
+  /**
+   * Sets the name.
+   *
+   * @param name the new name
+   */
   public void setName(DcatProperty name) {
     this.name = name;
   }
 
+  /**
+   * Sets the name.
+   *
+   * @param name the new name
+   */
   public void setName(String name) {
     setName(new DcatProperty(FOAF.name, RDFS.Literal, name));
   }
 
+  /**
+   * Gets the type.
+   *
+   * @return the type
+   */
   @Embedded
   @AttributeOverrides({ @AttributeOverride(name = "value", column = @Column(name = "type")) })
   public DcatProperty getType() {
     return type;
   }
 
+  /**
+   * Sets the type.
+   *
+   * @param type the new type
+   */
   public void setType(DcatProperty type) {
     this.type = type;
   }
 
+  /**
+   * Sets the type.
+   *
+   * @param type the new type
+   */
   public void setType(String type) {
     setType(new DcatProperty(DCTerms.type, SKOS.Concept, type));
   }
 
+  /**
+   * Gets the version info.
+   *
+   * @return the version info
+   */
   @Embedded
-  @AttributeOverrides({ 
-       @AttributeOverride(name = "value", column = @Column(name = "versionInfo")) })
+  @AttributeOverrides({
+      @AttributeOverride(name = "value", column = @Column(name = "versionInfo")) })
   public DcatProperty getVersionInfo() {
     return versionInfo;
   }
 
+  /**
+   * Sets the version info.
+   *
+   * @param versionInfo the new version info
+   */
   public void setVersionInfo(DcatProperty versionInfo) {
     this.versionInfo = versionInfo;
   }
 
+  /**
+   * Sets the version info.
+   *
+   * @param versionInfo the new version info
+   */
   public void setVersionInfo(String versionInfo) {
     setVersionInfo(new DcatProperty(OWL.versionInfo, RDFS.Literal, versionInfo));
   }
 
+  /**
+   * Gets the uri.
+   *
+   * @return the uri
+   */
   public String getUri() {
     return uri;
   }
 
+  /**
+   * Sets the uri.
+   *
+   * @param uri the new uri
+   */
   public void setUri(String uri) {
     this.uri = StringUtils.isNotBlank(uri) ? uri : DCTerms.license.getURI();
   }
 
+  /**
+   * Gets the node id.
+   *
+   * @return the node id
+   */
   public String getNodeId() {
     return nodeId;
   }
 
+  /**
+   * Sets the node id.
+   *
+   * @param nodeId the new node id
+   */
   public void setNodeId(String nodeId) {
     this.nodeId = nodeId;
   }
 
+  /**
+   * Gets the rdf class.
+   *
+   * @return the rdf class
+   */
   @Transient
   public static Resource getRdfClass() {
     return RDFClass;
@@ -177,37 +274,43 @@ public class DctLicenseDocument {
   /**
    * Json to DCT license document.
    *
-   * @param json the json
+   * @param json   the json
    * @param nodeId the node ID
    * @return the dct license document
    */
-  public static DctLicenseDocument jsonToDctLicenseDocument(JSONObject json,
-      String nodeId) {
-    return new DctLicenseDocument(
-        json.optString("uri"), json.optString("name"), json.optString("type"),
-        json.optString("versionInfo"), nodeId);
+  public static DctLicenseDocument jsonToDctLicenseDocument(JSONObject json, String nodeId) {
+    return new DctLicenseDocument(json.optString("uri"), json.optString("name"),
+        json.optString("type"), json.optString("versionInfo"), nodeId);
   }
 
   /**
    * Doc to DCT license document.
    *
-   * @param doc the doc
+   * @param doc    the doc
    * @param nodeId the node ID
    * @return the dct license document
    */
-  public static DctLicenseDocument docToDctLicenseDocument(SolrDocument doc,
-      String nodeId) {
-    return jsonToDctLicenseDocument(
-        new JSONObject(doc.getFieldValue("license").toString()), nodeId);
+  public static DctLicenseDocument docToDctLicenseDocument(SolrDocument doc, String nodeId) {
+    return jsonToDctLicenseDocument(new JSONObject(doc.getFieldValue("license").toString()),
+        nodeId);
   }
 
+  /*
+   * (non-Javadoc)
+   * 
+   * @see java.lang.Object#toString()
+   */
   @Override
   public String toString() {
-    return "DCTLicenseDocument [id=" + id 
-        + ", uri=" + uri + ", name=" + name + ", type=" + type + ", versionInfo="
-        + versionInfo + "]";
+    return "DCTLicenseDocument [id=" + id + ", uri=" + uri + ", name=" + name + ", type=" + type
+        + ", versionInfo=" + versionInfo + "]";
   }
 
+  /*
+   * (non-Javadoc)
+   * 
+   * @see java.lang.Object#hashCode()
+   */
   @Override
   public int hashCode() {
     final int prime = 31;
@@ -217,6 +320,11 @@ public class DctLicenseDocument {
     return result;
   }
 
+  /*
+   * (non-Javadoc)
+   * 
+   * @see java.lang.Object#equals(java.lang.Object)
+   */
   @Override
   public boolean equals(Object obj) {
     if (this == obj) {

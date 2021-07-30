@@ -23,17 +23,37 @@ import java.util.logging.Logger;
 import javax.ws.rs.core.MediaType;
 import org.apache.http.client.methods.HttpRequestBase;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class HttpRequestBuilder.
+ *
+ * @param <T> the generic type
+ */
 public abstract class HttpRequestBuilder<T extends HttpRequestBase> {
 
+  /** The Constant logger. */
   protected static final Logger logger = Logger.getLogger(HttpRequestBuilder.class.getName());
+
+  /** The http request. */
   protected T httpRequest;
 
+  /**
+   * Adds the headers.
+   *
+   * @param headers the headers
+   */
   protected void addHeaders(Map<String, String> headers) {
     for (Map.Entry<String, String> h : headers.entrySet()) {
       httpRequest.addHeader(h.getKey(), h.getValue());
     }
   }
 
+  /**
+   * Adds the payload.
+   *
+   * @param type the type
+   * @param data the data
+   */
   protected abstract void addPayload(MediaType type, String data);
 
 }

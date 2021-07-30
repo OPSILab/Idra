@@ -18,10 +18,20 @@
 
 package it.eng.idra.beans.webscraper;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class WebScraperSelectorNotFoundException.
+ */
 public class WebScraperSelectorNotFoundException extends Exception {
 
+  /** The Constant serialVersionUID. */
   private static final long serialVersionUID = 1L;
 
+  /**
+   * Instantiates a new web scraper selector not found exception.
+   *
+   * @param message the message
+   */
   public WebScraperSelectorNotFoundException(String message) {
     super(message);
   }

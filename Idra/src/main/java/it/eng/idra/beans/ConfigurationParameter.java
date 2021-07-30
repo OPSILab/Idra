@@ -25,54 +25,98 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class ConfigurationParameter.
+ */
 @Entity
 @Table(name = "configuration")
 public class ConfigurationParameter {
 
+  /** The id. */
   @Id
   @Column(name = "id")
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private int id;
 
+  /** The parameter name. */
   @Column(name = "parameterName", unique = false)
   private String parameterName;
 
+  /** The parameter value. */
   @Column(name = "parameterValue", unique = false)
   private String parameterValue;
 
+  /**
+   * Instantiates a new configuration parameter.
+   */
   public ConfigurationParameter() {
 
   }
 
+  /**
+   * Gets the id.
+   *
+   * @return the id
+   */
   public int getId() {
     return id;
   }
 
+  /**
+   * Sets the id.
+   *
+   * @param id the new id
+   */
   public void setId(int id) {
     this.id = id;
   }
 
+  /**
+   * Gets the parameter name.
+   *
+   * @return the parameter name
+   */
   public String getParameterName() {
     return parameterName;
   }
 
+  /**
+   * Sets the parameter name.
+   *
+   * @param parameterName the new parameter name
+   */
   public void setParameterName(String parameterName) {
     this.parameterName = parameterName;
   }
 
+  /**
+   * Gets the parameter value.
+   *
+   * @return the parameter value
+   */
   public String getParameterValue() {
     return parameterValue;
   }
 
+  /**
+   * Sets the parameter value.
+   *
+   * @param parameterValue the new parameter value
+   */
   public void setParameterValue(String parameterValue) {
     this.parameterValue = parameterValue;
   }
 
+  /*
+   * (non-Javadoc)
+   * 
+   * @see java.lang.Object#toString()
+   */
   @Override
   public String toString() {
-    return "\nConfigurationParameter [id=" + id 
-        + ", parameterName=" + parameterName + ", parameterValue="
-        + parameterValue + "]";
+    return "\nConfigurationParameter [id=" + id + ", parameterName=" + parameterName
+        + ", parameterValue=" + parameterValue + "]";
   }
 
 }

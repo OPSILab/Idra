@@ -47,6 +47,7 @@ import org.hibernate.annotations.LazyCollectionOption;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+// TODO: Auto-generated Javadoc
 /**
  * Represents a SKOS Concept, e.g SKOSConceptTheme or SKOSConceptSubject.
  * 
@@ -58,25 +59,38 @@ import org.json.JSONObject;
 @Table(name = "dcat_concept")
 public class SkosConcept implements Serializable {
 
+  /** The Constant serialVersionUID. */
   private static final long serialVersionUID = 1L;
 
+  /** The id. */
   private String id;
 
+  /** The name. */
   // Mandatory
   private DcatProperty name;
 
   // Recommended
 
+  /** The resource uri. */
   private String resourceUri;
+
+  /** The property uri. */
   private String propertyUri;
+
+  /** The pref label. */
   private List<SkosPrefLabel> prefLabel;
 
+  /** The node id. */
   @SerializedName(value = "nodeID")
   private transient String nodeId;
 
+  /**
+   * Instantiates a new skos concept.
+   */
   public SkosConcept() {
   }
 
+  /** The Constant RDFClass. */
   private static final transient Resource RDFClass = SKOS.Concept;
 
   /**
@@ -84,11 +98,10 @@ public class SkosConcept implements Serializable {
    *
    * @param propertyUri the property uri
    * @param resourceUri the resource uri
-   * @param prefLabel the pref label
-   * @param nodeId the node ID
+   * @param prefLabel   the pref label
+   * @param nodeId      the node ID
    */
-  public SkosConcept(String propertyUri, 
-      String resourceUri, List<SkosPrefLabel> prefLabel,
+  public SkosConcept(String propertyUri, String resourceUri, List<SkosPrefLabel> prefLabel,
       String nodeId) {
 
     setNodeId(nodeId);
@@ -97,6 +110,11 @@ public class SkosConcept implements Serializable {
     setPrefLabel(prefLabel != null ? prefLabel : Arrays.asList(new SkosPrefLabel()));
   }
 
+  /**
+   * Gets the id.
+   *
+   * @return the id
+   */
   /*
    * @Id
    * 
@@ -114,32 +132,67 @@ public class SkosConcept implements Serializable {
     return id;
   }
 
+  /**
+   * Sets the id.
+   *
+   * @param id the new id
+   */
   public void setId(String id) {
     this.id = id;
   }
 
+  /**
+   * Gets the node id.
+   *
+   * @return the node id
+   */
   public String getNodeId() {
     return nodeId;
   }
 
+  /**
+   * Sets the node id.
+   *
+   * @param nodeId the new node id
+   */
   public void setNodeId(String nodeId) {
     this.nodeId = nodeId;
   }
 
+  /**
+   * Gets the rdf class.
+   *
+   * @return the rdf class
+   */
   @Transient
   public static Resource getRdfClass() {
     return RDFClass;
   }
 
+  /**
+   * Gets the property uri.
+   *
+   * @return the property uri
+   */
   @Transient
   public String getPropertyUri() {
     return propertyUri;
   }
 
+  /**
+   * Sets the property uri.
+   *
+   * @param propertyUri the new property uri
+   */
   public void setPropertyUri(String propertyUri) {
     this.propertyUri = propertyUri;
   }
 
+  /**
+   * Gets the resource uri.
+   *
+   * @return the resource uri
+   */
   public String getResourceUri() {
     return resourceUri;
   }
@@ -155,6 +208,11 @@ public class SkosConcept implements Serializable {
     this.resourceUri = resourceUri;
   }
 
+  /**
+   * Gets the pref label.
+   *
+   * @return the pref label
+   */
   @LazyCollection(LazyCollectionOption.FALSE)
   @OneToMany(cascade = { CascadeType.ALL })
   // @Fetch(FetchMode.SELECT)
@@ -164,6 +222,11 @@ public class SkosConcept implements Serializable {
     return prefLabel;
   }
 
+  /**
+   * Sets the pref label.
+   *
+   * @param prefLabel the new pref label
+   */
   public void setPrefLabel(List<SkosPrefLabel> prefLabel) {
     this.prefLabel = prefLabel;
   }
@@ -196,9 +259,9 @@ public class SkosConcept implements Serializable {
   /**
    * Json to skos concept.
    *
-   * @param obj the obj
+   * @param obj         the obj
    * @param propertyUri the property uri
-   * @param nodeId the node ID
+   * @param nodeId      the node ID
    * @return the skos concept
    */
   public static SkosConcept jsonToSkosConcept(JSONObject obj, String propertyUri, String nodeId) {
@@ -210,24 +273,27 @@ public class SkosConcept implements Serializable {
   /**
    * Doc to skos concept.
    *
-   * @param doc the doc
+   * @param doc         the doc
    * @param propertyUri the property uri
-   * @param nodeId the node ID
+   * @param nodeId      the node ID
    * @return the skos concept
    */
   public static SkosConcept docToSkosConcept(SolrDocument doc, String propertyUri, String nodeId) {
 
-    return new SkosConcept(propertyUri, (String) doc.getFieldValue("resourceUri"),
-        SkosPrefLabel.jsonArrayToPrefLabelList(
-            new JSONArray(doc.getFieldValue("prefLabel").toString()), nodeId),
+    return new SkosConcept(propertyUri, (String) doc.getFieldValue("resourceUri"), SkosPrefLabel
+        .jsonArrayToPrefLabelList(new JSONArray(doc.getFieldValue("prefLabel").toString()), nodeId),
         nodeId);
   }
 
+  /*
+   * (non-Javadoc)
+   * 
+   * @see java.lang.Object#toString()
+   */
   @Override
   public String toString() {
-    return "SKOSConcept [id=" + id + ", name=" 
-        + name + ", resourceUri=" + resourceUri + ", propertyUri=" + propertyUri
-        + ", prefLabel=" + prefLabel + "]";
+    return "SKOSConcept [id=" + id + ", name=" + name + ", resourceUri=" + resourceUri
+        + ", propertyUri=" + propertyUri + ", prefLabel=" + prefLabel + "]";
   }
 
 }

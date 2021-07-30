@@ -36,39 +36,60 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.solr.client.solrj.SolrServerException;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class DcatApDumpManager.
+ */
 public class DcatApDumpManager {
 
+  /** The logger. */
   public static Logger logger = LogManager.getLogger(DcatApDumpManager.class);
 
+  /** The Constant dumpOnStart. */
   private static final Boolean dumpOnStart = Boolean
       .parseBoolean(PropertyManager.getProperty(IdraProperty.DUMP_ON_START));
+
+  /** The Constant dumpPeriod. */
   private static final Long dumpPeriod = Long
       .parseLong(PropertyManager.getProperty(IdraProperty.DUMP_PERIOD)) * 1000;
+
+  /** The dump format. */
   private static DcatApFormat dumpFormat = DcatApFormat
       .fromString(PropertyManager.getProperty(IdraProperty.DUMP_FORMAT));
+
+  /** The dump profile. */
   private static DcatApProfile dumpProfile = DcatApProfile
       .fromString(PropertyManager.getProperty(IdraProperty.DUMP_PROFILE));
+
+  /** The dump zip. */
   private static Boolean dumpZip = Boolean
       .parseBoolean(PropertyManager.getProperty(IdraProperty.DUMP_ZIP_FILE));
+
+  /** The Constant globalDumpFilePath. */
   private static final String globalDumpFilePath = PropertyManager
       .getProperty(IdraProperty.DUMP_FILE_PATH);
+
+  /** The Constant globalDumpFileName. */
   public static final String globalDumpFileName = PropertyManager
       .getProperty(IdraProperty.DUMP_FILE_NAME);
 
+  /**
+   * Instantiates a new dcat ap dump manager.
+   */
   private DcatApDumpManager() {
   }
 
   /**
    * Gets the dataset dump from file.
    *
-   * @param nodeId the node id
+   * @param nodeId    the node id
    * @param forceDump the force dump
    * @param returnZip the return zip
    * @return the dataset dump from file
-   * @throws IOException Signals that an I/O exception has occurred.
-   * @throws NumberFormatException the number format exception
+   * @throws IOException              Signals that an I/O exception has occurred.
+   * @throws NumberFormatException    the number format exception
    * @throws DatasetNotFoundException the dataset not found exception
-   * @throws SolrServerException the solr server exception
+   * @throws SolrServerException      the solr server exception
    */
   public static byte[] getDatasetDumpFromFile(String nodeId, Boolean forceDump, Boolean returnZip)
       throws IOException, NumberFormatException, DatasetNotFoundException, SolrServerException {

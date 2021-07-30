@@ -25,8 +25,17 @@ import org.apache.http.client.methods.HttpPut;
 import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.entity.StringEntity;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class HttpPutBuilder.
+ */
 public class HttpPutBuilder extends HttpRequestBuilder<HttpPut> {
 
+  /**
+   * Instantiates a new http put builder.
+   *
+   * @param url the url
+   */
   private HttpPutBuilder(URL url) {
     super.httpRequest = new HttpPut(url.toString());
   }
@@ -34,14 +43,14 @@ public class HttpPutBuilder extends HttpRequestBuilder<HttpPut> {
   /**
    * Gets the single instance of HttpPutBuilder.
    *
-   * @param url the url
+   * @param url     the url
    * @param headers the headers
-   * @param type the type
-   * @param data the data
+   * @param type    the type
+   * @param data    the data
    * @return single instance of HttpPutBuilder
    */
-  public static HttpRequestBase getInstance(URL url, Map<String, String> headers,
-      MediaType type, String data) {
+  public static HttpRequestBase getInstance(URL url, Map<String, String> headers, MediaType type,
+      String data) {
     HttpPutBuilder builder = new HttpPutBuilder(url);
     builder.addHeaders(headers);
     builder.addPayload(type, data);
@@ -49,6 +58,13 @@ public class HttpPutBuilder extends HttpRequestBuilder<HttpPut> {
     return builder.httpRequest;
   }
 
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * it.eng.idra.utils.restclient.builders.HttpRequestBuilder#addPayload(javax.ws.
+   * rs.core.MediaType, java.lang.String)
+   */
   @Override
   protected void addPayload(MediaType type, String data) {
     try {

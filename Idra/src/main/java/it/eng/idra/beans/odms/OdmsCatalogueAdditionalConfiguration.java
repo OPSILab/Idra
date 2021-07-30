@@ -26,14 +26,24 @@ import javax.persistence.InheritanceType;
 import javax.persistence.Table;
 import org.hibernate.annotations.GenericGenerator;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class OdmsCatalogueAdditionalConfiguration.
+ */
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @Table(name = "odms_additional_config")
 public class OdmsCatalogueAdditionalConfiguration {
 
+  /** The id. */
   private String id;
+
+  /** The type. */
   private String type;
 
+  /**
+   * Instantiates a new odms catalogue additional configuration.
+   */
   public OdmsCatalogueAdditionalConfiguration() {
     super();
   }
@@ -41,7 +51,7 @@ public class OdmsCatalogueAdditionalConfiguration {
   /**
    * Instantiates a new odms catalogue additional configuration.
    *
-   * @param id the id
+   * @param id   the id
    * @param type the type
    */
   public OdmsCatalogueAdditionalConfiguration(String id, String type) {
@@ -50,6 +60,11 @@ public class OdmsCatalogueAdditionalConfiguration {
     this.type = type;
   }
 
+  /**
+   * Gets the id.
+   *
+   * @return the id
+   */
   @Id
   @GeneratedValue(generator = "uuid")
   @GenericGenerator(name = "uuid", strategy = "uuid2")
@@ -57,14 +72,29 @@ public class OdmsCatalogueAdditionalConfiguration {
     return id;
   }
 
+  /**
+   * Sets the id.
+   *
+   * @param id the new id
+   */
   public void setId(String id) {
     this.id = id;
   }
 
+  /**
+   * Gets the type.
+   *
+   * @return the type
+   */
   public String getType() {
     return type;
   }
 
+  /**
+   * Sets the type.
+   *
+   * @param type the new type
+   */
   public void setType(String type) {
     this.type = type;
   }

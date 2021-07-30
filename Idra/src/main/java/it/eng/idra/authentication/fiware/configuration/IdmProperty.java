@@ -18,25 +18,67 @@
 
 package it.eng.idra.authentication.fiware.configuration;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Enum IdmProperty.
+ */
 public enum IdmProperty {
-  IDM_VERSION("idm.fiware.version"), IDM_PROTOCOL("idm.protocol"), IDM_HOST("idm.host"),
+
+  /** The idm version. */
+  IDM_VERSION("idm.fiware.version"),
+  /** The idm protocol. */
+  IDM_PROTOCOL("idm.protocol"),
+  /** The idm host. */
+  IDM_HOST("idm.host"),
+
+  /** The idm admin role name. */
   IDM_ADMIN_ROLE_NAME("idm.admin.role.name"),
   // IDM_PROTOCOL_DEFAULT("idm.protocol.default"),
-  //IDM_PORT_DEFAULT("idm.port.default"),
-  IDM_CLIENT_ID("idm.client.id"), 
-  IDM_CLIENT_SECRET("idm.client.secret"), IDM_REDIRECT_URI("idm.redirecturi"),
+  /** The idm client id. */
+  // IDM_PORT_DEFAULT("idm.port.default"),
+  IDM_CLIENT_ID("idm.client.id"),
+
+  /** The idm client secret. */
+  IDM_CLIENT_SECRET("idm.client.secret"),
+  /** The idm redirect uri. */
+  IDM_REDIRECT_URI("idm.redirecturi"),
+
+  /** The idm logout callback. */
   IDM_LOGOUT_CALLBACK("idm.logout.callback"),
-  IDM_PATH_BASE("idm.path.base"), IDM_PATH_TOKEN("idm.path.token"),
-  IDM_PATH_USER("idm.path.user"), IDM_FIWARE_KEYSTONE_HOST("idm.fiware.keystone.host"),
+
+  /** The idm path base. */
+  IDM_PATH_BASE("idm.path.base"),
+  /** The idm path token. */
+  IDM_PATH_TOKEN("idm.path.token"),
+
+  /** The idm path user. */
+  IDM_PATH_USER("idm.path.user"),
+  /** The idm fiware keystone host. */
+  IDM_FIWARE_KEYSTONE_HOST("idm.fiware.keystone.host"),
+
+  /** The idm fiware keystone port. */
   IDM_FIWARE_KEYSTONE_PORT("idm.fiware.keystone.port"),
+
+  /** The idm fiware keystone path tokens. */
   IDM_FIWARE_KEYSTONE_PATH_TOKENS("idm.fiware.keystone.path.tokens");
 
+  /** The text. */
   private final String text;
 
+  /**
+   * Instantiates a new idm property.
+   *
+   * @param text the text
+   */
   private IdmProperty(final String text) {
     this.text = text;
   }
 
+  /*
+   * (non-Javadoc)
+   * 
+   * @see java.lang.Enum#toString()
+   */
   @Override
   public String toString() {
     return text;

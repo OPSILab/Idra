@@ -26,14 +26,35 @@ import javax.servlet.ServletContextListener;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The listener interface for receiving idraScheduler events. The class that is
+ * interested in processing a idraScheduler event implements this interface, and
+ * the object created with that class is registered with a component using the
+ * component's addIdraSchedulerListener method. When the
+ * idraScheduler event occurs, that object's appropriate method is invoked.
+ *
+ * @see IdraSchedulerEvent
+ */
 public class IdraSchedulerListener implements ServletContextListener {
 
+  /** The logger. */
   private static Logger logger = LogManager.getLogger(IdraSchedulerListener.class);
+
+  /** The Constant synchOnStart. */
   private static final boolean synchOnStart = Boolean
       .parseBoolean(PropertyManager.getProperty(IdraProperty.SYNCH_ON_START));
+
+  /** The Constant dumpOnStart. */
   private static final boolean dumpOnStart = Boolean
       .parseBoolean(PropertyManager.getProperty(IdraProperty.DUMP_ON_START));
 
+  /*
+   * (non-Javadoc)
+   * 
+   * @see javax.servlet.ServletContextListener#contextInitialized(javax.servlet.
+   * ServletContextEvent)
+   */
   @Override
   public void contextInitialized(ServletContextEvent arg0) {
     logger.info("IdraScheduler listener Context init");
@@ -44,6 +65,12 @@ public class IdraSchedulerListener implements ServletContextListener {
     }
   }
 
+  /*
+   * (non-Javadoc)
+   * 
+   * @see javax.servlet.ServletContextListener#contextDestroyed(javax.servlet.
+   * ServletContextEvent)
+   */
   @Override
   public void contextDestroyed(ServletContextEvent arg0) {
     // TODO Auto-generated method stub

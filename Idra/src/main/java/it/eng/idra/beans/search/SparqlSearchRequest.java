@@ -20,17 +20,24 @@ package it.eng.idra.beans.search;
 
 import it.eng.idra.utils.JsonRequired;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class SparqlSearchRequest.
+ */
 public class SparqlSearchRequest {
 
+  /** The query. */
   @JsonRequired
   private String query;
+
+  /** The format. */
   @JsonRequired
   private SparqlResultFormat format;
 
   /**
    * Instantiates a new sparql search request.
    *
-   * @param query the query
+   * @param query  the query
    * @param format the format
    */
   public SparqlSearchRequest(String query, SparqlResultFormat format) {
@@ -39,18 +46,38 @@ public class SparqlSearchRequest {
     this.format = format;
   }
 
+  /**
+   * Gets the query.
+   *
+   * @return the query
+   */
   public String getQuery() {
     return query;
   }
 
+  /**
+   * Sets the query.
+   *
+   * @param query the new query
+   */
   public void setQuery(String query) {
     this.query = query;
   }
 
+  /**
+   * Gets the format.
+   *
+   * @return the format
+   */
   public SparqlResultFormat getFormat() {
     return format;
   }
 
+  /**
+   * Sets the format.
+   *
+   * @param format the new format
+   */
   public void setFormat(SparqlResultFormat format) {
     this.format = format;
   }

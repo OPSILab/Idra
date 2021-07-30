@@ -24,21 +24,73 @@ import it.eng.idra.beans.odms.OdmsSynchronizationResult;
 import java.util.HashMap;
 import java.util.List;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Interface IodmsConnector.
+ */
 public interface IodmsConnector {
 
+  /**
+   * Find datasets.
+   *
+   * @param searchParameters the search parameters
+   * @return the list
+   * @throws Exception the exception
+   */
   public List<DcatDataset> findDatasets(HashMap<String, Object> searchParameters) throws Exception;
 
+  /**
+   * Count search datasets.
+   *
+   * @param searchParameters the search parameters
+   * @return the int
+   * @throws Exception the exception
+   */
   public int countSearchDatasets(HashMap<String, Object> searchParameters) throws Exception;
 
+  /**
+   * Count datasets.
+   *
+   * @return the int
+   * @throws Exception the exception
+   */
   public int countDatasets() throws Exception;
 
+  /**
+   * Dataset to dcat.
+   *
+   * @param dataset the dataset
+   * @param node    the node
+   * @return the dcat dataset
+   * @throws Exception the exception
+   */
   DcatDataset datasetToDcat(Object dataset, OdmsCatalogue node) throws Exception;
 
+  /**
+   * Gets the dataset.
+   *
+   * @param datasetId the dataset id
+   * @return the dataset
+   * @throws Exception the exception
+   */
   public DcatDataset getDataset(String datasetId) throws Exception;
 
+  /**
+   * Gets the all datasets.
+   *
+   * @return the all datasets
+   * @throws Exception the exception
+   */
   public List<DcatDataset> getAllDatasets() throws Exception;
 
-  public OdmsSynchronizationResult getChangedDatasets(
-      List<DcatDataset> oldDatasets, String startingDate)
-      throws Exception;
+  /**
+   * Gets the changed datasets.
+   *
+   * @param oldDatasets  the old datasets
+   * @param startingDate the starting date
+   * @return the changed datasets
+   * @throws Exception the exception
+   */
+  public OdmsSynchronizationResult getChangedDatasets(List<DcatDataset> oldDatasets,
+      String startingDate) throws Exception;
 }

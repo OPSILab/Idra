@@ -7,8 +7,19 @@ import com.google.gson.JsonParseException;
 import java.lang.reflect.Type;
 import org.json.JSONObject;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class InnerDatasetFieldDeserializer.
+ */
 public class InnerDatasetFieldDeserializer implements JsonDeserializer<InnerDatasetField> {
 
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * com.google.gson.JsonDeserializer#deserialize(com.google.gson.JsonElement,
+   * java.lang.reflect.Type, com.google.gson.JsonDeserializationContext)
+   */
   @Override
   public InnerDatasetField deserialize(JsonElement arg0, Type arg1, JsonDeserializationContext arg2)
       throws JsonParseException {
@@ -29,9 +40,8 @@ public class InnerDatasetFieldDeserializer implements JsonDeserializer<InnerData
       }
     }
 
-    InnerDatasetFieldAnnotations annotations = 
-        arg2.deserialize(arg0.getAsJsonObject().get("annotations"),
-        InnerDatasetFieldAnnotations.class);
+    InnerDatasetFieldAnnotations annotations = arg2
+        .deserialize(arg0.getAsJsonObject().get("annotations"), InnerDatasetFieldAnnotations.class);
 
     return new InnerDatasetField(label, type, annotations, name, description);
   }

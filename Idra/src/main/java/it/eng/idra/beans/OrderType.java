@@ -18,16 +18,34 @@
 
 package it.eng.idra.beans;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Enum OrderType.
+ */
 public enum OrderType {
 
-  ASC("ASC"), DESC("DESC");
+  /** The asc. */
+  ASC("ASC"),
+  /** The desc. */
+  DESC("DESC");
 
+  /** The value. */
   private String value;
 
+  /**
+   * Instantiates a new order type.
+   *
+   * @param value the value
+   */
   OrderType(String value) {
     this.value = value;
   }
 
+  /*
+   * (non-Javadoc)
+   * 
+   * @see java.lang.Enum#toString()
+   */
   @Override
   public String toString() {
     return String.valueOf(value);

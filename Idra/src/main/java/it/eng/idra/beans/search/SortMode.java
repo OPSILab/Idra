@@ -18,8 +18,15 @@
 
 package it.eng.idra.beans.search;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Enum SortMode.
+ */
 public enum SortMode {
 
-  asc, desc;
+  /** The asc. */
+  asc,
+  /** The desc. */
+  desc;
 
 }

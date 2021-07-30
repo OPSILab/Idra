@@ -18,8 +18,17 @@
 
 package it.eng.idra.beans.search;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Enum SparqlResultFormat.
+ */
 public enum SparqlResultFormat {
 
-  XML, RDF, JSON;
+  /** The xml. */
+  XML,
+  /** The rdf. */
+  RDF,
+  /** The json. */
+  JSON;
 
 }

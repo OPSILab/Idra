@@ -32,12 +32,25 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.TimeZone;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class CalendarAdapter.
+ */
 public class CalendarAdapter implements JsonSerializer<Calendar>, JsonDeserializer<Calendar> {
 
+  /**
+   * Instantiates a new calendar adapter.
+   */
   public CalendarAdapter() {
 
   }
 
+  /*
+   * (non-Javadoc)
+   * 
+   * @see com.google.gson.JsonSerializer#serialize(java.lang.Object,
+   * java.lang.reflect.Type, com.google.gson.JsonSerializationContext)
+   */
   @Override
   public JsonElement serialize(Calendar calendar, Type type, JsonSerializationContext context) {
 
@@ -51,6 +64,13 @@ public class CalendarAdapter implements JsonSerializer<Calendar>, JsonDeserializ
     return new JsonPrimitive(str);
   }
 
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * com.google.gson.JsonDeserializer#deserialize(com.google.gson.JsonElement,
+   * java.lang.reflect.Type, com.google.gson.JsonDeserializationContext)
+   */
   @Override
   public Calendar deserialize(JsonElement json, Type type, JsonDeserializationContext context)
       throws JsonParseException {

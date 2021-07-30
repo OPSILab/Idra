@@ -78,37 +78,76 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.eclipse.rdf4j.model.vocabulary.XMLSchema;
 
-/* TODO Pensare ad un approccio con Interfaccia DCAPAPSerializer e
- *  Classi che la implementano a seconda del Profilo
+// TODO: Auto-generated Javadoc
+/**
+ * The Class DcatApSerializer.
+ */
+/*
+ * TODO Pensare ad un approccio con Interfaccia DCAPAPSerializer e Classi che la
+ * implementano a seconda del Profilo
  */
 public class DcatApSerializer {
 
+  /** The node resources. */
   static Map<Integer, OdmsCatalogue> nodeResources = null;
 
+  /** The Constant iriFactory. */
   @SuppressWarnings("deprecation")
   protected static final IRIFactory iriFactory = IRIFactory.jenaImplementation();
 
+  /** The Constant DCATAP_IT_BASE_URI. */
   public static final String DCATAP_IT_BASE_URI = "http://dati.gov.it/onto/dcatapit#";
+
+  /** The Constant THEME_BASE_URI. */
   public static final String THEME_BASE_URI = "http://publications.europa.eu/resource/authority/data-theme/";
+
+  /** The Constant SUBJECT_BASE_URI. */
   public static final String SUBJECT_BASE_URI = "http://eurovoc.europa.eu/";
+
+  /** The Constant FREQUENCY_BASE_URI. */
   public static final String FREQUENCY_BASE_URI = "http://publications.europa.eu/resource/authority/frequency/";
+
+  /** The Constant LANGUAGE_BASE_URI. */
   public static final String LANGUAGE_BASE_URI = "http://publications.europa.eu/mdr/authority/language/";
+
+  /** The Constant GEO_BASE_URI. */
   public static final String GEO_BASE_URI = "http://publications.europa.eu/mdr/authority/place/";
+
+  /** The Constant GEO_BASE_URI_ALT. */
   public static final String GEO_BASE_URI_ALT = "http://geonames.org/";
+
+  /** The Constant FORMAT_BASE_URI. */
   public static final String FORMAT_BASE_URI = "http://publications.europa.eu/mdr/authority/file-type/";
+
+  /** The Constant LICENSE_TYPE_BASE_URI. */
   public static final String LICENSE_TYPE_BASE_URI = "http://purl.org/adms/licencetype/";
 
+  /** The logger. */
   protected static Logger logger = LogManager.getLogger(DcatApSerializer.class);
+
+  /** The file path. */
   private static String filePath = PropertyManager.getProperty(IdraProperty.DUMP_FILE_PATH);
+
+  /** The file name. */
   private static String fileName = PropertyManager.getProperty(IdraProperty.DUMP_FILE_NAME);
 
   static {
 
   }
 
+  /**
+   * Instantiates a new dcat ap serializer.
+   */
   public DcatApSerializer() {
   }
 
+  /**
+   * Dataset to model.
+   *
+   * @param dataset the dataset
+   * @param profile the profile
+   * @return the model
+   */
   private static Model datasetToModel(DcatDataset dataset, DcatApProfile profile) {
 
     Model model = initializeModel();
@@ -140,6 +179,7 @@ public class DcatApSerializer {
 
   /**
    * initializeModel.
+   * 
    * @return Model
    */
   private static Model initializeModel() {
@@ -159,6 +199,13 @@ public class DcatApSerializer {
     return model;
   }
 
+  /**
+   * Datasets to model.
+   *
+   * @param datasets the datasets
+   * @param profile  the profile
+   * @return the model
+   */
   private static Model datasetsToModel(List<DcatDataset> datasets, DcatApProfile profile) {
 
     Model model = initializeModel();
@@ -191,6 +238,13 @@ public class DcatApSerializer {
 
   }
 
+  /**
+   * Adds the dataset to model.
+   *
+   * @param dataset the dataset
+   * @param model   the model
+   * @return the model
+   */
   private static Model addDatasetToModel(DcatDataset dataset, Model model) {
 
     String landingPage = dataset.getLandingPage().getValue();
@@ -349,6 +403,13 @@ public class DcatApSerializer {
 
   }
 
+  /**
+   * Serialize temporal coverage.
+   *
+   * @param temporalCoverage the temporal coverage
+   * @param model            the model
+   * @param datasetResource  the dataset resource
+   */
   protected static void serializeTemporalCoverage(DctPeriodOfTime temporalCoverage, Model model,
       Resource datasetResource) {
     if (temporalCoverage != null) {
@@ -361,6 +422,13 @@ public class DcatApSerializer {
     }
   }
 
+  /**
+   * Serialize spatial coverage.
+   *
+   * @param spatialCoverage the spatial coverage
+   * @param model           the model
+   * @param parentResource  the parent resource
+   */
   protected static void serializeSpatialCoverage(DctLocation spatialCoverage, Model model,
       Resource parentResource) {
 
@@ -393,7 +461,13 @@ public class DcatApSerializer {
 
   }
 
-
+  /**
+   * Serialize language.
+   *
+   * @param language        the language
+   * @param model           the model
+   * @param datasetResource the dataset resource
+   */
   protected static void serializeLanguage(List<DcatProperty> language, Model model,
       Resource datasetResource) {
 
@@ -410,6 +484,13 @@ public class DcatApSerializer {
     }
   }
 
+  /**
+   * Serialize frequency.
+   *
+   * @param frequency       the frequency
+   * @param model           the model
+   * @param datasetResource the dataset resource
+   */
   protected static void serializeFrequency(DcatProperty frequency, Model model,
       Resource datasetResource) {
 
@@ -426,6 +507,13 @@ public class DcatApSerializer {
     }
   }
 
+  /**
+   * Serialize contact point.
+   *
+   * @param contactPointList the contact point list
+   * @param model            the model
+   * @param datasetResource  the dataset resource
+   */
   private static void serializeContactPoint(List<VCardOrganization> contactPointList, Model model,
       Resource datasetResource) {
 
@@ -468,6 +556,13 @@ public class DcatApSerializer {
 
   }
 
+  /**
+   * Serialize foaf agent.
+   *
+   * @param agent          the agent
+   * @param model          the model
+   * @param parentResource the parent resource
+   */
   protected static void serializeFoafAgent(FoafAgent agent, Model model, Resource parentResource) {
 
     if (agent != null) {
@@ -490,6 +585,14 @@ public class DcatApSerializer {
     }
   }
 
+  /**
+   * Serialize concept.
+   *
+   * @param                <T> the generic type
+   * @param conceptList    the concept list
+   * @param model          the model
+   * @param parentResource the parent resource
+   */
   protected static <T extends SkosConcept> void serializeConcept(List<T> conceptList, Model model,
       Resource parentResource) {
 
@@ -531,6 +634,13 @@ public class DcatApSerializer {
     }
   }
 
+  /**
+   * Adds the distribution to model.
+   *
+   * @param model           the model
+   * @param datasetResource the dataset resource
+   * @param distribution    the distribution
+   */
   private static void addDistributionToModel(Model model, Resource datasetResource,
       DcatDistribution distribution) {
 
@@ -576,6 +686,13 @@ public class DcatApSerializer {
     datasetResource.addProperty(DCAT.distribution, distResource);
   }
 
+  /**
+   * Serialize byte size.
+   *
+   * @param property     the property
+   * @param model        the model
+   * @param distResource the dist resource
+   */
   protected static void serializeByteSize(DcatProperty property, Model model,
       Resource distResource) {
 
@@ -587,6 +704,13 @@ public class DcatApSerializer {
     }
   }
 
+  /**
+   * Serialize checksum.
+   *
+   * @param checksum     the checksum
+   * @param model        the model
+   * @param distResource the dist resource
+   */
   protected static void serializeChecksum(SpdxChecksum checksum, Model model,
       Resource distResource) {
 
@@ -600,6 +724,13 @@ public class DcatApSerializer {
     }
   }
 
+  /**
+   * Serialize license.
+   *
+   * @param license      the license
+   * @param model        the model
+   * @param distResource the dist resource
+   */
   protected static void serializeLicense(DctLicenseDocument license, Model model,
       Resource distResource) {
 
@@ -632,6 +763,13 @@ public class DcatApSerializer {
     }
   }
 
+  /**
+   * Serialize format.
+   *
+   * @param format       the format
+   * @param model        the model
+   * @param distResource the dist resource
+   */
   protected static void serializeFormat(DcatProperty format, Model model, Resource distResource) {
 
     if (format != null && StringUtils.isNotBlank(format.getValue())) {
@@ -640,6 +778,13 @@ public class DcatApSerializer {
     }
   }
 
+  /**
+   * Serialize dct standard.
+   *
+   * @param standardList   the standard list
+   * @param parentResource the parent resource
+   * @param model          the model
+   */
   protected static void serializeDctStandard(List<DctStandard> standardList,
       Resource parentResource, Model model) {
 
@@ -671,6 +816,14 @@ public class DcatApSerializer {
 
   }
 
+  /**
+   * Adds the dcat property as resource.
+   *
+   * @param property       the property
+   * @param parentResource the parent resource
+   * @param model          the model
+   * @param useRange       the use range
+   */
   /*
    * Helper method used to add a Property, which should have a Resource as its
    * Object, to a passed Resource e.g. hasUrl, hasEmail or hasTelephone -> type
@@ -698,6 +851,13 @@ public class DcatApSerializer {
     }
   }
 
+  /**
+   * Adds the dcat property as literal.
+   *
+   * @param property       the property
+   * @param parentResource the parent resource
+   * @param model          the model
+   */
   /*
    * Helper method used to add a Property, which should have a Literal as its
    * Object, to a passed Resource
@@ -711,6 +871,14 @@ public class DcatApSerializer {
     }
   }
 
+  /**
+   * Adds the dcat property as typed literal.
+   *
+   * @param property       the property
+   * @param dataType       the data type
+   * @param parentResource the parent resource
+   * @param model          the model
+   */
   /*
    * Helper method used to add a Property, which should have a Typed Literal as
    * its Object, to a passed Resource
@@ -724,6 +892,13 @@ public class DcatApSerializer {
     }
   }
 
+  /**
+   * Write model to string.
+   *
+   * @param model  the model
+   * @param format the format
+   * @return the string
+   */
   private static String writeModelToString(Model model, DcatApFormat format) {
 
     StringWriter outputWriter = new StringWriter();
@@ -731,6 +906,15 @@ public class DcatApSerializer {
     return outputWriter.toString();
   }
 
+  /**
+   * Write model to file and zip.
+   *
+   * @param model    the model
+   * @param format   the format
+   * @param filePath the file path
+   * @param fileName the file name
+   * @throws IOException Signals that an I/O exception has occurred.
+   */
   public static void writeModelToFileAndZip(Model model, DcatApFormat format, String filePath,
       String fileName) throws IOException {
     writeModelToFile(model, format, filePath, fileName);
@@ -740,8 +924,8 @@ public class DcatApSerializer {
   /**
    * Write model to file.
    *
-   * @param model the model
-   * @param format the format
+   * @param model    the model
+   * @param format   the format
    * @param filePath the file path
    * @param fileName the file name
    * @throws IOException Signals that an I/O exception has occurred.
@@ -770,8 +954,8 @@ public class DcatApSerializer {
   /**
    * Write model to zip file.
    *
-   * @param model the model
-   * @param format the format
+   * @param model    the model
+   * @param format   the format
    * @param filePath the file path
    * @param fileName the file name
    * @throws IOException Signals that an I/O exception has occurred.
@@ -814,9 +998,9 @@ public class DcatApSerializer {
   /**
    * Search result to dcat ap.
    *
-   * @param result the result
-   * @param format the format
-   * @param profile the profile
+   * @param result    the result
+   * @param format    the format
+   * @param profile   the profile
    * @param writeType the write type
    * @return the string
    * @throws IOException Signals that an I/O exception has occurred.
@@ -854,10 +1038,10 @@ public class DcatApSerializer {
   /**
    * Search result to dcat ap by node.
    *
-   * @param nodeId the node id
-   * @param result the result
-   * @param format the format
-   * @param profile the profile
+   * @param nodeId    the node id
+   * @param result    the result
+   * @param format    the format
+   * @param profile   the profile
    * @param writeType the write type
    * @return the string
    * @throws IOException Signals that an I/O exception has occurred.
@@ -893,6 +1077,12 @@ public class DcatApSerializer {
 
   }
 
+  /**
+   * Checks if is valid uri.
+   *
+   * @param uri the uri
+   * @return true, if is valid uri
+   */
   protected static boolean isValidUri(String uri) {
     return !iriFactory.create(uri).hasViolation(false);
   }

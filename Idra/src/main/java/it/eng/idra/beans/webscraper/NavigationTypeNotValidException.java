@@ -18,10 +18,20 @@
 
 package it.eng.idra.beans.webscraper;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class NavigationTypeNotValidException.
+ */
 public class NavigationTypeNotValidException extends Exception {
 
+  /** The Constant serialVersionUID. */
   private static final long serialVersionUID = 1L;
 
+  /**
+   * Instantiates a new navigation type not valid exception.
+   *
+   * @param message the message
+   */
   public NavigationTypeNotValidException(String message) {
     super(message);
   }

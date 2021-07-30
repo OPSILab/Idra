@@ -119,10 +119,10 @@ public class AdministrationApi {
 
   /** The logger. */
   private static Logger logger = LogManager.getLogger(AdministrationApi.class);
-  
+
   /** The client. */
   private static Client client;
-  
+
   /**
    * getVersion.
    *
@@ -135,7 +135,7 @@ public class AdministrationApi {
 
     JSONObject out = new JSONObject();
     out.put("idra_version", PropertyManager.getProperty(IdraProperty.IDRA_VERSION));
-    out.put("idra_release_timestamp", 
+    out.put("idra_release_timestamp",
         PropertyManager.getProperty(IdraProperty.IDRA_RELEASE_TIMESTAMP));
 
     return Response.status(Response.Status.OK).entity(out.toString()).build();
@@ -145,8 +145,8 @@ public class AdministrationApi {
    * registerOdmsCatalogue.
    *
    * @param fileInputStream parameter
-   * @param cdh parameter
-   * @param nodeString parameter
+   * @param cdh             parameter
+   * @param nodeString      parameter
    * @return the response
    */
   @POST
@@ -178,7 +178,7 @@ public class AdministrationApi {
                 "The node must have either the dumpURL or dump file in the \" dump \" "
                     + "part of the multipart request");
           }
-        } else if (StringUtils.isBlank(node.getDumpUrl()) 
+        } else if (StringUtils.isBlank(node.getDumpUrl())
             && StringUtils.isNotBlank(node.getDumpString())) {
           logger.info("Dump catalogue with dumpString");
         }
@@ -192,7 +192,7 @@ public class AdministrationApi {
         node.setSitemap(null);
       }
 
-      if (!node.getNodeType().equals(OdmsCatalogueType.ORION) 
+      if (!node.getNodeType().equals(OdmsCatalogueType.ORION)
           && !node.getNodeType().equals(OdmsCatalogueType.SPARQL)) {
         node.setAdditionalConfig(null);
       } else if (node.getNodeType().equals(OdmsCatalogueType.ORION)) {
@@ -213,10 +213,10 @@ public class AdministrationApi {
               "Orion Catalogue must have its configuration parameters!");
           return Response.status(Response.Status.BAD_REQUEST).entity(error.toJson()).build();
         }
-        OrionCatalogueConfiguration orionConfig = 
-            (OrionCatalogueConfiguration) node.getAdditionalConfig();
+        OrionCatalogueConfiguration orionConfig = (OrionCatalogueConfiguration) node
+            .getAdditionalConfig();
         if (orionConfig.isAuthenticated()) {
-          if (StringUtils.isBlank(orionConfig.getOauth2Endpoint()) 
+          if (StringUtils.isBlank(orionConfig.getOauth2Endpoint())
               || StringUtils.isBlank(orionConfig.getClientId())
               || StringUtils.isBlank(orionConfig.getClientSecret())) {
             ErrorResponse error = new ErrorResponse(
@@ -227,7 +227,7 @@ public class AdministrationApi {
           }
         }
 
-        if (StringUtils.isBlank(orionConfig.getOrionDatasetDumpString()) 
+        if (StringUtils.isBlank(orionConfig.getOrionDatasetDumpString())
             && fileInputStream == null) {
           throw new IOException("Orion Catalogue must have a dump string or a dump file");
         }
@@ -250,8 +250,8 @@ public class AdministrationApi {
           return Response.status(Response.Status.BAD_REQUEST).entity(error.toJson()).build();
         }
 
-        SparqlCatalogueConfiguration sparqlConfig = 
-            (SparqlCatalogueConfiguration) node.getAdditionalConfig();
+        SparqlCatalogueConfiguration sparqlConfig = (SparqlCatalogueConfiguration) node
+            .getAdditionalConfig();
 
         if (sparqlConfig == null && fileInputStream == null) {
           throw new IOException("Sparql Catalogue must have a dump string or a dump file");
@@ -290,9 +290,8 @@ public class AdministrationApi {
 
       logger.info(e.getMessage());
       ErrorResponse error = new ErrorResponse(
-          String.valueOf(Response.Status.BAD_REQUEST.getStatusCode()),
-          e.getMessage(), e.getClass().getSimpleName(), 
-          "The node is already present in the federation!");
+          String.valueOf(Response.Status.BAD_REQUEST.getStatusCode()), e.getMessage(),
+          e.getClass().getSimpleName(), "The node is already present in the federation!");
       return Response.status(Response.Status.BAD_REQUEST).entity(error.toJson()).build();
 
     } catch (OdmsCatalogueNotFoundException e) {
@@ -319,8 +318,8 @@ public class AdministrationApi {
   public Response getOdmsCatalogues(@QueryParam("withImage") boolean withImage) {
 
     try {
-      List<OdmsCatalogue> nodes = 
-          new ArrayList<OdmsCatalogue>(FederationCore.getOdmsCatalogues(withImage));
+      List<OdmsCatalogue> nodes = new ArrayList<OdmsCatalogue>(
+          FederationCore.getOdmsCatalogues(withImage));
 
       try {
         HashMap<Integer, Long> messages = FederationCore.getAllOdmsMessagesCount();
@@ -360,8 +359,8 @@ public class AdministrationApi {
 
       if (node.isActive()) {
         logger.error("Node " + node.getHost() + " already active");
-        throw new OdmsCatalogueChangeActiveStateException("Node " 
-            + node.getHost() + " already active");
+        throw new OdmsCatalogueChangeActiveStateException(
+            "Node " + node.getHost() + " already active");
       }
 
       if (node.getNodeType().equals(OdmsCatalogueType.DCATDUMP)) {
@@ -379,21 +378,21 @@ public class AdministrationApi {
         if (StringUtils.isBlank(conf.getOrionDatasetDumpString())
             && StringUtils.isNotBlank(conf.getOrionDatasetFilePath())) {
           // Read the content of the file from the file system
-          String dumpOrion = new String(Files.readAllBytes(
-              Paths.get(conf.getOrionDatasetFilePath())));
+          String dumpOrion = new String(
+              Files.readAllBytes(Paths.get(conf.getOrionDatasetFilePath())));
           conf.setOrionDatasetDumpString(dumpOrion);
           node.setAdditionalConfig(conf);
         }
       }
 
       if (node.getNodeType().equals(OdmsCatalogueType.SPARQL)) {
-        SparqlCatalogueConfiguration conf = 
-            (SparqlCatalogueConfiguration) node.getAdditionalConfig();
+        SparqlCatalogueConfiguration conf = (SparqlCatalogueConfiguration) node
+            .getAdditionalConfig();
         if (StringUtils.isBlank(conf.getSparqlDatasetDumpString())
             && StringUtils.isNotBlank(conf.getSparqlDatasetFilePath())) {
           // Read the content of the file from the file system
-          String dumpOrion = 
-              new String(Files.readAllBytes(Paths.get(conf.getSparqlDatasetFilePath())));
+          String dumpOrion = new String(
+              Files.readAllBytes(Paths.get(conf.getSparqlDatasetFilePath())));
           conf.setSparqlDatasetDumpString(dumpOrion);
           node.setAdditionalConfig(conf);
         }
@@ -415,7 +414,7 @@ public class AdministrationApi {
   /**
    * deactivateOdmsCatalogue.
    *
-   * @param id parameter
+   * @param id           parameter
    * @param keepDatasets parameter
    * @return the response
    */
@@ -431,8 +430,8 @@ public class AdministrationApi {
       node = FederationCore.getOdmsCatalogue(Integer.parseInt(id));
       if (!node.isActive()) {
         logger.error("Node " + node.getHost() + " already inactive");
-        throw new OdmsCatalogueChangeActiveStateException("Node " 
-            + node.getHost() + " already inactive");
+        throw new OdmsCatalogueChangeActiveStateException(
+            "Node " + node.getHost() + " already inactive");
       }
 
       FederationCore.deactivateOdmsCatalogue(node, keepDatasets);
@@ -451,7 +450,7 @@ public class AdministrationApi {
   /**
    * getOdmsCatalogue.
    *
-   * @param nodeId parameter
+   * @param nodeId    parameter
    * @param withImage parameter
    * @return the odms catalogue
    */
@@ -459,7 +458,7 @@ public class AdministrationApi {
   @Secured
   @Path("/catalogues/{nodeId}")
   @Produces("application/json")
-  public Response getOdmsCatalogue(@PathParam("nodeId") String nodeId, 
+  public Response getOdmsCatalogue(@PathParam("nodeId") String nodeId,
       @QueryParam("withImage") boolean withImage) {
 
     try {
@@ -479,21 +478,21 @@ public class AdministrationApi {
         if (StringUtils.isBlank(conf.getOrionDatasetDumpString())
             && StringUtils.isNotBlank(conf.getOrionDatasetFilePath())) {
           // Read the content of the file from the file system
-          String dumpOrion = 
-              new String(Files.readAllBytes(Paths.get(conf.getOrionDatasetFilePath())));
+          String dumpOrion = new String(
+              Files.readAllBytes(Paths.get(conf.getOrionDatasetFilePath())));
           conf.setOrionDatasetDumpString(dumpOrion);
           node.setAdditionalConfig(conf);
         }
       }
 
       if (node.getNodeType().equals(OdmsCatalogueType.SPARQL)) {
-        SparqlCatalogueConfiguration conf = 
-            (SparqlCatalogueConfiguration) node.getAdditionalConfig();
+        SparqlCatalogueConfiguration conf = (SparqlCatalogueConfiguration) node
+            .getAdditionalConfig();
         if (StringUtils.isBlank(conf.getSparqlDatasetDumpString())
             && StringUtils.isNotBlank(conf.getSparqlDatasetFilePath())) {
           // Read the content of the file from the file system
-          String dumpOrion = 
-              new String(Files.readAllBytes(Paths.get(conf.getSparqlDatasetFilePath())));
+          String dumpOrion = new String(
+              Files.readAllBytes(Paths.get(conf.getSparqlDatasetFilePath())));
           conf.setSparqlDatasetDumpString(dumpOrion);
           node.setAdditionalConfig(conf);
         }
@@ -520,12 +519,12 @@ public class AdministrationApi {
   /**
    * updateOdmsCatalogue.
    *
-   * @param nodeId parameter
+   * @param nodeId          parameter
    * @param fileInputStream parameter
-   * @param cdh parameter
-   * @param nodeString parameter
+   * @param cdh             parameter
+   * @param nodeString      parameter
    * @return the response
-   * @throws JSONException the JSON exception
+   * @throws JSONException  the JSON exception
    * @throws ParseException the parse exception
    */
   @PUT
@@ -556,7 +555,7 @@ public class AdministrationApi {
 
       // TODO: Manage update of DCATDUMP catalogue dumpstring
       if (requestNode.getNodeType().equals(OdmsCatalogueType.DCATDUMP)) {
-        if ((StringUtils.isBlank(currentNode.getDumpUrl()) 
+        if ((StringUtils.isBlank(currentNode.getDumpUrl())
             && StringUtils.isNotBlank(requestNode.getDumpUrl()))
             && (!requestNode.getDumpUrl().equals(currentNode.getDumpUrl()))) {
           logger.info("Updating the DUMP Url for node: " + currentNode.getHost());
@@ -566,8 +565,8 @@ public class AdministrationApi {
             logger.info("Updating dump file for node " + currentNode.getHost());
           } else if (StringUtils.isBlank(requestNode.getDumpFilePath())
               && StringUtils.isNotBlank(currentNode.getDumpFilePath())) {
-            logger.info("Dump file path was empty for "
-                + currentNode.getHost() + " , setting the previous");
+            logger.info("Dump file path was empty for " + currentNode.getHost()
+                + " , setting the previous");
             requestNode.setDumpFilePath(currentNode.getDumpFilePath());
           }
         }
@@ -584,8 +583,8 @@ public class AdministrationApi {
 
       boolean rescheduleJob = false;
       if (requestNode.getNodeType().equals(OdmsCatalogueType.ORION)) {
-        OrionCatalogueConfiguration c = 
-            (OrionCatalogueConfiguration) requestNode.getAdditionalConfig();
+        OrionCatalogueConfiguration c = (OrionCatalogueConfiguration) requestNode
+            .getAdditionalConfig();
         String oldDump = new String(Files.readAllBytes(Paths.get(c.getOrionDatasetFilePath())));
         if (StringUtils.isBlank(c.getOrionDatasetDumpString())) {
           c.setOrionDatasetDumpString(oldDump);
@@ -596,8 +595,8 @@ public class AdministrationApi {
       }
 
       if (requestNode.getNodeType().equals(OdmsCatalogueType.SPARQL)) {
-        SparqlCatalogueConfiguration c = 
-            (SparqlCatalogueConfiguration) requestNode.getAdditionalConfig();
+        SparqlCatalogueConfiguration c = (SparqlCatalogueConfiguration) requestNode
+            .getAdditionalConfig();
         String oldDump = new String(Files.readAllBytes(Paths.get(c.getSparqlDatasetFilePath())));
         if (StringUtils.isBlank(c.getSparqlDatasetDumpString())) {
           c.setSparqlDatasetDumpString(oldDump);
@@ -622,7 +621,7 @@ public class AdministrationApi {
         throw new GsonUtilException("The request body is empty");
       }
 
-    } catch (GsonUtilException | NumberFormatException 
+    } catch (GsonUtilException | NumberFormatException
         | OdmsCatalogueChangeActiveStateException e) {
       return handleBadRequestErrorResponse(e);
 
@@ -650,11 +649,11 @@ public class AdministrationApi {
     try {
 
       node = FederationCore.getOdmsCatalogue(Integer.parseInt(nodeId));
-      logger.info("Deleting ODMS catalogue with host: " 
-          + node.getHost() + " and id " + nodeId + " - START");
+      logger.info("Deleting ODMS catalogue with host: " + node.getHost() + " and id " + nodeId
+          + " - START");
       FederationCore.unregisterOdmsCatalogue(node);
-      logger.info("Deleting ODMS node with id: " 
-          + node.getHost() + " and id " + nodeId + " - COMPLETE");
+      logger.info(
+          "Deleting ODMS node with id: " + node.getHost() + " and id " + nodeId + " - COMPLETE");
       return Response.status(Response.Status.OK).build();
 
     } catch (NumberFormatException e) {
@@ -836,7 +835,7 @@ public class AdministrationApi {
   /**
    * updateRemoteCat.
    *
-   * @param rmId parameter
+   * @param rmId  parameter
    * @param input parameter
    * @return the response
    */
@@ -852,8 +851,8 @@ public class AdministrationApi {
       RemoteCatalogue rm = GsonUtil.json2Obj(input, GsonUtil.remCatType);
 
       RemoteCatalogue oldRem = FederationCore.getRemCat(Integer.parseInt(rmId));
-      logger.debug("passw old: " + oldRem.getPassword() 
-          + " pssw dopo la update del nome: " + rm.getPassword());
+      logger.debug("passw old: " + oldRem.getPassword() + " pssw dopo la update del nome: "
+          + rm.getPassword());
       if (((oldRem.getPassword() != null && rm.getPassword() != null)
           && (!(oldRem.getPassword().equals(rm.getPassword()))))
           || (oldRem.getPassword() == null && rm.getPassword() != null)) {
@@ -908,9 +907,9 @@ public class AdministrationApi {
 
       builderLogin = builderLogin.header("Content-Type", "application/json");
 
-      Response responseLogin = builderLogin.post(
-          Entity.entity("{username: " 
-              + username + ", password: " + password + "}", MediaType.APPLICATION_JSON_TYPE));
+      Response responseLogin = builderLogin
+          .post(Entity.entity("{username: " + username + ", password: " + password + "}",
+              MediaType.APPLICATION_JSON_TYPE));
 
       StatusType statusLogin = responseLogin.getStatusInfo();
       if (statusLogin.getStatusCode() == 200) {
@@ -1003,8 +1002,8 @@ public class AdministrationApi {
       String compiledUri = portalUrl + "oauth2/token";
       WebTarget webTarget = client.target(compiledUri);
 
-      String auth = "Basic " + new String(Base64.getEncoder()
-          .encode((clientId + ":" + clientSecret).getBytes()));
+      String auth = "Basic "
+          + new String(Base64.getEncoder().encode((clientId + ":" + clientSecret).getBytes()));
       Invocation.Builder builder = webTarget.request();
 
       MultivaluedMap<String, Object> head = new MultivaluedHashMap<String, Object>();
@@ -1165,7 +1164,7 @@ public class AdministrationApi {
    * updatePrefix.
    *
    * @param prefixId parameter
-   * @param input parameter
+   * @param input    parameter
    * @return the response
    */
   @PUT
@@ -1227,7 +1226,7 @@ public class AdministrationApi {
   /**
    * loginGet.
    *
-   * @param code parameter
+   * @param code        parameter
    * @param httpRequest parameter
    * @return the response
    */
@@ -1442,8 +1441,8 @@ public class AdministrationApi {
       } else {
 
         ErrorResponse error = new ErrorResponse(
-            String.valueOf(Response.Status.BAD_REQUEST.getStatusCode()),
-            "Wrong Old Password!", "WrongOldPassword", "Wrong Old Password!");
+            String.valueOf(Response.Status.BAD_REQUEST.getStatusCode()), "Wrong Old Password!",
+            "WrongOldPassword", "Wrong Old Password!");
         return Response.status(Response.Status.BAD_REQUEST).entity(error.toJson()).build();
       }
     } catch (Exception e) {
@@ -1468,7 +1467,7 @@ public class AdministrationApi {
 
       // switch
       // (IdraAuthenticationMethod.valueOf(PropertyManager
-      //.getProperty(IdraProperty.AUTHENTICATION_METHOD)))
+      // .getProperty(IdraProperty.AUTHENTICATION_METHOD)))
       // {
 
       // case FIWARE:
@@ -1572,9 +1571,8 @@ public class AdministrationApi {
 
       // TODO sostituire JSONObject con bean per le statistiche aggregate
       // per più nodi
-      JSONObject res = StatisticsManager.getNodesStatistics(
-          request.getNodesId(), request.getAggregationLevel(),
-          request.getStartDate(), request.getEndDate());
+      JSONObject res = StatisticsManager.getNodesStatistics(request.getNodesId(),
+          request.getAggregationLevel(), request.getStartDate(), request.getEndDate());
       return Response.status(Response.Status.OK).entity(res.toString()).build();
 
     } catch (GsonUtilException e) {
@@ -1602,9 +1600,8 @@ public class AdministrationApi {
 
       // TODO sostituire JSONObject con bean per le statistiche aggregate
       // per più nodi
-      JSONObject res = StatisticsManager.getSearchStatistics(
-          request.getCountries(), request.getAggregationLevel(),
-          request.getStartDate(), request.getEndDate());
+      JSONObject res = StatisticsManager.getSearchStatistics(request.getCountries(),
+          request.getAggregationLevel(), request.getStartDate(), request.getEndDate());
       return Response.status(Response.Status.OK).entity(res.toString()).build();
 
     } catch (GsonUtilException e) {
@@ -1656,9 +1653,8 @@ public class AdministrationApi {
       StatisticsRequest request = GsonUtil.json2Obj(input, GsonUtil.statisticsRequestType);
 
       // TODO sostituire JSONObject con bean
-      JSONObject res = StatisticsManager.getNodeStatisticsDetails(
-          request.getNodesId(), request.getAggregationLevel(),
-          request.getStartDate());
+      JSONObject res = StatisticsManager.getNodeStatisticsDetails(request.getNodesId(),
+          request.getAggregationLevel(), request.getStartDate());
 
       return Response.status(Response.Status.OK).entity(res.toString()).build();
 
@@ -1726,7 +1722,7 @@ public class AdministrationApi {
   /**
    * Gets the odms catalogue message.
    *
-   * @param nodeId the node id
+   * @param nodeId    the node id
    * @param messageId the message id
    * @return the odms catalogue message
    */
@@ -1741,12 +1737,11 @@ public class AdministrationApi {
       int nodeIdentifier = Integer.parseInt(nodeId);
       int messageIdentifier = Integer.parseInt(messageId);
       OdmsManager.getOdmsCatalogue(nodeIdentifier);
-      OdmsCatalogueMessage message = FederationCore.getOdmsMessage(
-          nodeIdentifier, messageIdentifier);
+      OdmsCatalogueMessage message = FederationCore.getOdmsMessage(nodeIdentifier,
+          messageIdentifier);
 
       return Response.status(Response.Status.OK)
-          .entity(GsonUtil.obj2Json(message, GsonUtil.messageType).toString())
-          .build();
+          .entity(GsonUtil.obj2Json(message, GsonUtil.messageType).toString()).build();
 
     } catch (OdmsCatalogueNotFoundException e) {
       return handleNodeNotFoundErrorResponse(e, nodeId);
@@ -1760,7 +1755,7 @@ public class AdministrationApi {
   /**
    * Delete odms catalogue message.
    *
-   * @param nodeId the node id
+   * @param nodeId    the node id
    * @param messageId the message id
    * @return the response
    */
@@ -1828,8 +1823,8 @@ public class AdministrationApi {
     try {
 
       LogsRequest request = GsonUtil.json2Obj(input, GsonUtil.logRequestType);
-      List<Log> logs = FederationCore.getLogs(
-          request.getLevelList(), request.getStartDate(), request.getEndDate());
+      List<Log> logs = FederationCore.getLogs(request.getLevelList(), request.getStartDate(),
+          request.getEndDate());
 
       return Response.status(Response.Status.OK)
           .entity(GsonUtil.obj2Json(logs, GsonUtil.logsListType)).build();
@@ -1846,8 +1841,8 @@ public class AdministrationApi {
    * Download global dcat ap dump.
    *
    * @param httpRequest the http request
-   * @param forceDump the force dump
-   * @param returnZip the return zip
+   * @param forceDump   the force dump
+   * @param returnZip   the return zip
    * @return the response
    */
   @GET
@@ -1863,9 +1858,8 @@ public class AdministrationApi {
       return Response
           .ok(DcatApDumpManager.getDatasetDumpFromFile(null, forceDump, returnZip),
               MediaType.APPLICATION_OCTET_STREAM)
-          .header("content-disposition",
-              "attachment; filename = " 
-          + DcatApDumpManager.globalDumpFileName + (returnZip ? ".zip" : ""))
+          .header("content-disposition", "attachment; filename = "
+              + DcatApDumpManager.globalDumpFileName + (returnZip ? ".zip" : ""))
           .build();
 
     } catch (Exception e) {
@@ -1878,7 +1872,7 @@ public class AdministrationApi {
    * Gets the global dcat ap dump.
    *
    * @param httpRequest the http request
-   * @param forceDump the force dump
+   * @param forceDump   the force dump
    * @return the global dcat ap dump
    */
   @GET
@@ -1901,10 +1895,10 @@ public class AdministrationApi {
   /**
    * Download catalogue dcat ap dump.
    *
-   * @param httpRequest the http request
+   * @param httpRequest    the http request
    * @param nodeIdentifier the node identifier
-   * @param forceDump the force dump
-   * @param returnZip the return zip
+   * @param forceDump      the force dump
+   * @param returnZip      the return zip
    * @return the response
    */
   @GET
@@ -1921,9 +1915,9 @@ public class AdministrationApi {
       return Response
           .ok(DcatApDumpManager.getDatasetDumpFromFile(nodeIdentifier, forceDump, returnZip),
               MediaType.APPLICATION_OCTET_STREAM)
-          .header("content-disposition",
-              "attachment; filename = " + DcatApDumpManager.globalDumpFileName
-              + (StringUtils.isBlank(nodeIdentifier) ? "" : new String("_node_" + nodeIdentifier)) 
+          .header("content-disposition", "attachment; filename = "
+              + DcatApDumpManager.globalDumpFileName
+              + (StringUtils.isBlank(nodeIdentifier) ? "" : new String("_node_" + nodeIdentifier))
               + (returnZip ? ".zip" : ""))
           .build();
 
@@ -1936,8 +1930,8 @@ public class AdministrationApi {
   /**
    * Gets the catalogue dcat ap dump.
    *
-   * @param httpRequest the http request
-   * @param forceDump the force dump
+   * @param httpRequest    the http request
+   * @param forceDump      the force dump
    * @param nodeIdentifier the node identifier
    * @return the catalogue dcat ap dump
    */
@@ -1951,8 +1945,8 @@ public class AdministrationApi {
 
     try {
 
-      return Response.ok(DcatApDumpManager
-          .getDatasetDumpFromFile(nodeIdentifier, forceDump, false)).build();
+      return Response.ok(DcatApDumpManager.getDatasetDumpFromFile(nodeIdentifier, forceDump, false))
+          .build();
 
     } catch (Exception e) {
       return handleErrorResponse500(e);
@@ -1963,11 +1957,11 @@ public class AdministrationApi {
   /**
    * Delete datalet from distribution.
    *
-   * @param httpRequest the http request
-   * @param nodeIdentifier the node identifier
-   * @param datasetIdentifier the dataset identifier
+   * @param httpRequest            the http request
+   * @param nodeIdentifier         the node identifier
+   * @param datasetIdentifier      the dataset identifier
    * @param distributionIdentifier the distribution identifier
-   * @param dataletIdentifier the datalet identifier
+   * @param dataletIdentifier      the datalet identifier
    * @return the response
    */
   @DELETE
@@ -1984,8 +1978,8 @@ public class AdministrationApi {
     CachePersistenceManager jpa = new CachePersistenceManager();
     try {
 
-      Datalet toRemove = jpa.jpaGetDataletByIds(nodeIdentifier, 
-          datasetIdentifier, distributionIdentifier, dataletIdentifier);
+      Datalet toRemove = jpa.jpaGetDataletByIds(nodeIdentifier, datasetIdentifier,
+          distributionIdentifier, dataletIdentifier);
       if (toRemove != null) {
         jpa.jpaDeleteDatalet(toRemove);
       }
@@ -1993,9 +1987,8 @@ public class AdministrationApi {
       List<Datalet> remainingDatalet = jpa.jpaGetDataletByDistributionId(distributionIdentifier);
       if (remainingDatalet.size() == 0) {
         DcatDataset dataset = MetadataCacheManager.getDatasetById(datasetIdentifier);
-        dataset.getDistributions().stream()
-        .filter(x -> x.getId().equals(distributionIdentifier)).findFirst().get()
-        .setHasDatalets(false);
+        dataset.getDistributions().stream().filter(x -> x.getId().equals(distributionIdentifier))
+            .findFirst().get().setHasDatalets(false);
         MetadataCacheManager.updateDatasetInsertDatalet(Integer.parseInt(nodeIdentifier), dataset);
       }
 
@@ -2041,8 +2034,8 @@ public class AdministrationApi {
 
     e.printStackTrace();
     ErrorResponse error = new ErrorResponse(
-        String.valueOf(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode()),
-        e.getMessage(), e.getClass().getSimpleName(), e.getMessage());
+        String.valueOf(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode()), e.getMessage(),
+        e.getClass().getSimpleName(), e.getMessage());
     return Response.status(Response.Status.INTERNAL_SERVER_ERROR).type(MediaType.APPLICATION_JSON)
         .entity(error.toJson()).build();
   }
@@ -2057,9 +2050,8 @@ public class AdministrationApi {
 
     e.printStackTrace();
     ErrorResponse error = new ErrorResponse(
-        String.valueOf(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode()),
-        e.getMessage(), e.getClass().getSimpleName(),
-        "An error occurred, please contact the administrator!");
+        String.valueOf(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode()), e.getMessage(),
+        e.getClass().getSimpleName(), "An error occurred, please contact the administrator!");
     return Response.status(Response.Status.INTERNAL_SERVER_ERROR).type(MediaType.APPLICATION_JSON)
         .entity(error.toJson()).build();
   }
@@ -2077,14 +2069,14 @@ public class AdministrationApi {
     ErrorResponse error = new ErrorResponse(
         String.valueOf(Response.Status.BAD_REQUEST.getStatusCode()), e.getMessage(),
         e.getClass().getSimpleName(), "The request body is not a valid JSON");
-    return Response.status(Response.Status.BAD_REQUEST)
-        .type(MediaType.APPLICATION_JSON).entity(error.toJson()).build();
+    return Response.status(Response.Status.BAD_REQUEST).type(MediaType.APPLICATION_JSON)
+        .entity(error.toJson()).build();
   }
 
   /**
    * Handle prefix not found error response.
    *
-   * @param e the e
+   * @param e        the e
    * @param prefixId the prefix id
    * @return the response
    */
@@ -2095,14 +2087,14 @@ public class AdministrationApi {
     ErrorResponse error = new ErrorResponse(
         String.valueOf(Response.Status.NOT_FOUND.getStatusCode()), e.getMessage(),
         e.getClass().getSimpleName(), "No prefix found with id: " + prefixId);
-    return Response.status(Response.Status.NOT_FOUND)
-        .type(MediaType.APPLICATION_JSON).entity(error.toJson()).build();
+    return Response.status(Response.Status.NOT_FOUND).type(MediaType.APPLICATION_JSON)
+        .entity(error.toJson()).build();
   }
 
   /**
    * Handle node not found error response.
    *
-   * @param e the e
+   * @param e      the e
    * @param nodeId the node id
    * @return the response
    */
@@ -2112,14 +2104,14 @@ public class AdministrationApi {
     ErrorResponse error = new ErrorResponse(
         String.valueOf(Response.Status.NOT_FOUND.getStatusCode()), e.getMessage(),
         e.getClass().getSimpleName(), "The ODMS node does not exist in the federation: " + nodeId);
-    return Response.status(Response.Status.NOT_FOUND)
-        .type(MediaType.APPLICATION_JSON).entity(error.toJson()).build();
+    return Response.status(Response.Status.NOT_FOUND).type(MediaType.APPLICATION_JSON)
+        .entity(error.toJson()).build();
   }
 
   /**
    * Handle node host not found error response.
    *
-   * @param e the e
+   * @param e        the e
    * @param nodeHost the node host
    * @return the response
    */
@@ -2129,16 +2121,16 @@ public class AdministrationApi {
     logger.error("NodeHost " + nodeHost + " not found: " + e.getLocalizedMessage());
     ErrorResponse error = new ErrorResponse(
         String.valueOf(Response.Status.NOT_FOUND.getStatusCode()), e.getMessage(),
-        e.getClass().getSimpleName(), 
+        e.getClass().getSimpleName(),
         "The ODMS node with host URL: " + nodeHost + " does not exist");
-    return Response.status(Response.Status.NOT_FOUND)
-        .type(MediaType.APPLICATION_JSON).entity(error.toJson()).build();
+    return Response.status(Response.Status.NOT_FOUND).type(MediaType.APPLICATION_JSON)
+        .entity(error.toJson()).build();
   }
 
   /**
    * Handle node forbidden error response.
    *
-   * @param e the e
+   * @param e        the e
    * @param nodeHost the node host
    * @return the response
    */
@@ -2150,14 +2142,14 @@ public class AdministrationApi {
         String.valueOf(Response.Status.FORBIDDEN.getStatusCode()), e.getMessage(),
         e.getClass().getSimpleName(),
         "The ODMS node with host URL: " + nodeHost + " is forbidden!");
-    return Response.status(Response.Status.FORBIDDEN)
-        .type(MediaType.APPLICATION_JSON).entity(error.toJson()).build();
+    return Response.status(Response.Status.FORBIDDEN).type(MediaType.APPLICATION_JSON)
+        .entity(error.toJson()).build();
   }
 
   /**
    * Handle node offline error response.
    *
-   * @param e the e
+   * @param e        the e
    * @param nodeHost the node host
    * @return the response
    */
@@ -2168,8 +2160,8 @@ public class AdministrationApi {
     ErrorResponse error = new ErrorResponse(
         String.valueOf(Response.Status.FORBIDDEN.getStatusCode()), e.getMessage(),
         e.getClass().getSimpleName(), "The ODMS node with host URL: " + nodeHost + " is offline!");
-    return Response.status(Response.Status.FORBIDDEN)
-        .type(MediaType.APPLICATION_JSON).entity(error.toJson()).build();
+    return Response.status(Response.Status.FORBIDDEN).type(MediaType.APPLICATION_JSON)
+        .entity(error.toJson()).build();
   }
 
 }

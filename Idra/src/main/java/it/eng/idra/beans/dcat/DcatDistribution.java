@@ -61,6 +61,7 @@ import org.hibernate.annotations.Where;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+// TODO: Auto-generated Javadoc
 /**
  * Represents a DCAT Distribution.
  *
@@ -72,20 +73,30 @@ import org.json.JSONObject;
 @Entity
 public class DcatDistribution implements Serializable {
 
+  /** The Constant serialVersionUID. */
   private static final long serialVersionUID = 1L;
 
+  /** The Constant RDFClass. */
   private static final Resource RDFClass = DCAT.Distribution;
 
+  /** The id. */
   private String id;
-  
+
+  /** The stored rdf. */
   @SerializedName(value = "storedRDF")
   @Column(name = "storedRDF")
   private boolean storedRdf;
-  
+
+  /** The node id. */
   @SerializedName(value = "nodeID")
-  //@Column(name = "nodeID")
+  // @Column(name = "nodeID")
   private transient String nodeId;
 
+  /**
+   * Gets the id.
+   *
+   * @return the id
+   */
   @Id
   @GeneratedValue(generator = "uuid")
   @GenericGenerator(name = "uuid", strategy = "uuid2")
@@ -93,42 +104,79 @@ public class DcatDistribution implements Serializable {
     return id;
   }
 
+  /**
+   * Sets the id.
+   *
+   * @param id the new id
+   */
   public void setId(String id) {
     this.id = id;
   }
 
   // DCAT FIELDS
+  /** The access url. */
   // Mandatory
   @SerializedName(value = "accessURL")
   private DcatProperty accessUrl;
 
+  /** The description. */
   // Recommended
   private DcatProperty description;
+
+  /** The format. */
   private DcatProperty format;
+
+  /** The license. */
   private DctLicenseDocument license;
 
+  /** The byte size. */
   // Optional
   private DcatProperty byteSize;
+
+  /** The checksum. */
   private SpdxChecksum checksum;
 
+  /** The documentation. */
   private List<DcatProperty> documentation;
-  
+
+  /** The download url. */
   @SerializedName(value = "downloadURL")
   private DcatProperty downloadUrl;
-  
+
+  /** The language. */
   private List<DcatProperty> language;
+
+  /** The linked schemas. */
   private List<DctStandard> linkedSchemas;
+
+  /** The media type. */
   private DcatProperty mediaType;
+
+  /** The release date. */
   private DcatProperty releaseDate;
+
+  /** The update date. */
   private DcatProperty updateDate;
+
+  /** The rights. */
   private DcatProperty rights;
+
+  /** The status. */
   private SkosConceptStatus status;
+
+  /** The title. */
   private DcatProperty title;
 
+  /** The has datalets. */
   // private List<Datalet> datalets;
   private boolean hasDatalets = false;
+
+  /** The distribution additional config. */
   private DistributionAdditionalConfiguration distributionAdditionalConfig;
 
+  /**
+   * Instantiates a new dcat distribution.
+   */
   public DcatDistribution() {
   }
 
@@ -141,47 +189,42 @@ public class DcatDistribution implements Serializable {
    * DON'T TOUCH - CONSTRUCTOR USED BY WEB SCRAPER
    */
   public DcatDistribution(String nodeId) {
-    this(nodeId, null, null, null, null, null, 
-        null, null, null, null, null, null, null, null, null, null, null);
+    this(nodeId, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+        null, null);
   }
 
   /**
    * Instantiates a new dcat distribution.
    *
-   * @param id the id
-   * @param nodeId the node ID
-   * @param accessUrl the access URL
-   * @param description the description
-   * @param format the format
-   * @param license the license
-   * @param byteSize the byte size
-   * @param checksum the checksum
+   * @param id            the id
+   * @param nodeId        the node ID
+   * @param accessUrl     the access URL
+   * @param description   the description
+   * @param format        the format
+   * @param license       the license
+   * @param byteSize      the byte size
+   * @param checksum      the checksum
    * @param documentation the documentation
-   * @param downloadUrl the download URL
-   * @param language the language
+   * @param downloadUrl   the download URL
+   * @param language      the language
    * @param linkedSchemas the linked schemas
-   * @param mediaType the media type
-   * @param releaseDate the release date
-   * @param updateDate the update date
-   * @param rights the rights
-   * @param status the status
-   * @param title the title
-   * @param hasDatalets the has datalets
+   * @param mediaType     the media type
+   * @param releaseDate   the release date
+   * @param updateDate    the update date
+   * @param rights        the rights
+   * @param status        the status
+   * @param title         the title
+   * @param hasDatalets   the has datalets
    */
-  public DcatDistribution(String id, 
-      String nodeId, String accessUrl, 
-      String description, String format,
-      DctLicenseDocument license, String byteSize, 
-      SpdxChecksum checksum, List<String> documentation,
-      String downloadUrl,
-      List<String> language, 
-      List<DctStandard> linkedSchemas, String mediaType, String releaseDate,
-      String updateDate, String rights, 
-      SkosConceptStatus status, String title, boolean hasDatalets) {
+  public DcatDistribution(String id, String nodeId, String accessUrl, String description,
+      String format, DctLicenseDocument license, String byteSize, SpdxChecksum checksum,
+      List<String> documentation, String downloadUrl, List<String> language,
+      List<DctStandard> linkedSchemas, String mediaType, String releaseDate, String updateDate,
+      String rights, SkosConceptStatus status, String title, boolean hasDatalets) {
 
-    this(nodeId, accessUrl, description, format, 
-        license, byteSize, checksum, documentation, downloadUrl, language,
-        linkedSchemas, mediaType, releaseDate, updateDate, rights, status, title);
+    this(nodeId, accessUrl, description, format, license, byteSize, checksum, documentation,
+        downloadUrl, language, linkedSchemas, mediaType, releaseDate, updateDate, rights, status,
+        title);
     this.setId(id);
     this.setHasDatalets(hasDatalets);
     // setDatalets(datalets);
@@ -190,31 +233,29 @@ public class DcatDistribution implements Serializable {
   /**
    * Instantiates a new dcat distribution.
    *
-   * @param nodeId the node ID
-   * @param accessUrl the access URL
-   * @param description the description
-   * @param format the format
-   * @param license the license
-   * @param byteSize the byte size
-   * @param checksum the checksum
+   * @param nodeId        the node ID
+   * @param accessUrl     the access URL
+   * @param description   the description
+   * @param format        the format
+   * @param license       the license
+   * @param byteSize      the byte size
+   * @param checksum      the checksum
    * @param documentation the documentation
-   * @param downloadUrl the download URL
-   * @param language the language
+   * @param downloadUrl   the download URL
+   * @param language      the language
    * @param linkedSchemas the linked schemas
-   * @param mediaType the media type
-   * @param releaseDate the release date
-   * @param updateDate the update date
-   * @param rights the rights
-   * @param status the status
-   * @param title the title
+   * @param mediaType     the media type
+   * @param releaseDate   the release date
+   * @param updateDate    the update date
+   * @param rights        the rights
+   * @param status        the status
+   * @param title         the title
    */
-  public DcatDistribution(String nodeId, 
-      String accessUrl, String description, String format,
-      DctLicenseDocument license, String byteSize, 
-      SpdxChecksum checksum, List<String> documentation,
-      String downloadUrl, List<String> language, 
-      List<DctStandard> linkedSchemas, String mediaType, String releaseDate,
-      String updateDate, String rights, SkosConceptStatus status, String title) {
+  public DcatDistribution(String nodeId, String accessUrl, String description, String format,
+      DctLicenseDocument license, String byteSize, SpdxChecksum checksum,
+      List<String> documentation, String downloadUrl, List<String> language,
+      List<DctStandard> linkedSchemas, String mediaType, String releaseDate, String updateDate,
+      String rights, SkosConceptStatus status, String title) {
     super();
     setNodeId(nodeId);
     setAccessUrl(new DcatProperty(DCAT.accessURL, RDFS.Resource, accessUrl));
@@ -229,49 +270,77 @@ public class DcatDistribution implements Serializable {
     // checksum != null ? checksum : new
     // SPDXChecksum("http://spdx.org/rdf/terms#checksum", "", "", nodeID));
     setChecksum(checksum);
-    setDocumentation(
-        documentation != null ? documentation.stream()
-            .map(item -> new DcatProperty(FOAF.page, FOAF.Document, item))
-            .collect(Collectors.toList()) 
-            : Arrays.asList(new DcatProperty(FOAF.page, FOAF.Document, "")));
-    setLanguage(language != null ? language.stream()
-        .map(item -> new DcatProperty(DCTerms.language, 
-            DCTerms.LinguisticSystem, item)).collect(Collectors.toList())
+    setDocumentation(documentation != null
+        ? documentation.stream().map(item -> new DcatProperty(FOAF.page, FOAF.Document, item))
+            .collect(Collectors.toList())
+        : Arrays.asList(new DcatProperty(FOAF.page, FOAF.Document, "")));
+    setLanguage(language != null
+        ? language.stream()
+            .map(item -> new DcatProperty(DCTerms.language, DCTerms.LinguisticSystem, item))
+            .collect(Collectors.toList())
         : Arrays.asList(new DcatProperty(DCTerms.language, DCTerms.LinguisticSystem, "")));
     setLinkedSchemas(linkedSchemas);
     setMediaType(new DcatProperty(DCAT.mediaType, DCTerms.MediaType, mediaType));
-    setReleaseDate(
-        new DcatProperty(DCTerms.issued, RDFS.Literal, 
-            StringUtils.isNotBlank(releaseDate) ? releaseDate : ""));
-    setUpdateDate(
-        new DcatProperty(DCTerms.modified, RDFS.Literal, 
-            StringUtils.isNotBlank(updateDate) ? updateDate : ""));
+    setReleaseDate(new DcatProperty(DCTerms.issued, RDFS.Literal,
+        StringUtils.isNotBlank(releaseDate) ? releaseDate : ""));
+    setUpdateDate(new DcatProperty(DCTerms.modified, RDFS.Literal,
+        StringUtils.isNotBlank(updateDate) ? updateDate : ""));
     setRights(new DcatProperty(DCTerms.rights, DCTerms.RightsStatement, rights));
     setStatus(status);
     setTitle(new DcatProperty(DCTerms.title, RDFS.Literal, title));
   }
 
+  /**
+   * Gets the rdf class.
+   *
+   * @return the rdf class
+   */
   @Transient
   public static Resource getRdfClass() {
     return RDFClass;
   }
 
+  /**
+   * Gets the node id.
+   *
+   * @return the node id
+   */
   public String getNodeId() {
     return nodeId;
   }
 
+  /**
+   * Sets the node id.
+   *
+   * @param nodeId the new node id
+   */
   public void setNodeId(String nodeId) {
     this.nodeId = nodeId;
   }
 
+  /**
+   * Gets the stored rdf.
+   *
+   * @return the stored rdf
+   */
   public boolean getStoredRdf() {
     return storedRdf;
   }
 
+  /**
+   * Sets the stored rdf.
+   *
+   * @param storedRdf the new stored rdf
+   */
   public void setStoredRdf(boolean storedRdf) {
     this.storedRdf = storedRdf;
   }
 
+  /**
+   * Gets the title.
+   *
+   * @return the title
+   */
   @Embedded
   @AttributeOverrides({
       @AttributeOverride(name = "value", 
@@ -280,14 +349,29 @@ public class DcatDistribution implements Serializable {
     return title;
   }
 
+  /**
+   * Sets the title.
+   *
+   * @param title the new title
+   */
   public void setTitle(DcatProperty title) {
     this.title = title;
   }
 
+  /**
+   * Sets the title.
+   *
+   * @param title the new title
+   */
   public void setTitle(String title) {
     setTitle(new DcatProperty(DCTerms.title, RDFS.Literal, title));
   }
 
+  /**
+   * Gets the access url.
+   *
+   * @return the access url
+   */
   @Embedded
   @AttributeOverrides({
       @AttributeOverride(name = "value", 
@@ -296,14 +380,29 @@ public class DcatDistribution implements Serializable {
     return accessUrl;
   }
 
+  /**
+   * Sets the access url.
+   *
+   * @param accessUrl the new access url
+   */
   public void setAccessUrl(DcatProperty accessUrl) {
     this.accessUrl = accessUrl;
   }
 
+  /**
+   * Sets the access url.
+   *
+   * @param accessUrl the new access url
+   */
   public void setAccessUrl(String accessUrl) {
     setAccessUrl(new DcatProperty(DCAT.accessURL, RDFS.Resource, accessUrl));
   }
 
+  /**
+   * Gets the description.
+   *
+   * @return the description
+   */
   @Embedded
   @AttributeOverrides({
       @AttributeOverride(name = "value", 
@@ -312,28 +411,58 @@ public class DcatDistribution implements Serializable {
     return description;
   }
 
+  /**
+   * Sets the description.
+   *
+   * @param description the new description
+   */
   public void setDescription(DcatProperty description) {
     this.description = description;
   }
 
+  /**
+   * Sets the description.
+   *
+   * @param description the new description
+   */
   public void setDescription(String description) {
     setDescription(new DcatProperty(DCTerms.description, RDFS.Literal, description));
   }
 
+  /**
+   * Gets the media type.
+   *
+   * @return the media type
+   */
   @Embedded
   @AttributeOverrides({ @AttributeOverride(name = "value", column = @Column(name = "mediaType")) })
   public DcatProperty getMediaType() {
     return mediaType;
   }
 
+  /**
+   * Sets the media type.
+   *
+   * @param mediaType the new media type
+   */
   public void setMediaType(DcatProperty mediaType) {
     this.mediaType = mediaType;
   }
 
+  /**
+   * Sets the media type.
+   *
+   * @param mediaType the new media type
+   */
   public void setMediaType(String mediaType) {
     setMediaType(new DcatProperty(DCAT.mediaType, DCTerms.MediaType, mediaType));
   }
 
+  /**
+   * Gets the format.
+   *
+   * @return the format
+   */
   @Embedded
   @AttributeOverrides({ @AttributeOverride(name = "value", column = @Column(name = "format")) })
   public DcatProperty getFormat() {
@@ -367,14 +496,24 @@ public class DcatDistribution implements Serializable {
     return setFormat(new DcatProperty(DCTerms.format, DCTerms.MediaTypeOrExtent, format));
   }
 
+  /**
+   * Gets the license.
+   *
+   * @return the license
+   */
   @OneToOne(cascade = CascadeType.ALL)
   @JoinColumn(name = "licenseDocument_id")
   public DctLicenseDocument getLicense() {
     return license;
   }
 
+  /**
+   * Sets the license.
+   *
+   * @param license the new license
+   */
   public void setLicense(DctLicenseDocument license) {
-    this.license = (license != null) ? license 
+    this.license = (license != null) ? license
         : new DctLicenseDocument(DCTerms.license.getURI(), "", "", "", nodeId);
   }
 
@@ -440,20 +579,40 @@ public class DcatDistribution implements Serializable {
     }
   }
 
+  /**
+   * Gets the byte size.
+   *
+   * @return the byte size
+   */
   @Embedded
   @AttributeOverrides({ @AttributeOverride(name = "value", column = @Column(name = "byteSize")) })
   public DcatProperty getByteSize() {
     return byteSize;
   }
 
+  /**
+   * Sets the byte size.
+   *
+   * @param byteSize the new byte size
+   */
   public void setByteSize(DcatProperty byteSize) {
     this.byteSize = byteSize;
   }
 
+  /**
+   * Sets the byte size.
+   *
+   * @param byteSize the new byte size
+   */
   public void setByteSize(String byteSize) {
     setByteSize(new DcatProperty(DCAT.byteSize, RDFS.Literal, byteSize));
   }
 
+  /**
+   * Gets the release date.
+   *
+   * @return the release date
+   */
   @Embedded
   @AttributeOverrides({
       @AttributeOverride(name = "value", 
@@ -463,14 +622,29 @@ public class DcatDistribution implements Serializable {
     return releaseDate;
   }
 
+  /**
+   * Sets the release date.
+   *
+   * @param releaseDate the new release date
+   */
   public void setReleaseDate(DcatProperty releaseDate) {
     this.releaseDate = releaseDate;
   }
 
+  /**
+   * Sets the release date.
+   *
+   * @param releaseDate the new release date
+   */
   public void setReleaseDate(String releaseDate) {
     setReleaseDate(new DcatProperty(DCTerms.issued, RDFS.Literal, releaseDate));
   }
 
+  /**
+   * Gets the update date.
+   *
+   * @return the update date
+   */
   @Embedded
   @AttributeOverrides({
       @AttributeOverride(name = "value", 
@@ -480,10 +654,20 @@ public class DcatDistribution implements Serializable {
     return updateDate;
   }
 
+  /**
+   * Sets the update date.
+   *
+   * @param updateDate the new update date
+   */
   public void setUpdateDate(DcatProperty updateDate) {
     this.updateDate = updateDate;
   }
 
+  /**
+   * Sets the update date.
+   *
+   * @param updateDate the new update date
+   */
   public void setUpdateDate(String updateDate) {
     setUpdateDate(new DcatProperty(DCTerms.modified, RDFS.Literal, updateDate));
   }
@@ -494,6 +678,11 @@ public class DcatDistribution implements Serializable {
   // return documentation;
   // }
 
+  /**
+   * Gets the documentation.
+   *
+   * @return the documentation
+   */
   @LazyCollection(LazyCollectionOption.FALSE)
   @ElementCollection
   @CollectionTable(name = "dcat_distribution_documentation", joinColumns = {
@@ -506,14 +695,29 @@ public class DcatDistribution implements Serializable {
     return documentation;
   }
 
+  /**
+   * Sets the documentation.
+   *
+   * @param documentation the new documentation
+   */
   public void setDocumentation(List<DcatProperty> documentation) {
     this.documentation = documentation;
   }
 
+  /**
+   * Sets the documentation.
+   *
+   * @param documentation the new documentation
+   */
   public void setDocumentation(String documentation) {
     setDocumentation(Arrays.asList(new DcatProperty(FOAF.page, FOAF.Document, documentation)));
   }
 
+  /**
+   * Gets the download url.
+   *
+   * @return the download url
+   */
   @Embedded
   @AttributeOverrides({
       @AttributeOverride(name = "value", 
@@ -522,14 +726,29 @@ public class DcatDistribution implements Serializable {
     return downloadUrl;
   }
 
+  /**
+   * Sets the download url.
+   *
+   * @param downloadUrl the new download url
+   */
   public void setDownloadUrl(DcatProperty downloadUrl) {
     this.downloadUrl = downloadUrl;
   }
 
+  /**
+   * Sets the download url.
+   *
+   * @param downloadUrl the new download url
+   */
   public void setDownloadUrl(String downloadUrl) {
     setDownloadUrl(new DcatProperty(DCAT.downloadURL, RDFS.Resource, downloadUrl));
   }
 
+  /**
+   * Gets the language.
+   *
+   * @return the language
+   */
   @LazyCollection(LazyCollectionOption.FALSE)
   @ElementCollection
   @CollectionTable(name = "dcat_distribution_language", joinColumns = {
@@ -540,15 +759,30 @@ public class DcatDistribution implements Serializable {
     return language;
   }
 
+  /**
+   * Sets the language.
+   *
+   * @param language the new language
+   */
   public void setLanguage(List<DcatProperty> language) {
     this.language = language;
   }
 
+  /**
+   * Sets the language.
+   *
+   * @param language the new language
+   */
   public void setLanguage(String language) {
-    setLanguage(Arrays.asList(
-        new DcatProperty(DCTerms.language, DCTerms.LinguisticSystem, language)));
+    setLanguage(
+        Arrays.asList(new DcatProperty(DCTerms.language, DCTerms.LinguisticSystem, language)));
   }
 
+  /**
+   * Gets the linked schemas.
+   *
+   * @return the linked schemas
+   */
   @LazyCollection(LazyCollectionOption.FALSE)
   @OneToMany(cascade = { CascadeType.ALL })
   // @Fetch(FetchMode.SELECT)
@@ -558,24 +792,49 @@ public class DcatDistribution implements Serializable {
     return linkedSchemas;
   }
 
+  /**
+   * Sets the linked schemas.
+   *
+   * @param linkedSchemas the new linked schemas
+   */
   public void setLinkedSchemas(List<DctStandard> linkedSchemas) {
     this.linkedSchemas = linkedSchemas;
   }
 
+  /**
+   * Gets the rights.
+   *
+   * @return the rights
+   */
   @Embedded
   @AttributeOverrides({ @AttributeOverride(name = "value", column = @Column(name = "rights")) })
   public DcatProperty getRights() {
     return rights;
   }
 
+  /**
+   * Sets the rights.
+   *
+   * @param rights the new rights
+   */
   public void setRights(DcatProperty rights) {
     this.rights = rights;
   }
 
+  /**
+   * Sets the rights.
+   *
+   * @param rights the new rights
+   */
   public void setRights(String rights) {
     setRights(new DcatProperty(DCTerms.rights, DCTerms.RightsStatement, rights));
   }
 
+  /**
+   * Gets the status.
+   *
+   * @return the status
+   */
   @OneToOne(cascade = CascadeType.ALL)
   @JoinColumns({ @JoinColumn(name = "status_id", referencedColumnName = "concept_id") })
   @Where(clause = "type='3'")
@@ -583,43 +842,89 @@ public class DcatDistribution implements Serializable {
     return status;
   }
 
+  /**
+   * Sets the status.
+   *
+   * @param status the new status
+   */
   public void setStatus(SkosConceptStatus status) {
     this.status = status;
   }
 
+  /**
+   * Sets the status.
+   *
+   * @param status the new status
+   */
   public void setStatus(String status) {
     setStatus(new SkosConceptStatus("http://www.w3.org/ns/adms#status", "",
         Arrays.asList(new SkosPrefLabel("", status, nodeId)), nodeId));
   }
 
+  /**
+   * Gets the checksum.
+   *
+   * @return the checksum
+   */
   @OneToOne(cascade = CascadeType.ALL)
   @JoinColumn(name = "checksum_id")
   public SpdxChecksum getChecksum() {
     return checksum;
   }
 
+  /**
+   * Sets the checksum.
+   *
+   * @param checksum the new checksum
+   */
   public void setChecksum(SpdxChecksum checksum) {
     this.checksum = checksum;
   }
 
+  /**
+   * Sets the checksum.
+   *
+   * @param checksum the new checksum
+   */
   public void setChecksum(String checksum) {
-    setChecksum(new SpdxChecksum("http://spdx.org/rdf/terms#checksum", "checksumAlgorithm_sha1", checksum, nodeId));
+    setChecksum(new SpdxChecksum("http://spdx.org/rdf/terms#checksum", "checksumAlgorithm_sha1",
+        checksum, nodeId));
   }
 
+  /**
+   * Checks if is checks for datalets.
+   *
+   * @return true, if is checks for datalets
+   */
   public boolean isHasDatalets() {
     return hasDatalets;
   }
 
+  /**
+   * Sets the checks for datalets.
+   *
+   * @param hasDatalets the new checks for datalets
+   */
   public void setHasDatalets(boolean hasDatalets) {
     this.hasDatalets = hasDatalets;
   }
 
+  /**
+   * Gets the distribution additional config.
+   *
+   * @return the distribution additional config
+   */
   @OneToOne(orphanRemoval = true, cascade = { CascadeType.ALL, CascadeType.REMOVE })
   @JoinColumn(name = "distribution_additionalconfig_id")
   public DistributionAdditionalConfiguration getDistributionAdditionalConfig() {
     return distributionAdditionalConfig;
   }
 
+  /**
+   * Sets the distribution additional config.
+   *
+   * @param distributionAdditionalConfig the new distribution additional config
+   */
   public void setDistributionAdditionalConfig(
       DistributionAdditionalConfiguration distributionAdditionalConfig) {
     this.distributionAdditionalConfig = distributionAdditionalConfig;
@@ -668,13 +973,11 @@ public class DcatDistribution implements Serializable {
    */
   @Transient
   public boolean isRdf() {
-    return ((this.format != null
-        && (this.format.getValue().equals("RDF") 
-            || this.format.getValue().equals("application/rdf+xml")))
+    return ((this.format != null && (this.format.getValue().equals("RDF")
+        || this.format.getValue().equals("application/rdf+xml")))
 
-        || (this.mediaType != null
-            && (this.mediaType.getValue().equals("RDF") 
-                || this.mediaType.getValue().equals("application/rdf+xml"))));
+        || (this.mediaType != null && (this.mediaType.getValue().equals("RDF")
+            || this.mediaType.getValue().equals("application/rdf+xml"))));
 
   }
 
@@ -690,8 +993,7 @@ public class DcatDistribution implements Serializable {
     doc.addField("content_type", CacheContentType.distribution.toString());
     doc.addField("nodeID", nodeId);
     doc.addField("storedRDF", storedRdf);
-    String descTmp = description != null 
-        ? description.getValue() : "";
+    String descTmp = description != null ? description.getValue() : "";
     try {
       while (descTmp.getBytes("UTF-8").length >= 32766) {
         descTmp = descTmp.substring(0, (int) Math.ceil(descTmp.length() * (0.9))).trim();
@@ -746,13 +1048,11 @@ public class DcatDistribution implements Serializable {
     // doc.addField("language", language.getValue());
 
     if (documentation != null && !documentation.isEmpty()) {
-      doc.addField("documentation", documentation.stream()
-          .filter(item -> item != null).map(item -> item.getValue())
-          .collect(Collectors.toList()));
+      doc.addField("documentation", documentation.stream().filter(item -> item != null)
+          .map(item -> item.getValue()).collect(Collectors.toList()));
     }
     if (language != null && !language.isEmpty()) {
-      doc.addField("language",
-          language.stream().filter(item -> item != null)
+      doc.addField("language", language.stream().filter(item -> item != null)
           .map(item -> item.getValue()).collect(Collectors.toList()));
     }
 
@@ -824,8 +1124,7 @@ public class DcatDistribution implements Serializable {
 
       for (SolrDocument child : childDocs) {
 
-        if (child.containsKey("content_type")
-            && child.getFieldValue("content_type")
+        if (child.containsKey("content_type") && child.getFieldValue("content_type")
             .equals(CacheContentType.licenseDocument.toString())) {
           license = DctLicenseDocument.docToDctLicenseDocument(child, nodeIdentifier);
         }
@@ -839,7 +1138,8 @@ public class DcatDistribution implements Serializable {
 
         if (child.containsKey("content_type")
             && child.getFieldValue("content_type").equals(CacheContentType.checksum.toString())) {
-          checksum = SpdxChecksum.docToSpdxChecksum(child, "http://spdx.org/rdf/terms#checksum", nodeIdentifier);
+          checksum = SpdxChecksum.docToSpdxChecksum(child, "http://spdx.org/rdf/terms#checksum",
+              nodeIdentifier);
         }
 
       }
@@ -853,8 +1153,7 @@ public class DcatDistribution implements Serializable {
 
     if (doc.getFieldValue("license") != null) {
       license = DctLicenseDocument.jsonToDctLicenseDocument(
-          new JSONObject(doc.getFieldValue("license").toString()),
-          nodeIdentifier);
+          new JSONObject(doc.getFieldValue("license").toString()), nodeIdentifier);
     }
 
     if (doc.getFieldValue("status") != null) {
@@ -871,9 +1170,8 @@ public class DcatDistribution implements Serializable {
     // }
 
     if (doc.getFieldValue("linkedSchemas") != null) {
-      linkedSchemas = DctStandard
-          .jsonArrayToDcatStandardList(new JSONArray(
-              doc.getFieldValue("linkedSchemas").toString()), nodeIdentifier);
+      linkedSchemas = DctStandard.jsonArrayToDcatStandardList(
+          new JSONArray(doc.getFieldValue("linkedSchemas").toString()), nodeIdentifier);
     }
 
     // try {
@@ -900,21 +1198,24 @@ public class DcatDistribution implements Serializable {
 
     DcatDistribution distr = new DcatDistribution(doc.getFieldValue("id").toString(),
         doc.getFieldValue("nodeID").toString(), doc.getFieldValue("accessURL").toString(),
-        doc.getFieldValue("description").toString(),
-        doc.getFieldValue("format").toString(), license, byteSize,
-        checksum, (ArrayList<String>) doc.getFieldValue("documentation"),
+        doc.getFieldValue("description").toString(), doc.getFieldValue("format").toString(),
+        license, byteSize, checksum, (ArrayList<String>) doc.getFieldValue("documentation"),
         doc.getFieldValue("downloadURL").toString(),
         (ArrayList<String>) doc.getFieldValue("language"), linkedSchemas,
-        (doc.getFieldValue("mediaType") != null) 
-        ? doc.getFieldValue("mediaType").toString() : "", distribIssued,
-        distribModified, (doc.getFieldValue("rights") != null) 
-        ? doc.getFieldValue("rights").toString() : "", status,
+        (doc.getFieldValue("mediaType") != null) ? doc.getFieldValue("mediaType").toString() : "",
+        distribIssued, distribModified,
+        (doc.getFieldValue("rights") != null) ? doc.getFieldValue("rights").toString() : "", status,
         doc.getFieldValue("title").toString(), (Boolean) doc.getFieldValue("hasDatalets"));
     // datalets);
     distr.setStoredRdf((Boolean) doc.getFieldValue("storedRDF"));
     return distr;
   }
 
+  /*
+   * (non-Javadoc)
+   * 
+   * @see java.lang.Object#toString()
+   */
   @Override
   public String toString() {
     return "DCATDistribution [id=" + id + ", datalets= " + hasDatalets + "]";

@@ -18,14 +18,30 @@
 
 package it.eng.idra.scheduler.exception;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class SchedulerCannotBeInitialisedException.
+ */
 public class SchedulerCannotBeInitialisedException extends Exception {
-  
+
+  /** The Constant serialVersionUID. */
   private static final long serialVersionUID = -5194733344990785894L;
 
+  /**
+   * Instantiates a new scheduler cannot be initialised exception.
+   *
+   * @param message the message
+   */
   public SchedulerCannotBeInitialisedException(String message) {
     super(message);
   }
 
+  /**
+   * Instantiates a new scheduler cannot be initialised exception.
+   *
+   * @param message the message
+   * @param t       the t
+   */
   public SchedulerCannotBeInitialisedException(String message, Throwable t) {
     super(message, t);
   }

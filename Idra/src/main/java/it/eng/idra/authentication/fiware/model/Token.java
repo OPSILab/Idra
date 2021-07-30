@@ -60,12 +60,11 @@ public class Token {
    * @param tokenType    the token type
    * @param expiresIn    the expires in
    * @param refreshToken the refresh token
-   * @param scope         the scope
-   * @param state         the state
+   * @param scope        the scope
+   * @param state        the state
    */
-  public Token(String accessToken, String tokenType, 
-      Integer expiresIn, String refreshToken, Set<String> scope,
-      String state) {
+  public Token(String accessToken, String tokenType, Integer expiresIn, String refreshToken,
+      Set<String> scope, String state) {
     this.accessToken = accessToken;
     this.tokenType = tokenType;
     this.expiresIn = expiresIn;

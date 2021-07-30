@@ -38,11 +38,19 @@ import javax.persistence.TypedQuery;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class CachePersistenceManager.
+ */
 public class CachePersistenceManager {
 
+  /** The emf. */
   private static EntityManagerFactory emf;
 
+  /** The em. */
   private EntityManager em;
+
+  /** The logger. */
   private static Logger logger = LogManager.getLogger(CachePersistenceManager.class);
 
   static {
@@ -68,10 +76,18 @@ public class CachePersistenceManager {
     // logger.info("Hibernate end");
   }
 
+  /**
+   * Jpa begin transaction.
+   */
   public void jpaBeginTransaction() {
     em.getTransaction().begin();
   }
 
+  /**
+   * Jpa get transaction.
+   *
+   * @return the entity transaction
+   */
   public EntityTransaction jpaGetTransaction() {
     return em.getTransaction();
   }
@@ -85,10 +101,19 @@ public class CachePersistenceManager {
     }
   }
 
+  /**
+   * Jpa clear.
+   */
   public void jpaClear() {
     em.clear();
   }
 
+  /**
+   * Jpa persist dataset.
+   *
+   * @param obj the obj
+   * @throws EntityExistsException the entity exists exception
+   */
   public void jpaPersistDataset(DcatDataset obj) throws EntityExistsException {
     em.persist(obj);
   }
@@ -98,9 +123,9 @@ public class CachePersistenceManager {
    *
    * @param obj the obj
    * @throws IllegalStateException the illegal state exception
-   * @throws RollbackException the rollback exception
+   * @throws RollbackException     the rollback exception
    */
-  public void jpaMergeAndCommitDataset(DcatDataset obj) 
+  public void jpaMergeAndCommitDataset(DcatDataset obj)
       throws IllegalStateException, RollbackException {
 
     try {
@@ -122,9 +147,9 @@ public class CachePersistenceManager {
    *
    * @param obj the obj
    * @throws IllegalStateException the illegal state exception
-   * @throws RollbackException the rollback exception
+   * @throws RollbackException     the rollback exception
    */
-  public void jpaMergeAndCommitDistribution(DcatDistribution obj) 
+  public void jpaMergeAndCommitDistribution(DcatDistribution obj)
       throws IllegalStateException, RollbackException {
 
     try {
@@ -147,9 +172,9 @@ public class CachePersistenceManager {
    *
    * @param obj the obj
    * @throws IllegalStateException the illegal state exception
-   * @throws RollbackException the rollback exception
+   * @throws RollbackException     the rollback exception
    */
-  public void jpaPersistOrMergeAndCommitDataset(DcatDataset obj) 
+  public void jpaPersistOrMergeAndCommitDataset(DcatDataset obj)
       throws IllegalStateException, RollbackException {
 
     try {
@@ -192,10 +217,21 @@ public class CachePersistenceManager {
     em.getTransaction().commit();
   }
 
+  /**
+   * Jpa remove dataset.
+   *
+   * @param obj the obj
+   */
   public void jpaRemoveDataset(DcatDataset obj) {
     em.remove(obj);
   }
 
+  /**
+   * Jpa commit transanction.
+   *
+   * @throws IllegalStateException the illegal state exception
+   * @throws RollbackException     the rollback exception
+   */
   public void jpaCommitTransanction() throws IllegalStateException, RollbackException {
     em.getTransaction().commit();
     em.clear();
@@ -207,8 +243,7 @@ public class CachePersistenceManager {
    * @param obj the obj
    * @throws EntityExistsException the entity exists exception
    */
-  public void jpaPersistAndCommitDataset(DcatDataset obj) 
-      throws EntityExistsException {
+  public void jpaPersistAndCommitDataset(DcatDataset obj) throws EntityExistsException {
     // logger.info(obj.getId());
     try {
       em.getTransaction().begin();
@@ -248,11 +283,22 @@ public class CachePersistenceManager {
     }
   }
 
+  /**
+   * Jpa query.
+   *
+   * @param query the query
+   * @return the query
+   */
   public Query jpaQuery(String query) {
     Query q = em.createQuery(query);
     return q;
   }
 
+  /**
+   * Jpa get datasets.
+   *
+   * @return the list
+   */
   public List<DcatDataset> jpaGetDatasets() {
     TypedQuery<DcatDataset> q = em.createQuery("SELECT d FROM DcatDataset d", DcatDataset.class);
     return q.getResultList();
@@ -275,8 +321,8 @@ public class CachePersistenceManager {
     HashMap<String, String> filters = filterMap.get(nodes.get(0));
 
     String query = "SELECT d FROM DcatDataset d where d.nodeID in (:nodes) and  ( regexp(d.title,'"
-        + filters.get("regex") + "') = true "
-            + "or regexp(d.description,'" + filters.get("regex") + "') = true ) ";
+        + filters.get("regex") + "') = true " + "or regexp(d.description,'" + filters.get("regex")
+        + "') = true ) ";
 
     // query += "and
 
@@ -320,13 +366,12 @@ public class CachePersistenceManager {
 
     String query = "SELECT d FROM DcatDataset d join DctLocation l on d.spatialCoverage=l.id"
         + " where d.nodeID in (:nodes) and l.geometry is not '' "
-        + "and ST_Intersects(ST_GeomFromGeoJSON('"
-        + filters.get("geographic_area") + "'),ST_GeomFromGeoJSON(l.geometry))=true ";
+        + "and ST_Intersects(ST_GeomFromGeoJSON('" + filters.get("geographic_area")
+        + "'),ST_GeomFromGeoJSON(l.geometry))=true ";
 
     if (filters.containsKey("regex")) {
-      query += "and ( regexp(d.title,'" 
-          + filters.get("regex") + "') = true or regexp(d.description,'"
-          + filters.get("regex") + "') = true ) ";
+      query += "and ( regexp(d.title,'" + filters.get("regex")
+          + "') = true or regexp(d.description,'" + filters.get("regex") + "') = true ) ";
     } else {
       if (filters.containsKey("title")) {
         query += " and d.title like '%" + filters.get("title") + "%' ";
@@ -376,8 +421,8 @@ public class CachePersistenceManager {
     HashMap<String, String> filters = filterMap.get(nodes.get(0));
 
     String query = "SELECT d FROM DcatDataset d where d.nodeID in (:nodes) and  ( regexp(d.title,'"
-        + filters.get("regex") + "') = true "
-            + "or regexp(d.description,'" + filters.get("regex") + "') = true ) ";
+        + filters.get("regex") + "') = true " + "or regexp(d.description,'" + filters.get("regex")
+        + "') = true ) ";
 
     String[] sort = ((String) searchParameters.getOrDefault("sort", "id,asc")).split(",");
     if (!sort[0].equals("id") || !sort[0].equals("title")) {
@@ -424,13 +469,12 @@ public class CachePersistenceManager {
 
     String query = "SELECT d FROM DcatDataset d join DctLocation l on d.spatialCoverage=l.id "
         + "where d.nodeID in (:nodes) and l.geometry is not '' "
-        + "and ST_Intersects(ST_GeomFromGeoJSON('"
-        + filters.get("geographic_area") + "'),ST_GeomFromGeoJSON(l.geometry))=true ";
+        + "and ST_Intersects(ST_GeomFromGeoJSON('" + filters.get("geographic_area")
+        + "'),ST_GeomFromGeoJSON(l.geometry))=true ";
 
     if (filters.containsKey("regex")) {
-      query += "and ( regexp(d.title,'" 
-          + filters.get("regex") + "') = true or regexp(d.description,'"
-          + filters.get("regex") + "') = true ) ";
+      query += "and ( regexp(d.title,'" + filters.get("regex")
+          + "') = true or regexp(d.description,'" + filters.get("regex") + "') = true ) ";
     } else {
       if (filters.containsKey("title")) {
         query += " and d.title like '%" + filters.get("title") + "%' ";
@@ -470,9 +514,8 @@ public class CachePersistenceManager {
    * @return the list
    */
   public List<DcatDataset> jpaGetDatasetsByOdmsNode(int nodeId) {
-    TypedQuery<DcatDataset> q = 
-        em.createQuery("SELECT d FROM DcatDataset d where d.nodeID = " + nodeId,
-        DcatDataset.class);
+    TypedQuery<DcatDataset> q = em
+        .createQuery("SELECT d FROM DcatDataset d where d.nodeID = " + nodeId, DcatDataset.class);
     return q.getResultList();
   }
 
@@ -483,12 +526,16 @@ public class CachePersistenceManager {
    * @return the dcat dataset
    */
   public DcatDataset jpaGetDatasetsById(String datasetId) {
-    TypedQuery<DcatDataset> q = 
-        em.createQuery("SELECT d FROM DcatDataset d where d.id = '" + datasetId + "'",
-        DcatDataset.class);
+    TypedQuery<DcatDataset> q = em.createQuery(
+        "SELECT d FROM DcatDataset d where d.id = '" + datasetId + "'", DcatDataset.class);
     return q.getResultList().get(0);
   }
 
+  /**
+   * Jpa update.
+   *
+   * @param obj the obj
+   */
   public void jpaUpdate(Object obj) {
     em.merge(obj);
 
@@ -509,7 +556,7 @@ public class CachePersistenceManager {
   /**
    * Jpa update dataset.
    *
-   * @param obj the obj
+   * @param obj            the obj
    * @param getTransaction the get transaction
    */
   public void jpaUpdateDataset(DcatDataset obj, boolean getTransaction) {
@@ -528,7 +575,7 @@ public class CachePersistenceManager {
   /**
    * Jpa update distribution.
    *
-   * @param obj the obj
+   * @param obj            the obj
    * @param getTransaction the get transaction
    */
   public void jpaUpdateDistribution(DcatDistribution obj, boolean getTransaction) {
@@ -553,7 +600,7 @@ public class CachePersistenceManager {
     DcatDataset matching;
     DcatDataset toDelete = (DcatDataset) obj;
     em.getTransaction().begin();
-    matching = (DcatDataset) em.find(DcatDataset.class, 
+    matching = (DcatDataset) em.find(DcatDataset.class,
         new DcatDatasetId(toDelete.getId(), toDelete.getNodeId()));
     em.remove(matching);
     em.getTransaction().commit();
@@ -580,7 +627,7 @@ public class CachePersistenceManager {
     em.getTransaction().begin();
     logger.info("HIBERNATE: Delete Transaction BEGIN");
     for (DcatDataset o : objList) {
-      DcatDataset dataset = (DcatDataset) em.find(DcatDataset.class, 
+      DcatDataset dataset = (DcatDataset) em.find(DcatDataset.class,
           new DcatDatasetId(o.getId(), o.getNodeId()));
       // DcatDataset managed = em.merge(o);
       em.remove(dataset);
@@ -589,6 +636,11 @@ public class CachePersistenceManager {
 
   }
 
+  /**
+   * Jpa get all datalets.
+   *
+   * @return the list
+   */
   public List<Datalet> jpaGetAllDatalets() {
     TypedQuery<Datalet> q = em.createQuery("SELECT d FROM Datalet d", Datalet.class);
     return q.getResultList();
@@ -601,43 +653,42 @@ public class CachePersistenceManager {
    * @return the list
    */
   public List<Datalet> jpaGetDataletByDistributionId(String distributionId) {
-    TypedQuery<Datalet> q = 
-        em.createQuery("SELECT d FROM Datalet d where d.distributionID='" + distributionId + "'",
-        Datalet.class);
+    TypedQuery<Datalet> q = em.createQuery(
+        "SELECT d FROM Datalet d where d.distributionID='" + distributionId + "'", Datalet.class);
     return q.getResultList();
   }
 
   /**
    * Jpa get datalet by triple ID.
    *
-   * @param nodeId the node ID
-   * @param datasetId the dataset ID
+   * @param nodeId         the node ID
+   * @param datasetId      the dataset ID
    * @param distributionId the distribution ID
    * @return the list
    */
-  public List<Datalet> jpaGetDataletByTripleId(String nodeId, 
-      String datasetId, String distributionId) {
+  public List<Datalet> jpaGetDataletByTripleId(String nodeId, String datasetId,
+      String distributionId) {
     TypedQuery<Datalet> q = em.createQuery("SELECT d FROM Datalet d where d.nodeID='" + nodeId
-        + "' and d.distributionID='" + distributionId 
-        + "' and d.datasetID='" + datasetId + "'", Datalet.class);
+        + "' and d.distributionID='" + distributionId + "' and d.datasetID='" + datasetId + "'",
+        Datalet.class);
     return q.getResultList();
   }
 
   /**
    * Jpa get datalet by I ds.
    *
-   * @param nodeId the node ID
-   * @param datasetId the dataset ID
+   * @param nodeId         the node ID
+   * @param datasetId      the dataset ID
    * @param distributionId the distribution ID
-   * @param dataletId the datalet ID
+   * @param dataletId      the datalet ID
    * @return the datalet
    */
-  public Datalet jpaGetDataletByIds(String nodeId, String datasetId,
-      String distributionId, String dataletId) {
-    TypedQuery<Datalet> q = em
-        .createQuery("SELECT d FROM Datalet d where d.nodeID='" 
-            + nodeId + "' and d.distributionID='" + distributionId
-            + "' and d.datasetID='" + datasetId + "' and d.id='" + dataletId + "'", Datalet.class);
+  public Datalet jpaGetDataletByIds(String nodeId, String datasetId, String distributionId,
+      String dataletId) {
+    TypedQuery<Datalet> q = em.createQuery(
+        "SELECT d FROM Datalet d where d.nodeID='" + nodeId + "' and d.distributionID='"
+            + distributionId + "' and d.datasetID='" + datasetId + "' and d.id='" + dataletId + "'",
+        Datalet.class);
     if (q.getResultList().isEmpty()) {
       return null;
     } else {
@@ -753,12 +804,12 @@ public class CachePersistenceManager {
     q = em.createNativeQuery("DELETE FROM dcat_relatedResource where nodeID= " + nodeId);
     q.executeUpdate();
 
-    q = em.createNativeQuery("DELETE FROM dcat_standard_referencedocumentation "
-        + "where nodeID= " + nodeId);
+    q = em.createNativeQuery(
+        "DELETE FROM dcat_standard_referencedocumentation " + "where nodeID= " + nodeId);
     q.executeUpdate();
 
-    q = em.createNativeQuery("DELETE FROM dcat_concept where "
-        + "nodeID= " + nodeId + " and dataset_id is not null ");
+    q = em.createNativeQuery(
+        "DELETE FROM dcat_concept where " + "nodeID= " + nodeId + " and dataset_id is not null ");
     q.executeUpdate();
 
     q = em.createNativeQuery("DELETE FROM dcat_concept_prefLabel where nodeID= " + nodeId);
@@ -800,8 +851,8 @@ public class CachePersistenceManager {
     q = em.createQuery("DELETE FROM FoafAgent where nodeID = " + nodeId);
     q.executeUpdate();
 
-    q = em.createNativeQuery("DELETE FROM dcat_concept where "
-        + "nodeID= " + nodeId + " and dataset_id is null ");
+    q = em.createNativeQuery(
+        "DELETE FROM dcat_concept where " + "nodeID= " + nodeId + " and dataset_id is null ");
     q.executeUpdate();
 
     q = em.createQuery("DELETE FROM OrionDistributionConfig where nodeID= " + nodeId);
@@ -819,9 +870,9 @@ public class CachePersistenceManager {
    * @return the orion distribution config
    */
   public OrionDistributionConfig jpaGetOrionDistributionConfig(String id) {
-    TypedQuery<OrionDistributionConfig> q = em
-        .createQuery("SELECT d FROM OrionDistributionConfig d "
-            + "where id='" + id + "'", OrionDistributionConfig.class);
+    TypedQuery<OrionDistributionConfig> q = em.createQuery(
+        "SELECT d FROM OrionDistributionConfig d " + "where id='" + id + "'",
+        OrionDistributionConfig.class);
     if (q.getResultList().isEmpty()) {
       return null;
     } else {

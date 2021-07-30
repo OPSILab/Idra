@@ -18,16 +18,34 @@
 
 package it.eng.idra.authentication.fiware.model;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Enum FiwareIdmVersion.
+ */
 public enum FiwareIdmVersion {
 
-  FIWARE_IDM_VERSION_6("6"), FIWARE_IDM_VERSION_7("7");
+  /** The fiware idm version 6. */
+  FIWARE_IDM_VERSION_6("6"),
+  /** The fiware idm version 7. */
+  FIWARE_IDM_VERSION_7("7");
 
+  /** The text. */
   private final String text;
 
+  /**
+   * Instantiates a new fiware idm version.
+   *
+   * @param text the text
+   */
   private FiwareIdmVersion(final String text) {
     this.text = text;
   }
 
+  /*
+   * (non-Javadoc)
+   * 
+   * @see java.lang.Enum#toString()
+   */
   @Override
   public String toString() {
     return text;

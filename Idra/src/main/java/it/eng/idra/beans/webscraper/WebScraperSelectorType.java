@@ -18,17 +18,37 @@
 
 package it.eng.idra.beans.webscraper;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Enum WebScraperSelectorType.
+ */
 public enum WebScraperSelectorType {
 
-  SelectorElementAttribute("SelectorElementAttribute"), 
-  SelectorText("SelectorText"), SelectorLink("SelectorLink");
+  /** The Selector element attribute. */
+  SelectorElementAttribute("SelectorElementAttribute"),
 
+  /** The Selector text. */
+  SelectorText("SelectorText"),
+  /** The Selector link. */
+  SelectorLink("SelectorLink");
+
+  /** The type name. */
   private String typeName;
 
+  /**
+   * Instantiates a new web scraper selector type.
+   *
+   * @param name the name
+   */
   WebScraperSelectorType(String name) {
     this.typeName = name;
   }
 
+  /**
+   * Type name.
+   *
+   * @return the string
+   */
   public String typeName() {
     return typeName;
   }

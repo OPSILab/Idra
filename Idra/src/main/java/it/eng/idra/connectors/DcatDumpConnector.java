@@ -57,17 +57,32 @@ import org.apache.jena.vocabulary.RDF;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class DcatDumpConnector.
+ */
 public class DcatDumpConnector implements IodmsConnector {
 
+  /** The node id. */
   private String nodeId;
+
+  /** The node. */
   private OdmsCatalogue node;
+
+  /** The deserializer. */
   // private DCATAPProfile profile;
   private DcatApDeserializer deserializer;
+
+  /** The logger. */
   private static Logger logger = LogManager.getLogger(DcatDumpConnector.class);
 
-  private static String odmsDumpFilePath = 
-      PropertyManager.getProperty(IdraProperty.ODMS_DUMP_FILE_PATH);
+  /** The odms dump file path. */
+  private static String odmsDumpFilePath = PropertyManager
+      .getProperty(IdraProperty.ODMS_DUMP_FILE_PATH);
 
+  /**
+   * Instantiates a new dcat dump connector.
+   */
   public DcatDumpConnector() {
   }
 
@@ -101,17 +116,33 @@ public class DcatDumpConnector implements IodmsConnector {
 
   }
 
+  /*
+   * (non-Javadoc)
+   * 
+   * @see it.eng.idra.connectors.IodmsConnector#findDatasets(java.util.HashMap)
+   */
   @Override
   public List<DcatDataset> findDatasets(HashMap<String, Object> searchParameters) throws Exception {
     ArrayList<DcatDataset> resultDatasets = new ArrayList<DcatDataset>();
     return resultDatasets;
   }
 
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * it.eng.idra.connectors.IodmsConnector#countSearchDatasets(java.util.HashMap)
+   */
   @Override
   public int countSearchDatasets(HashMap<String, Object> searchParameters) throws Exception {
     return 0;
   }
 
+  /*
+   * (non-Javadoc)
+   * 
+   * @see it.eng.idra.connectors.IodmsConnector#countDatasets()
+   */
   @Override
   public int countDatasets() throws Exception {
     // try {
@@ -142,16 +173,32 @@ public class DcatDumpConnector implements IodmsConnector {
 
   }
 
+  /*
+   * (non-Javadoc)
+   * 
+   * @see it.eng.idra.connectors.IodmsConnector#datasetToDcat(java.lang.Object,
+   * it.eng.idra.beans.odms.OdmsCatalogue)
+   */
   @Override
   public DcatDataset datasetToDcat(Object dataset, OdmsCatalogue node) throws Exception {
     return null;
   }
 
+  /*
+   * (non-Javadoc)
+   * 
+   * @see it.eng.idra.connectors.IodmsConnector#getDataset(java.lang.String)
+   */
   @Override
   public DcatDataset getDataset(String datasetId) throws Exception {
     return null;
   }
 
+  /*
+   * (non-Javadoc)
+   * 
+   * @see it.eng.idra.connectors.IodmsConnector#getAllDatasets()
+   */
   @Override
   public List<DcatDataset> getAllDatasets() throws Exception {
 
@@ -174,6 +221,13 @@ public class DcatDumpConnector implements IodmsConnector {
 
   }
 
+  /**
+   * Gets the datasets from dump string.
+   *
+   * @param dumpString the dump string
+   * @return the datasets from dump string
+   * @throws Exception the exception
+   */
   private List<DcatDataset> getDatasetsFromDumpString(String dumpString) throws Exception {
 
     List<DcatDataset> datasetsList = new ArrayList<DcatDataset>();
@@ -212,16 +266,15 @@ public class DcatDumpConnector implements IodmsConnector {
         datasetsList.add(deserializer.resourceToDataset(nodeId, datasetResource));
 
       } catch (Exception e) {
-        logger.info(
-            "Skipped dataset - There was an error: " 
-            + e.getMessage() + " while deserializing dataset: " + datasetUri);
+        logger.info("Skipped dataset - There was an error: " + e.getMessage()
+            + " while deserializing dataset: " + datasetUri);
 
       }
     }
 
     if (datasetsList.size() != 0) {
-      DcatApSerializer.writeModelToFile(m,
-          DcatApFormat.RDFXML, odmsDumpFilePath, "dumpFileString_" + nodeId);
+      DcatApSerializer.writeModelToFile(m, DcatApFormat.RDFXML, odmsDumpFilePath,
+          "dumpFileString_" + nodeId);
       node.setDumpFilePath(odmsDumpFilePath + "dumpFileString_" + nodeId);
       // Since the registration is finished we don't need the file in memory
       node.setDumpString(null);
@@ -232,6 +285,13 @@ public class DcatDumpConnector implements IodmsConnector {
     }
   }
 
+  /**
+   * Gets the datasets from dump url.
+   *
+   * @param dumpUrl the dump url
+   * @return the datasets from dump url
+   * @throws Exception the exception
+   */
   private List<DcatDataset> getDatasetsFromDumpUrl(String dumpUrl) throws Exception {
 
     try (CloseableHttpClient httpclient = HttpClients.createDefault()) {
@@ -254,10 +314,15 @@ public class DcatDumpConnector implements IodmsConnector {
     }
   }
 
+  /*
+   * (non-Javadoc)
+   * 
+   * @see it.eng.idra.connectors.IodmsConnector#getChangedDatasets(java.util.List,
+   * java.lang.String)
+   */
   @Override
   public OdmsSynchronizationResult getChangedDatasets(List<DcatDataset> oldDatasets,
-      String startingDateString)
-      throws Exception {
+      String startingDateString) throws Exception {
 
     ArrayList<DcatDataset> newDatasets = (ArrayList<DcatDataset>) getAllDatasets();
 

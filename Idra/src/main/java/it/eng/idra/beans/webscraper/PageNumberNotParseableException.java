@@ -18,10 +18,20 @@
 
 package it.eng.idra.beans.webscraper;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class PageNumberNotParseableException.
+ */
 public class PageNumberNotParseableException extends Exception {
 
+  /** The Constant serialVersionUID. */
   private static final long serialVersionUID = 1L;
 
+  /**
+   * Instantiates a new page number not parseable exception.
+   *
+   * @param message the message
+   */
   public PageNumberNotParseableException(String message) {
     super(message);
   }

@@ -38,48 +38,73 @@ import org.apache.solr.common.SolrDocument;
 import org.apache.solr.common.SolrInputDocument;
 import org.hibernate.annotations.GenericGenerator;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class DctLocation.
+ */
 @Entity
 @Table(name = "dcat_location")
 public class DctLocation {
 
+  /** The Constant RDFClass. */
   private static final transient Resource RDFClass = DCTerms.Location;
 
+  /** The id. */
   private String id;
+
+  /** The node id. */
   @SerializedName(value = "nodeID")
   private transient String nodeId;
+
+  /** The uri. */
   private String uri;
+
+  /** The geographical identifier. */
   private DcatProperty geographicalIdentifier;
+
+  /** The geographical name. */
   private DcatProperty geographicalName;
+
+  /** The geometry. */
   private DcatProperty geometry;
 
+  /**
+   * Instantiates a new dct location.
+   */
   public DctLocation() {
   }
 
   /**
    * Instantiates a new dct location.
    *
-   * @param uri the uri
+   * @param uri                    the uri
    * @param geographicalIdentifier the geographical identifier
-   * @param geographicalName the geographical name
-   * @param geometry the geometry
-   * @param nodeId the node ID
+   * @param geographicalName       the geographical name
+   * @param geometry               the geometry
+   * @param nodeId                 the node ID
    */
-  public DctLocation(String uri, String geographicalIdentifier,
-      String geographicalName, String geometry,
-      String nodeId) {
+  public DctLocation(String uri, String geographicalIdentifier, String geographicalName,
+      String geometry, String nodeId) {
     super();
     setUri(uri);
     this.nodeId = nodeId;
-    setGeographicalIdentifier(
-        new DcatProperty(ResourceFactory.createProperty("http://dati.gov.it/onto/dcatapit#geographicalIdentifier"),
-            RDFS.Literal, geographicalIdentifier));
-    setGeographicalName(new DcatProperty(ResourceFactory.createProperty("http://www.w3.org/ns/locn#geographicalName"),
-        SKOS.Concept, geographicalName));
-    setGeometry(new DcatProperty(ResourceFactory.createProperty("http://www.w3.org/ns/locn#geometry"),
-        ResourceFactory.createResource("https://www.w3.org/ns/locn#Geometry"), geometry));
+    setGeographicalIdentifier(new DcatProperty(
+        ResourceFactory.createProperty("http://dati.gov.it/onto/dcatapit#geographicalIdentifier"),
+        RDFS.Literal, geographicalIdentifier));
+    setGeographicalName(new DcatProperty(
+        ResourceFactory.createProperty("http://www.w3.org/ns/locn#geographicalName"), SKOS.Concept,
+        geographicalName));
+    setGeometry(
+        new DcatProperty(ResourceFactory.createProperty("http://www.w3.org/ns/locn#geometry"),
+            ResourceFactory.createResource("https://www.w3.org/ns/locn#Geometry"), geometry));
 
   }
 
+  /**
+   * Gets the id.
+   *
+   * @return the id
+   */
   @Id
   @GeneratedValue(generator = "uuid")
   @GenericGenerator(name = "uuid", strategy = "uuid2")
@@ -88,58 +113,118 @@ public class DctLocation {
     return id;
   }
 
+  /**
+   * Sets the id.
+   *
+   * @param id the new id
+   */
   public void setId(String id) {
     this.id = id;
   }
 
+  /**
+   * Gets the uri.
+   *
+   * @return the uri
+   */
   public String getUri() {
     return uri;
   }
 
+  /**
+   * Sets the uri.
+   *
+   * @param uri the new uri
+   */
   public void setUri(String uri) {
     this.uri = uri;
   }
 
+  /**
+   * Gets the geographical identifier.
+   *
+   * @return the geographical identifier
+   */
   @Embedded
-  @AttributeOverrides({ @AttributeOverride(name = "value",
-      column = @Column(name = "geographicalIdentifier")) })
+  @AttributeOverrides({
+      @AttributeOverride(name = "value", column = @Column(name = "geographicalIdentifier")) })
   public DcatProperty getGeographicalIdentifier() {
     return geographicalIdentifier;
   }
 
+  /**
+   * Sets the geographical identifier.
+   *
+   * @param geographicalIdentifier the new geographical identifier
+   */
   public void setGeographicalIdentifier(DcatProperty geographicalIdentifier) {
     this.geographicalIdentifier = geographicalIdentifier;
   }
 
+  /**
+   * Gets the geographical name.
+   *
+   * @return the geographical name
+   */
   @Embedded
-  @AttributeOverrides({ @AttributeOverride(name = "value",
-      column = @Column(name = "geographicalName")) })
+  @AttributeOverrides({
+      @AttributeOverride(name = "value", column = @Column(name = "geographicalName")) })
   public DcatProperty getGeographicalName() {
     return geographicalName;
   }
 
+  /**
+   * Sets the geographical name.
+   *
+   * @param geographicalName the new geographical name
+   */
   public void setGeographicalName(DcatProperty geographicalName) {
     this.geographicalName = geographicalName;
   }
 
+  /**
+   * Gets the geometry.
+   *
+   * @return the geometry
+   */
   @Embedded
   @AttributeOverrides({ @AttributeOverride(name = "value", column = @Column(name = "geometry")) })
   public DcatProperty getGeometry() {
     return geometry;
   }
 
+  /**
+   * Sets the geometry.
+   *
+   * @param geometry the new geometry
+   */
   public void setGeometry(DcatProperty geometry) {
     this.geometry = geometry;
   }
 
+  /**
+   * Gets the node id.
+   *
+   * @return the node id
+   */
   public String getNodeId() {
     return nodeId;
   }
 
+  /**
+   * Sets the node id.
+   *
+   * @param nodeId the new node id
+   */
   public void setNodeId(String nodeId) {
     this.nodeId = nodeId;
   }
 
+  /**
+   * Gets the rdf class.
+   *
+   * @return the rdf class
+   */
   @Transient
   public static Resource getRdfClass() {
     return RDFClass;
@@ -158,7 +243,7 @@ public class DctLocation {
     doc.addField("content_type", contentType.toString());
     doc.addField("geographicalIdentifier",
         this.geographicalIdentifier != null ? this.geographicalIdentifier.getValue() : "");
-    doc.addField("geographicalName", 
+    doc.addField("geographicalName",
         this.geographicalName != null ? this.geographicalName.getValue() : "");
     doc.addField("geometry", this.geometry != null ? this.geometry.getValue() : "");
     return doc;
@@ -168,25 +253,29 @@ public class DctLocation {
   /**
    * Doc to dct location.
    *
-   * @param doc the doc
-   * @param uri the uri
+   * @param doc    the doc
+   * @param uri    the uri
    * @param nodeId the node id
    * @return the dct location
    */
   public static DctLocation docToDctLocation(SolrDocument doc, String uri, String nodeId) {
     DctLocation l = new DctLocation(uri, doc.getFieldValue("geographicalIdentifier").toString(),
-        doc.getFieldValue("geographicalName").toString(), 
-        doc.getFieldValue("geometry").toString(), nodeId);
+        doc.getFieldValue("geographicalName").toString(), doc.getFieldValue("geometry").toString(),
+        nodeId);
     l.setId(doc.getFieldValue("id").toString());
     return l;
 
   }
 
+  /*
+   * (non-Javadoc)
+   * 
+   * @see java.lang.Object#toString()
+   */
   @Override
   public String toString() {
-    return "DCTLocation [uri=" + uri + ", "
-        + "geographicalIdentifier=" + geographicalIdentifier + ", geographicalName="
-        + geographicalName + ", geometry=" + geometry + "]";
+    return "DCTLocation [uri=" + uri + ", " + "geographicalIdentifier=" + geographicalIdentifier
+        + ", geographicalName=" + geographicalName + ", geometry=" + geometry + "]";
   }
 
 }

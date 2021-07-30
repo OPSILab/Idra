@@ -26,20 +26,41 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class Log.
+ */
 @Entity
 @Table(name = "logs")
 public class Log {
 
+  /** The id. */
   private int id = 0;
+
+  /** The logger. */
   private String logger;
+
+  /** The message. */
   private String message;
+
+  /** The level. */
   private String level;
+
+  /** The timestamp. */
   private ZonedDateTime timestamp;
 
+  /**
+   * Instantiates a new log.
+   */
   public Log() {
 
   }
 
+  /**
+   * Gets the id.
+   *
+   * @return the id
+   */
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = "id")
@@ -47,52 +68,101 @@ public class Log {
     return this.id;
   }
 
+  /**
+   * Sets the id.
+   *
+   * @param id the new id
+   */
   public void setId(int id) {
     this.id = id;
   }
 
+  /**
+   * Gets the logger.
+   *
+   * @return the logger
+   */
   @Column(name = "logger")
   public String getLogger() {
     return logger;
   }
 
+  /**
+   * Sets the logger.
+   *
+   * @param logger the new logger
+   */
   public void setLogger(String logger) {
     this.logger = logger;
   }
 
+  /**
+   * Gets the message.
+   *
+   * @return the message
+   */
   @Column(name = "message", unique = false, nullable = false, columnDefinition = "LONGTEXT")
   public String getMessage() {
     return message;
   }
 
+  /**
+   * Sets the message.
+   *
+   * @param message the new message
+   */
   public void setMessage(String message) {
     this.message = message;
   }
 
+  /**
+   * Gets the level.
+   *
+   * @return the level
+   */
   @Column(name = "level")
   public String getLevel() {
     return level;
   }
 
+  /**
+   * Sets the level.
+   *
+   * @param level the new level
+   */
   public void setLevel(String level) {
     this.level = level;
   }
 
+  /**
+   * Gets the dated.
+   *
+   * @return the dated
+   */
   @Column(name = "dated")
   // @Type(type="date")
   public ZonedDateTime getDated() {
     return timestamp;
   }
 
+  /**
+   * Sets the dated.
+   *
+   * @param dated the new dated
+   */
   public void setDated(ZonedDateTime dated) {
     this.timestamp = dated;
   }
 
+  /*
+   * (non-Javadoc)
+   * 
+   * @see java.lang.Object#toString()
+   */
   @Override
   public String toString() {
-    return "Logs [id=" + id + ", logger=" 
-        + logger + ", message=" + message + ", level=" + level + ", dated="
-        + timestamp + "]";
+    return "Logs [id=" + id + ", logger=" + logger + ", message=" + message + ", level=" + level
+        + ", dated=" + timestamp + "]";
   }
 
 }

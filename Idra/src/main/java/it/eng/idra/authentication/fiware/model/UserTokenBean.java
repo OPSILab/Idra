@@ -18,20 +18,40 @@
 
 package it.eng.idra.authentication.fiware.model;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class UserTokenBean.
+ */
 @Deprecated
 public class UserTokenBean {
 
+  /** The auth. */
   private Auth auth;
 
+  /**
+   * Instantiates a new user token bean.
+   *
+   * @param auth the auth
+   */
   public UserTokenBean(Auth auth) {
     super();
     this.auth = auth;
   }
 
+  /**
+   * Gets the auth.
+   *
+   * @return the auth
+   */
   public Auth getAuth() {
     return auth;
   }
 
+  /**
+   * Sets the auth.
+   *
+   * @param auth the new auth
+   */
   public void setAuth(Auth auth) {
     this.auth = auth;
   }

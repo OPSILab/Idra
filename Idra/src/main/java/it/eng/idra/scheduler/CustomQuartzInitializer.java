@@ -26,10 +26,22 @@ import org.quartz.SchedulerException;
 import org.quartz.ee.servlet.QuartzInitializerListener;
 import org.quartz.impl.StdSchedulerFactory;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class CustomQuartzInitializer.
+ */
 public class CustomQuartzInitializer extends QuartzInitializerListener {
 
+  /** The logger. */
   private static Logger logger = LogManager.getLogger(CustomQuartzInitializer.class);
 
+  /**
+   * Gets the quartz properties.
+   *
+   * @param file the file
+   * @return the quartz properties
+   * @throws IOException Signals that an I/O exception has occurred.
+   */
   private Properties getQuartzProperties(String file) throws IOException {
 
     Properties props = new Properties();
@@ -45,6 +57,13 @@ public class CustomQuartzInitializer extends QuartzInitializerListener {
     return props;
   }
 
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * org.quartz.ee.servlet.QuartzInitializerListener#getSchedulerFactory(java.lang
+   * .String)
+   */
   @Override
   protected StdSchedulerFactory getSchedulerFactory(String configFile) throws SchedulerException {
     StdSchedulerFactory schedFactory = new StdSchedulerFactory();

@@ -25,8 +25,17 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.entity.StringEntity;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class HttpPostBuilder.
+ */
 public class HttpPostBuilder extends HttpRequestBuilder<HttpPost> {
 
+  /**
+   * Instantiates a new http post builder.
+   *
+   * @param url the url
+   */
   private HttpPostBuilder(URL url) {
     super.httpRequest = new HttpPost(url.toString());
   }
@@ -34,14 +43,14 @@ public class HttpPostBuilder extends HttpRequestBuilder<HttpPost> {
   /**
    * Gets the single instance of HttpPostBuilder.
    *
-   * @param url the url
+   * @param url     the url
    * @param headers the headers
-   * @param type the type
-   * @param data the data
+   * @param type    the type
+   * @param data    the data
    * @return single instance of HttpPostBuilder
    */
-  public static HttpRequestBase getInstance(URL url, Map<String, String> headers,
-      MediaType type, String data) {
+  public static HttpRequestBase getInstance(URL url, Map<String, String> headers, MediaType type,
+      String data) {
     HttpPostBuilder builder = new HttpPostBuilder(url);
     builder.addHeaders(headers);
     builder.addPayload(type, data);
@@ -49,6 +58,13 @@ public class HttpPostBuilder extends HttpRequestBuilder<HttpPost> {
     return builder.httpRequest;
   }
 
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * it.eng.idra.utils.restclient.builders.HttpRequestBuilder#addPayload(javax.ws.
+   * rs.core.MediaType, java.lang.String)
+   */
   @Override
   protected void addPayload(MediaType type, String data) {
     try {

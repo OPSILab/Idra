@@ -28,12 +28,14 @@ import java.io.IOException;
 
 import org.hibernate.proxy.HibernateProxy;
 
+// TODO: Auto-generated Javadoc
 /**
  * This TypeAdapter unproxies Hibernate proxied objects, and serializes them
  * through the registered (or default) TypeAdapter of the base class.
  */
 public class HibernateProxyTypeAdapter extends TypeAdapter<HibernateProxy> {
 
+  /** The Constant FACTORY. */
   public static final TypeAdapterFactory FACTORY = new TypeAdapterFactory() {
     @Override
     @SuppressWarnings("unchecked")
@@ -45,17 +47,34 @@ public class HibernateProxyTypeAdapter extends TypeAdapter<HibernateProxy> {
     }
   };
 
+  /** The delegate. */
   private final TypeAdapter<Object> delegate;
 
+  /*
+   * (non-Javadoc)
+   * 
+   * @see com.google.gson.TypeAdapter#read(com.google.gson.stream.JsonReader)
+   */
   @Override
   public HibernateProxy read(JsonReader in) throws IOException {
     throw new UnsupportedOperationException("Not supported");
   }
 
+  /**
+   * Instantiates a new hibernate proxy type adapter.
+   *
+   * @param delegate the delegate
+   */
   private HibernateProxyTypeAdapter(TypeAdapter<Object> delegate) {
     this.delegate = delegate;
   }
 
+  /*
+   * (non-Javadoc)
+   * 
+   * @see com.google.gson.TypeAdapter#write(com.google.gson.stream.JsonWriter,
+   * java.lang.Object)
+   */
   @SuppressWarnings({ "rawtypes", "unchecked" })
   @Override
   public void write(JsonWriter out, HibernateProxy value) throws IOException {

@@ -47,10 +47,10 @@ public class BasicAuthenticationManager extends AuthenticationManager {
 
   /** The instance. */
   private static BasicAuthenticationManager instance;
-  
+
   /** The logged users. */
   private static List<LoggedUser> loggedUsers = new ArrayList<LoggedUser>();
-  
+
   /** The logger. */
   private static Logger logger = FederationCore.getLogger();
 
@@ -72,6 +72,12 @@ public class BasicAuthenticationManager extends AuthenticationManager {
     return instance;
   }
 
+  /*
+   * (non-Javadoc)
+   * 
+   * @see it.eng.idra.authentication.AuthenticationManager#login(java.lang.String,
+   * java.lang.String, java.lang.String)
+   */
   @Override
   public Object login(String username, String password, String code)
       throws SQLException, NullPointerException, NoSuchAlgorithmException {
@@ -100,6 +106,13 @@ public class BasicAuthenticationManager extends AuthenticationManager {
 
   }
 
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * it.eng.idra.authentication.AuthenticationManager#logout(javax.servlet.http.
+   * HttpServletRequest)
+   */
   @Override
   public Response logout(HttpServletRequest httpRequest) throws Exception {
 
@@ -121,6 +134,12 @@ public class BasicAuthenticationManager extends AuthenticationManager {
 
   }
 
+  /*
+   * (non-Javadoc)
+   * 
+   * @see it.eng.idra.authentication.
+   * AuthenticationManager#getToken(java.lang.String, java.lang.String)
+   */
   @Override
   public String getToken(String username, String code) throws NoSuchAlgorithmException {
     Random random = new SecureRandom();
@@ -128,8 +147,12 @@ public class BasicAuthenticationManager extends AuthenticationManager {
     return CommonUtil.encodePassword(username + t);
   }
 
-  /* (non-Javadoc)
-   * @see it.eng.idra.authentication.AuthenticationManager#validateToken(java.lang.Object)
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * it.eng.idra.authentication.AuthenticationManager#validateToken(java.lang.
+   * Object)
    */
   @Override
   public Boolean validateToken(Object token) throws Exception {
@@ -179,8 +202,7 @@ public class BasicAuthenticationManager extends AuthenticationManager {
    * @return true, if successful
    * @throws SQLException the SQL exception
    */
-  public static boolean validatePassword(String username, 
-      String password) throws SQLException {
+  public static boolean validatePassword(String username, String password) throws SQLException {
 
     PersistenceManager manageBeansJpa = new PersistenceManager();
     try {
@@ -198,15 +220,14 @@ public class BasicAuthenticationManager extends AuthenticationManager {
   /**
    * Update user password.
    *
-   * @param username the username
+   * @param username    the username
    * @param newPassword the new password
    * @return true, if successful
-   * @throws SQLException the SQL exception
+   * @throws SQLException             the SQL exception
    * @throws NoSuchAlgorithmException the no such algorithm exception
    * @throws InvalidPasswordException the invalid password exception
    */
-  public static boolean updateUserPassword(String username, 
-      String newPassword)
+  public static boolean updateUserPassword(String username, String newPassword)
       throws SQLException, NoSuchAlgorithmException, InvalidPasswordException {
     PersistenceManager manageBeansJpa = new PersistenceManager();
     try {
@@ -218,7 +239,9 @@ public class BasicAuthenticationManager extends AuthenticationManager {
     }
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see it.eng.idra.authentication.AuthenticationManager#getFilterClass()
    */
   @Override

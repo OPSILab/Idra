@@ -66,18 +66,29 @@ import org.eclipse.rdf4j.repository.RepositoryException;
 import org.eclipse.rdf4j.rio.RDFParseException;
 import org.quartz.SchedulerException;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class FederationCore.
+ */
 public class FederationCore {
 
+  /**
+   * Instantiates a new federation core.
+   */
   private FederationCore() {
   }
 
+  /** The jpa. */
   private static CachePersistenceManager jpa;
   // private static PersistenceManager manageBeansJpa;
 
+  /** The logger. */
   static Logger logger = LogManager.getLogger(FederationCore.class);
 
+  /** The settings. */
   private static HashMap<String, String> settings = new HashMap<String, String>();
   // private static HashMap<String, String> remoteCatalogues = new HashMap<String,
+  /** The dcat themes. */
   // String>();
   private static List<DcatThemes> dcatThemes = new ArrayList<DcatThemes>();
   // private static Timer deleteLogsTimer;
@@ -86,7 +97,7 @@ public class FederationCore {
    * Inits the.
    *
    * @param loadCacheFromDb the load cache from db
-   * @param solrPath the solr path
+   * @param solrPath        the solr path
    */
   public static void init(boolean loadCacheFromDb, String solrPath) {
 
@@ -130,6 +141,11 @@ public class FederationCore {
   // FederationCore.manageBeansJpa = manageBeans;
   // }
 
+  /**
+   * Gets the settings.
+   *
+   * @return the settings
+   */
   public static HashMap<String, String> getSettings() {
     return settings;
   }
@@ -139,9 +155,9 @@ public class FederationCore {
    *
    * @param settingsTmp the settings tmp
    * @throws NumberFormatException the number format exception
-   * @throws SQLException the SQL exception
+   * @throws SQLException          the SQL exception
    */
-  public static void setSettings(HashMap<String, String> settingsTmp) 
+  public static void setSettings(HashMap<String, String> settingsTmp)
       throws NumberFormatException, SQLException {
     PersistenceManager manageBeansJpa = new PersistenceManager();
     try {
@@ -153,7 +169,7 @@ public class FederationCore {
 
       if (manageBeansJpa.updateConfigurationList(configUsed)) {
         settings = manageBeansJpa.getConfiguration();
-      } 
+      }
     } finally {
       manageBeansJpa.jpaClose();
     }
@@ -247,13 +263,13 @@ public class FederationCore {
    * Gets the logs.
    *
    * @param levelList the level list
-   * @param from the from
-   * @param to the to
+   * @param from      the from
+   * @param to        the to
    * @return the logs
    * @throws SQLException the SQL exception
    */
-  public static List<Log> getLogs(List<String> levelList, 
-      ZonedDateTime from, ZonedDateTime to) throws SQLException {
+  public static List<Log> getLogs(List<String> levelList, ZonedDateTime from, ZonedDateTime to)
+      throws SQLException {
 
     PersistenceManager manageBeansJpa = new PersistenceManager();
     try {
@@ -267,34 +283,77 @@ public class FederationCore {
    * ODMS MESSAGES DELEGATE METHODS
    */
 
+  /**
+   * Gets the all odms messages count.
+   *
+   * @return the all odms messages count
+   * @throws OdmsManagerException the odms manager exception
+   */
   public static HashMap<Integer, Long> getAllOdmsMessagesCount() throws OdmsManagerException {
     return OdmsManager.getAllOdmsMessagesCount();
   }
 
+  /**
+   * Gets the odms messages.
+   *
+   * @param nodeId the node id
+   * @return the odms messages
+   * @throws OdmsManagerException the odms manager exception
+   */
   public static List<OdmsCatalogueMessage> getOdmsMessages(int nodeId) throws OdmsManagerException {
     return OdmsManager.getOdmsMessages(nodeId);
   }
 
-  public static OdmsCatalogueMessage getOdmsMessage(int nodeId, int messageId) 
+  /**
+   * Gets the odms message.
+   *
+   * @param nodeId    the node id
+   * @param messageId the message id
+   * @return the odms message
+   * @throws OdmsManagerException the odms manager exception
+   */
+  public static OdmsCatalogueMessage getOdmsMessage(int nodeId, int messageId)
       throws OdmsManagerException {
     return OdmsManager.getOdmsMessage(nodeId, messageId);
   }
 
+  /**
+   * Delete all odms message.
+   *
+   * @param nodeId the node id
+   * @throws OdmsManagerException the odms manager exception
+   */
   public static void deleteAllOdmsMessage(int nodeId) throws OdmsManagerException {
     OdmsManager.deleteAllOdmsMessage(nodeId);
   }
 
+  /**
+   * Delete odms message.
+   *
+   * @param nodeId    the node id
+   * @param messageId the message id
+   * @throws OdmsManagerException the odms manager exception
+   */
   public static void deleteOdmsMessage(int nodeId, int messageId) throws OdmsManagerException {
     OdmsManager.deleteOdmsMessage(nodeId, messageId);
   }
 
+  /**
+   * Insert odms message.
+   *
+   * @param nodeId  the node id
+   * @param message the message
+   * @return the int
+   * @throws OdmsManagerException the odms manager exception
+   */
   public static int insertOdmsMessage(int nodeId, String message) throws OdmsManagerException {
     return OdmsManager.insertOdmsMessage(nodeId, message);
   }
 
   /**
    * Gets the list of all possible Connector types.
-   * 
+   *
+   * @return the odms connectors list
    */
   public static HashMap<OdmsCatalogueType, String> getOdmsConnectorsList() {
     return OdmsManager.getOdmsConnectorsList();
@@ -304,41 +363,72 @@ public class FederationCore {
    * Gets the List of the federated ODMS Catalogues present in the Federation.
    * Forwards the request to the underlying JDBC layer
    *
-   * @throws OdmsManagerException
-   * 
+   * @return the odms catalogues
    */
 
   public static List<OdmsCatalogue> getOdmsCatalogues() {
     return OdmsManager.getOdmsCataloguesList();
   }
 
-  public static List<OdmsCatalogue> getOdmsCatalogues(boolean withImage) 
+  /**
+   * Gets the odms catalogues.
+   *
+   * @param withImage the with image
+   * @return the odms catalogues
+   * @throws OdmsManagerException the odms manager exception
+   */
+  public static List<OdmsCatalogue> getOdmsCatalogues(boolean withImage)
       throws OdmsManagerException {
     return OdmsManager.getOdmsCatalogues(withImage);
   }
 
-  public static List<OdmsCatalogue> getAllInactiveOdmsCatalogues(boolean withImage) 
+  /**
+   * Gets the all inactive odms catalogues.
+   *
+   * @param withImage the with image
+   * @return the all inactive odms catalogues
+   * @throws OdmsManagerException the odms manager exception
+   */
+  public static List<OdmsCatalogue> getAllInactiveOdmsCatalogues(boolean withImage)
       throws OdmsManagerException {
     return OdmsManager.getAllInactiveOdmsCatalogue(withImage);
   }
 
   /**
-   * Gets a federated ODMS Catalogue present in the Federation.
-   * Forwards the request to the underlying ODMSManager
+   * Gets a federated ODMS Catalogue present in the Federation. Forwards the
+   * request to the underlying ODMSManager
    *
    * @param id Id of requested federated node
+   * @return the odms catalogue
+   * @throws OdmsCatalogueNotFoundException the odms catalogue not found exception
    * @returns ODMSCatalogue the resulting federated ODMS Catalogue
-   * 
    */
   public static OdmsCatalogue getOdmsCatalogue(int id) throws OdmsCatalogueNotFoundException {
     return OdmsManager.getOdmsCatalogue(id);
   }
 
+  /**
+   * Gets the odms catalogue.
+   *
+   * @param id        the id
+   * @param withImage the with image
+   * @return the odms catalogue
+   * @throws OdmsCatalogueNotFoundException the odms catalogue not found exception
+   * @throws OdmsManagerException           the odms manager exception
+   */
   public static OdmsCatalogue getOdmsCatalogue(int id, boolean withImage)
       throws OdmsCatalogueNotFoundException, OdmsManagerException {
     return OdmsManager.getOdmsCatalogue(id, withImage);
   }
 
+  /**
+   * Gets the inactive odms catalogue.
+   *
+   * @param id the id
+   * @return the inactive odms catalogue
+   * @throws OdmsCatalogueNotFoundException the odms catalogue not found exception
+   * @throws OdmsManagerException           the odms manager exception
+   */
   public static OdmsCatalogue getInactiveOdmsCatalogue(int id)
       throws OdmsCatalogueNotFoundException, OdmsManagerException {
     return OdmsManager.getInactiveOdmsCatalogue(id, false);
@@ -346,15 +436,16 @@ public class FederationCore {
 
   /**
    * Gets the List of federated ODMS Catalogues with a specific federation grade
-   * present in the Federation. 
-   * Forwards the request to the underlying JDBC layer
+   * present in the Federation. Forwards the request to the underlying JDBC layer
    *
-   * @throws SQLException
-   *          with specific federation grade
+   * @param levelFirst  the level first
+   * @param levelSecond the level second
+   * @return the odms cataloguesby federation level
+   * @throws SQLException with specific federation grade
    */
   public static List<OdmsCatalogue> getOdmsCataloguesbyFederationLevel(
-      OdmsCatalogueFederationLevel levelFirst,
-      OdmsCatalogueFederationLevel levelSecond) throws SQLException {
+      OdmsCatalogueFederationLevel levelFirst, OdmsCatalogueFederationLevel levelSecond)
+      throws SQLException {
 
     return OdmsManager.getOdmsCataloguesbyFederationLevel(levelFirst, levelSecond);
 
@@ -365,12 +456,24 @@ public class FederationCore {
    * Depending on Federation Level performs further operations such as
    * availability and first synchronization
    *
+   * @param node the node
+   * @throws OdmsAlreadyPresentException      the odms already present exception
+   * @throws OdmsManagerException             the odms manager exception
+   * @throws OdmsCatalogueNotFoundException   the odms catalogue not found
+   *                                          exception
+   * @throws OdmsCatalogueForbiddenException  the odms catalogue forbidden
+   *                                          exception
+   * @throws OdmsCatalogueSslException        the odms catalogue ssl exception
+   * @throws InvocationTargetException        the invocation target exception
+   * @throws OdmsCatalogueOfflineException    the odms catalogue offline exception
+   * @throws SchedulerNotInitialisedException the scheduler not initialised
+   *                                          exception
+   * @throws SQLException                     the SQL exception
    * @returns void
    */
-  public static void registerOdmsCatalogue(final OdmsCatalogue node) 
-      throws OdmsAlreadyPresentException, OdmsManagerException,
-      OdmsCatalogueNotFoundException, OdmsCatalogueForbiddenException, 
-      OdmsCatalogueSslException, InvocationTargetException, 
+  public static void registerOdmsCatalogue(final OdmsCatalogue node)
+      throws OdmsAlreadyPresentException, OdmsManagerException, OdmsCatalogueNotFoundException,
+      OdmsCatalogueForbiddenException, OdmsCatalogueSslException, InvocationTargetException,
       OdmsCatalogueOfflineException, SchedulerNotInitialisedException, SQLException {
 
     /*
@@ -416,11 +519,10 @@ public class FederationCore {
         /*
          * 3. Insert the statistic of the new node
          */
-        StatisticsManager.odmsStatistics(node, 
-            node.getDatasetCount(), 0, 0, node.getRdfCount(), 0, 0);
-        logger.info(
-            "--------- The ODMS Catalogue with host " 
-            + node.getHost() + " was successfully registered ----------");
+        StatisticsManager.odmsStatistics(node, node.getDatasetCount(), 0, 0, node.getRdfCount(), 0,
+            0);
+        logger.info("--------- The ODMS Catalogue with host " + node.getHost()
+            + " was successfully registered ----------");
         OdmsManager.insertOdmsMessage(node.getId(), "Node successfully registered");
 
         /*
@@ -431,16 +533,16 @@ public class FederationCore {
           SearchResult result = MetadataCacheManager.getAllDatasetsByOdmsCatalogueId(node.getId());
           DcatApSerializer.searchResultToDcatApByNode(Integer.toString(node.getId()), result,
               DcatApFormat.fromString(PropertyManager.getProperty(IdraProperty.DUMP_FORMAT)),
-              DcatApProfile.fromString(
-                  PropertyManager.getProperty(IdraProperty.DUMP_PROFILE)), DcatApWriteType.FILE);
+              DcatApProfile.fromString(PropertyManager.getProperty(IdraProperty.DUMP_PROFILE)),
+              DcatApWriteType.FILE);
 
           // Write Catalogue's DCAT Dump into RDF4J
           DcatApDumpManager.sendDumpToRepository(node);
 
         } catch (Exception e1) {
           // e1.printStackTrace();
-          logger.error("Error: " 
-              + e1.getMessage() + " in creation of the dump file for node " + node.getId());
+          logger.error("Error: " + e1.getMessage() + " in creation of the dump file for node "
+              + node.getId());
         }
 
       } catch (InvocationTargetException e) {
@@ -452,8 +554,8 @@ public class FederationCore {
             Class targetClass = target.getClass();
             if (targetClass.equals(OdmsCatalogueOfflineException.class)) {
               e.printStackTrace();
-              logger.error("Problem during registration of Catalogue " 
-                  + node.getName() + ": Setting state to OFFLINE");
+              logger.error("Problem during registration of Catalogue " + node.getName()
+                  + ": Setting state to OFFLINE");
               OdmsManager.insertOdmsMessage(node.getId(), "Unreacheble, setting state to OFFLINE");
               node.setNodeState(OdmsCatalogueState.OFFLINE);
               node.setDatasetCount(0);
@@ -471,14 +573,14 @@ public class FederationCore {
               e.printStackTrace();
               logger.error("The node host " + node.getHost() + " was not found");
               OdmsManager.deleteOdmsCatalogue(node);
-              throw new OdmsCatalogueNotFoundException("The node " 
-                  + node.getHost() + " host was not found");
+              throw new OdmsCatalogueNotFoundException(
+                  "The node " + node.getHost() + " host was not found");
             } else if (targetClass.equals(OdmsCatalogueForbiddenException.class)) {
               e.printStackTrace();
               logger.error("The ODMS Catalogue " + node.getHost() + " is forbidden");
               OdmsManager.deleteOdmsCatalogue(node);
-              throw new OdmsCatalogueForbiddenException("The ODMS Catalogue " 
-                  + node.getHost() + " is forbidden");
+              throw new OdmsCatalogueForbiddenException(
+                  "The ODMS Catalogue " + node.getHost() + " is forbidden");
             } else if (targetClass.equals(SSLHandshakeException.class)) {
               e.printStackTrace();
               logger.error("The ODMS Catalogue " + node.getHost()
@@ -502,9 +604,8 @@ public class FederationCore {
 
       } catch (SchedulerNotInitialisedException e) {
 
-        logger.error("Scheduler not initialised, skipped synchronization thread for " 
-            + node.getHost() + ":"
-            + e.getLocalizedMessage());
+        logger.error("Scheduler not initialised, skipped synchronization thread for "
+            + node.getHost() + ":" + e.getLocalizedMessage());
         throw e;
       } catch (SQLException e) {
 
@@ -527,9 +628,9 @@ public class FederationCore {
     try {
       node.setActive(false);
       OdmsManager.addOdmsCatalogue(node);
-    } catch (OdmsAlreadyPresentException 
-        | OdmsCatalogueNotFoundException | OdmsCatalogueOfflineException
-        | OdmsCatalogueForbiddenException | OdmsManagerException e) {
+    } catch (OdmsAlreadyPresentException | OdmsCatalogueNotFoundException
+        | OdmsCatalogueOfflineException | OdmsCatalogueForbiddenException
+        | OdmsManagerException e) {
 
       // e.printStackTrace(); Exception printed and handled at API level
       throw e;
@@ -548,10 +649,11 @@ public class FederationCore {
 
   /**
    * Performs the unregister operation of a Federated ODMS Catalogue passed by API
-   * module.
-   * Depending on Federation Level performs further operations such as
+   * module. Depending on Federation Level performs further operations such as
    * availability and first synchronization
    *
+   * @param node the node
+   * @throws Exception the exception
    * @returns void
    */
   public static void unregisterOdmsCatalogue(OdmsCatalogue node) throws Exception {
@@ -587,9 +689,8 @@ public class FederationCore {
       odfScheduler.deleteJob(Integer.toString(node.getId()));
 
       System.gc();
-      logger.info(
-          "The ODMS Catalogue with name: " 
-           + node.getName() + " and ID: " + node.getId() + " was successfully deleted");
+      logger.info("The ODMS Catalogue with name: " + node.getName() + " and ID: " + node.getId()
+          + " was successfully deleted");
 
     } finally {
 
@@ -599,29 +700,39 @@ public class FederationCore {
 
   /**
    * Performs the update operation of a Federated ODMS Catalogue passed by API
-   * module.
-   * Depending on previous and current Federation Level performs further
+   * module. Depending on previous and current Federation Level performs further
    * operations such as caching datasets for a node with a new Federation level
    * equal or greater than 2 and deleting datasets cache of a node with a new
    * Federation Level equal or smaller than 1
    *
-   * @param node The ODMSCatalogue to update
-   * @throws Exception
-   * 
+   * @param node          The ODMSCatalogue to update
+   * @param rescheduleJob the reschedule job
+   * @throws SQLException                   the SQL exception
+   * @throws NoSuchMethodException          the no such method exception
+   * @throws SecurityException              the security exception
+   * @throws ClassNotFoundException         the class not found exception
+   * @throws IllegalAccessException         the illegal access exception
+   * @throws IllegalArgumentException       the illegal argument exception
+   * @throws InvocationTargetException      the invocation target exception
+   * @throws InstantiationException         the instantiation exception
+   * @throws SolrServerException            the solr server exception
+   * @throws IOException                    Signals that an I/O exception has
+   *                                        occurred.
+   * @throws DatasetNotFoundException       the dataset not found exception
+   * @throws RepositoryException            the repository exception
+   * @throws RDFParseException              the RDF parse exception
+   * @throws OdmsCatalogueNotFoundException the odms catalogue not found exception
+   * @throws OdmsManagerException           the odms manager exception
    * @returns void
-   * 
    */
   public static void updateFederatedOdmsCatalogue(OdmsCatalogue node, boolean rescheduleJob)
-      throws SQLException, NoSuchMethodException, SecurityException,
-      ClassNotFoundException, IllegalAccessException,
-      IllegalArgumentException, InvocationTargetException, 
-      InstantiationException, SolrServerException, IOException,
-      DatasetNotFoundException, RepositoryException, 
-      RDFParseException, OdmsCatalogueNotFoundException,
-      OdmsManagerException {
+      throws SQLException, NoSuchMethodException, SecurityException, ClassNotFoundException,
+      IllegalAccessException, IllegalArgumentException, InvocationTargetException,
+      InstantiationException, SolrServerException, IOException, DatasetNotFoundException,
+      RepositoryException, RDFParseException, OdmsCatalogueNotFoundException, OdmsManagerException {
 
-    OdmsCatalogueFederationLevel oldLevel = 
-        OdmsManager.getOdmsCatalogue(node.getId()).getFederationLevel();
+    OdmsCatalogueFederationLevel oldLevel = OdmsManager.getOdmsCatalogue(node.getId())
+        .getFederationLevel();
     OdmsCatalogueFederationLevel newLevel = node.getFederationLevel();
     try {
       // If node becomes cacheable
@@ -651,8 +762,8 @@ public class FederationCore {
         } else {
           // Rescheduling the job
           if (rescheduleJob) {
-            IdraScheduler.getSingletonInstance()
-                .rescheduleJob(Integer.toString(node.getId()), node);
+            IdraScheduler.getSingletonInstance().rescheduleJob(Integer.toString(node.getId()),
+                node);
           }
         }
 
@@ -669,9 +780,8 @@ public class FederationCore {
     }
     OdmsManager.updateOdmsCatalogue(node, true);
     OdmsManager.insertOdmsMessage(node.getId(), "Node successfully updated");
-    logger.info(
-        "The ODMS Catalogue with name: " + node.getName() 
-              + " and ID: " + node.getId() + " was successfully updated");
+    logger.info("The ODMS Catalogue with name: " + node.getName() + " and ID: " + node.getId()
+        + " was successfully updated");
 
     // Everything fine reload list of nodes without images
     try {
@@ -685,9 +795,10 @@ public class FederationCore {
 
   /**
    * Starts a new node synchonization and resets the related timer.
-   * 
-   * @throws OdmsManagerException
-   * 
+   *
+   * @param nodeId the node id
+   * @throws OdmsCatalogueNotFoundException the odms catalogue not found exception
+   * @throws OdmsManagerException           the odms manager exception
    * @returns void
    */
   public static void startOdmsCatalogueSynch(final int nodeId)
@@ -721,13 +832,14 @@ public class FederationCore {
   /**
    * Deactivate odms catalogue.
    *
-   * @param node the node
+   * @param node         the node
    * @param keepDatasets the keep datasets
    * @throws OdmsCatalogueNotFoundException the odms catalogue not found exception
-   * @throws OdmsManagerException the odms manager exception
-   * @throws IOException Signals that an I/O exception has occurred.
-   * @throws SolrServerException the solr server exception
-   * @throws DatasetNotFoundException the dataset not found exception
+   * @throws OdmsManagerException           the odms manager exception
+   * @throws IOException                    Signals that an I/O exception has
+   *                                        occurred.
+   * @throws SolrServerException            the solr server exception
+   * @throws DatasetNotFoundException       the dataset not found exception
    */
   public static void deactivateOdmsCatalogue(OdmsCatalogue node, Boolean keepDatasets)
       throws OdmsCatalogueNotFoundException, OdmsManagerException, IOException, SolrServerException,
@@ -779,7 +891,7 @@ public class FederationCore {
     }
 
     logger.info("The ODMS Catalogue with name: " + node.getName() + " and ID: " + node.getId()
-        + " was successfully deactivated " 
+        + " was successfully deactivated "
         + ((keepDatasets) ? "keeping datasets" : "deleting datasets"));
   }
 
@@ -788,7 +900,7 @@ public class FederationCore {
    *
    * @param node the node
    * @throws OdmsCatalogueNotFoundException the odms catalogue not found exception
-   * @throws OdmsManagerException the odms manager exception
+   * @throws OdmsManagerException           the odms manager exception
    */
   public static void activateOdmsCatalogue(OdmsCatalogue node)
       throws OdmsCatalogueNotFoundException, OdmsManagerException {
@@ -823,6 +935,12 @@ public class FederationCore {
 
   }
 
+  /**
+   * Gets the odms catalogue idby name.
+   *
+   * @param nodeName the node name
+   * @return the odms catalogue idby name
+   */
   public static Integer getOdmsCatalogueIdbyName(String nodeName) {
     return OdmsManager.getOdmsCatalogueIdbyName(nodeName);
   }
@@ -850,18 +968,35 @@ public class FederationCore {
     return ids;
   }
 
+  /**
+   * Gets the dcat themes.
+   *
+   * @return the dcat themes
+   */
   public static List<DcatThemes> getDcatThemes() {
     return dcatThemes;
   }
 
+  /**
+   * Gets the dcat themes from abbr.
+   *
+   * @param abbr the abbr
+   * @return the dcat themes from abbr
+   */
   public static String getDcatThemesFromAbbr(String abbr) {
-    return dcatThemes.stream()
-        .filter(x -> x.getIdentifier().equalsIgnoreCase(abbr)).findFirst().get().getEn();
+    return dcatThemes.stream().filter(x -> x.getIdentifier().equalsIgnoreCase(abbr)).findFirst()
+        .get().getEn();
   }
 
+  /**
+   * Gets the dcat themes identifier.
+   *
+   * @param val the val
+   * @return the dcat themes identifier
+   */
   public static String getDcatThemesIdentifier(String val) {
-    return dcatThemes.stream()
-        .filter(x -> x.getEn().equalsIgnoreCase(val)).findFirst().get().getIdentifier();
+    return dcatThemes.stream().filter(x -> x.getEn().equalsIgnoreCase(val)).findFirst().get()
+        .getIdentifier();
   }
 
   /**
@@ -871,11 +1006,15 @@ public class FederationCore {
    * @return true, if is dcat theme
    */
   public static boolean isDcatTheme(String value) {
-    return dcatThemes.stream()
-        .anyMatch(x -> x.getIdentifier()
-            .equalsIgnoreCase(value) || x.getEn().equalsIgnoreCase(value));
+    return dcatThemes.stream().anyMatch(
+        x -> x.getIdentifier().equalsIgnoreCase(value) || x.getEn().equalsIgnoreCase(value));
   }
 
+  /**
+   * Gets the logger.
+   *
+   * @return the logger
+   */
   public static Logger getLogger() {
     return logger;
   }

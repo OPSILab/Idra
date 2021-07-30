@@ -24,13 +24,25 @@ import it.eng.idra.management.FederationCore;
 import it.eng.idra.management.OdmsManager;
 import org.apache.solr.client.solrj.response.FacetField.Count;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class SearchFacet.
+ */
 public class SearchFacet {
 
+  /** The facet. */
   private String facet;
+
+  /** The keyword. */
   private String keyword;
+
+  /** The search value. */
   @SerializedName(value = "search_value")
   private String searchValue;
 
+  /**
+   * Instantiates a new search facet.
+   */
   public SearchFacet() {
 
   }
@@ -38,9 +50,9 @@ public class SearchFacet {
   /**
    * Instantiates a new search facet.
    *
-   * @param facet the facet
+   * @param facet        the facet
    * @param keywordQuery the keyword query
-   * @param searchValue the search value
+   * @param searchValue  the search value
    */
   public SearchFacet(String facet, String keywordQuery, String searchValue) {
     super();
@@ -64,7 +76,7 @@ public class SearchFacet {
   /**
    * Instantiates a new search facet.
    *
-   * @param c the c
+   * @param c        the c
    * @param category the category
    */
   public SearchFacet(Count c, String category) {
@@ -81,8 +93,8 @@ public class SearchFacet {
       this.searchValue = c.getName();
     } else if ("catalogues".equals(category)) {
       try {
-        this.facet = OdmsManager.getOdmsCatalogue(
-            Integer.parseInt(c.getName())).getName() + " (" + c.getCount() + ")";
+        this.facet = OdmsManager.getOdmsCatalogue(Integer.parseInt(c.getName())).getName() + " ("
+            + c.getCount() + ")";
         this.keyword = OdmsManager.getOdmsCatalogue(Integer.parseInt(c.getName())).getName();
         this.searchValue = this.keyword;
       } catch (NumberFormatException | OdmsCatalogueNotFoundException e) {
@@ -96,36 +108,76 @@ public class SearchFacet {
     }
   }
 
+  /**
+   * Gets the facet.
+   *
+   * @return the facet
+   */
   public String getFacet() {
     return facet;
   }
 
+  /**
+   * Sets the facet.
+   *
+   * @param facet the new facet
+   */
   public void setFacet(String facet) {
     this.facet = facet;
   }
 
+  /**
+   * Gets the keyword.
+   *
+   * @return the keyword
+   */
   public String getKeyword() {
     return keyword;
   }
 
+  /**
+   * Sets the keyword.
+   *
+   * @param keywordQuery the new keyword
+   */
   public void setKeyword(String keywordQuery) {
     this.keyword = keywordQuery;
   }
 
+  /**
+   * Gets the search value.
+   *
+   * @return the search value
+   */
   public String getSearchValue() {
     return searchValue;
   }
 
+  /**
+   * Sets the search value.
+   *
+   * @param searchValue the new search value
+   */
   public void setSearchValue(String searchValue) {
     this.searchValue = searchValue;
   }
 
+  /*
+   * (non-Javadoc)
+   * 
+   * @see java.lang.Object#toString()
+   */
   @Override
   public String toString() {
-    return "SearchFacet [facet=" 
-      + facet + ", keyword=" + keyword + ", search_value=" + searchValue + "]";
+    return "SearchFacet [facet=" + facet + ", keyword=" + keyword + ", search_value=" + searchValue
+        + "]";
   }
 
+  /*
+   * (non-Javadoc)
+   * 
+   * @see java.lang.Object#hashCode()
+   */
   @Override
   public int hashCode() {
     final int prime = 31;
@@ -135,6 +187,11 @@ public class SearchFacet {
     return result;
   }
 
+  /*
+   * (non-Javadoc)
+   * 
+   * @see java.lang.Object#equals(java.lang.Object)
+   */
   @Override
   public boolean equals(Object obj) {
     if (this == obj) {

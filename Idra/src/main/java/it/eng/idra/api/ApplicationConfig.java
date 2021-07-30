@@ -31,7 +31,9 @@ import javax.ws.rs.core.Application;
 @ApplicationPath("/api/v1")
 public class ApplicationConfig extends Application {
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see javax.ws.rs.core.Application#getClasses()
    */
   @Override

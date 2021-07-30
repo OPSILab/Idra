@@ -28,9 +28,27 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The listener interface for receiving initServlet events. The class that is
+ * interested in processing a initServlet event implements this interface, and
+ * the object created with that class is registered with a component using the
+ * component's addInitServletListener method. When the initServlet
+ * event occurs, that object's appropriate method is invoked.
+ *
+ * @see InitServletEvent
+ */
 public class InitServletListener implements ServletContextListener {
+
+  /** The logger. */
   private static Logger logger = LogManager.getLogger(InitServletListener.class);
 
+  /*
+   * (non-Javadoc)
+   * 
+   * @see javax.servlet.ServletContextListener#contextInitialized(javax.servlet.
+   * ServletContextEvent)
+   */
   @Override
   public void contextInitialized(ServletContextEvent arg0) {
 
@@ -47,8 +65,8 @@ public class InitServletListener implements ServletContextListener {
 
     // System.setProperty("javax.net.ssl.trustStore","");
     if (Boolean.parseBoolean(PropertyManager.getProperty(IdraProperty.HTTP_PROXY_ENABLED).trim())
-        && StringUtils.isNotBlank(
-            PropertyManager.getProperty(IdraProperty.HTTP_PROXY_HOST).trim())) {
+        && StringUtils
+            .isNotBlank(PropertyManager.getProperty(IdraProperty.HTTP_PROXY_HOST).trim())) {
 
       System.setProperty(IdraProperty.HTTP_PROXY_HOST.toString(),
           PropertyManager.getProperty(IdraProperty.HTTP_PROXY_HOST).trim());
@@ -70,8 +88,8 @@ public class InitServletListener implements ServletContextListener {
       }
 
       String proxyHttpsUser = PropertyManager.getProperty(IdraProperty.HTTP_PROXY_USER).trim();
-      String proxyHttpsPassword = 
-          PropertyManager.getProperty(IdraProperty.HTTP_PROXY_PASSWORD).trim();
+      String proxyHttpsPassword = PropertyManager.getProperty(IdraProperty.HTTP_PROXY_PASSWORD)
+          .trim();
 
       if (StringUtils.isNotBlank(proxyHttpsUser) && StringUtils.isNotBlank(proxyHttpsPassword)) {
         // Authenticator.setDefault(new Authenticator() {
@@ -95,12 +113,12 @@ public class InitServletListener implements ServletContextListener {
     }
     try {
 
-      FederationCore.init((Boolean.parseBoolean(
-          PropertyManager.getProperty(IdraProperty.LOAD_CACHE_FROM_DB))),
+      FederationCore.init(
+          (Boolean.parseBoolean(PropertyManager.getProperty(IdraProperty.LOAD_CACHE_FROM_DB))),
           arg0.getServletContext().getRealPath("/WEB-INF/classes/solr"));
       // Moved into a specific listener
-      //IdraScheduler.init(arg0.getServletContext(),
-      //Boolean.parseBoolean(PropertyManager.getProperty(IdraProperty.SYNCH_ON_START)));
+      // IdraScheduler.init(arg0.getServletContext(),
+      // Boolean.parseBoolean(PropertyManager.getProperty(IdraProperty.SYNCH_ON_START)));
 
       logger.info("Open Data Federation started");
 
@@ -110,6 +128,12 @@ public class InitServletListener implements ServletContextListener {
 
   }
 
+  /*
+   * (non-Javadoc)
+   * 
+   * @see javax.servlet.ServletContextListener#contextDestroyed(javax.servlet.
+   * ServletContextEvent)
+   */
   @Override
   public void contextDestroyed(ServletContextEvent arg0) {
 

@@ -61,7 +61,7 @@ public class OdmsManager {
 
   /** The federated nodes. */
   private static List<OdmsCatalogue> federatedNodes = new ArrayList<OdmsCatalogue>();
-  
+
   /** The ODMS connectors list. */
   private static HashMap<OdmsCatalogueType, String> ODMSConnectorsList = 
       new HashMap<OdmsCatalogueType, String>();
@@ -84,16 +84,16 @@ public class OdmsManager {
       logger.info("Federated Nodes: " + federatedNodes.size());
       ODMSConnectorsList.put(OdmsCatalogueType.CKAN, "it.eng.idra.connectors.CkanConnector");
       ODMSConnectorsList.put(OdmsCatalogueType.SOCRATA, "it.eng.idra.connectors.SocrataConnector");
-      ODMSConnectorsList.put(OdmsCatalogueType.NATIVE, 
+      ODMSConnectorsList.put(OdmsCatalogueType.NATIVE,
           "it.eng.idra.connectors.OpenDataFederationNativeConnector");
       ODMSConnectorsList.put(OdmsCatalogueType.WEB, "it.eng.idra.connectors.WebConnector");
-      ODMSConnectorsList.put(OdmsCatalogueType.DCATDUMP, 
+      ODMSConnectorsList.put(OdmsCatalogueType.DCATDUMP,
           "it.eng.idra.connectors.DcatDumpConnector");
       ODMSConnectorsList.put(OdmsCatalogueType.DKAN, "it.eng.idra.connectors.DkanConnector");
       ODMSConnectorsList.put(OdmsCatalogueType.ORION, "it.eng.idra.connectors.OrionConnector");
       ODMSConnectorsList.put(OdmsCatalogueType.SPARQL, "it.eng.idra.connectors.SparqlConnector");
       ODMSConnectorsList.put(OdmsCatalogueType.SPOD, "it.eng.idra.connectors.SpodConnector");
-      ODMSConnectorsList.put(OdmsCatalogueType.OPENDATASOFT, 
+      ODMSConnectorsList.put(OdmsCatalogueType.OPENDATASOFT,
           "it.eng.idra.connectors.OpenDataSoftConnector");
       ODMSConnectorsList.put(OdmsCatalogueType.JUNAR, "it.eng.idra.connectors.JunarConnector");
 
@@ -109,7 +109,7 @@ public class OdmsManager {
    * @return the odms cataloguesfrom db
    * @throws SQLException the SQL exception
    */
-  private static List<OdmsCatalogue> getOdmsCataloguesfromDb(boolean withImage) 
+  private static List<OdmsCatalogue> getOdmsCataloguesfromDb(boolean withImage)
       throws SQLException {
     PersistenceManager jpa = new PersistenceManager();
     List<OdmsCatalogue> resultNodes = null;
@@ -125,12 +125,12 @@ public class OdmsManager {
   /**
    * Gets the odms cataloguefrom db.
    *
-   * @param id the id
+   * @param id        the id
    * @param withImage the with image
    * @return the odms cataloguefrom db
    * @throws SQLException the SQL exception
    */
-  private static OdmsCatalogue getOdmsCataloguefromDb(int id, boolean withImage) 
+  private static OdmsCatalogue getOdmsCataloguefromDb(int id, boolean withImage)
       throws SQLException {
     PersistenceManager jpa = new PersistenceManager();
     OdmsCatalogue resultNode = null;
@@ -171,12 +171,11 @@ public class OdmsManager {
    */
   public static Integer getOdmsCatalogueIdbyName(String nodeName) {
     try {
-      return federatedNodes.stream()
-          .filter(x -> x.getName().equals(nodeName)).findFirst().get().getId();
+      return federatedNodes.stream().filter(x -> x.getName().equals(nodeName)).findFirst().get()
+          .getId();
     } catch (Exception e) {
-      return federatedNodes.stream()
-          .map(x -> x.getId()).collect(Collectors.toList()).stream().max(Integer::compare)
-          .get() + 1;
+      return federatedNodes.stream().map(x -> x.getId()).collect(Collectors.toList()).stream()
+          .max(Integer::compare).get() + 1;
     }
   }
 
@@ -196,7 +195,7 @@ public class OdmsManager {
    * @return the odms catalogues
    * @throws OdmsManagerException the odms manager exception
    */
-  public static List<OdmsCatalogue> getOdmsCatalogues(boolean withImage) 
+  public static List<OdmsCatalogue> getOdmsCatalogues(boolean withImage)
       throws OdmsManagerException {
 
     while (getNodesLock) {
@@ -240,8 +239,8 @@ public class OdmsManager {
   }
 
   /**
-   * Gets a federated ODMS node present in the Federation
-   * Forwards the request to the underlying JDBC layer.
+   * Gets a federated ODMS node present in the Federation Forwards the request to
+   * the underlying JDBC layer.
    *
    * @param id Id of requested federated node
    * @return the ODMS catalogue
@@ -262,11 +261,11 @@ public class OdmsManager {
   /**
    * Gets the ODMS catalogue.
    *
-   * @param id the id
+   * @param id        the id
    * @param withImage the with image
    * @return the ODMS catalogue
    * @throws OdmsCatalogueNotFoundException the odms catalogue not found exception
-   * @throws OdmsManagerException the odms manager exception
+   * @throws OdmsManagerException           the odms manager exception
    */
   public static OdmsCatalogue getOdmsCatalogue(int id, boolean withImage)
       throws OdmsCatalogueNotFoundException, OdmsManagerException {
@@ -295,7 +294,7 @@ public class OdmsManager {
    * @throws OdmsManagerException the odms manager exception
    * @returns the connector instance of federated ODMS node
    */
-  public static IodmsConnector getOdmsCatalogueConnector(OdmsCatalogue node) 
+  public static IodmsConnector getOdmsCatalogueConnector(OdmsCatalogue node)
       throws OdmsManagerException {
 
     // The connector class is loaded, based on ODMS node type, using Java
@@ -308,36 +307,35 @@ public class OdmsManager {
       return (IodmsConnector) cls.getDeclaredConstructor(OdmsCatalogue.class).newInstance(node);
     } catch (Exception e) {
       e.printStackTrace();
-      throw new OdmsManagerException("There was an error while "
-          + "retrieving ODMS Connector: " + e.getMessage());
+      throw new OdmsManagerException(
+          "There was an error while " + "retrieving ODMS Connector: " + e.getMessage());
     }
 
   }
 
   /**
    * Gets the List of federated ODMS nodes with a specific federation grade
-   * present in the Federation
-   * Forwards the request to the underlying JDBC layer.
+   * present in the Federation Forwards the request to the underlying JDBC layer.
    *
-   * @param integrationLevelFirst the integration level first
+   * @param integrationLevelFirst  the integration level first
    * @param integrationLevelSecond the integration level second
    * @return the ODMS cataloguesby federation level
    * @returns the list of the federated ODMS nodes
    */
   public static List<OdmsCatalogue> getOdmsCataloguesbyFederationLevel(
-      OdmsCatalogueFederationLevel integrationLevelFirst, 
+      OdmsCatalogueFederationLevel integrationLevelFirst,
       OdmsCatalogueFederationLevel integrationLevelSecond) {
 
     return federatedNodes.stream()
         .filter(node -> node.getFederationLevel().equals(integrationLevelFirst)
-        || node.getFederationLevel().equals(integrationLevelSecond)).collect(Collectors.toList());
+            || node.getFederationLevel().equals(integrationLevelSecond))
+        .collect(Collectors.toList());
 
   }
 
   /**
    * Gets the List of federated ODMS nodes with a minimum federation level of 1
-   * present in the Federation
-   * Forwards the request to the underlying JDBC layer.
+   * present in the Federation Forwards the request to the underlying JDBC layer.
    *
    * @return the ODMS cataloguesby federation level one
    * @returns the list of the federated ODMS nodes with minimum Level 1
@@ -351,24 +349,24 @@ public class OdmsManager {
   }
 
   /**
-   * Adds a federated ODMS node to the Federation
-   * Sends a request to CKAN node to retrieve the datasets count
-   * Updates the dataset count of the node Forwards the request to the underlying
-   * JDBC layer.
+   * Adds a federated ODMS node to the Federation Sends a request to CKAN node to
+   * retrieve the datasets count Updates the dataset count of the node Forwards
+   * the request to the underlying JDBC layer.
    *
    * @param node The ODMSCatalogue object to add
    * @return the int
-   * @throws OdmsAlreadyPresentException the odms already present exception
-   * @throws OdmsCatalogueNotFoundException the odms catalogue not found exception
-   * @throws OdmsCatalogueOfflineException the odms catalogue offline exception
-   * @throws OdmsCatalogueForbiddenException the odms catalogue forbidden exception
-   * @throws OdmsManagerException the odms manager exception
+   * @throws OdmsAlreadyPresentException     the odms already present exception
+   * @throws OdmsCatalogueNotFoundException  the odms catalogue not found
+   *                                         exception
+   * @throws OdmsCatalogueOfflineException   the odms catalogue offline exception
+   * @throws OdmsCatalogueForbiddenException the odms catalogue forbidden
+   *                                         exception
+   * @throws OdmsManagerException            the odms manager exception
    * @returns Node itself with assigned Dataset Count and id
    */
   public static int addOdmsCatalogue(OdmsCatalogue node)
-      throws OdmsAlreadyPresentException, 
-      OdmsCatalogueNotFoundException, OdmsCatalogueOfflineException,
-      OdmsCatalogueForbiddenException, OdmsManagerException {
+      throws OdmsAlreadyPresentException, OdmsCatalogueNotFoundException,
+      OdmsCatalogueOfflineException, OdmsCatalogueForbiddenException, OdmsManagerException {
 
     // Sets the lock true, in order to avoid node retrieval until the new
     // node is created
@@ -395,12 +393,12 @@ public class OdmsManager {
            * the first synchronization.
            */
 
-          //if (!node.getNodeType().equals(ODMSCatalogueType.SOCRATA)
-          //&& !node.getNodeType().equals(ODMSCatalogueType.DKAN))
-          //datasetsCount = getODMSCatalogueConnector(node).countDatasets();
+          // if (!node.getNodeType().equals(ODMSCatalogueType.SOCRATA)
+          // && !node.getNodeType().equals(ODMSCatalogueType.DKAN))
+          // datasetsCount = getODMSCatalogueConnector(node).countDatasets();
           //
-          //if (!(datasetsCount > 0))
-          //node.setNodeState(ODMSCatalogueState.OFFLINE);
+          // if (!(datasetsCount > 0))
+          // node.setNodeState(ODMSCatalogueState.OFFLINE);
 
           node.setDatasetCount(datasetsCount);
 
@@ -438,7 +436,6 @@ public class OdmsManager {
             if (StringUtils.isNotBlank(node.getDumpString())) {
               Model m = null;
               switch (node.getDcatProfile()) {
-
                 case DCATAP_IT:
                   m = new DcatApItDeserializer().dumpToModel(node.getDumpString(), node);
                   break;
@@ -446,11 +443,10 @@ public class OdmsManager {
                   // If no profile was provided, instantiate a base DCATAP Deserializer
                   m = new DcatApDeserializer().dumpToModel(node.getDumpString(), node);
                   break;
-
               }
 
-              String odmsDumpFilePath =
-                  PropertyManager.getProperty(IdraProperty.ODMS_DUMP_FILE_PATH);
+              String odmsDumpFilePath = PropertyManager
+                  .getProperty(IdraProperty.ODMS_DUMP_FILE_PATH);
               try {
                 DcatApSerializer.writeModelToFile(m, DcatApFormat.RDFXML, odmsDumpFilePath,
                     "dumpFileString_" + assignedNodeId);
@@ -464,16 +460,16 @@ public class OdmsManager {
             updateNode = true;
           } else if (node.getNodeType().equals(OdmsCatalogueType.ORION)) {
 
-            String orionDumpFilePath = 
-                PropertyManager.getProperty(IdraProperty.ORION_FILE_DUMP_PATH);
+            String orionDumpFilePath = PropertyManager
+                .getProperty(IdraProperty.ORION_FILE_DUMP_PATH);
 
             try {
-              OrionCatalogueConfiguration orionConfig = 
-                  (OrionCatalogueConfiguration) node.getAdditionalConfig();
+              OrionCatalogueConfiguration orionConfig = (OrionCatalogueConfiguration) node
+                  .getAdditionalConfig();
               CommonUtil.storeFile(orionDumpFilePath, "orionDump_" + assignedNodeId,
                   orionConfig.getOrionDatasetDumpString());
-              orionConfig.setOrionDatasetFilePath(
-                  orionDumpFilePath + "orionDump_" + assignedNodeId);
+              orionConfig
+                  .setOrionDatasetFilePath(orionDumpFilePath + "orionDump_" + assignedNodeId);
               node.setAdditionalConfig(orionConfig);
               updateNode = true;
             } catch (IOException e) {
@@ -485,8 +481,8 @@ public class OdmsManager {
             String dumpFilePath = PropertyManager.getProperty(IdraProperty.ORION_FILE_DUMP_PATH);
 
             try {
-              OrionCatalogueConfiguration orionConfig = 
-                  (OrionCatalogueConfiguration) node.getAdditionalConfig();
+              OrionCatalogueConfiguration orionConfig = (OrionCatalogueConfiguration) node
+                  .getAdditionalConfig();
               CommonUtil.storeFile(dumpFilePath, "sparqlDump_" + assignedNodeId,
                   orionConfig.getOrionDatasetDumpString());
               orionConfig.setOrionDatasetFilePath(dumpFilePath + "sparqlDump_" + assignedNodeId);
@@ -508,8 +504,8 @@ public class OdmsManager {
         throw e;
       } catch (Exception e) {
         e.printStackTrace();
-        throw new OdmsManagerException("There was an error "
-            + "while adding the ODMS Node: " + e.getMessage());
+        throw new OdmsManagerException(
+            "There was an error " + "while adding the ODMS Node: " + e.getMessage());
       } finally {
         getNodesLock = false;
         jpa.jpaClose();
@@ -525,7 +521,7 @@ public class OdmsManager {
   /**
    * Gets the inactive ODMS catalogue.
    *
-   * @param id the id
+   * @param id        the id
    * @param withImage the with image
    * @return the inactive ODMS catalogue
    * @throws OdmsManagerException the odms manager exception
@@ -552,7 +548,7 @@ public class OdmsManager {
    * @return the all inactive ODMS catalogue
    * @throws OdmsManagerException the odms manager exception
    */
-  public static List<OdmsCatalogue> getAllInactiveOdmsCatalogue(boolean withImage) 
+  public static List<OdmsCatalogue> getAllInactiveOdmsCatalogue(boolean withImage)
       throws OdmsManagerException {
     PersistenceManager jpa = new PersistenceManager();
     try {
@@ -588,8 +584,8 @@ public class OdmsManager {
 
     } catch (Exception e) {
       e.printStackTrace();
-      throw new OdmsManagerException("There was an error"
-          + " while adding the ODMS Node: " + e.getMessage());
+      throw new OdmsManagerException(
+          "There was an error" + " while adding the ODMS Node: " + e.getMessage());
     } finally {
       jpa.jpaClose();
     }
@@ -597,11 +593,11 @@ public class OdmsManager {
   }
 
   /**
-   * Removes a federated ODMS node present in the Federation
-   * Forwards the request to the underlying JDBC layer.
+   * Removes a federated ODMS node present in the Federation Forwards the request
+   * to the underlying JDBC layer.
    *
    * @param node The ODMSCatalogue object to remove
-   * @throws OdmsManagerException the odms manager exception
+   * @throws OdmsManagerException           the odms manager exception
    * @throws OdmsCatalogueNotFoundException the odms catalogue not found exception
    * @returns void
    */
@@ -617,8 +613,8 @@ public class OdmsManager {
     } catch (IndexOutOfBoundsException e) {
       throw new OdmsCatalogueNotFoundException("ODMSCatalogue is not present");
     } catch (Exception e) {
-      throw new OdmsManagerException("There was an "
-          + "error while deleting the ODMS Node: " + e.getMessage());
+      throw new OdmsManagerException(
+          "There was an " + "error while deleting the ODMS Node: " + e.getMessage());
     } finally {
       jpa.jpaClose();
     }
@@ -626,14 +622,13 @@ public class OdmsManager {
   }
 
   /**
-   * Edits a federated ODMS node present in the Federation
-   * Forwards the request to the underlying JDBC layer for all specified values to
-   * change.
+   * Edits a federated ODMS node present in the Federation Forwards the request to
+   * the underlying JDBC layer for all specified values to change.
    *
    * @param node    ODMSCatalogue to change
    * @param persist Flag to propagate or not the changed node to
    * @throws OdmsCatalogueNotFoundException the odms catalogue not found exception
-   * @throws OdmsManagerException the odms manager exception
+   * @throws OdmsManagerException           the odms manager exception
    * @returns void
    */
   public static void updateOdmsCatalogue(OdmsCatalogue node, boolean persist)
@@ -645,8 +640,8 @@ public class OdmsManager {
         try {
           jpa.jpaUpdateOdmsCatalogue(node);
         } catch (Exception e) {
-          throw new OdmsManagerException("There "
-              + "was an error while updating the ODMS Node: " + e.getMessage());
+          throw new OdmsManagerException(
+              "There " + "was an error while updating the ODMS Node: " + e.getMessage());
         } finally {
           jpa.jpaClose();
         }
@@ -664,7 +659,7 @@ public class OdmsManager {
    *
    * @param node the node
    * @throws OdmsCatalogueNotFoundException the odms catalogue not found exception
-   * @throws OdmsManagerException the odms manager exception
+   * @throws OdmsManagerException           the odms manager exception
    */
   public static void updateInactiveOdmsCatalogue(OdmsCatalogue node)
       throws OdmsCatalogueNotFoundException, OdmsManagerException {
@@ -673,8 +668,8 @@ public class OdmsManager {
     try {
       jpa.jpaUpdateOdmsCatalogue(node);
     } catch (Exception e) {
-      throw new OdmsManagerException("There was an error "
-          + "while updating the ODMS Node: " + e.getMessage());
+      throw new OdmsManagerException(
+          "There was an error " + "while updating the ODMS Node: " + e.getMessage());
     } finally {
       jpa.jpaClose();
     }
@@ -686,7 +681,7 @@ public class OdmsManager {
    * @param node the node
    * @throws OdmsAlreadyPresentException the odms already present exception
    */
-  public static void addFederatedOdmsCatalogueToList(OdmsCatalogue node) 
+  public static void addFederatedOdmsCatalogueToList(OdmsCatalogue node)
       throws OdmsAlreadyPresentException {
     if (!federatedNodes.contains(node)) {
       federatedNodes.add(node);
@@ -701,7 +696,7 @@ public class OdmsManager {
    * @param node the node
    * @throws OdmsCatalogueNotFoundException the odms catalogue not found exception
    */
-  public static void removeFederatedOdmsCatalogueFromList(OdmsCatalogue node) 
+  public static void removeFederatedOdmsCatalogueFromList(OdmsCatalogue node)
       throws OdmsCatalogueNotFoundException {
     if (federatedNodes.contains(node)) {
       federatedNodes.remove(node);
@@ -711,15 +706,15 @@ public class OdmsManager {
   }
 
   /**
-   * Checks if a node is online by requesting its datasets count
-   * Forwards the request to the appropriate ODMS Connector.
+   * Checks if a node is online by requesting its datasets count Forwards the
+   * request to the appropriate ODMS Connector.
    *
    * @param node the ODMSCatalogue to be verified
    * @return the odms catalogue state
    * @throws OdmsCatalogueNotFoundException the odms catalogue not found exception
-   * @throws OdmsManagerException the odms manager exception
-   * @throws SecurityException the security exception
-   * @throws IllegalArgumentException the illegal argument exception
+   * @throws OdmsManagerException           the odms manager exception
+   * @throws SecurityException              the security exception
+   * @throws IllegalArgumentException       the illegal argument exception
    * @returns {@link OdmsCatalogueState}
    */
   public static OdmsCatalogueState checkOdmsCatalogue(OdmsCatalogue node)
@@ -763,7 +758,7 @@ public class OdmsManager {
    * @param node the node
    * @return the int
    * @throws OdmsCatalogueNotFoundException the odms catalogue not found exception
-   * @throws OdmsManagerException the odms manager exception
+   * @throws OdmsManagerException           the odms manager exception
    */
   public static int countOdmsCatalogueDatasets(OdmsCatalogue node)
       throws OdmsCatalogueNotFoundException, OdmsManagerException {
@@ -788,8 +783,8 @@ public class OdmsManager {
         return 0;
 
       } else {
-        throw new OdmsManagerException("There was "
-            + "an error while checking the ODMS Node: " + e.getMessage());
+        throw new OdmsManagerException(
+            "There was " + "an error while checking the ODMS Node: " + e.getMessage());
       }
     }
   }
@@ -797,6 +792,7 @@ public class OdmsManager {
   /**
    * Gets the list of all possible Connector types.
    *
+   * @return the odms connectors list
    */
   protected static HashMap<OdmsCatalogueType, String> getOdmsConnectorsList() {
     return ODMSConnectorsList;
@@ -812,13 +808,12 @@ public class OdmsManager {
     PersistenceManager manageBeansJpa = new PersistenceManager();
     try {
 
-      return manageBeansJpa
-          .jpaGetMessagesCount(getOdmsCataloguesList().stream()
-              .map(node -> node.getId()).collect(Collectors.toList()));
+      return manageBeansJpa.jpaGetMessagesCount(
+          getOdmsCataloguesList().stream().map(node -> node.getId()).collect(Collectors.toList()));
 
     } catch (Exception e) {
-      throw new OdmsManagerException("There was an error "
-          + "while getting ODMS Nodes messages: " + e.getMessage());
+      throw new OdmsManagerException(
+          "There was an error " + "while getting ODMS Nodes messages: " + e.getMessage());
     } finally {
       manageBeansJpa.jpaClose();
     }
@@ -831,16 +826,15 @@ public class OdmsManager {
    * @return the ODMS messages
    * @throws OdmsManagerException the odms manager exception
    */
-  public static List<OdmsCatalogueMessage> getOdmsMessages(int nodeId) 
-      throws OdmsManagerException {
+  public static List<OdmsCatalogueMessage> getOdmsMessages(int nodeId) throws OdmsManagerException {
     PersistenceManager manageBeansJpa = new PersistenceManager();
     try {
 
       return manageBeansJpa.jpaGetOdmsMessagesByNode(nodeId);
 
     } catch (Exception e) {
-      throw new OdmsManagerException("There was "
-          + "an error while getting ODMS Node messages: " + e.getMessage());
+      throw new OdmsManagerException(
+          "There was " + "an error while getting ODMS Node messages: " + e.getMessage());
     } finally {
       manageBeansJpa.jpaClose();
     }
@@ -849,19 +843,19 @@ public class OdmsManager {
   /**
    * Gets the ODMS message.
    *
-   * @param nodeId the node ID
+   * @param nodeId    the node ID
    * @param messageId the message ID
    * @return the ODMS message
    * @throws OdmsManagerException the odms manager exception
    */
-  public static OdmsCatalogueMessage getOdmsMessage(int nodeId, int messageId) 
+  public static OdmsCatalogueMessage getOdmsMessage(int nodeId, int messageId)
       throws OdmsManagerException {
     PersistenceManager manageBeansJpa = new PersistenceManager();
     try {
       return manageBeansJpa.jpaGetOdmsMessage(messageId, nodeId);
     } catch (Exception e) {
-      throw new OdmsManagerException("There was an "
-          + "error while getting ODMS Node message: " + e.getMessage());
+      throw new OdmsManagerException(
+          "There was an " + "error while getting ODMS Node message: " + e.getMessage());
     } finally {
       manageBeansJpa.jpaClose();
     }
@@ -878,8 +872,8 @@ public class OdmsManager {
     try {
       manageBeansJpa.jpaDeleteAllOdmsMessage(nodeId);
     } catch (Exception e) {
-      throw new OdmsManagerException("There was an error "
-          + "while deleting ODMS Nodes messages: " + e.getMessage());
+      throw new OdmsManagerException(
+          "There was an error " + "while deleting ODMS Nodes messages: " + e.getMessage());
     } finally {
       manageBeansJpa.jpaClose();
     }
@@ -888,7 +882,7 @@ public class OdmsManager {
   /**
    * Delete ODMS message.
    *
-   * @param nodeId the node ID
+   * @param nodeId    the node ID
    * @param messageId the message ID
    * @throws OdmsManagerException the odms manager exception
    */
@@ -897,8 +891,8 @@ public class OdmsManager {
     try {
       manageBeansJpa.jpaDeleteOdmsMessage(messageId, nodeId);
     } catch (Exception e) {
-      throw new OdmsManagerException("There was an error"
-          + " while deleting ODMS Node message: " + e.getMessage());
+      throw new OdmsManagerException(
+          "There was an error" + " while deleting ODMS Node message: " + e.getMessage());
     } finally {
       manageBeansJpa.jpaClose();
     }
@@ -907,7 +901,7 @@ public class OdmsManager {
   /**
    * Insert ODMS message.
    *
-   * @param nodeId the node ID
+   * @param nodeId  the node ID
    * @param message the message
    * @return the int
    * @throws OdmsManagerException the odms manager exception
@@ -917,8 +911,8 @@ public class OdmsManager {
     try {
       return manageBeansJpa.jpaInsertOdmsMessage(message, nodeId);
     } catch (Exception e) {
-      throw new OdmsManagerException("There was "
-          + "an error while inserting ODMS Node message: " + e.getMessage());
+      throw new OdmsManagerException(
+          "There was " + "an error while inserting ODMS Node message: " + e.getMessage());
     } finally {
       manageBeansJpa.jpaClose();
     }
@@ -948,11 +942,13 @@ public class OdmsManager {
    * The Class getNodesMonitor.
    */
   class GetNodesMonitor extends Thread {
-    
+
     /** The total. */
     int total;
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see java.lang.Thread#run()
      */
     @Override

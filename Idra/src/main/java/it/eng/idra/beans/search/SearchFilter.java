@@ -20,6 +20,7 @@ package it.eng.idra.beans.search;
 
 import it.eng.idra.utils.JsonRequired;
 
+// TODO: Auto-generated Javadoc
 /**
  * This class represents a DCATDataset field on which to perform a search.
  * 
@@ -29,9 +30,11 @@ import it.eng.idra.utils.JsonRequired;
 
 public class SearchFilter {
 
+  /** The field. */
   @JsonRequired
   private String field;
 
+  /** The value. */
   @JsonRequired
   private String value;
 
@@ -47,22 +50,47 @@ public class SearchFilter {
     this.value = value;
   }
 
+  /**
+   * Gets the field.
+   *
+   * @return the field
+   */
   public String getField() {
     return field;
   }
 
+  /**
+   * Sets the field.
+   *
+   * @param field the new field
+   */
   public void setField(String field) {
     this.field = field;
   }
 
+  /**
+   * Gets the value.
+   *
+   * @return the value
+   */
   public String getValue() {
     return value;
   }
 
+  /**
+   * Sets the value.
+   *
+   * @param value the new value
+   */
   public void setValue(String value) {
     this.value = value;
   }
 
+  /*
+   * (non-Javadoc)
+   * 
+   * @see java.lang.Object#toString()
+   */
   @Override
   public String toString() {
     return "SearchFilter [field=" + field + ", value=" + value + "]";

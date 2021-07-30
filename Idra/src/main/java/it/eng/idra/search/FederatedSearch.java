@@ -42,10 +42,18 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.solr.client.solrj.SolrServerException;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class FederatedSearch.
+ */
 public class FederatedSearch {
 
+  /** The logger. */
   private static Logger logger = LogManager.getLogger(FederatedSearch.class);
 
+  /**
+   * Instantiates a new federated search.
+   */
   private FederatedSearch() {
   }
 
@@ -53,7 +61,7 @@ public class FederatedSearch {
    * Dump datasets.
    *
    * @return the search result
-   * @throws IOException Signals that an I/O exception has occurred.
+   * @throws IOException         Signals that an I/O exception has occurred.
    * @throws SolrServerException the solr server exception
    */
   public static SearchResult dumpDatasets() throws IOException, SolrServerException {
@@ -62,21 +70,23 @@ public class FederatedSearch {
 
   }
 
-
   /**
    * Search.
    *
    * @param searchParameters the search parameters
    * @return the search result
-   * @throws IOException Signals that an I/O exception has occurred.
-   * @throws SolrServerException the solr server exception
-   * @throws SQLException the SQL exception
-   * @throws OdmsCatalogueNotFoundException the odms catalogue not found exception
-   * @throws EuroVocTranslationNotFoundException the euro voc translation not found exception
+   * @throws IOException                         Signals that an I/O exception has
+   *                                             occurred.
+   * @throws SolrServerException                 the solr server exception
+   * @throws SQLException                        the SQL exception
+   * @throws OdmsCatalogueNotFoundException      the odms catalogue not found
+   *                                             exception
+   * @throws EuroVocTranslationNotFoundException the euro voc translation not
+   *                                             found exception
    */
-  public static SearchResult search(HashMap<String, Object> searchParameters) 
-      throws IOException, SolrServerException,
-      SQLException, OdmsCatalogueNotFoundException, EuroVocTranslationNotFoundException {
+  public static SearchResult search(HashMap<String, Object> searchParameters)
+      throws IOException, SolrServerException, SQLException, OdmsCatalogueNotFoundException,
+      EuroVocTranslationNotFoundException {
 
     // EuroVoc processing
     if (searchParameters.containsKey("euroVoc") && (boolean) searchParameters.get("euroVoc")) {
@@ -96,51 +106,79 @@ public class FederatedSearch {
   /**
    * Search by query.
    *
-   * @param query the query
-   * @param sort the sort
-   * @param rows the rows
-   * @param offset the offset
+   * @param query   the query
+   * @param sort    the sort
+   * @param rows    the rows
+   * @param offset  the offset
    * @param nodeIds the node IDS
    * @return the search result
-   * @throws IOException Signals that an I/O exception has occurred.
-   * @throws SolrServerException the solr server exception
-   * @throws SQLException the SQL exception
-   * @throws OdmsCatalogueNotFoundException the odms catalogue not found exception
-   * @throws EuroVocTranslationNotFoundException the euro voc translation not found exception
+   * @throws IOException                         Signals that an I/O exception has
+   *                                             occurred.
+   * @throws SolrServerException                 the solr server exception
+   * @throws SQLException                        the SQL exception
+   * @throws OdmsCatalogueNotFoundException      the odms catalogue not found
+   *                                             exception
+   * @throws EuroVocTranslationNotFoundException the euro voc translation not
+   *                                             found exception
    */
-  public static SearchResult searchByQuery(String query, String sort, 
-      int rows, int offset, List<String> nodeIds)
-      throws IOException, SolrServerException, SQLException, OdmsCatalogueNotFoundException,
-      EuroVocTranslationNotFoundException {
+  public static SearchResult searchByQuery(String query, String sort, int rows, int offset,
+      List<String> nodeIds) throws IOException, SolrServerException, SQLException,
+      OdmsCatalogueNotFoundException, EuroVocTranslationNotFoundException {
 
     return MetadataCacheManager.searchDatasetsByQuery(query, sort, rows, offset, nodeIds);
   }
 
+  /**
+   * Search driver.
+   *
+   * @param searchParameters the search parameters
+   * @return the list
+   * @throws IOException         Signals that an I/O exception has occurred.
+   * @throws SolrServerException the solr server exception
+   * @throws SQLException        the SQL exception
+   */
   public static List<DcatDataset> searchDriver(HashMap<String, Object> searchParameters)
       throws IOException, SolrServerException, SQLException {
     logger.info("Search by resourceIDs and filters");
     return MetadataCacheManager.searchDriverDatasets(searchParameters);
   }
 
+  /**
+   * Gets the format statistics.
+   *
+   * @param searchParameters the search parameters
+   * @return the format statistics
+   * @throws IOException         Signals that an I/O exception has occurred.
+   * @throws SolrServerException the solr server exception
+   * @throws SQLException        the SQL exception
+   */
   public static SearchResult getFormatStatistics(HashMap<String, Object> searchParameters)
       throws IOException, SolrServerException, SQLException {
     logger.info("Get Format Statistics");
     return MetadataCacheManager.searchForDistributionStatistics(searchParameters);
   }
 
+  /**
+   * Gets the licenses infos.
+   *
+   * @param searchParameters the search parameters
+   * @return the licenses infos
+   * @throws IOException         Signals that an I/O exception has occurred.
+   * @throws SolrServerException the solr server exception
+   * @throws SQLException        the SQL exception
+   */
   public static HashMap<String, String> getLicensesInfos(HashMap<String, Object> searchParameters)
       throws IOException, SolrServerException, SQLException {
     logger.info("Get Licenses Infos");
     return MetadataCacheManager.getAllLicensesInfo(searchParameters);
   }
 
-
   /**
    * Regex search.
    *
    * @param searchParameters the search parameters
    * @return the list
-   * @throws IOException Signals that an I/O exception has occurred.
+   * @throws IOException  Signals that an I/O exception has occurred.
    * @throws SQLException the SQL exception
    */
   public static List<DcatDataset> regexSearch(HashMap<String, Object> searchParameters)
@@ -159,7 +197,7 @@ public class FederatedSearch {
    *
    * @param searchParameters the search parameters
    * @return the list
-   * @throws IOException Signals that an I/O exception has occurred.
+   * @throws IOException  Signals that an I/O exception has occurred.
    * @throws SQLException the SQL exception
    */
   public static List<DcatDataset> spatialSearch(HashMap<String, Object> searchParameters)
@@ -173,12 +211,28 @@ public class FederatedSearch {
     return result;
   }
 
+  /**
+   * Local search.
+   *
+   * @param searchParameters the search parameters
+   * @return the search result
+   * @throws IOException         Signals that an I/O exception has occurred.
+   * @throws SolrServerException the solr server exception
+   */
   private static SearchResult localSearch(HashMap<String, Object> searchParameters)
       throws IOException, SolrServerException {
     logger.info("Searching on cache");
     return MetadataCacheManager.searchDatasets(searchParameters);
   }
 
+  /**
+   * Live search.
+   *
+   * @param searchParameters the search parameters
+   * @return the search result
+   * @throws SQLException                   the SQL exception
+   * @throws OdmsCatalogueNotFoundException the odms catalogue not found exception
+   */
   private static SearchResult liveSearch(HashMap<String, Object> searchParameters)
       throws SQLException, OdmsCatalogueNotFoundException {
 
@@ -220,8 +274,8 @@ public class FederatedSearch {
           // The connector class is loaded, based on ODMS node type,
           // using Java reflection
           Class<?> cls = loader.loadClass(odmsConnectorsList.get(node.getNodeType()));
-          currentConnector = (IodmsConnector) cls.getDeclaredConstructor(
-              OdmsCatalogue.class).newInstance(node);
+          currentConnector = (IodmsConnector) cls.getDeclaredConstructor(OdmsCatalogue.class)
+              .newInstance(node);
 
           Method m = cls.getDeclaredMethod("countSearchDatasets", HashMap.class);
           // Number of results of a single node with specific search
@@ -240,14 +294,13 @@ public class FederatedSearch {
           // System.out.println("All RESULTS: " + allResults);
           // System.out.println("START: " + Integer.parseInt((String)
           // searchParameters.get("start")));
-          if (result != 0 
+          if (result != 0
               && allResults >= Integer.parseInt((String) searchParameters.get("start"))) {
 
             if (flag) {
               // System.out.println("FLAG==TRUE");
-              page -= 
-                  Math.ceil((allResults - result) 
-                      / (Integer.parseInt((String) searchParameters.get("rows"))));
+              page -= Math.ceil((allResults - result)
+                  / (Integer.parseInt((String) searchParameters.get("rows"))));
 
               // System.out.println("PAGE: " + page);
 
@@ -276,8 +329,8 @@ public class FederatedSearch {
             globalResult.addAll(nodeDatasets);
             if (nodeDatasets.size() < Integer.parseInt((String) searchParameters.get("rows"))) {
 
-              int newRows = 
-                  Integer.parseInt((String) searchParameters.get("rows")) - nodeDatasets.size();
+              int newRows = Integer.parseInt((String) searchParameters.get("rows"))
+                  - nodeDatasets.size();
               searchParameters.put("rows", Integer.toString(newRows));
               searchParameters.put("start", "0");
               flag = false;
@@ -315,13 +368,11 @@ public class FederatedSearch {
     }
 
     if (params[1].equals("desc")) {
-      Collections.sort(globalResult, DatasetComparator
-          .decending(DatasetComparator.getComparator(
-              DatasetComparator.valueOf(params[0].toUpperCase() + "_SORT"))));
+      Collections.sort(globalResult, DatasetComparator.decending(DatasetComparator
+          .getComparator(DatasetComparator.valueOf(params[0].toUpperCase() + "_SORT"))));
     } else {
-      Collections.sort(globalResult,
-          DatasetComparator.getComparator(
-              DatasetComparator.valueOf(params[0].toUpperCase() + "_SORT")));
+      Collections.sort(globalResult, DatasetComparator
+          .getComparator(DatasetComparator.valueOf(params[0].toUpperCase() + "_SORT")));
     }
 
     return new SearchResult(new Long(globalResult.size()), globalResult);
@@ -332,15 +383,18 @@ public class FederatedSearch {
    *
    * @param searchParameters the search parameters
    * @return the int
-   * @throws IOException Signals that an I/O exception has occurred.
-   * @throws SolrServerException the solr server exception
-   * @throws SQLException the SQL exception
-   * @throws OdmsCatalogueNotFoundException the odms catalogue not found exception
-   * @throws EuroVocTranslationNotFoundException the euro voc translation not found exception
+   * @throws IOException                         Signals that an I/O exception has
+   *                                             occurred.
+   * @throws SolrServerException                 the solr server exception
+   * @throws SQLException                        the SQL exception
+   * @throws OdmsCatalogueNotFoundException      the odms catalogue not found
+   *                                             exception
+   * @throws EuroVocTranslationNotFoundException the euro voc translation not
+   *                                             found exception
    */
-  public static int countDataset(HashMap<String, Object> searchParameters) 
-      throws IOException, SolrServerException,
-      SQLException, OdmsCatalogueNotFoundException, EuroVocTranslationNotFoundException {
+  public static int countDataset(HashMap<String, Object> searchParameters)
+      throws IOException, SolrServerException, SQLException, OdmsCatalogueNotFoundException,
+      EuroVocTranslationNotFoundException {
 
     // EuroVoc processing
     if (searchParameters.containsKey("euroVoc") && (boolean) searchParameters.get("euroVoc")) {
@@ -354,6 +408,14 @@ public class FederatedSearch {
     }
   }
 
+  /**
+   * Count driver search.
+   *
+   * @param searchParameters the search parameters
+   * @return the int
+   * @throws IOException         Signals that an I/O exception has occurred.
+   * @throws SolrServerException the solr server exception
+   */
   public static int countDriverSearch(HashMap<String, Object> searchParameters)
       throws IOException, SolrServerException {
     logger.info("Searching on cache with resourceIDs and filters");
@@ -372,10 +434,10 @@ public class FederatedSearch {
    *
    * @param searchParameters the search parameters
    * @return the int
-   * @throws IOException Signals that an I/O exception has occurred.
+   * @throws IOException         Signals that an I/O exception has occurred.
    * @throws SolrServerException the solr server exception
    */
-  public static int countRegexSearch(HashMap<String, Object> searchParameters) 
+  public static int countRegexSearch(HashMap<String, Object> searchParameters)
       throws IOException, SolrServerException {
     logger.info("Searching on cache with Location");
     CachePersistenceManager jpa = new CachePersistenceManager();
@@ -391,7 +453,7 @@ public class FederatedSearch {
    *
    * @param searchParameters the search parameters
    * @return the int
-   * @throws IOException Signals that an I/O exception has occurred.
+   * @throws IOException         Signals that an I/O exception has occurred.
    * @throws SolrServerException the solr server exception
    */
   public static int countSpatialSearch(HashMap<String, Object> searchParameters)
@@ -405,12 +467,28 @@ public class FederatedSearch {
     }
   }
 
+  /**
+   * Count local search.
+   *
+   * @param searchParameters the search parameters
+   * @return the int
+   * @throws IOException         Signals that an I/O exception has occurred.
+   * @throws SolrServerException the solr server exception
+   */
   private static int countLocalSearch(HashMap<String, Object> searchParameters)
       throws IOException, SolrServerException {
     logger.info("Searching on cache");
     return MetadataCacheManager.getDatasetNumber(searchParameters);
   }
 
+  /**
+   * Count live search.
+   *
+   * @param searchParameters the search parameters
+   * @return the int
+   * @throws SQLException                   the SQL exception
+   * @throws OdmsCatalogueNotFoundException the odms catalogue not found exception
+   */
   private static int countLiveSearch(HashMap<String, Object> searchParameters)
       throws SQLException, OdmsCatalogueNotFoundException {
 
@@ -427,8 +505,7 @@ public class FederatedSearch {
     // Integer.parseInt(searchParameters.remove("rows").toString())/nodesToBeSearched.size());
     // searchParameters.put("rows", nodeRows.toString());
 
-    HashMap<OdmsCatalogueType, String> odmsConnectorsList = 
-        FederationCore.getOdmsConnectorsList();
+    HashMap<OdmsCatalogueType, String> odmsConnectorsList = FederationCore.getOdmsConnectorsList();
     logger.info("Live search");
     ClassLoader loader = Thread.currentThread().getContextClassLoader();
     int globalResult = 0; // Results from all nodes
@@ -448,8 +525,8 @@ public class FederatedSearch {
           // The connector class is loaded, based on ODMS node type,
           // using Java reflection
           Class<?> cls = loader.loadClass(odmsConnectorsList.get(node.getNodeType()));
-          currentConnector = 
-              (IodmsConnector) cls.getDeclaredConstructor(OdmsCatalogue.class).newInstance(node);
+          currentConnector = (IodmsConnector) cls.getDeclaredConstructor(OdmsCatalogue.class)
+              .newInstance(node);
           Method m = cls.getDeclaredMethod("countSearchDatasets", HashMap.class);
           nodeDatasets = (Integer) m.invoke(currentConnector, searchParameters);
 

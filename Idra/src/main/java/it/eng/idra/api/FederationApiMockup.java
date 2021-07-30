@@ -56,21 +56,21 @@ public class FederationApiMockup {
 
       JSONObject json = new JSONObject(
           "{\"count\":\"1\",\"results\":[{\"title\": \"eee\",\"description\": \"eee\","
-          + "\"identifier\": \"eee\",\"altIndentifier\": \"eee\","
-          + "\"issued\": \"2015-10-12T12:03:22Z\","
-          + "\"modified\": \"2015-10-12T12:03:22Z\","
-          + "\"versionInfo\":\"ddd\",\"versionNotes\":\"eeee\","
-          + "\"landingPage\":\"baseUrl/datasets/identifier\",\"accrualPeriodicity\":\"eee\","
-          + "\"spatial\":\"eee\",\"temporal\":\"eee\","
-          + "\"language\":\"english\",\"licenseTitle\":\"eee\","
-          + "\"keyword\":[\"pollution\",\"metro\"],"
-          + "\"publisher\":{\"name\":\"eee\",\"mbox\":\"eee\","
-          + "\"homepage\":\"rrr\",\"type\":\"eee\"},"
-          + "\"contactPoint\": {\"fn\":\"eee\",\"hasEmail\":\"eeee\"},"
-          + "\"distribution\":[{\"title\":\"ee\",\"accessURL\": \"eee\",\"description\": \"ddd\","
-          + "\"mediaType\":\"eee\",\"format\": \"eee\",\"license\": \"eee\","
-          + "\"issued\": \"2015-10-12T12:03:14Z\","
-          + "\"modified\": \"2015-10-12T12:03:14Z\",\"byteSize\":\"1024\"}]}]}");
+              + "\"identifier\": \"eee\",\"altIndentifier\": \"eee\","
+              + "\"issued\": \"2015-10-12T12:03:22Z\"," + "\"modified\": \"2015-10-12T12:03:22Z\","
+              + "\"versionInfo\":\"ddd\",\"versionNotes\":\"eeee\","
+              + "\"landingPage\":\"baseUrl/datasets/identifier\",\"accrualPeriodicity\":\"eee\","
+              + "\"spatial\":\"eee\",\"temporal\":\"eee\","
+              + "\"language\":\"english\",\"licenseTitle\":\"eee\","
+              + "\"keyword\":[\"pollution\",\"metro\"],"
+              + "\"publisher\":{\"name\":\"eee\",\"mbox\":\"eee\","
+              + "\"homepage\":\"rrr\",\"type\":\"eee\"},"
+              + "\"contactPoint\": {\"fn\":\"eee\",\"hasEmail\":\"eeee\"},"
+              + "\"distribution\":[{\"title\":\"ee\","
+              + "\"accessURL\": \"eee\",\"description\": \"ddd\","
+              + "\"mediaType\":\"eee\",\"format\": \"eee\",\"license\": \"eee\","
+              + "\"issued\": \"2015-10-12T12:03:14Z\","
+              + "\"modified\": \"2015-10-12T12:03:14Z\",\"byteSize\":\"1024\"}]}]}");
       return Response.status(Response.Status.OK).entity(json.toString()).build();
     } catch (JSONException e) {
       e.printStackTrace();
@@ -163,8 +163,7 @@ public class FederationApiMockup {
 
     try {
 
-      JSONArray json = new JSONArray(
-          "[{\"identifier\":\"agid:D.300-90\","
+      JSONArray json = new JSONArray("[{\"identifier\":\"agid:D.300-90\","
           + "\"issued\":\"2015-10-12T12:03:14Z\",\"modified\":\"2015-10-12T12:03:14Z\"}]");
       return Response.status(Response.Status.OK).entity(json.toString()).build();
     } catch (JSONException e) {
@@ -177,7 +176,7 @@ public class FederationApiMockup {
   /**
    * Gets the native datasets.
    *
-   * @param rows the rows
+   * @param rows   the rows
    * @param offset the offset
    * @return the native datasets
    */
@@ -193,8 +192,7 @@ public class FederationApiMockup {
           + "\"hasStoredRDF\":false,\"title\":\"Contratti del Sistema Pubblico di Connettività\","
           + "\"description\":\"Il dataset LOD che contiene i contratti SPC del Lotto 1 (2007)\","
           + "\"distributions\":[{\"id\":\"4e581d9d-20d3-4802-80a0-55f9b660d227\""
-          + ",\"storedRDF\":false,"
-          + "\"accessURL\":\"spcdata.digitpa.gov.it:8899/sparql\","
+          + ",\"storedRDF\":false," + "\"accessURL\":\"spcdata.digitpa.gov.it:8899/sparql\","
           + "\"description\":\"Questa è la distribuzione N3 del dataset"
           + "Linked Open Data relativo ai contratti del Sistema Pubblico di Connettività\","
           + "\"format\":\"RDF\","
@@ -203,10 +201,8 @@ public class FederationApiMockup {
           + "\"versionInfo\":\"4.0\"},\"byteSize\":\"\",\"documentation\":[\"\"],"
           + "\"downloadURL\":\"http://spcdata.digitpa.gov.it/data/contrattiLotto1.nt\","
           + "\"language\":[\"\"],\"linkedSchemas\":[],\"mediaType\":\"\","
-          + "\"releaseDate\":\"\",\"updateDate\":\"\","
-          + "\"rights\":\"\",\"status\":\"\","
-          + "\"title\":\"Distribuzione Turtle di LOD SPC Contratti\","
-          + "\"hasDatalets\":false}],"
+          + "\"releaseDate\":\"\",\"updateDate\":\"\"," + "\"rights\":\"\",\"status\":\"\","
+          + "\"title\":\"Distribuzione Turtle di LOD SPC Contratti\"," + "\"hasDatalets\":false}],"
           + "\"theme\":[{\"resourceUri\":\"http://publications.europa.eu/"
           + "resource/authority/data-theme/ECON\","
           + "\"propertyUri\":\"http://www.w3.org/ns/dcat#theme\","
@@ -226,8 +222,7 @@ public class FederationApiMockup {
           + "\"keywords\":[\"Contratto pubblico\","
           + "\"Acquisizione\",\"SPC\"],\"accessRights\":\"\","
           + "\"conformsTo\":[],\"documentation\":[\"\"],"
-          + "\"frequency\":\"NEVER\",\"hasVersion\":[\"\"],"
-          + "\"isVersionOf\":[\"\"],"
+          + "\"frequency\":\"NEVER\",\"hasVersion\":[\"\"]," + "\"isVersionOf\":[\"\"],"
           + "\"landingPage\":\"http://dati.gov.it/resource"
           + "/Dataset/ContrattiSPC_agid\",\"language\":[\"\"],"
           + "\"provenance\":[\"\"],\"releaseDate\":\"1970-01-01T00:00:00Z\","
@@ -253,8 +248,7 @@ public class FederationApiMockup {
           + "\"prefLabel\":[{\"language\":\"it\",\"value\":\"beni e servizi\"}]},"
           + "{\"resourceUri\":\"http://eurovoc.europa.eu/1810\","
           + "\"propertyUri\":\"http://purl.org/dc/terms/subject\","
-          + "\"prefLabel\":[{\"language\":\"it\","
-          + "\"value\":\"appalto pubblico\"}]}],"
+          + "\"prefLabel\":[{\"language\":\"it\"," + "\"value\":\"appalto pubblico\"}]}],"
           + "\"legacyIdentifier\":\"\"}]";
 
       return Response.status(Response.Status.OK).entity(json.toString()).build();

@@ -31,14 +31,24 @@ import it.eng.idra.beans.sparql.SparqlDistributionConfig;
 import java.lang.reflect.Type;
 import org.json.JSONObject;
 
-public class DistributionAdditionalConfigurationDeserializer implements
-    JsonDeserializer<DistributionAdditionalConfiguration>, 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class DistributionAdditionalConfigurationDeserializer.
+ */
+public class DistributionAdditionalConfigurationDeserializer
+    implements JsonDeserializer<DistributionAdditionalConfiguration>,
     JsonSerializer<DistributionAdditionalConfiguration> {
 
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * com.google.gson.JsonDeserializer#deserialize(com.google.gson.JsonElement,
+   * java.lang.reflect.Type, com.google.gson.JsonDeserializationContext)
+   */
   @Override
-  public DistributionAdditionalConfiguration deserialize(JsonElement arg0, 
-      Type arg1, JsonDeserializationContext arg2)
-      throws JsonParseException {
+  public DistributionAdditionalConfiguration deserialize(JsonElement arg0, Type arg1,
+      JsonDeserializationContext arg2) throws JsonParseException {
     // TODO Auto-generated method stub
     JSONObject j = new JSONObject(arg0.toString());
     String nodeId = j.optString("nodeID", "");
@@ -55,9 +65,15 @@ public class DistributionAdditionalConfigurationDeserializer implements
     return null;
   }
 
+  /*
+   * (non-Javadoc)
+   * 
+   * @see com.google.gson.JsonSerializer#serialize(java.lang.Object,
+   * java.lang.reflect.Type, com.google.gson.JsonSerializationContext)
+   */
   @Override
-  public JsonElement serialize(DistributionAdditionalConfiguration arg0, 
-      Type arg1, JsonSerializationContext arg2) {
+  public JsonElement serialize(DistributionAdditionalConfiguration arg0, Type arg1,
+      JsonSerializationContext arg2) {
     // TODO Auto-generated method stub
     final JsonObject jsonObject = new JsonObject();
     jsonObject.addProperty("id", arg0.getId());

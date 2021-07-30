@@ -32,25 +32,37 @@ import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class WebScraperSitemap.
+ */
 @Entity
 @Table(name = "odms_sitemap")
 public class WebScraperSitemap {
 
+  /** The id. */
   private String id;
+
+  /** The start url. */
   private String startUrl;
+
+  /** The dataset selectors. */
   private List<DatasetSelector> datasetSelectors;
 
+  /** The navigation parameter. */
   private NavigationParameter navigationParameter;
 
+  /**
+   * Instantiates a new web scraper sitemap.
+   */
   public WebScraperSitemap() {
   }
-
 
   /**
    * Instantiates a new web scraper sitemap.
    *
-   * @param startUrl the start url
-   * @param selectors the selectors
+   * @param startUrl            the start url
+   * @param selectors           the selectors
    * @param navigationParameter the navigation parameter
    */
   public WebScraperSitemap(String startUrl, List<DatasetSelector> selectors,
@@ -61,6 +73,11 @@ public class WebScraperSitemap {
     this.navigationParameter = navigationParameter;
   }
 
+  /**
+   * Gets the id.
+   *
+   * @return the id
+   */
   @Id
   @GeneratedValue(generator = "uuid")
   @GenericGenerator(name = "uuid", strategy = "uuid2")
@@ -68,47 +85,91 @@ public class WebScraperSitemap {
     return id;
   }
 
+  /**
+   * Sets the id.
+   *
+   * @param id the new id
+   */
   public void setId(String id) {
     this.id = id;
   }
 
+  /**
+   * Gets the start url.
+   *
+   * @return the start url
+   */
   public String getStartUrl() {
     return startUrl;
   }
 
+  /**
+   * Sets the start url.
+   *
+   * @param startUrl the new start url
+   */
   public void setStartUrl(String startUrl) {
     this.startUrl = startUrl;
   }
 
+  /**
+   * Gets the dataset selectors.
+   *
+   * @return the dataset selectors
+   */
   @LazyCollection(LazyCollectionOption.FALSE)
   @OneToMany(cascade = { CascadeType.ALL })
-  //@Fetch(FetchMode.SELECT)
+  // @Fetch(FetchMode.SELECT)
   @JoinColumns({ @JoinColumn(name = "sitemap_id", referencedColumnName = "id") })
   public List<DatasetSelector> getDatasetSelectors() {
     return datasetSelectors;
   }
 
+  /**
+   * Sets the dataset selectors.
+   *
+   * @param datasetSelector the new dataset selectors
+   */
   public void setDatasetSelectors(List<DatasetSelector> datasetSelector) {
     this.datasetSelectors = datasetSelector;
   }
 
+  /**
+   * Gets the navigation parameter.
+   *
+   * @return the navigation parameter
+   */
   @OneToOne(cascade = CascadeType.ALL)
   @JoinColumn(name = "navigationParameter_id")
   public NavigationParameter getNavigationParameter() {
     return navigationParameter;
   }
 
+  /**
+   * Sets the navigation parameter.
+   *
+   * @param navigationParameter the new navigation parameter
+   */
   public void setNavigationParameter(NavigationParameter navigationParameter) {
     this.navigationParameter = navigationParameter;
   }
 
+  /*
+   * (non-Javadoc)
+   * 
+   * @see java.lang.Object#toString()
+   */
   @Override
   public String toString() {
-    return "WebScraperSitemap [id=" + id + ", startUrl=" 
-        + startUrl + ", datasetSelectors=" + datasetSelectors
-        + ", navigationParameter=" + navigationParameter + "]";
+    return "WebScraperSitemap [id=" + id + ", startUrl=" + startUrl + ", datasetSelectors="
+        + datasetSelectors + ", navigationParameter=" + navigationParameter + "]";
   }
 
+  /*
+   * (non-Javadoc)
+   * 
+   * @see java.lang.Object#hashCode()
+   */
   @Override
   public int hashCode() {
     final int prime = 31;
@@ -120,6 +181,11 @@ public class WebScraperSitemap {
     return result;
   }
 
+  /*
+   * (non-Javadoc)
+   * 
+   * @see java.lang.Object#equals(java.lang.Object)
+   */
   @Override
   public boolean equals(Object obj) {
     if (this == obj) {

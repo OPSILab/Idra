@@ -66,31 +66,51 @@ import org.quartz.JobExecutionException;
 import org.quartz.PersistJobDataAfterExecution;
 import org.quartz.UnableToInterruptJobException;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class OdmsSynchJob.
+ */
 @PersistJobDataAfterExecution
 @DisallowConcurrentExecution
 public class OdmsSynchJob implements InterruptableJob {
 
+  /** The logger. */
   private static Logger logger = LogManager.getLogger(OdmsSynchJob.class);
-  private static Boolean enableRdf = 
-      Boolean.parseBoolean(PropertyManager.getProperty(IdraProperty.ENABLE_RDF));
 
+  /** The enable rdf. */
+  private static Boolean enableRdf = Boolean
+      .parseBoolean(PropertyManager.getProperty(IdraProperty.ENABLE_RDF));
+
+  /**
+   * Instantiates a new odms synch job.
+   */
   public OdmsSynchJob() {
   }
 
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.quartz.InterruptableJob#interrupt()
+   */
   @Override
   public void interrupt() throws UnableToInterruptJobException {
     // TODO Auto-generated method stub
     logger.info("Interrupting job");
   }
 
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.quartz.Job#execute(org.quartz.JobExecutionContext)
+   */
   @Override
   public void execute(JobExecutionContext context) throws JobExecutionException {
     // TODO Auto-generated method stub
     try {
-      logger.info("Starting synch job for catalogue: " 
+      logger.info("Starting synch job for catalogue: "
           + context.getJobDetail().getJobDataMap().get("nodeID"));
-      OdmsCatalogue node = 
-          OdmsManager.getOdmsCatalogue((int) context.getJobDetail().getJobDataMap().get("nodeID"));
+      OdmsCatalogue node = OdmsManager
+          .getOdmsCatalogue((int) context.getJobDetail().getJobDataMap().get("nodeID"));
       if (!node.isFederating() && node.isUnlocked() && node.isActive()) {
         node.setSynchLock(OdmsSynchLock.PERIODIC);
         OdmsManager.updateOdmsCatalogue(node, false);
@@ -108,30 +128,47 @@ public class OdmsSynchJob implements InterruptableJob {
       }
     } catch (OdmsCatalogueNotFoundException e) {
       e.printStackTrace();
-      //JobExecutionException e2 =
-      //new JobExecutionException(e);
-      //e2.setUnscheduleFiringTrigger(true);
+      // JobExecutionException e2 =
+      // new JobExecutionException(e);
+      // e2.setUnscheduleFiringTrigger(true);
     } catch (Exception e) {
 
       e.printStackTrace();
     }
   }
 
-  static OdmsSynchronizationResult getChangedDatasets(
-      OdmsCatalogue node, List<DcatDataset> oldDatasets,
-      String startingDate) throws Exception {
+  /**
+   * Gets the changed datasets.
+   *
+   * @param node         the node
+   * @param oldDatasets  the old datasets
+   * @param startingDate the starting date
+   * @return the changed datasets
+   * @throws Exception the exception
+   */
+  static OdmsSynchronizationResult getChangedDatasets(OdmsCatalogue node,
+      List<DcatDataset> oldDatasets, String startingDate) throws Exception {
 
     OdmsSynchronizationResult nodeDatasets = new OdmsSynchronizationResult();
 
     // The connector class is loaded, based on ODMS node type, using Java
     // reflection
-    nodeDatasets =
-        OdmsManager.getOdmsCatalogueConnector(node).getChangedDatasets(oldDatasets, startingDate);
+    nodeDatasets = OdmsManager.getOdmsCatalogueConnector(node).getChangedDatasets(oldDatasets,
+        startingDate);
     System.gc();
 
     return nodeDatasets;
   }
 
+  /**
+   * Synch web odms node.
+   *
+   * @param node the node
+   * @throws InvocationTargetException the invocation target exception
+   * @throws IOException               Signals that an I/O exception has occurred.
+   * @throws SolrServerException       the solr server exception
+   * @throws DatasetNotFoundException  the dataset not found exception
+   */
   private static void synchWebOdmsNode(OdmsCatalogue node)
       throws InvocationTargetException, IOException, SolrServerException, DatasetNotFoundException {
 
@@ -141,6 +178,15 @@ public class OdmsSynchJob implements InterruptableJob {
 
   }
 
+  /**
+   * Synch dump odms node.
+   *
+   * @param node the node
+   * @throws InvocationTargetException the invocation target exception
+   * @throws IOException               Signals that an I/O exception has occurred.
+   * @throws SolrServerException       the solr server exception
+   * @throws DatasetNotFoundException  the dataset not found exception
+   */
   private static void synchDumpOdmsNode(OdmsCatalogue node)
       throws InvocationTargetException, IOException, SolrServerException, DatasetNotFoundException {
 
@@ -160,12 +206,37 @@ public class OdmsSynchJob implements InterruptableJob {
 
   }
 
-  protected static boolean synchOdmsNode(OdmsCatalogue node, boolean isChangedProtocol) 
+  /**
+   * Synch odms node.
+   *
+   * @param node              the node
+   * @param isChangedProtocol the is changed protocol
+   * @return true, if successful
+   * @throws SQLException                    the SQL exception
+   * @throws IOException                     Signals that an I/O exception has
+   *                                         occurred.
+   * @throws SolrServerException             the solr server exception
+   * @throws ClassNotFoundException          the class not found exception
+   * @throws InstantiationException          the instantiation exception
+   * @throws IllegalAccessException          the illegal access exception
+   * @throws IllegalArgumentException        the illegal argument exception
+   * @throws NoSuchMethodException           the no such method exception
+   * @throws SecurityException               the security exception
+   * @throws DatasetNotFoundException        the dataset not found exception
+   * @throws RepositoryException             the repository exception
+   * @throws RDFParseException               the RDF parse exception
+   * @throws OdmsCatalogueNotFoundException  the odms catalogue not found
+   *                                         exception
+   * @throws OdmsCatalogueForbiddenException the odms catalogue forbidden
+   *                                         exception
+   * @throws OdmsManagerException            the odms manager exception
+   */
+  protected static boolean synchOdmsNode(OdmsCatalogue node, boolean isChangedProtocol)
       throws SQLException, IOException, SolrServerException, ClassNotFoundException,
-      InstantiationException, IllegalAccessException, IllegalArgumentException, 
+      InstantiationException, IllegalAccessException, IllegalArgumentException,
       NoSuchMethodException, SecurityException, DatasetNotFoundException, RepositoryException,
-      RDFParseException, OdmsCatalogueNotFoundException,
-      OdmsCatalogueForbiddenException, OdmsManagerException {
+      RDFParseException, OdmsCatalogueNotFoundException, OdmsCatalogueForbiddenException,
+      OdmsManagerException {
 
     if (!node.isFederating()) {
       logger.info("Starting synchronization for node: " + node.getName() + " ID: " + node.getId());
@@ -189,9 +260,8 @@ public class OdmsSynchJob implements InterruptableJob {
       // Check first the current node state
       node.setNodeState(OdmsManager.checkOdmsCatalogue(node));
 
-      logger.info(
-          "The ODMS Node with name: " 
-           + node.getName() + " and ID: " + node.getId() + " is " + node.getNodeState());
+      logger.info("The ODMS Node with name: " + node.getName() + " and ID: " + node.getId() + " is "
+          + node.getNodeState());
 
       /*
        * If the node is Online is possible to retrieve only changed datasets
@@ -204,14 +274,14 @@ public class OdmsSynchJob implements InterruptableJob {
 
           try {
 
-            //if (!node.getNodeType().equals(ODMSCatalogueType.DCATDUMP)) {
+            // if (!node.getNodeType().equals(ODMSCatalogueType.DCATDUMP)) {
 
             if (!node.getNodeType().equals(OdmsCatalogueType.CKAN)) {
               presentDatasets = MetadataCacheManager.getAllDatasetsByOdmsCatalogue(node.getId());
             }
 
-            synchroResult = 
-                getChangedDatasets(node, presentDatasets, CommonUtil.formatDate(lastUpdate));
+            synchroResult = getChangedDatasets(node, presentDatasets,
+                CommonUtil.formatDate(lastUpdate));
 
             for (DcatDataset dataset : synchroResult.getDeletedDatasets()) {
               deletedRdf += OdmsSynchJob.deleteDataset(node, dataset);
@@ -225,10 +295,10 @@ public class OdmsSynchJob implements InterruptableJob {
               updatedRdf += OdmsSynchJob.updateDataset(node, dataset);
             }
 
-            //} else if (node.getNodeType().equals(ODMSCatalogueType.DCATDUMP)) {
+            // } else if (node.getNodeType().equals(ODMSCatalogueType.DCATDUMP)) {
             //// Do nothing for node type DUMP
-            //synchDUMPODMSNode(node);
-            //}
+            // synchDUMPODMSNode(node);
+            // }
 
           } catch (Exception e) {
             synchCompleted = false;
@@ -261,7 +331,7 @@ public class OdmsSynchJob implements InterruptableJob {
             OdmsManager.insertOdmsMessage(node.getId(), "Node OFFLINE " + e.getLocalizedMessage());
             node.setNodeState(OdmsCatalogueState.OFFLINE);
             node.setDatasetCount(0);
-            //ODMSManager.updateODMSNode(node, true);
+            // ODMSManager.updateODMSNode(node, true);
           } finally {
             node.setSynchLock(OdmsSynchLock.NONE);
             OdmsManager.updateOdmsCatalogue(node, true);
@@ -291,8 +361,8 @@ public class OdmsSynchJob implements InterruptableJob {
         OdmsManager.updateOdmsCatalogue(node, true);
 
         // LOG Operations
-        logger.info("Synchronization complete for node: " 
-            + node.getName() + " ID: " + node.getId());
+        logger
+            .info("Synchronization complete for node: " + node.getName() + " ID: " + node.getId());
         logger.info("Added RDF = " + addedRdf);
         logger.info("Updated RDF = " + updatedRdf);
         logger.info("Deleted RDF = " + deletedRdf);
@@ -301,9 +371,8 @@ public class OdmsSynchJob implements InterruptableJob {
         logger.info("Deleted Datasets : " + deletedDatasets);
 
         // Adds dataset counters to the statistics on DB
-        StatisticsManager.odmsStatistics(node, addedDatasets, 
-            deletedDatasets, updatedDatasets, addedRdf, updatedRdf,
-            deletedRdf);
+        StatisticsManager.odmsStatistics(node, addedDatasets, deletedDatasets, updatedDatasets,
+            addedRdf, updatedRdf, deletedRdf);
         OdmsManager.insertOdmsMessage(node.getId(), "Node successfully synchronized");
 
         // Creating the dump file for the node after the synchronization
@@ -319,8 +388,8 @@ public class OdmsSynchJob implements InterruptableJob {
 
         } catch (Exception e1) {
           e1.printStackTrace();
-          logger.error("Error: " + e1.getMessage() 
-               + " in creation of the dump file for node " + node.getId());
+          logger.error("Error: " + e1.getMessage() + " in creation of the dump file for node "
+              + node.getId());
         }
 
       }
@@ -331,6 +400,13 @@ public class OdmsSynchJob implements InterruptableJob {
 
   }
 
+  /**
+   * Delete dataset.
+   *
+   * @param node    the node
+   * @param dataset the dataset
+   * @return the int
+   */
   static int deleteDataset(OdmsCatalogue node, DcatDataset dataset) {
     int deletedRdf = 0;
     CachePersistenceManager jpa = new CachePersistenceManager();
@@ -348,9 +424,8 @@ public class OdmsSynchJob implements InterruptableJob {
               logger.info("Deleting RDF - " + d.getAccessUrl().getValue() + "successfully");
               deletedRdf++;
             } catch (RepositoryException e) {
-              logger.error("Deleting RDF - " 
-                  + d.getAccessUrl().getValue() + "unable to complete the deletion: "
-                  + e.getLocalizedMessage());
+              logger.error("Deleting RDF - " + d.getAccessUrl().getValue()
+                  + "unable to complete the deletion: " + e.getLocalizedMessage());
             }
           }
 
@@ -373,11 +448,18 @@ public class OdmsSynchJob implements InterruptableJob {
     return deletedRdf;
   }
 
+  /**
+   * Adds the dataset.
+   *
+   * @param node    the node
+   * @param dataset the dataset
+   * @return the int
+   */
   static int addDataset(OdmsCatalogue node, DcatDataset dataset) {
     int addedRdf = 0;
 
-    logger.info("\n--- Creating dataset ---" 
-         + dataset.getId() + " " + dataset.getTitle().getValue() + "\n");
+    logger.info("\n--- Creating dataset ---" + dataset.getId() + " " + dataset.getTitle().getValue()
+        + "\n");
     try {
       // MetadataCacheManager.getDataset(dataset.getId(),false);
       MetadataCacheManager.getDatasetByIdentifier(node.getId(), dataset.getIdentifier().getValue());
@@ -419,8 +501,8 @@ public class OdmsSynchJob implements InterruptableJob {
         }
 
       } catch (EntityExistsException | SolrServerException | IOException e) {
-        logger.error("--- The dataset" 
-            + dataset.getId() + "is already present and then skipped ---");
+        logger
+            .error("--- The dataset" + dataset.getId() + "is already present and then skipped ---");
       }
     } catch (SolrServerException | IOException eex) {
       logger.debug(eex.getLocalizedMessage());
@@ -429,6 +511,13 @@ public class OdmsSynchJob implements InterruptableJob {
     return addedRdf;
   }
 
+  /**
+   * Update dataset.
+   *
+   * @param node    the node
+   * @param dataset the dataset
+   * @return the int
+   */
   static int updateDataset(OdmsCatalogue node, DcatDataset dataset) {
     int updatedRdf = 0;
     try {
@@ -451,8 +540,8 @@ public class OdmsSynchJob implements InterruptableJob {
 
                 updatedRdf += LodCacheManager.updateRdf(d.getAccessUrl().getValue());
               } catch (IOException | RepositoryException e) {
-                logger.error("Unable to update rdf: " 
-                    + d.getAccessUrl().getValue() + " " + e.getLocalizedMessage());
+                logger.error("Unable to update rdf: " + d.getAccessUrl().getValue() + " "
+                    + e.getLocalizedMessage());
               }
             }
           }

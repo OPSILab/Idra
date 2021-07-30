@@ -18,16 +18,38 @@
 
 package it.eng.idra.beans.statistics;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Enum AggregationLevelEnum.
+ */
 public enum AggregationLevelEnum {
 
-  YEAR("year"), MONTH("month"), WEEK("week"), DAY("day");
+  /** The year. */
+  YEAR("year"),
+  /** The month. */
+  MONTH("month"),
+  /** The week. */
+  WEEK("week"),
+  /** The day. */
+  DAY("day");
 
+  /** The text. */
   private final String text;
 
+  /**
+   * Instantiates a new aggregation level enum.
+   *
+   * @param text the text
+   */
   private AggregationLevelEnum(final String text) {
     this.text = text;
   }
 
+  /*
+   * (non-Javadoc)
+   * 
+   * @see java.lang.Enum#toString()
+   */
   @Override
   public String toString() {
     return text;

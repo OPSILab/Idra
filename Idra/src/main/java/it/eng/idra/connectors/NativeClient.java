@@ -50,15 +50,27 @@ import org.apache.logging.log4j.Logger;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class NativeClient.
+ */
 @SuppressWarnings("deprecation")
 public class NativeClient {
 
+  /** The node. */
   private OdmsCatalogue node;
+
+  /** The logger. */
   private static Logger logger = LogManager.getLogger(NativeClient.class);
 
   static {
   }
 
+  /**
+   * Instantiates a new native client.
+   *
+   * @param node the node
+   */
   public NativeClient(OdmsCatalogue node) {
     this.node = node;
   }
@@ -66,18 +78,20 @@ public class NativeClient {
   /**
    * Find datasets.
    *
-   * @param query the query
-   * @param sort the sort
-   * @param rows the rows
+   * @param query  the query
+   * @param sort   the sort
+   * @param rows   the rows
    * @param offset the offset
    * @return the JSON object
-   * @throws OdmsCatalogueNotFoundException the odms catalogue not found exception
-   * @throws OdmsCatalogueForbiddenException the odms catalogue forbidden exception
-   * @throws OdmsCatalogueOfflineException the odms catalogue offline exception
+   * @throws OdmsCatalogueNotFoundException  the odms catalogue not found
+   *                                         exception
+   * @throws OdmsCatalogueForbiddenException the odms catalogue forbidden
+   *                                         exception
+   * @throws OdmsCatalogueOfflineException   the odms catalogue offline exception
    */
   public JSONObject findDatasets(String query, String sort, String rows, String offset)
-      throws OdmsCatalogueNotFoundException, 
-      OdmsCatalogueForbiddenException, OdmsCatalogueOfflineException {
+      throws OdmsCatalogueNotFoundException, OdmsCatalogueForbiddenException,
+      OdmsCatalogueOfflineException {
 
     String payload = "{";
 
@@ -116,12 +130,13 @@ public class NativeClient {
    *
    * @param id the id
    * @return the dataset
-   * @throws OdmsCatalogueNotFoundException the odms catalogue not found exception
-   * @throws OdmsCatalogueForbiddenException the odms catalogue forbidden exception
-   * @throws OdmsCatalogueOfflineException the odms catalogue offline exception
+   * @throws OdmsCatalogueNotFoundException  the odms catalogue not found
+   *                                         exception
+   * @throws OdmsCatalogueForbiddenException the odms catalogue forbidden
+   *                                         exception
+   * @throws OdmsCatalogueOfflineException   the odms catalogue offline exception
    */
-  public JSONObject getDataset(String id)
-      throws OdmsCatalogueNotFoundException, 
+  public JSONObject getDataset(String id) throws OdmsCatalogueNotFoundException,
       OdmsCatalogueForbiddenException, OdmsCatalogueOfflineException {
 
     try {
@@ -150,12 +165,13 @@ public class NativeClient {
    * Gets the all datasets id.
    *
    * @return the all datasets id
-   * @throws OdmsCatalogueNotFoundException the odms catalogue not found exception
-   * @throws OdmsCatalogueForbiddenException the odms catalogue forbidden exception
-   * @throws OdmsCatalogueOfflineException the odms catalogue offline exception
+   * @throws OdmsCatalogueNotFoundException  the odms catalogue not found
+   *                                         exception
+   * @throws OdmsCatalogueForbiddenException the odms catalogue forbidden
+   *                                         exception
+   * @throws OdmsCatalogueOfflineException   the odms catalogue offline exception
    */
-  public JSONArray getAllDatasetsId()
-      throws OdmsCatalogueNotFoundException,
+  public JSONArray getAllDatasetsId() throws OdmsCatalogueNotFoundException,
       OdmsCatalogueForbiddenException, OdmsCatalogueOfflineException {
 
     String returnedJson = sendGetRequest(node.getHost() + "/odf/odms/datasets/info");
@@ -179,15 +195,16 @@ public class NativeClient {
    * Gets the all datasets.
    *
    * @param offset the offset
-   * @param limit the limit
+   * @param limit  the limit
    * @return the all datasets
-   * @throws OdmsCatalogueNotFoundException the odms catalogue not found exception
-   * @throws OdmsCatalogueForbiddenException the odms catalogue forbidden exception
-   * @throws OdmsCatalogueOfflineException the odms catalogue offline exception
+   * @throws OdmsCatalogueNotFoundException  the odms catalogue not found
+   *                                         exception
+   * @throws OdmsCatalogueForbiddenException the odms catalogue forbidden
+   *                                         exception
+   * @throws OdmsCatalogueOfflineException   the odms catalogue offline exception
    */
   // DA COMPLETARE E MODIFICARE CON OFFSET E LIMIT
-  public JSONArray getAllDatasets(int offset, int limit)
-      throws OdmsCatalogueNotFoundException, 
+  public JSONArray getAllDatasets(int offset, int limit) throws OdmsCatalogueNotFoundException,
       OdmsCatalogueForbiddenException, OdmsCatalogueOfflineException {
 
     try {
@@ -258,8 +275,8 @@ public class NativeClient {
       HttpResponse response = httpclient.execute(getRequest);
 
       if (response.getStatusLine().getStatusCode() != 200) {
-        throw new RuntimeException("Failed : HTTP error code : " 
-               + response.getStatusLine().getStatusCode());
+        throw new RuntimeException(
+            "Failed : HTTP error code : " + response.getStatusLine().getStatusCode());
       }
 
       BufferedReader rd = new BufferedReader(
@@ -282,6 +299,13 @@ public class NativeClient {
     return body;
   }
 
+  /**
+   * Send post request.
+   *
+   * @param urlString the url string
+   * @param data      the data
+   * @return the string
+   */
   private String sendPostRequest(String urlString, String data) {
 
     URL url = null;
@@ -317,15 +341,15 @@ public class NativeClient {
      * /apache/http/examples/client/ClientExecuteProxy.java
      */
     if (Boolean.parseBoolean(PropertyManager.getProperty(IdraProperty.HTTP_PROXY_ENABLED).trim())
-        && StringUtils.isNotBlank(
-            PropertyManager.getProperty(IdraProperty.HTTP_PROXY_HOST).trim())) {
+        && StringUtils
+            .isNotBlank(PropertyManager.getProperty(IdraProperty.HTTP_PROXY_HOST).trim())) {
 
       int port = 80;
       if (isSet(PropertyManager.getProperty(IdraProperty.HTTP_PROXY_PORT))) {
         port = Integer.parseInt(PropertyManager.getProperty(IdraProperty.HTTP_PROXY_PORT));
       }
-      HttpHost proxy = new HttpHost(
-          PropertyManager.getProperty(IdraProperty.HTTP_PROXY_HOST), port, "http");
+      HttpHost proxy = new HttpHost(PropertyManager.getProperty(IdraProperty.HTTP_PROXY_HOST), port,
+          "http");
       httpclient.getParams().setParameter(ConnRoutePNames.DEFAULT_PROXY, proxy);
       if (isSet(PropertyManager.getProperty(IdraProperty.HTTP_PROXY_USER))) {
         ((AbstractHttpClient) httpclient).getCredentialsProvider().setCredentials(
@@ -366,6 +390,12 @@ public class NativeClient {
     return body;
   }
 
+  /**
+   * Checks if is sets the.
+   *
+   * @param string the string
+   * @return true, if is sets the
+   */
   private static boolean isSet(String string) {
     return string != null && string.length() > 0;
   }

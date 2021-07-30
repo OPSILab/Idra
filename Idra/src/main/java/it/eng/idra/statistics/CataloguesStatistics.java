@@ -8,12 +8,24 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class CataloguesStatistics.
+ */
 public class CataloguesStatistics {
 
+  /** The dataset count statistics. */
   private List<DatasetCountStatistics> datasetCountStatistics;
+
+  /** The technologies stat. */
   private List<TechnologiesCountStatistics> technologiesStat;
+
+  /** The dataset updated stat. */
   private List<DatasetUpdatedStatistics> datasetUpdatedStat;
 
+  /**
+   * Instantiates a new catalogues statistics.
+   */
   public CataloguesStatistics() {
     // TODO Auto-generated constructor stub
   }
@@ -22,41 +34,77 @@ public class CataloguesStatistics {
    * Instantiates a new catalogues statistics.
    *
    * @param catalogues the catalogues
-   * @param added the added
-   * @param updated the updated
+   * @param added      the added
+   * @param updated    the updated
    */
-  public CataloguesStatistics(List<OdmsCatalogue> catalogues, 
-      List<DcatDataset> added, List<DcatDataset> updated) {
+  public CataloguesStatistics(List<OdmsCatalogue> catalogues, List<DcatDataset> added,
+      List<DcatDataset> updated) {
     super();
     this.setDatasetCountStatistics(getDatasetCntStatFromCatalogues(catalogues));
     this.setTechnologiesStat(getTechStatFromCatalogues(catalogues));
     this.setDatasetUpdatedStat(getUpdatedAddedCatalogues(catalogues, added, updated));
   }
 
+  /**
+   * Gets the dataset count statistics.
+   *
+   * @return the dataset count statistics
+   */
   public List<DatasetCountStatistics> getDatasetCountStatistics() {
     return datasetCountStatistics;
   }
 
+  /**
+   * Sets the dataset count statistics.
+   *
+   * @param catalogueStatistics the new dataset count statistics
+   */
   public void setDatasetCountStatistics(List<DatasetCountStatistics> catalogueStatistics) {
     this.datasetCountStatistics = catalogueStatistics;
   }
 
+  /**
+   * Gets the technologies stat.
+   *
+   * @return the technologies stat
+   */
   public List<TechnologiesCountStatistics> getTechnologiesStat() {
     return technologiesStat;
   }
 
+  /**
+   * Sets the technologies stat.
+   *
+   * @param technologiesStat the new technologies stat
+   */
   public void setTechnologiesStat(List<TechnologiesCountStatistics> technologiesStat) {
     this.technologiesStat = technologiesStat;
   }
 
+  /**
+   * Gets the dataset updated stat.
+   *
+   * @return the dataset updated stat
+   */
   public List<DatasetUpdatedStatistics> getDatasetUpdatedStat() {
     return datasetUpdatedStat;
   }
 
+  /**
+   * Sets the dataset updated stat.
+   *
+   * @param datasetUpdatedStat the new dataset updated stat
+   */
   public void setDatasetUpdatedStat(List<DatasetUpdatedStatistics> datasetUpdatedStat) {
     this.datasetUpdatedStat = datasetUpdatedStat;
   }
 
+  /**
+   * Gets the dataset cnt stat from catalogues.
+   *
+   * @param catalogues the catalogues
+   * @return the dataset cnt stat from catalogues
+   */
   private List<DatasetCountStatistics> getDatasetCntStatFromCatalogues(
       List<OdmsCatalogue> catalogues) {
     return catalogues.stream().map(x -> {
@@ -64,6 +112,12 @@ public class CataloguesStatistics {
     }).collect(Collectors.toList());
   }
 
+  /**
+   * Gets the tech stat from catalogues.
+   *
+   * @param catalogues the catalogues
+   * @return the tech stat from catalogues
+   */
   private List<TechnologiesCountStatistics> getTechStatFromCatalogues(
       List<OdmsCatalogue> catalogues) {
 
@@ -84,6 +138,14 @@ public class CataloguesStatistics {
     return res;
   }
 
+  /**
+   * Gets the updated added catalogues.
+   *
+   * @param catalogues the catalogues
+   * @param added      the added
+   * @param updated    the updated
+   * @return the updated added catalogues
+   */
   private List<DatasetUpdatedStatistics> getUpdatedAddedCatalogues(List<OdmsCatalogue> catalogues,
       List<DcatDataset> added, List<DcatDataset> updated) {
 
@@ -92,11 +154,11 @@ public class CataloguesStatistics {
     for (OdmsCatalogue c : catalogues) {
       DatasetUpdatedStatistics d = new DatasetUpdatedStatistics();
       d.setName(c.getName());
-      d.setAdded((int) added.stream()
-          .filter(x -> Integer.parseInt(x.getNodeId()) == c.getId()).count());
+      d.setAdded(
+          (int) added.stream().filter(x -> Integer.parseInt(x.getNodeId()) == c.getId()).count());
       // NB: gli updated mi arrivano filtrati qui
-      d.setUpdated((int) updated.stream()
-          .filter(x -> Integer.parseInt(x.getNodeId()) == c.getId()).count());
+      d.setUpdated(
+          (int) updated.stream().filter(x -> Integer.parseInt(x.getNodeId()) == c.getId()).count());
       res.add(d);
     }
 

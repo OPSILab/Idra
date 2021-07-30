@@ -31,11 +31,22 @@ import java.util.Set;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class TokenGsonManager.
+ */
 public class TokenGsonManager implements JsonDeserializer<Token> {
 
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * com.google.gson.JsonDeserializer#deserialize(com.google.gson.JsonElement,
+   * java.lang.reflect.Type, com.google.gson.JsonDeserializationContext)
+   */
   @Override
-  public Token deserialize(JsonElement arg0, Type arg1, 
-      JsonDeserializationContext arg2) throws JsonParseException {
+  public Token deserialize(JsonElement arg0, Type arg1, JsonDeserializationContext arg2)
+      throws JsonParseException {
     // TODO Auto-generated method stub
     JSONObject j = new JSONObject(arg0.toString());
     String accessToken = j.optString("access_token", "");

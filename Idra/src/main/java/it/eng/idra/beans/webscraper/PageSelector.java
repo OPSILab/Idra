@@ -29,22 +29,44 @@ import javax.persistence.Table;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class PageSelector.
+ */
 @Entity
 @Table(name = "odms_sitemap_page_selector")
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 public class PageSelector extends WebScraperSelector {
 
+  /**
+   * Instantiates a new page selector.
+   */
   public PageSelector() {
 
   }
 
-  public PageSelector(List<String> parentSelectors, 
-      WebScraperSelectorType type, Boolean multiple, String title,
-      String selector, String regex, List<String> stopValues) {
+  /**
+   * Instantiates a new page selector.
+   *
+   * @param parentSelectors the parent selectors
+   * @param type            the type
+   * @param multiple        the multiple
+   * @param title           the title
+   * @param selector        the selector
+   * @param regex           the regex
+   * @param stopValues      the stop values
+   */
+  public PageSelector(List<String> parentSelectors, WebScraperSelectorType type, Boolean multiple,
+      String title, String selector, String regex, List<String> stopValues) {
     super(parentSelectors, type, multiple, title, selector, regex, stopValues);
 
   }
 
+  /*
+   * (non-Javadoc)
+   * 
+   * @see it.eng.idra.beans.webscraper.WebScraperSelector#getParentSelectors()
+   */
   @Override
   @LazyCollection(LazyCollectionOption.FALSE)
   @ElementCollection
@@ -54,11 +76,16 @@ public class PageSelector extends WebScraperSelector {
     return parentSelectors;
   }
 
+  /*
+   * (non-Javadoc)
+   * 
+   * @see it.eng.idra.beans.webscraper.WebScraperSelector#getStopValues()
+   */
   @Override
   @LazyCollection(LazyCollectionOption.FALSE)
   @ElementCollection
-  @CollectionTable(name = "odms_sitemap_page_selector_stopValues", 
-       joinColumns = { @JoinColumn(name = "selector_id") })
+  @CollectionTable(name = "odms_sitemap_page_selector_stopValues", joinColumns = {
+      @JoinColumn(name = "selector_id") })
   public List<String> getStopValues() {
     return stopValues;
   }

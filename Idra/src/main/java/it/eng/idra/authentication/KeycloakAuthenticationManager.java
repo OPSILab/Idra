@@ -38,30 +38,30 @@ public class KeycloakAuthenticationManager extends AuthenticationManager {
 
   /** The instance. */
   private static KeycloakAuthenticationManager instance;
-  
+
   /** The connector. */
   private static KeycloakConnectorImpl connector;
 
   /** The Constant host. */
   private static final String host = PropertyManager.getProperty(IdmProperty.IDM_HOST);
-  
+
   /** The Constant protocol. */
   private static final String protocol = PropertyManager.getProperty(IdmProperty.IDM_PROTOCOL);
 
   /** The Constant clientId. */
   private static final String clientId = PropertyManager.getProperty(IdmProperty.IDM_CLIENT_ID);
-  
+
   /** The Constant clientSecret. */
-  private static final String clientSecret = 
-      PropertyManager.getProperty(IdmProperty.IDM_CLIENT_SECRET);
-  
+  private static final String clientSecret = PropertyManager
+      .getProperty(IdmProperty.IDM_CLIENT_SECRET);
+
   /** The Constant redirectUri. */
-  private static final String redirectUri = 
-      PropertyManager.getProperty(IdmProperty.IDM_REDIRECT_URI);
-  
+  private static final String redirectUri = PropertyManager
+      .getProperty(IdmProperty.IDM_REDIRECT_URI);
+
   /** The Constant logoutCallback. */
-  private static final String logoutCallback = 
-      PropertyManager.getProperty(IdmProperty.IDM_LOGOUT_CALLBACK);
+  private static final String logoutCallback = PropertyManager
+      .getProperty(IdmProperty.IDM_LOGOUT_CALLBACK);
 
   /**
    * Instantiates a new keycloak authentication manager.
@@ -87,7 +87,9 @@ public class KeycloakAuthenticationManager extends AuthenticationManager {
     return instance;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see it.eng.idra.authentication.AuthenticationManager
    * #login(java.lang.String, java.lang.String, java.lang.String)
    */
@@ -96,7 +98,9 @@ public class KeycloakAuthenticationManager extends AuthenticationManager {
     return getToken(null, code);
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see it.eng.idra.authentication.AuthenticationManager
    * #logout(javax.servlet.http.HttpServletRequest)
    */
@@ -115,7 +119,9 @@ public class KeycloakAuthenticationManager extends AuthenticationManager {
 
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see it.eng.idra.authentication.AuthenticationManager
    * #getToken(java.lang.String, java.lang.String)
    */
@@ -124,8 +130,12 @@ public class KeycloakAuthenticationManager extends AuthenticationManager {
     return connector.getToken(code);
   }
 
-  /* (non-Javadoc)
-   * @see it.eng.idra.authentication.AuthenticationManager#validateToken(java.lang.Object)
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * it.eng.idra.authentication.AuthenticationManager#validateToken(java.lang.
+   * Object)
    */
   @Override
   public Boolean validateToken(Object tokenObj) throws Exception {
@@ -149,9 +159,8 @@ public class KeycloakAuthenticationManager extends AuthenticationManager {
   public void validateAdminRole(KeycloakUser user) throws Exception {
 
     Set<String> roles = user.getRoles();
-    if (roles != null && !roles.isEmpty()
-        && roles.contains(
-            PropertyManager.getProperty(IdmProperty.IDM_ADMIN_ROLE_NAME).toUpperCase())) {
+    if (roles != null && !roles.isEmpty() && roles
+        .contains(PropertyManager.getProperty(IdmProperty.IDM_ADMIN_ROLE_NAME).toUpperCase())) {
       // OK
     } else {
       throw new Exception("The User has no Admin role");
@@ -170,7 +179,9 @@ public class KeycloakAuthenticationManager extends AuthenticationManager {
     return connector.getUserInfo(token);
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see it.eng.idra.authentication.AuthenticationManager#getFilterClass()
    */
   @Override

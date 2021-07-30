@@ -29,57 +29,71 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import org.hibernate.annotations.Type;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class User.
+ */
 @Entity
 @Table(name = "user")
 public class User {
 
+  /** The id. */
   @Id
   @Column(name = "id")
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private int id;
 
+  /** The username. */
   @JsonRequired
   @Column(name = "username")
   private String username;
 
+  /** The password. */
   @Column(name = "password")
   private String password;
 
+  /** The firstname. */
   @Column(name = "firstname")
   private String firstname;
 
+  /** The lastname. */
   @Column(name = "lastname")
   private String lastname;
 
+  /** The email. */
   @Column(name = "email")
   private String email;
 
+  /** The register date. */
   @Column(name = "registerDate")
   @Type(type = "date")
   private Date registerDate;
 
+  /** The last access. */
   @Column(name = "lastAccess")
   @Type(type = "date")
   private Date lastAccess;
 
+  /**
+   * Instantiates a new user.
+   */
   public User() {
   }
 
   /**
    * Instantiates a new user.
    *
-   * @param id the id
-   * @param username the username
-   * @param password the password
-   * @param firstname the firstname
-   * @param lastname the lastname
-   * @param email the email
+   * @param id           the id
+   * @param username     the username
+   * @param password     the password
+   * @param firstname    the firstname
+   * @param lastname     the lastname
+   * @param email        the email
    * @param registerDate the register date
-   * @param lastAccess the last access
+   * @param lastAccess   the last access
    */
-  public User(int id, String username, 
-      String password, String firstname, String lastname, String email,
-      Date registerDate, Date lastAccess) {
+  public User(int id, String username, String password, String firstname, String lastname,
+      String email, Date registerDate, Date lastAccess) {
 
     try {
       setUsername(username);
@@ -102,6 +116,12 @@ public class User {
 
   }
 
+  /**
+   * Sets the username.
+   *
+   * @param param the new username
+   * @throws Exception the exception
+   */
   private void setUsername(String param) throws Exception {
     if (param.length() > 2 && param.length() < 50) {
       this.username = param;
@@ -124,62 +144,137 @@ public class User {
     }
   }
 
+  /**
+   * Sets the firstname.
+   *
+   * @param firstname the new firstname
+   */
   private void setFirstname(String firstname) {
     this.firstname = firstname;
   }
 
+  /**
+   * Sets the lastname.
+   *
+   * @param param the new lastname
+   */
   private void setLastname(String param) {
     this.lastname = param;
   }
 
+  /**
+   * Sets the email.
+   *
+   * @param param the new email
+   */
   private void setEmail(String param) {
     this.email = param;
   }
 
+  /**
+   * Sets the register date.
+   *
+   * @param param the new register date
+   */
   private void setRegisterDate(Date param) {
     this.registerDate = param;
   }
 
+  /**
+   * Sets the last access.
+   *
+   * @param param the new last access
+   */
   private void setLastAccess(Date param) {
     this.lastAccess = param;
   }
 
+  /**
+   * Gets the username.
+   *
+   * @return the username
+   */
   public String getUsername() {
     return this.username;
   }
 
+  /**
+   * Gets the password.
+   *
+   * @return the password
+   */
   public String getPassword() {
     return this.password;
   }
 
+  /**
+   * Gets the lastname.
+   *
+   * @return the lastname
+   */
   public String getLastname() {
     return this.lastname;
   }
 
+  /**
+   * Gets the email.
+   *
+   * @return the email
+   */
   public String getEmail() {
     return this.email;
   }
 
+  /**
+   * Gets the register date.
+   *
+   * @return the register date
+   */
   public Date getRegisterDate() {
     return this.registerDate;
   }
 
+  /**
+   * Gets the last access.
+   *
+   * @return the last access
+   */
   public Date getLastAccess() {
     return this.lastAccess;
   }
 
+  /*
+   * (non-Javadoc)
+   * 
+   * @see java.lang.Object#toString()
+   */
   public String toString() {
     return this.username + " " + this.password + " " + this.email + " " + this.registerDate;
   }
 
+  /**
+   * Gets the firstname.
+   *
+   * @return the firstname
+   */
   public String getFirstname() {
     return firstname;
   }
 
+  /**
+   * Gets the id.
+   *
+   * @return the id
+   */
   public int getId() {
     return id;
   }
 
+  /**
+   * Sets the id.
+   *
+   * @param id the new id
+   */
   public void setId(int id) {
     this.id = id;
   }

@@ -18,20 +18,46 @@
 
 package it.eng.idra.beans.dcat;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Enum DcatApWriteType.
+ */
 public enum DcatApWriteType {
 
-  STRING("STRING"), FILE("FILE"), ZIPFILE("ZIPFILE");
+  /** The string. */
+  STRING("STRING"),
+  /** The file. */
+  FILE("FILE"),
+  /** The zipfile. */
+  ZIPFILE("ZIPFILE");
 
+  /** The profile name. */
   private String profileName;
 
+  /**
+   * Instantiates a new dcat ap write type.
+   *
+   * @param name the name
+   */
   DcatApWriteType(String name) {
     this.profileName = name;
   }
 
+  /**
+   * Profile name.
+   *
+   * @return the string
+   */
   public String profileName() {
     return profileName;
   }
 
+  /**
+   * From string.
+   *
+   * @param name the name
+   * @return the dcat ap write type
+   */
   public static DcatApWriteType fromString(String name) {
     return valueOf(name.toUpperCase());
   }

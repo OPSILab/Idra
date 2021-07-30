@@ -18,20 +18,40 @@
 
 package it.eng.idra.authentication.fiware.model;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class Password.
+ */
 @Deprecated
 public class Password {
 
+  /** The user. */
   private User user;
 
+  /**
+   * Instantiates a new password.
+   *
+   * @param user the user
+   */
   public Password(User user) {
     super();
     this.user = user;
   }
 
+  /**
+   * Gets the user.
+   *
+   * @return the user
+   */
   public User getUser() {
     return user;
   }
 
+  /**
+   * Sets the user.
+   *
+   * @param user the new user
+   */
   public void setUser(User user) {
     this.user = user;
   }

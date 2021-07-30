@@ -44,26 +44,39 @@ import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.quartz.PersistJobDataAfterExecution;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class OauthTokenSynchJob.
+ */
 @PersistJobDataAfterExecution
 @DisallowConcurrentExecution
 public class OauthTokenSynchJob implements Job {
 
+  /** The logger. */
   public static Logger logger = LogManager.getLogger(OauthTokenSynchJob.class);
 
+  /**
+   * Instantiates a new oauth token synch job.
+   */
   public OauthTokenSynchJob() {
   }
 
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.quartz.Job#execute(org.quartz.JobExecutionContext)
+   */
   @Override
   public void execute(JobExecutionContext context) throws JobExecutionException {
     // TODO Auto-generated method stub
 
     try {
-      logger.info("Requesting token for catalogue: " 
+      logger.info("Requesting token for catalogue: "
           + context.getJobDetail().getJobDataMap().get("nodeID"));
-      OdmsCatalogue node = 
-          OdmsManager.getOdmsCatalogue((int) context.getJobDetail().getJobDataMap().get("nodeID"));
-      OrionCatalogueConfiguration orionConfig = 
-          (OrionCatalogueConfiguration) node.getAdditionalConfig();
+      OdmsCatalogue node = OdmsManager
+          .getOdmsCatalogue((int) context.getJobDetail().getJobDataMap().get("nodeID"));
+      OrionCatalogueConfiguration orionConfig = (OrionCatalogueConfiguration) node
+          .getAdditionalConfig();
       HashMap<String, String> map = retrieveUpdatedToken(orionConfig);
       orionConfig.setAuthToken(map.get("access_token"));
       logger.info("New Token: " + orionConfig.getAuthToken());
@@ -84,12 +97,19 @@ public class OauthTokenSynchJob implements Job {
 
   }
 
-  private static HashMap<String, String> retrieveUpdatedToken(OrionCatalogueConfiguration conf) 
+  /**
+   * Retrieve updated token.
+   *
+   * @param conf the conf
+   * @return the hash map
+   * @throws Exception the exception
+   */
+  private static HashMap<String, String> retrieveUpdatedToken(OrionCatalogueConfiguration conf)
       throws Exception {
     Client client = ClientBuilder.newClient();
 
-    HttpAuthenticationFeature feature = 
-        HttpAuthenticationFeature.basic(conf.getClientId(), conf.getClientSecret());
+    HttpAuthenticationFeature feature = HttpAuthenticationFeature.basic(conf.getClientId(),
+        conf.getClientSecret());
     client.register(feature);
 
     WebTarget webTarget = client.target(conf.getOauth2Endpoint());

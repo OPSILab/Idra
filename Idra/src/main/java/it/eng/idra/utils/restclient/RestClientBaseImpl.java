@@ -40,11 +40,23 @@ import org.apache.http.conn.ssl.TrustSelfSignedStrategy;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.ssl.SSLContextBuilder;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class RestClientBaseImpl.
+ */
 public abstract class RestClientBaseImpl {
 
+  /** The Constant logger. */
   protected static final Logger logger = Logger.getLogger(RestClient.class.getName());
+
+  /** The httpclient. */
   protected HttpClient httpclient = null;
 
+  /**
+   * Builds the client.
+   *
+   * @return the http client
+   */
   protected HttpClient buildClient() {
 
     SSLContextBuilder sshbuilder = new SSLContextBuilder();
@@ -63,9 +75,19 @@ public abstract class RestClientBaseImpl {
     return httpclient;
   }
 
-  protected HttpResponse invoke(HTTPMethods method, String urlString,
-      Map<String, String> headers, MediaType type,
-      String data) throws MalformedURLException {
+  /**
+   * Invoke.
+   *
+   * @param method    the method
+   * @param urlString the url string
+   * @param headers   the headers
+   * @param type      the type
+   * @param data      the data
+   * @return the http response
+   * @throws MalformedURLException the malformed URL exception
+   */
+  protected HttpResponse invoke(HTTPMethods method, String urlString, Map<String, String> headers,
+      MediaType type, String data) throws MalformedURLException {
 
     URL url = new URL(urlString);
 

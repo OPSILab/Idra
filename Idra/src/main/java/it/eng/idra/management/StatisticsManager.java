@@ -55,25 +55,24 @@ public class StatisticsManager {
   private static boolean enableStatistics;
 
   static {
-    enableStatistics = 
-        Boolean.parseBoolean(PropertyManager.getProperty(IdraProperty.ENABLE_STATISTICS).trim());
+    enableStatistics = Boolean
+        .parseBoolean(PropertyManager.getProperty(IdraProperty.ENABLE_STATISTICS).trim());
   }
 
   /**
    * Odms statistics.
    *
-   * @param node the node
-   * @param addedDataset the added dataset
+   * @param node           the node
+   * @param addedDataset   the added dataset
    * @param updatedDataset the updated dataset
    * @param deletedDataset the deleted dataset
-   * @param addedRdf the added RDF
-   * @param updatedRdf the updated RDF
-   * @param deletedRdf the deleted RDF
+   * @param addedRdf       the added RDF
+   * @param updatedRdf     the updated RDF
+   * @param deletedRdf     the deleted RDF
    */
   // method to ODMS statistics
-  public static void odmsStatistics(OdmsCatalogue node,
-      int addedDataset, int updatedDataset, int deletedDataset,
-      int addedRdf, int updatedRdf, int deletedRdf) {
+  public static void odmsStatistics(OdmsCatalogue node, int addedDataset, int updatedDataset,
+      int deletedDataset, int addedRdf, int updatedRdf, int deletedRdf) {
     if (!enableStatistics) {
       return;
     }
@@ -90,9 +89,8 @@ public class StatisticsManager {
 
       if (odmsStat == null) {
 
-        odmsStat = new OdmsStatistics(node.getId(), 
-            node.getName(), day, month, year, addedDataset, updatedDataset,
-            deletedDataset, addedRdf, updatedRdf, deletedRdf);
+        odmsStat = new OdmsStatistics(node.getId(), node.getName(), day, month, year, addedDataset,
+            updatedDataset, deletedDataset, addedRdf, updatedRdf, deletedRdf);
 
         manageBeansJpa.persistOdmsStatistic(odmsStat);
 
@@ -116,7 +114,7 @@ public class StatisticsManager {
   /**
    * Search statistics.
    *
-   * @param ip the ip
+   * @param ip         the ip
    * @param searchType the search type
    * @throws SQLException the SQL exception
    */
@@ -136,8 +134,8 @@ public class StatisticsManager {
       int week = g.get(Calendar.WEEK_OF_MONTH);
       int year = g.get(Calendar.YEAR);
 
-      SearchStatistics existStat =
-          manageBeansJpa.getCountryStatistics(country, searchType, day, month, year);
+      SearchStatistics existStat = manageBeansJpa.getCountryStatistics(country, searchType, day,
+          month, year);
 
       if (existStat == null) {
         existStat = new SearchStatistics(country, 0, 0, 0, day, week, month, year);
@@ -240,17 +238,16 @@ public class StatisticsManager {
   /**
    * Gets the aggregate values.
    *
-   * @param countries the countries
+   * @param countries        the countries
    * @param aggregationLevel the aggregation level
-   * @param day the day
-   * @param month the month
-   * @param year the year
+   * @param day              the day
+   * @param month            the month
+   * @param year             the year
    * @return the aggregate values
    * @throws SQLException the SQL exception
    */
   public static SearchStatisticsResult getAggregateValues(String[] countries,
-      AggregationLevelEnum aggregationLevel,
-      int day, int month, int year) throws SQLException {
+      AggregationLevelEnum aggregationLevel, int day, int month, int year) throws SQLException {
 
     String select = " SELECT ";
     String from = " FROM search_statistics ";
@@ -325,18 +322,18 @@ public class StatisticsManager {
   /**
    * Gets the search statistics.
    *
-   * @param countries the countries
+   * @param countries        the countries
    * @param aggregationLevel the aggregation level
-   * @param startDate the start date
-   * @param endDate the end date
+   * @param startDate        the start date
+   * @param endDate          the end date
    * @return the search statistics
    * @throws ParseException the parse exception
-   * @throws SQLException the SQL exception
+   * @throws SQLException   the SQL exception
    */
   // per più nodi
-  public static JSONObject getSearchStatistics(String[] countries, 
-      AggregationLevelEnum aggregationLevel,
-      ZonedDateTime startDate, ZonedDateTime endDate) throws ParseException, SQLException {
+  public static JSONObject getSearchStatistics(String[] countries,
+      AggregationLevelEnum aggregationLevel, ZonedDateTime startDate, ZonedDateTime endDate)
+      throws ParseException, SQLException {
 
     SearchStatisticsResult stats = null;
     JSONObject result = new JSONObject();
@@ -348,9 +345,8 @@ public class StatisticsManager {
 
     while (startDate.isBefore(endDate)) {
 
-      stats = getAggregateValues(countries, aggregationLevel,
-          startDate.getDayOfMonth(), startDate.getMonthValue() - 1,
-          startDate.getYear());
+      stats = getAggregateValues(countries, aggregationLevel, startDate.getDayOfMonth(),
+          startDate.getMonthValue() - 1, startDate.getYear());
 
       sparql.put(stats.getSparql());
       live.put(stats.getLive());
@@ -385,9 +381,8 @@ public class StatisticsManager {
 
       if (endDate.getDayOfMonth() <= startDate.getDayOfMonth()) {
 
-        stats = getAggregateValues(countries, aggregationLevel, 
-            endDate.getDayOfMonth(), endDate.getMonthValue() - 1,
-            endDate.getYear());
+        stats = getAggregateValues(countries, aggregationLevel, endDate.getDayOfMonth(),
+            endDate.getMonthValue() - 1, endDate.getYear());
 
         sparql.put(stats.getSparql());
         live.put(stats.getLive());
@@ -398,9 +393,8 @@ public class StatisticsManager {
     } else if (aggregationLevel.equals("year")) {
       if (endDate.getMonthValue() <= startDate.getMonthValue()) {
 
-        stats = getAggregateValues(countries, aggregationLevel, 
-            endDate.getDayOfMonth(), endDate.getMonthValue() - 1,
-            endDate.getYear());
+        stats = getAggregateValues(countries, aggregationLevel, endDate.getDayOfMonth(),
+            endDate.getMonthValue() - 1, endDate.getYear());
 
         sparql.put(stats.getSparql());
         live.put(stats.getLive());
@@ -422,15 +416,14 @@ public class StatisticsManager {
   /**
    * Gets the details value.
    *
-   * @param country the country
+   * @param country          the country
    * @param aggregationLevel the aggregation level
-   * @param date the date
+   * @param date             the date
    * @return the details value
    * @throws SQLException the SQL exception
    */
-  public static SearchStatisticsResult getDetailsValue(String country, 
-      AggregationLevelEnum aggregationLevel,
-      ZonedDateTime date) throws SQLException {
+  public static SearchStatisticsResult getDetailsValue(String country,
+      AggregationLevelEnum aggregationLevel, ZonedDateTime date) throws SQLException {
     String select = " SELECT ";
     String from = " FROM search_statistics ";
     String where = " WHERE country='" + country + "' AND ";
@@ -471,16 +464,16 @@ public class StatisticsManager {
   /**
    * Gets the search statistics details.
    *
-   * @param countries the countries
+   * @param countries        the countries
    * @param aggregationLevel the aggregation level
-   * @param date the date
+   * @param date             the date
    * @return the search statistics details
    * @throws ParseException the parse exception
-   * @throws SQLException the SQL exception
+   * @throws SQLException   the SQL exception
    */
-  public static JSONObject getSearchStatisticsDetails(String[] countries, 
-      AggregationLevelEnum aggregationLevel,
-      ZonedDateTime date) throws ParseException, SQLException {
+  public static JSONObject getSearchStatisticsDetails(String[] countries,
+      AggregationLevelEnum aggregationLevel, ZonedDateTime date)
+      throws ParseException, SQLException {
     SearchStatisticsResult stats = null;
     JSONObject res = new JSONObject();
     JSONArray sparql = new JSONArray();
@@ -507,17 +500,16 @@ public class StatisticsManager {
   /**
    * Gets the aggregate values NODES.
    *
-   * @param nodeId the node ID
+   * @param nodeId           the node ID
    * @param aggregationLevel the aggregation level
-   * @param day the day
-   * @param month the month
-   * @param year the year
+   * @param day              the day
+   * @param month            the month
+   * @param year             the year
    * @return the aggregate values NODES
    * @throws SQLException the SQL exception
    */
-  public static OdmsStatisticsResult getAggregateValuesNodes(String[] nodeId, 
-      AggregationLevelEnum aggregationLevel,
-      int day, int month, int year) throws SQLException {
+  public static OdmsStatisticsResult getAggregateValuesNodes(String[] nodeId,
+      AggregationLevelEnum aggregationLevel, int day, int month, int year) throws SQLException {
 
     String select = " SELECT ";
     String from = " FROM odms_statistics ";
@@ -579,18 +571,18 @@ public class StatisticsManager {
   /**
    * Gets the nodes statistics.
    *
-   * @param nodesId the nodes ID
+   * @param nodesId          the nodes ID
    * @param aggregationLevel the aggregation level
-   * @param startDate the start date
-   * @param endDate the end date
+   * @param startDate        the start date
+   * @param endDate          the end date
    * @return the nodes statistics
    * @throws ParseException the parse exception
-   * @throws SQLException the SQL exception
+   * @throws SQLException   the SQL exception
    */
   // per più nodi
-  public static JSONObject getNodesStatistics(String[] nodesId, 
-      AggregationLevelEnum aggregationLevel,
-      ZonedDateTime startDate, ZonedDateTime endDate) throws ParseException, SQLException {
+  public static JSONObject getNodesStatistics(String[] nodesId,
+      AggregationLevelEnum aggregationLevel, ZonedDateTime startDate, ZonedDateTime endDate)
+      throws ParseException, SQLException {
 
     OdmsStatisticsResult stats = null;
     JSONObject result = new JSONObject();
@@ -643,9 +635,8 @@ public class StatisticsManager {
 
       if (endDate.getDayOfMonth() <= startDate.getDayOfMonth()) {
 
-        stats = getAggregateValuesNodes(nodesId, aggregationLevel, 
-            endDate.getDayOfMonth(), endDate.getMonthValue() - 1,
-            endDate.getYear());
+        stats = getAggregateValuesNodes(nodesId, aggregationLevel, endDate.getDayOfMonth(),
+            endDate.getMonthValue() - 1, endDate.getYear());
 
         added.put(stats.getAdded());
         deleted.put(stats.getDeleted());
@@ -659,9 +650,8 @@ public class StatisticsManager {
     } else if (aggregationLevel.equals("year")) {
       if (endDate.getMonthValue() <= startDate.getMonthValue()) {
 
-        stats = getAggregateValuesNodes(nodesId, aggregationLevel, 
-            endDate.getDayOfMonth(), endDate.getMonthValue() - 1,
-            endDate.getYear());
+        stats = getAggregateValuesNodes(nodesId, aggregationLevel, endDate.getDayOfMonth(),
+            endDate.getMonthValue() - 1, endDate.getYear());
 
         added.put(stats.getAdded());
         deleted.put(stats.getDeleted());
@@ -689,15 +679,14 @@ public class StatisticsManager {
   /**
    * Gets the details value nodes.
    *
-   * @param nodeId the node ID
+   * @param nodeId           the node ID
    * @param aggregationLevel the aggregation level
-   * @param date the date
+   * @param date             the date
    * @return the details value nodes
    * @throws SQLException the SQL exception
    */
-  public static OdmsStatisticsResult getDetailsValueNodes(String nodeId, 
-      AggregationLevelEnum aggregationLevel,
-      ZonedDateTime date) throws SQLException {
+  public static OdmsStatisticsResult getDetailsValueNodes(String nodeId,
+      AggregationLevelEnum aggregationLevel, ZonedDateTime date) throws SQLException {
     String select = " SELECT ";
     String from = " FROM odms_statistics ";
     String where = " WHERE nodeID=" + nodeId + " AND ";
@@ -740,16 +729,16 @@ public class StatisticsManager {
   /**
    * Gets the node statistics details.
    *
-   * @param nodesId the nodes ID
+   * @param nodesId          the nodes ID
    * @param aggregationLevel the aggregation level
-   * @param date the date
+   * @param date             the date
    * @return the node statistics details
    * @throws ParseException the parse exception
-   * @throws SQLException the SQL exception
+   * @throws SQLException   the SQL exception
    */
-  public static JSONObject getNodeStatisticsDetails(String[] nodesId, 
-      AggregationLevelEnum aggregationLevel,
-      ZonedDateTime date) throws ParseException, SQLException {
+  public static JSONObject getNodeStatisticsDetails(String[] nodesId,
+      AggregationLevelEnum aggregationLevel, ZonedDateTime date)
+      throws ParseException, SQLException {
 
     JSONObject result = new JSONObject();
     JSONArray added = new JSONArray();
@@ -788,9 +777,9 @@ public class StatisticsManager {
    *
    * @return the keyword statistics
    * @throws NullPointerException the null pointer exception
-   * @throws SQLException the SQL exception
+   * @throws SQLException         the SQL exception
    */
-  public static List<KeywordStatisticsResult> getKeywordStatistics() 
+  public static List<KeywordStatisticsResult> getKeywordStatistics()
       throws NullPointerException, SQLException {
     PersistenceManager manageBeansJpa = new PersistenceManager();
     try {

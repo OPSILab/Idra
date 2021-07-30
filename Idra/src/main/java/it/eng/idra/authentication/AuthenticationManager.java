@@ -24,7 +24,6 @@ import it.eng.idra.utils.PropertyManager;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.Response;
 
-
 // TODO: Auto-generated Javadoc
 /**
  * The Class AuthenticationManager.
@@ -36,7 +35,7 @@ public abstract class AuthenticationManager {
    *
    * @param username the username
    * @param password the password
-   * @param code the code
+   * @param code     the code
    * @return the object
    * @throws Exception the exception
    */
@@ -55,7 +54,7 @@ public abstract class AuthenticationManager {
    * Gets the token.
    *
    * @param username the username
-   * @param code the code
+   * @param code     the code
    * @return the token
    * @throws Exception the exception
    */
@@ -85,8 +84,8 @@ public abstract class AuthenticationManager {
    */
   public static AuthenticationManager getActiveAuthenticationManager() {
 
-    switch (IdraAuthenticationMethod.valueOf(
-        PropertyManager.getProperty(IdraProperty.AUTHENTICATION_METHOD))) {
+    switch (IdraAuthenticationMethod
+        .valueOf(PropertyManager.getProperty(IdraProperty.AUTHENTICATION_METHOD))) {
 
       case FIWARE:
         return FiwareIdmAuthenticationManager.getInstance();

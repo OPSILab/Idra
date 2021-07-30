@@ -27,8 +27,19 @@ import java.util.ArrayList;
 import java.util.List;
 import org.ckan.Extra;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class SpodExtraDeserializer.
+ */
 public class SpodExtraDeserializer implements JsonDeserializer<List<Extra>> {
 
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * com.google.gson.JsonDeserializer#deserialize(com.google.gson.JsonElement,
+   * java.lang.reflect.Type, com.google.gson.JsonDeserializationContext)
+   */
   @Override
   public List<Extra> deserialize(JsonElement arg0, Type arg1, JsonDeserializationContext arg2)
       throws JsonParseException {

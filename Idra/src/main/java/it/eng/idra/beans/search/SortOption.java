@@ -18,16 +18,23 @@
 
 package it.eng.idra.beans.search;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class SortOption.
+ */
 public class SortOption {
 
+  /** The field. */
   private String field;
+
+  /** The mode. */
   private SortMode mode;
 
   /**
    * Instantiates a new sort option.
    *
    * @param field the field
-   * @param mode the mode
+   * @param mode  the mode
    */
   public SortOption(String field, SortMode mode) {
     super();
@@ -35,22 +42,47 @@ public class SortOption {
     this.mode = mode;
   }
 
+  /**
+   * Gets the field.
+   *
+   * @return the field
+   */
   public String getField() {
     return field;
   }
 
+  /**
+   * Sets the field.
+   *
+   * @param field the new field
+   */
   public void setField(String field) {
     this.field = field;
   }
 
+  /**
+   * Gets the mode.
+   *
+   * @return the mode
+   */
   public SortMode getMode() {
     return mode;
   }
 
+  /**
+   * Sets the mode.
+   *
+   * @param mode the new mode
+   */
   public void setMode(SortMode mode) {
     this.mode = mode;
   }
 
+  /*
+   * (non-Javadoc)
+   * 
+   * @see java.lang.Object#toString()
+   */
   @Override
   public String toString() {
     return "SortOption [field=" + field + ", mode=" + mode + "]";

@@ -24,8 +24,17 @@ import javax.ws.rs.core.MediaType;
 import org.apache.http.client.methods.HttpHead;
 import org.apache.http.client.methods.HttpRequestBase;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class HttpHeadBuilder.
+ */
 public class HttpHeadBuilder extends HttpRequestBuilder<HttpHead> {
 
+  /**
+   * Instantiates a new http head builder.
+   *
+   * @param url the url
+   */
   private HttpHeadBuilder(URL url) {
     super.httpRequest = new HttpHead(url.toString());
   }
@@ -33,7 +42,7 @@ public class HttpHeadBuilder extends HttpRequestBuilder<HttpHead> {
   /**
    * Gets the single instance of HttpHeadBuilder.
    *
-   * @param url the url
+   * @param url     the url
    * @param headers the headers
    * @return single instance of HttpHeadBuilder
    */
@@ -44,6 +53,13 @@ public class HttpHeadBuilder extends HttpRequestBuilder<HttpHead> {
     return builder.httpRequest;
   }
 
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * it.eng.idra.utils.restclient.builders.HttpRequestBuilder#addPayload(javax.ws.
+   * rs.core.MediaType, java.lang.String)
+   */
   @Override
   protected void addPayload(MediaType type, String data) {
     throw new RuntimeException("Payload not allowed in HTTP HEAD requests");

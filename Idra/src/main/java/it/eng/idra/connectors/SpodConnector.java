@@ -75,17 +75,36 @@ import org.ckan.Extra;
 import org.ckan.Resource;
 import org.ckan.Tag;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class SpodConnector.
+ */
 public class SpodConnector implements IodmsConnector {
 
+  /** The node id. */
   private String nodeId;
+
+  /** The node. */
   private OdmsCatalogue node;
+
+  /** The logger. */
   private static Logger logger = LogManager.getLogger(SpodConnector.class);
 
+  /**
+   * Instantiates a new spod connector.
+   *
+   * @param node the node
+   */
   public SpodConnector(OdmsCatalogue node) {
     this.node = node;
     this.nodeId = String.valueOf(node.getId());
   }
 
+  /*
+   * (non-Javadoc)
+   * 
+   * @see it.eng.idra.connectors.IodmsConnector#countDatasets()
+   */
   @Override
   public int countDatasets() throws MalformedURLException, OdmsCatalogueOfflineException,
       OdmsCatalogueNotFoundException, OdmsCatalogueForbiddenException {
@@ -97,21 +116,30 @@ public class SpodConnector implements IodmsConnector {
     }
   }
 
+  /*
+   * (non-Javadoc)
+   * 
+   * @see it.eng.idra.connectors.IodmsConnector#findDatasets(java.util.HashMap)
+   */
   @Override
-  public List<DcatDataset> findDatasets(HashMap<String, Object> searchParameters) 
-      throws MalformedURLException,
-      OdmsCatalogueNotFoundException, 
-      OdmsCatalogueForbiddenException, OdmsCatalogueOfflineException {
+  public List<DcatDataset> findDatasets(HashMap<String, Object> searchParameters)
+      throws MalformedURLException, OdmsCatalogueNotFoundException, OdmsCatalogueForbiddenException,
+      OdmsCatalogueOfflineException {
 
     ArrayList<DcatDataset> dcatResults = new ArrayList<DcatDataset>();
 
     return dcatResults;
   }
 
+  /*
+   * (non-Javadoc)
+   * 
+   * @see it.eng.idra.connectors.IodmsConnector#getDataset(java.lang.String)
+   */
   @Override
-  public DcatDataset getDataset(String datasetId) 
-      throws MalformedURLException, OdmsCatalogueOfflineException,
-      OdmsCatalogueNotFoundException, OdmsCatalogueForbiddenException {
+  public DcatDataset getDataset(String datasetId)
+      throws MalformedURLException, OdmsCatalogueOfflineException, OdmsCatalogueNotFoundException,
+      OdmsCatalogueForbiddenException {
 
     try {
       return datasetToDcat(getCkanDataset(datasetId), node);
@@ -122,10 +150,15 @@ public class SpodConnector implements IodmsConnector {
     }
   }
 
+  /*
+   * (non-Javadoc)
+   * 
+   * @see it.eng.idra.connectors.IodmsConnector#getAllDatasets()
+   */
   @Override
-  public List<DcatDataset> getAllDatasets() 
-      throws MalformedURLException, OdmsCatalogueOfflineException,
-      OdmsCatalogueNotFoundException, OdmsCatalogueForbiddenException {
+  public List<DcatDataset> getAllDatasets()
+      throws MalformedURLException, OdmsCatalogueOfflineException, OdmsCatalogueNotFoundException,
+      OdmsCatalogueForbiddenException {
 
     ArrayList<DcatDataset> dcatResults = new ArrayList<DcatDataset>();
 
@@ -172,6 +205,12 @@ public class SpodConnector implements IodmsConnector {
     }
   }
 
+  /*
+   * (non-Javadoc)
+   * 
+   * @see it.eng.idra.connectors.IodmsConnector#getChangedDatasets(java.util.List,
+   * java.lang.String)
+   */
   @Override
   public OdmsSynchronizationResult getChangedDatasets(List<DcatDataset> oldDatasets,
       String startingDateString)
@@ -215,9 +254,8 @@ public class SpodConnector implements IodmsConnector {
     SetView<String> diff1 = Sets.difference(oldSets, newSets);
     logger.info("Deleted Packages: " + diff1.size());
     for (String id : diff1) {
-      syncrhoResult.addToDeletedList(
-          oldDatasets.stream().filter(x -> x.getIdentifier()
-              .getValue().equals(id)).findFirst().get());
+      syncrhoResult.addToDeletedList(oldDatasets.stream()
+          .filter(x -> x.getIdentifier().getValue().equals(id)).findFirst().get());
       deleted++;
     }
 
@@ -237,8 +275,8 @@ public class SpodConnector implements IodmsConnector {
     for (String id : intersection) {
       try {
         DcatDataset tmp = datasetToDcat(getCkanDataset(id), node);
-        DcatDataset old = oldDatasets.stream().filter(x -> x.getIdentifier()
-            .getValue().equals(id)).findFirst().get();
+        DcatDataset old = oldDatasets.stream().filter(x -> x.getIdentifier().getValue().equals(id))
+            .findFirst().get();
         oldDate.setTime(dcatDateF.parse(old.getUpdateDate().getValue()));
         newDate.setTime(dcatDateF.parse(tmp.getUpdateDate().getValue()));
         if (newDate.after(oldDate)) {
@@ -261,12 +299,27 @@ public class SpodConnector implements IodmsConnector {
 
   }
 
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * it.eng.idra.connectors.IodmsConnector#countSearchDatasets(java.util.HashMap)
+   */
   @Override
   public int countSearchDatasets(HashMap<String, Object> searchParameters) throws Exception {
 
     return 0;
   }
 
+  /**
+   * Gets the subset of dataset.
+   *
+   * @param index the index
+   * @param beg   the beg
+   * @param end   the end
+   * @param ids   the ids
+   * @return the subset of dataset
+   */
   private List<DcatDataset> getSubsetOfDataset(int index, int beg, int end, List<String> ids) {
     logger.info("Subset: " + index + " beg: " + beg + " end: " + end + " size: " + ids.size());
     return ids.stream().map(x -> {
@@ -280,6 +333,12 @@ public class SpodConnector implements IodmsConnector {
     }).filter(x -> x != null).collect(Collectors.toList());
   }
 
+  /**
+   * Gets the all ids.
+   *
+   * @return the all ids
+   * @throws Exception the exception
+   */
   /*
    * This method will return all of the ids of the catalogue
    * /SpodCkanApi/api/2/rest/dataset
@@ -287,9 +346,8 @@ public class SpodConnector implements IodmsConnector {
   private List<String> getAllIds() throws Exception {
     RestClient client = new RestClientImpl();
 
-    HttpResponse response = client.sendGetRequest(
-        node.getHost() + (node.getHost().endsWith("/") ? "" 
-            : "/") + "SpodCkanApi/api/2/rest/dataset",
+    HttpResponse response = client.sendGetRequest(node.getHost()
+        + (node.getHost().endsWith("/") ? "" : "/") + "SpodCkanApi/api/2/rest/dataset",
         new HashMap<String, String>());
     int status = client.getStatus(response);
     if (status == 200) {
@@ -303,11 +361,17 @@ public class SpodConnector implements IodmsConnector {
    * This method will return the dataset /SpodCkanApi/api/2/rest/dataset/{id}
    */
 
+  /**
+   * Gets the ckan dataset.
+   *
+   * @param id the id
+   * @return the ckan dataset
+   * @throws Exception the exception
+   */
   private SpodDataset getCkanDataset(String id) throws Exception {
     RestClient client = new RestClientImpl();
-    HttpResponse response = client.sendGetRequest(
-        node.getHost() + (node.getHost().endsWith("/") ? "" 
-            : "/") + "SpodCkanApi/api/2/rest/dataset/" + id,
+    HttpResponse response = client.sendGetRequest(node.getHost()
+        + (node.getHost().endsWith("/") ? "" : "/") + "SpodCkanApi/api/2/rest/dataset/" + id,
         new HashMap<String, String>());
     int status = client.getStatus(response);
     if (status == 200) {
@@ -319,7 +383,10 @@ public class SpodConnector implements IodmsConnector {
 
   /**
    * datasetToDcat.
-   * 
+   *
+   * @param dataset the dataset
+   * @param node    the node
+   * @return the dcat dataset
    */
   public DcatDataset datasetToDcat(Object dataset, OdmsCatalogue node) {
 
@@ -450,7 +517,6 @@ public class SpodConnector implements IodmsConnector {
             } else {
               geographicalName = input.trim();
             }
-
             break;
           case "temporal_start":
             startDate = e.getValue();
@@ -472,7 +538,6 @@ public class SpodConnector implements IodmsConnector {
           case "version_notes":
             versionNotes = extractValueList(e.getValue());
             break;
-
           case "publisher_identifier":
             publisherIdentifier = e.getValue();
             break;
@@ -567,14 +632,13 @@ public class SpodConnector implements IodmsConnector {
 
       if (StringUtils.isNotBlank(geographicalIdentifier) || StringUtils.isNotBlank(geographicalName)
           || StringUtils.isNotBlank(geometry)) {
-        spatialCoverage = new DctLocation(DCTerms.spatial.getURI(), 
-            geographicalIdentifier, geographicalName, geometry,
-            nodeId);
+        spatialCoverage = new DctLocation(DCTerms.spatial.getURI(), geographicalIdentifier,
+            geographicalName, geometry, nodeId);
       }
 
       if (StringUtils.isNotBlank(startDate) && StringUtils.isNotBlank(endDate)) {
-        temporalCoverage = new DctPeriodOfTime(DCTerms.temporal.getURI(), 
-            startDate, endDate, nodeId);
+        temporalCoverage = new DctPeriodOfTime(DCTerms.temporal.getURI(), startDate, endDate,
+            nodeId);
       }
 
       // Contact Point
@@ -591,40 +655,33 @@ public class SpodConnector implements IodmsConnector {
       }
 
       if (vcardUri != null || vcardFn != null || vcardHasEmail != null) {
-        contactPointList.add(
-            new VCardOrganization(DCAT.contactPoint.getURI(), 
-                vcardUri, vcardFn, vcardHasEmail, "", "", "", nodeId));
+        contactPointList.add(new VCardOrganization(DCAT.contactPoint.getURI(), vcardUri, vcardFn,
+            vcardHasEmail, "", "", "", nodeId));
       }
 
       // Publisher
-      if (publisherUri != null || publisherName != null 
-          || publisherMbox != null || publisherHomepage != null
-          || publisherType != null || publisherIdentifier != null) {
-        publisher = new FoafAgent(DCTerms.publisher.getURI(), publisherUri,
-            publisherName, publisherMbox,
-            publisherHomepage, publisherType, publisherIdentifier, nodeId);
+      if (publisherUri != null || publisherName != null || publisherMbox != null
+          || publisherHomepage != null || publisherType != null || publisherIdentifier != null) {
+        publisher = new FoafAgent(DCTerms.publisher.getURI(), publisherUri, publisherName,
+            publisherMbox, publisherHomepage, publisherType, publisherIdentifier, nodeId);
       }
       // Rights Holder
-      if (holderUri != null || holderName != null || holderMbox != null 
-          || holderHomepage != null || holderType != null
-          || holderIdentifier != null) {
-        rightsHolder = new FoafAgent(DCTerms.rightsHolder.getURI(), 
-            holderUri, holderName, holderMbox, holderHomepage,
-            holderType, holderIdentifier, nodeId);
+      if (holderUri != null || holderName != null || holderMbox != null || holderHomepage != null
+          || holderType != null || holderIdentifier != null) {
+        rightsHolder = new FoafAgent(DCTerms.rightsHolder.getURI(), holderUri, holderName,
+            holderMbox, holderHomepage, holderType, holderIdentifier, nodeId);
       }
       // Creator
-      if (creatorUri != null || creatorName != null 
-          || creatorMbox != null || creatorHomepage != null
-          || creatorType != null || creatorIdentifier != null) {
-        creator = new FoafAgent(DCTerms.creator.getURI(), 
-            creatorUri, creatorName, creatorMbox, creatorHomepage,
-            creatorType, creatorIdentifier, nodeId);
+      if (creatorUri != null || creatorName != null || creatorMbox != null
+          || creatorHomepage != null || creatorType != null || creatorIdentifier != null) {
+        creator = new FoafAgent(DCTerms.creator.getURI(), creatorUri, creatorName, creatorMbox,
+            creatorHomepage, creatorType, creatorIdentifier, nodeId);
       }
       // License
       String licenseName = StringUtils.isNotBlank(d.getLicense_id()) ? d.getLicense_id()
           : (StringUtils.isNotBlank(d.getLicense_title()) ? d.getLicense_title() : "unknown");
-      license = new DctLicenseDocument(d.getLicense_url(), 
-          licenseName, d.getLicense_id(), "", nodeId);
+      license = new DctLicenseDocument(d.getLicense_url(), licenseName, d.getLicense_id(), "",
+          nodeId);
 
       // Keywords
       if (d.getTags() != null) {
@@ -656,13 +713,10 @@ public class SpodConnector implements IodmsConnector {
       relatedResource = d.getRelations().stream().map(x -> x.getUrl()).collect(Collectors.toList());
     }
     DcatDataset mapped;
-    mapped = new DcatDataset(nodeId, identifier, 
-        title, description, distributionList, themeList, publisher,
-        contactPointList, keywords, accessRights, 
-        conformsTo, documentation, frequency, hasVersion, isVersionOf,
-        landingPage, language, provenance, 
-        releaseDate, updateDate, otherIdentifier, sample, source, spatialCoverage,
-        temporalCoverage, type, version, 
+    mapped = new DcatDataset(nodeId, identifier, title, description, distributionList, themeList,
+        publisher, contactPointList, keywords, accessRights, conformsTo, documentation, frequency,
+        hasVersion, isVersionOf, landingPage, language, provenance, releaseDate, updateDate,
+        otherIdentifier, sample, source, spatialCoverage, temporalCoverage, type, version,
         versionNotes, rightsHolder, creator, null, relatedResource);
 
     distributionList = null;
@@ -672,22 +726,29 @@ public class SpodConnector implements IodmsConnector {
     return mapped;
   }
 
+  /**
+   * Extract concept list.
+   *
+   * @param             <T> the generic type
+   * @param propertyUri the property uri
+   * @param concepts    the concepts
+   * @param type        the type
+   * @return the list
+   */
   /*
    * Return a List of SKOSConcept, each of them containing a prefLabel from input
    * String list.
    */
-  private <T extends SkosConcept> List<T> extractConceptList(String propertyUri, 
+  private <T extends SkosConcept> List<T> extractConceptList(String propertyUri,
       List<String> concepts, Class<T> type) {
     List<T> result = new ArrayList<T>();
 
     for (String label : concepts) {
       try {
-        result.add(type.getDeclaredConstructor(SkosConcept.class).newInstance(
-            new SkosConcept(propertyUri, "", 
-                Arrays.asList(new SkosPrefLabel("", label, nodeId)), nodeId)));
-      } catch (InstantiationException | IllegalAccessException 
-          | IllegalArgumentException | InvocationTargetException
-          | NoSuchMethodException | SecurityException e) {
+        result.add(type.getDeclaredConstructor(SkosConcept.class).newInstance(new SkosConcept(
+            propertyUri, "", Arrays.asList(new SkosPrefLabel("", label, nodeId)), nodeId)));
+      } catch (InstantiationException | IllegalAccessException | IllegalArgumentException
+          | InvocationTargetException | NoSuchMethodException | SecurityException e) {
         // TODO Auto-generated catch block
         e.printStackTrace();
       }
@@ -696,6 +757,12 @@ public class SpodConnector implements IodmsConnector {
     return result;
   }
 
+  /**
+   * Extract value list.
+   *
+   * @param value the value
+   * @return the list
+   */
   private List<String> extractValueList(String value) {
 
     // TODO: regex & groups
@@ -731,6 +798,12 @@ public class SpodConnector implements IodmsConnector {
 
   }
 
+  /**
+   * Extract conforms to.
+   *
+   * @param value the value
+   * @return the list
+   */
   private List<DctStandard> extractConformsTo(String value) {
 
     List<DctStandard> result = new ArrayList<DctStandard>();
@@ -745,8 +818,8 @@ public class SpodConnector implements IodmsConnector {
       } catch (GsonUtilException ex) {
         if (StringUtils.isNotBlank(value)) {
           for (String s : value.substring(1, value.lastIndexOf("}")).split(",")) {
-            result.add(new DctStandard(DCTerms.conformsTo.getURI(),
-                s, "", "", new ArrayList<String>(), nodeId));
+            result.add(new DctStandard(DCTerms.conformsTo.getURI(), s, "", "",
+                new ArrayList<String>(), nodeId));
           }
         } else {
           result = null;
@@ -754,20 +827,28 @@ public class SpodConnector implements IodmsConnector {
       }
     } else if (value.startsWith("{")) {
       for (String s : value.substring(1, value.lastIndexOf("}")).split(",")) {
-        result.add(new DctStandard(DCTerms.conformsTo.getURI(),
-            s, "", "", new ArrayList<String>(), nodeId));
+        result.add(new DctStandard(DCTerms.conformsTo.getURI(), s, "", "", new ArrayList<String>(),
+            nodeId));
       }
     } else {
       for (String s : value.split(",")) {
-        result.add(new DctStandard(DCTerms.conformsTo.getURI(),
-            s, "", "", new ArrayList<String>(), nodeId));
+        result.add(new DctStandard(DCTerms.conformsTo.getURI(), s, "", "", new ArrayList<String>(),
+            nodeId));
       }
     }
     return result;
   }
 
-  private DcatDistribution resourceToDcat(Resource r, 
-      String datasetLandingPage, DctLicenseDocument datasetLicense) {
+  /**
+   * Resource to dcat.
+   *
+   * @param r                  the r
+   * @param datasetLandingPage the dataset landing page
+   * @param datasetLicense     the dataset license
+   * @return the dcat distribution
+   */
+  private DcatDistribution resourceToDcat(Resource r, String datasetLandingPage,
+      DctLicenseDocument datasetLicense) {
 
     String accessUrl = null;
     String description = null;
@@ -780,7 +861,8 @@ public class SpodConnector implements IodmsConnector {
     String byteSize = null;
     byteSize = String.valueOf(r.getSize());
     SpdxChecksum checksum = null;
-    checksum = new SpdxChecksum("http://spdx.org/rdf/terms#checksum", "checksumAlgorithm_sha1", r.getHash(), nodeId);
+    checksum = new SpdxChecksum("http://spdx.org/rdf/terms#checksum", "checksumAlgorithm_sha1",
+        r.getHash(), nodeId);
     // documentation = r.get ?
     // language = r.get ?
     // linkedSchemas = r.get ?
@@ -798,12 +880,17 @@ public class SpodConnector implements IodmsConnector {
     String title = null;
     title = r.getName();
 
-    return new DcatDistribution(nodeId, accessUrl, description, 
-        format, datasetLicense, byteSize, checksum,
-        new ArrayList<String>(), downloadUrl, new ArrayList<String>(), 
+    return new DcatDistribution(nodeId, accessUrl, description, format, datasetLicense, byteSize,
+        checksum, new ArrayList<String>(), downloadUrl, new ArrayList<String>(),
         new ArrayList<DctStandard>(), mediaType, releaseDate, updateDate, null, null, title);
   }
 
+  /**
+   * Check if json object.
+   *
+   * @param input the input
+   * @return true, if successful
+   */
   private static boolean checkIfJsonObject(String input) {
 
     try {
@@ -820,14 +907,15 @@ public class SpodConnector implements IodmsConnector {
    * Handle error.
    *
    * @param e the e
-   * @throws OdmsCatalogueNotFoundException the odms catalogue not found exception
-   * @throws OdmsCatalogueForbiddenException the odms catalogue forbidden exception
-   * @throws OdmsCatalogueOfflineException the odms catalogue offline exception
-   * @throws CKANException the CKAN exception
+   * @throws OdmsCatalogueNotFoundException  the odms catalogue not found
+   *                                         exception
+   * @throws OdmsCatalogueForbiddenException the odms catalogue forbidden
+   *                                         exception
+   * @throws OdmsCatalogueOfflineException   the odms catalogue offline exception
+   * @throws CKANException                   the CKAN exception
    */
-  public void handleError(CKANException e) throws
-      OdmsCatalogueNotFoundException, OdmsCatalogueForbiddenException,
-      OdmsCatalogueOfflineException, CKANException {
+  public void handleError(CKANException e) throws OdmsCatalogueNotFoundException,
+      OdmsCatalogueForbiddenException, OdmsCatalogueOfflineException, CKANException {
 
     String message = e.getMessage();
 

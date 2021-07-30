@@ -51,11 +51,11 @@ import org.apache.http.HttpResponse;
 public class Keyrock6Connector extends FiwareIdmConnector {
 
   /** The Constant keystone_baseurl. */
-  private static final String keystone_baseurl = 
-      PropertyManager.getProperty(IdmProperty.IDM_PROTOCOL) + "://"
+  private static final String keystone_baseurl = PropertyManager
+      .getProperty(IdmProperty.IDM_PROTOCOL) + "://"
       + PropertyManager.getProperty(IdmProperty.IDM_FIWARE_KEYSTONE_HOST) + ":"
       + PropertyManager.getProperty(IdmProperty.IDM_FIWARE_KEYSTONE_PORT);
-  
+
   /** The Constant keystone_path_tokens. */
   private static final String keystone_path_tokens = PropertyManager
       .getProperty(IdmProperty.IDM_FIWARE_KEYSTONE_PATH_TOKENS);
@@ -63,21 +63,18 @@ public class Keyrock6Connector extends FiwareIdmConnector {
   /**
    * Instantiates a new keyrock 6 connector.
    *
-   * @param protocol the protocol
-   * @param host the host
-   * @param port the port
-   * @param clientId the client id
+   * @param protocol     the protocol
+   * @param host         the host
+   * @param port         the port
+   * @param clientId     the client id
    * @param clientSecret the client secret
-   * @param redirectUri the redirect uri
+   * @param redirectUri  the redirect uri
    */
-  public Keyrock6Connector(String protocol, 
-      String host, int port, 
-      String clientId, String clientSecret,
-      String redirectUri) {
+  public Keyrock6Connector(String protocol, String host, int port, String clientId,
+      String clientSecret, String redirectUri) {
     super(protocol, host, port, clientId, clientSecret, redirectUri);
   }
 
- 
   /**
    * Gets the token.
    *
@@ -88,23 +85,23 @@ public class Keyrock6Connector extends FiwareIdmConnector {
   public Token getToken(String code) throws Exception {
 
     String url = baseUrl + path_token;
-    String auth = "Basic " 
+    String auth = "Basic "
         + new String(Base64.getEncoder().encode((clientId + ":" + clientSecret).getBytes()));
 
     Map<String, String> headers = new HashMap<String, String>();
     headers.put("Authorization", auth);
 
-    String reqData = "grant_type=authorization_code" 
-        + "&code=" + code + "&redirect_uri=" + redirectUri;
+    String reqData = "grant_type=authorization_code" + "&code=" + code + "&redirect_uri="
+        + redirectUri;
 
     RestClient client = new RestClientImpl();
-    HttpResponse response = client.sendPostRequest(url, 
-        reqData, MediaType.APPLICATION_FORM_URLENCODED_TYPE, headers);
+    HttpResponse response = client.sendPostRequest(url, reqData,
+        MediaType.APPLICATION_FORM_URLENCODED_TYPE, headers);
 
     int status = client.getStatus(response);
     if (status != 200 && status != 201 && status != 301) {
-      throw new Exception("Unable to retrieve token: " 
-         + status + ": " + response.getStatusLine().getReasonPhrase());
+      throw new Exception("Unable to retrieve token: " + status + ": "
+          + response.getStatusLine().getReasonPhrase());
     }
 
     String returnedJson = client.getHttpResponseBody(response);
@@ -116,7 +113,7 @@ public class Keyrock6Connector extends FiwareIdmConnector {
   /**
    * Gets the admin token.
    *
-   * @param adminuser the adminuser
+   * @param adminuser     the adminuser
    * @param adminpassword the adminpassword
    * @return the admin token
    * @throws Exception the exception
@@ -140,9 +137,8 @@ public class Keyrock6Connector extends FiwareIdmConnector {
     String idmEndpoint = keystone_baseurl + keystone_path_tokens;
 
     RestClient client = new RestClientImpl();
-    HttpResponse response = client.sendPostRequest(idmEndpoint, 
-        jsutb, MediaType.APPLICATION_JSON_TYPE,
-        new HashMap<String, String>());
+    HttpResponse response = client.sendPostRequest(idmEndpoint, jsutb,
+        MediaType.APPLICATION_JSON_TYPE, new HashMap<String, String>());
 
     int status = client.getStatus(response);
     if (status != 200 && status != 201 && status != 301) {
@@ -158,17 +154,14 @@ public class Keyrock6Connector extends FiwareIdmConnector {
   /**
    * Refresh token.
    *
-   * @param token the token
+   * @param token        the token
    * @param refreshToken the refresh token
-   * @param clientId the client id
+   * @param clientId     the client id
    * @param clientSecret the client secret
    * @return the token
    * @throws Exception the exception
    */
-  public Token refreshToken(String token, 
-      String refreshToken, 
-      String clientId, 
-      String clientSecret)
+  public Token refreshToken(String token, String refreshToken, String clientId, String clientSecret)
       throws Exception {
     String url = baseUrl + path_token;
 
@@ -180,13 +173,12 @@ public class Keyrock6Connector extends FiwareIdmConnector {
     headers.put("Content-Type", contentType);
     headers.put("Authorization", authorization);
 
-    String reqData = "grant_type=refresh_token" 
-        + "&client_id=" + clientId + "&client_secret=" + clientSecret
-        + "&refresh_token=" + refreshToken;
+    String reqData = "grant_type=refresh_token" + "&client_id=" + clientId + "&client_secret="
+        + clientSecret + "&refresh_token=" + refreshToken;
 
     RestClient client = new RestClientImpl();
-    HttpResponse response = client.sendPostRequest(url, 
-        reqData, MediaType.APPLICATION_JSON_TYPE, headers);
+    HttpResponse response = client.sendPostRequest(url, reqData, MediaType.APPLICATION_JSON_TYPE,
+        headers);
 
     int status = client.getStatus(response);
     if (status != 200 && status != 201 && status != 301) {

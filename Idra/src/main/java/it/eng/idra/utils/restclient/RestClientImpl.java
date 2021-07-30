@@ -26,34 +26,69 @@ import java.util.Map;
 import javax.ws.rs.core.MediaType;
 import org.apache.http.HttpResponse;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class RestClientImpl.
+ */
 public class RestClientImpl extends RestClientBaseImpl implements RestClient {
 
-  public HttpResponse sendGetRequest(String urlString,
-      Map<String, String> headers) throws MalformedURLException {
+  /*
+   * (non-Javadoc)
+   * 
+   * @see it.eng.idra.utils.restclient.RestClient#sendGetRequest(java.lang.String,
+   * java.util.Map)
+   */
+  public HttpResponse sendGetRequest(String urlString, Map<String, String> headers)
+      throws MalformedURLException {
     return invoke(HTTPMethods.GET, urlString, headers, null, null);
   }
 
-  public HttpResponse sendPostRequest(String urlString,
-      String data, MediaType type, Map<String, String> headers)
-      throws MalformedURLException {
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * it.eng.idra.utils.restclient.RestClient#sendPostRequest(java.lang.String,
+   * java.lang.String, javax.ws.rs.core.MediaType, java.util.Map)
+   */
+  public HttpResponse sendPostRequest(String urlString, String data, MediaType type,
+      Map<String, String> headers) throws MalformedURLException {
 
     return invoke(HTTPMethods.POST, urlString, headers, type, data);
   }
 
-  public HttpResponse sendDeleteRequest(String urlString,
-      Map<String, String> headers) throws MalformedURLException {
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * it.eng.idra.utils.restclient.RestClient#sendDeleteRequest(java.lang.String,
+   * java.util.Map)
+   */
+  public HttpResponse sendDeleteRequest(String urlString, Map<String, String> headers)
+      throws MalformedURLException {
     return invoke(HTTPMethods.DELETE, urlString, headers, null, null);
   }
 
-  public HttpResponse sendPutRequest(String urlString,
-      String data, MediaType type, Map<String, String> headers)
-      throws MalformedURLException {
+  /*
+   * (non-Javadoc)
+   * 
+   * @see it.eng.idra.utils.restclient.RestClient#sendPutRequest(java.lang.String,
+   * java.lang.String, javax.ws.rs.core.MediaType, java.util.Map)
+   */
+  public HttpResponse sendPutRequest(String urlString, String data, MediaType type,
+      Map<String, String> headers) throws MalformedURLException {
 
     return invoke(HTTPMethods.PUT, urlString, headers, type, data);
   }
 
-  public HttpResponse sendHeadRequest(String urlString,
-      Map<String, String> headers) throws MalformedURLException {
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * it.eng.idra.utils.restclient.RestClient#sendHeadRequest(java.lang.String,
+   * java.util.Map)
+   */
+  public HttpResponse sendHeadRequest(String urlString, Map<String, String> headers)
+      throws MalformedURLException {
 
     return invoke(HTTPMethods.HEAD, urlString, headers, null, null);
   }
@@ -61,13 +96,15 @@ public class RestClientImpl extends RestClientBaseImpl implements RestClient {
   /**
    * getHttpResponseBody.
    *
+   * @param httpresponse the httpresponse
    * @return string
+   * @throws Exception the exception
    */
   @SuppressWarnings("deprecation")
   public String getHttpResponseBody(HttpResponse httpresponse) throws Exception {
 
-    BufferedReader rd = 
-        new BufferedReader(new InputStreamReader(httpresponse.getEntity().getContent()));
+    BufferedReader rd = new BufferedReader(
+        new InputStreamReader(httpresponse.getEntity().getContent()));
 
     StringBuffer result = new StringBuffer();
     String line = "";
@@ -83,6 +120,7 @@ public class RestClientImpl extends RestClientBaseImpl implements RestClient {
   /**
    * getStatus.
    *
+   * @param httpresponse the httpresponse
    * @return int
    */
   public int getStatus(HttpResponse httpresponse) {

@@ -11,29 +11,29 @@ public class KeycloakUser {
 
   /** The sub. */
   private String sub;
-  
+
   /** The email verified. */
   @SerializedName(value = "email_verified")
   private boolean emailVerified;
-  
+
   /** The roles. */
   private Set<String> roles;
-  
+
   /** The name. */
   private String name;
-  
+
   /** The preferred username. */
   @SerializedName(value = "preferred_username")
   private String preferredUsername;
-  
+
   /** The given name. */
   @SerializedName(value = "given_name")
   private String givenName;
-  
+
   /** The family name. */
   @SerializedName(value = "family_name")
   private String familyName;
-  
+
   /** The email. */
   private String email;
 
@@ -47,18 +47,17 @@ public class KeycloakUser {
   /**
    * Instantiates a new keycloak user.
    *
-   * @param sub the sub
-   * @param emailVerified the email verified
-   * @param roles the roles
-   * @param name the name
+   * @param sub               the sub
+   * @param emailVerified     the email verified
+   * @param roles             the roles
+   * @param name              the name
    * @param preferredUsername the preferred username
-   * @param givenName the given name
-   * @param familyName the family name
-   * @param email the email
+   * @param givenName         the given name
+   * @param familyName        the family name
+   * @param email             the email
    */
-  public KeycloakUser(String sub, boolean emailVerified, 
-      Set<String> roles, String name, String preferredUsername,
-      String givenName, String familyName, String email) {
+  public KeycloakUser(String sub, boolean emailVerified, Set<String> roles, String name,
+      String preferredUsername, String givenName, String familyName, String email) {
     super();
     this.sub = sub;
     this.emailVerified = emailVerified;
@@ -214,16 +213,16 @@ public class KeycloakUser {
     this.email = email;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see java.lang.Object#toString()
    */
   @Override
   public String toString() {
-    return "KeycloakUser [sub=" + sub + ", "
-        + "email_verified=" + emailVerified + ", roles=" + roles + ", name=" + name
-        + ", preferred_username=" + preferredUsername + ", "
-            + "given_name=" + givenName + ", family_name=" + familyName
-        + ", email=" + email + "]";
+    return "KeycloakUser [sub=" + sub + ", " + "email_verified=" + emailVerified + ", roles="
+        + roles + ", name=" + name + ", preferred_username=" + preferredUsername + ", "
+        + "given_name=" + givenName + ", family_name=" + familyName + ", email=" + email + "]";
   }
 
 }

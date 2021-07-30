@@ -41,16 +41,15 @@ public class CkanApi {
    * All package list.
    *
    * @param httpRequest the http request
-   * @param l the l
-   * @param o the o
+   * @param l           the l
+   * @param o           the o
    * @return the response
    */
   @GET
   @Path("/api/{var:(3/?)?}action/package_list")
   @Produces("application/json")
-  public Response all_package_list(@Context HttpServletRequest httpRequest, 
-      @QueryParam("limit") String l,
-      @QueryParam("offset") String o) {
+  public Response all_package_list(@Context HttpServletRequest httpRequest,
+      @QueryParam("limit") String l, @QueryParam("offset") String o) {
 
     try {
 
@@ -92,18 +91,18 @@ public class CkanApi {
   /**
    * Package list.
    *
-   * @param httpRequest the http request
+   * @param httpRequest         the http request
    * @param catalogueIdentifier the catalogue identifier
-   * @param l the l
-   * @param o the o
+   * @param l                   the l
+   * @param o                   the o
    * @return the response
    */
   @GET
   @Path("/{catalogueID}/api/{var:(3/?)?}action/package_list")
   @Produces("application/json")
-  public Response package_list(@Context HttpServletRequest httpRequest, 
-      @PathParam("catalogueID") String catalogueIdentifier,
-      @QueryParam("limit") String l, @QueryParam("offset") String o) {
+  public Response package_list(@Context HttpServletRequest httpRequest,
+      @PathParam("catalogueID") String catalogueIdentifier, @QueryParam("limit") String l,
+      @QueryParam("offset") String o) {
 
     try {
       int limit = -1;
@@ -129,20 +128,19 @@ public class CkanApi {
               + "the offset to start returning packages "
               + "from :type offset: int :rtype: list of strings ");
           res.setSuccess(true);
-          res.setResult(MetadataCacheManager
-              .getAllDatasetsIdByCatalogue(catalogueIdentifier, limit, offset));
+          res.setResult(
+              MetadataCacheManager.getAllDatasetsIdByCatalogue(catalogueIdentifier, limit, offset));
 
           return Response.status(Response.Status.OK)
               .entity(GsonUtil.obj2Json(res, GsonUtil.ckanSuccType)).build();
         } else {
-          CkanErrorResponse err = new CkanErrorResponse("", 
+          CkanErrorResponse err = new CkanErrorResponse("",
               "Catalogue " + catalogueIdentifier + " not found", "Not Found");
           return Response.status(Response.Status.NOT_FOUND)
-              .entity(GsonUtil.obj2Json(err, GsonUtil.ckanErrType))
-              .build();
+              .entity(GsonUtil.obj2Json(err, GsonUtil.ckanErrType)).build();
         }
       } catch (OdmsCatalogueNotFoundException e) {
-        CkanErrorResponse err = new CkanErrorResponse("", 
+        CkanErrorResponse err = new CkanErrorResponse("",
             "Catalogue " + catalogueIdentifier + " not found", "Not Found");
         return Response.status(Response.Status.NOT_FOUND)
             .entity(GsonUtil.obj2Json(err, GsonUtil.ckanErrType)).build();
@@ -157,9 +155,9 @@ public class CkanApi {
   /**
    * Package show.
    *
-   * @param httpRequest the http request
+   * @param httpRequest         the http request
    * @param catalogueIdentifier the catalogue identifier
-   * @param datasetIdentifier the dataset identifier
+   * @param datasetIdentifier   the dataset identifier
    * @return the response
    */
   @GET
@@ -172,8 +170,8 @@ public class CkanApi {
     try {
 
       if (StringUtils.isBlank(datasetIdentifier)) {
-        CkanErrorResponse err = new CkanErrorResponse("",
-            "Missing mandatory parameter id", "Validation error");
+        CkanErrorResponse err = new CkanErrorResponse("", "Missing mandatory parameter id",
+            "Validation error");
         return Response.status(Response.Status.CONFLICT)
             .entity(GsonUtil.obj2Json(err, GsonUtil.ckanErrType)).build();
       }
@@ -189,25 +187,22 @@ public class CkanApi {
             res.setResult(CkanUtils.toCkanDataset(result));
           } else {
             CkanErrorResponse err = new CkanErrorResponse("",
-                "Package not found for catalogue: " + catalogueIdentifier,
-                "Not Found");
+                "Package not found for catalogue: " + catalogueIdentifier, "Not Found");
             return Response.status(Response.Status.NOT_FOUND)
-                .entity(GsonUtil.obj2Json(err, GsonUtil.ckanErrType))
-                .build();
+                .entity(GsonUtil.obj2Json(err, GsonUtil.ckanErrType)).build();
           }
         } else {
           CkanErrorResponse err = new CkanErrorResponse("", "Package not found", "Not Found");
           return Response.status(Response.Status.NOT_FOUND)
-              .entity(GsonUtil.obj2Json(err, GsonUtil.ckanErrType))
-              .build();
+              .entity(GsonUtil.obj2Json(err, GsonUtil.ckanErrType)).build();
         }
       } catch (DatasetNotFoundException e) {
-        CkanErrorResponse err = new CkanErrorResponse("", 
+        CkanErrorResponse err = new CkanErrorResponse("",
             "Catalogue " + catalogueIdentifier + " not found", "Not Found");
         return Response.status(Response.Status.NOT_FOUND)
             .entity(GsonUtil.obj2Json(err, GsonUtil.ckanErrType)).build();
       } catch (OdmsCatalogueNotFoundException e) {
-        CkanErrorResponse err = new CkanErrorResponse("", 
+        CkanErrorResponse err = new CkanErrorResponse("",
             "Catalogue " + catalogueIdentifier + " not found", "Not Found");
         return Response.status(Response.Status.NOT_FOUND)
             .entity(GsonUtil.obj2Json(err, GsonUtil.ckanErrType)).build();
@@ -224,7 +219,7 @@ public class CkanApi {
   /**
    * All package show.
    *
-   * @param httpRequest the http request
+   * @param httpRequest       the http request
    * @param datasetIdentifier the dataset identifier
    * @return the response
    */
@@ -237,8 +232,8 @@ public class CkanApi {
     try {
 
       if (StringUtils.isBlank(datasetIdentifier)) {
-        CkanErrorResponse err = new CkanErrorResponse("",
-            "Missing mandatory parameter id", "Validation error");
+        CkanErrorResponse err = new CkanErrorResponse("", "Missing mandatory parameter id",
+            "Validation error");
         return Response.status(Response.Status.CONFLICT)
             .entity(GsonUtil.obj2Json(err, GsonUtil.ckanErrType)).build();
       }
@@ -270,10 +265,10 @@ public class CkanApi {
    * All package search.
    *
    * @param httpRequest the http request
-   * @param query the query
-   * @param start the start
-   * @param rows the rows
-   * @param sort the sort
+   * @param query       the query
+   * @param start       the start
+   * @param rows        the rows
+   * @param sort        the sort
    * @return the response
    */
   @GET
@@ -304,8 +299,8 @@ public class CkanApi {
       List<String> ids = FederationCore.getOdmsCatalogues(false).stream().filter(x -> x.isActive())
           .map(x -> Integer.toString(x.getId())).collect(Collectors.toList());
 
-      SearchResult result = FederatedSearch
-          .searchByQuery(mappedQuery, mappedSort, limit, offset, ids);
+      SearchResult result = FederatedSearch.searchByQuery(mappedQuery, mappedSort, limit, offset,
+          ids);
 
       CkanSuccessResponse<CkanSearchResult> res = new CkanSuccessResponse<>();
       res.setHelp("");
@@ -323,21 +318,21 @@ public class CkanApi {
   /**
    * Single package search.
    *
-   * @param httpRequest the http request
+   * @param httpRequest         the http request
    * @param catalogueIdentifier the catalogue identifier
-   * @param query the query
-   * @param start the start
-   * @param rows the rows
-   * @param sort the sort
+   * @param query               the query
+   * @param start               the start
+   * @param rows                the rows
+   * @param sort                the sort
    * @return the response
    */
   @GET
   @Path("{catalogueID}/api/{var:(3/?)?}action/package_search")
   @Produces("application/json")
   public Response single_package_search(@Context HttpServletRequest httpRequest,
-      @PathParam("catalogueID") String catalogueIdentifier, 
+      @PathParam("catalogueID") String catalogueIdentifier,
       @QueryParam("q") @DefaultValue("*:*") String query,
-      @QueryParam("start") @DefaultValue("0") String start, 
+      @QueryParam("start") @DefaultValue("0") String start,
       @QueryParam("rows") @DefaultValue("20") String rows,
       @QueryParam("sort") @DefaultValue("metadata_modified desc") String sort) {
 
@@ -360,9 +355,8 @@ public class CkanApi {
       try {
         OdmsCatalogue cat = FederationCore.getOdmsCatalogue(Integer.parseInt(catalogueIdentifier));
         if (cat.isActive()) {
-          SearchResult result = FederatedSearch
-              .searchByQuery(mappedQuery, mappedSort, limit, offset,
-              Arrays.asList(catalogueIdentifier));
+          SearchResult result = FederatedSearch.searchByQuery(mappedQuery, mappedSort, limit,
+              offset, Arrays.asList(catalogueIdentifier));
 
           CkanSuccessResponse<CkanSearchResult> res = new CkanSuccessResponse<>();
           res.setHelp("");
@@ -371,11 +365,10 @@ public class CkanApi {
           return Response.status(Response.Status.OK)
               .entity(GsonUtil.obj2Json(res, GsonUtil.ckanSuccType)).build();
         } else {
-          CkanErrorResponse err = new CkanErrorResponse("", 
+          CkanErrorResponse err = new CkanErrorResponse("",
               "Catalogue " + catalogueIdentifier + " not found", "Not Found");
           return Response.status(Response.Status.NOT_FOUND)
-              .entity(GsonUtil.obj2Json(err, GsonUtil.ckanErrType))
-              .build();
+              .entity(GsonUtil.obj2Json(err, GsonUtil.ckanErrType)).build();
         }
       } catch (OdmsCatalogueNotFoundException e) {
         CkanErrorResponse err = new CkanErrorResponse("",
@@ -395,7 +388,7 @@ public class CkanApi {
    * All package search post.
    *
    * @param httpRequest the http request
-   * @param input the input
+   * @param input       the input
    * @return the response
    */
   @POST
@@ -429,8 +422,8 @@ public class CkanApi {
       List<String> ids = FederationCore.getOdmsCatalogues(false).stream().filter(x -> x.isActive())
           .map(x -> Integer.toString(x.getId())).collect(Collectors.toList());
 
-      SearchResult result = FederatedSearch
-          .searchByQuery(mappedQuery, mappedSort, limit, offset, ids);
+      SearchResult result = FederatedSearch.searchByQuery(mappedQuery, mappedSort, limit, offset,
+          ids);
 
       CkanSuccessResponse<CkanSearchResult> res = new CkanSuccessResponse<>();
       res.setHelp("");
@@ -448,9 +441,9 @@ public class CkanApi {
   /**
    * Single package search post.
    *
-   * @param httpRequest the http request
+   * @param httpRequest         the http request
    * @param catalogueIdentifier the catalogue identifier
-   * @param input the input
+   * @param input               the input
    * @return the response
    */
   @POST
@@ -484,9 +477,8 @@ public class CkanApi {
       try {
         OdmsCatalogue cat = FederationCore.getOdmsCatalogue(Integer.parseInt(catalogueIdentifier));
         if (cat.isActive()) {
-          SearchResult result = FederatedSearch
-              .searchByQuery(mappedQuery, mappedSort, limit, offset,
-              Arrays.asList(catalogueIdentifier));
+          SearchResult result = FederatedSearch.searchByQuery(mappedQuery, mappedSort, limit,
+              offset, Arrays.asList(catalogueIdentifier));
 
           CkanSuccessResponse<CkanSearchResult> res = new CkanSuccessResponse<>();
           res.setHelp("");
@@ -498,8 +490,7 @@ public class CkanApi {
           CkanErrorResponse err = new CkanErrorResponse("",
               "Catalogue " + catalogueIdentifier + " not found", "Not Found");
           return Response.status(Response.Status.NOT_FOUND)
-              .entity(GsonUtil.obj2Json(err, GsonUtil.ckanErrType))
-              .build();
+              .entity(GsonUtil.obj2Json(err, GsonUtil.ckanErrType)).build();
         }
       } catch (OdmsCatalogueNotFoundException e) {
         CkanErrorResponse err = new CkanErrorResponse("",

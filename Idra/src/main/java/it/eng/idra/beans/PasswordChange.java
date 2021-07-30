@@ -20,30 +20,38 @@ package it.eng.idra.beans;
 
 import it.eng.idra.utils.JsonRequired;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class PasswordChange.
+ */
 public class PasswordChange {
 
+  /** The old password. */
   @JsonRequired
   private String oldPassword;
 
+  /** The new password. */
   @JsonRequired
   private String newPassword;
 
+  /** The new password confirm. */
   @JsonRequired
   private String newPasswordConfirm;
 
+  /** The username. */
   @JsonRequired
   private String username;
 
   /**
    * Instantiates a new password change.
    *
-   * @param oldPassword the old password
-   * @param newPassword the new password
+   * @param oldPassword        the old password
+   * @param newPassword        the new password
    * @param newPasswordConfirm the new password confirm
-   * @param username the username
+   * @param username           the username
    */
-  public PasswordChange(String oldPassword, String newPassword, 
-      String newPasswordConfirm, String username) {
+  public PasswordChange(String oldPassword, String newPassword, String newPasswordConfirm,
+      String username) {
     super();
     this.oldPassword = oldPassword;
     this.newPassword = newPassword;
@@ -51,34 +59,74 @@ public class PasswordChange {
     this.username = username;
   }
 
+  /**
+   * Gets the old password.
+   *
+   * @return the old password
+   */
   public String getOldPassword() {
     return oldPassword;
   }
 
+  /**
+   * Sets the old password.
+   *
+   * @param oldPassword the new old password
+   */
   public void setOldPassword(String oldPassword) {
     this.oldPassword = oldPassword;
   }
 
+  /**
+   * Gets the new password.
+   *
+   * @return the new password
+   */
   public String getNewPassword() {
     return newPassword;
   }
 
+  /**
+   * Sets the new password.
+   *
+   * @param newPassword the new new password
+   */
   public void setNewPassword(String newPassword) {
     this.newPassword = newPassword;
   }
 
+  /**
+   * Gets the new password confirm.
+   *
+   * @return the new password confirm
+   */
   public String getNewPasswordConfirm() {
     return newPasswordConfirm;
   }
 
+  /**
+   * Sets the new password confirm.
+   *
+   * @param newPasswordConfirm the new new password confirm
+   */
   public void setNewPasswordConfirm(String newPasswordConfirm) {
     this.newPasswordConfirm = newPasswordConfirm;
   }
 
+  /**
+   * Gets the username.
+   *
+   * @return the username
+   */
   public String getUsername() {
     return username;
   }
 
+  /**
+   * Sets the username.
+   *
+   * @param username the new username
+   */
   public void setUsername(String username) {
     this.username = username;
   }

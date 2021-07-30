@@ -20,24 +20,53 @@ package it.eng.idra.beans.dcat;
 
 import java.io.Serializable;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class DcatDatasetId.
+ */
 public class DcatDatasetId implements Serializable {
 
+  /** The Constant serialVersionUID. */
   private static final long serialVersionUID = 1L;
+
+  /** The id. */
   private String id;
+
+  /** The node id. */
   private String nodeId;
 
+  /**
+   * Gets the id.
+   *
+   * @return the id
+   */
   public String getId() {
     return this.id;
   }
 
+  /**
+   * Sets the id.
+   *
+   * @param id the new id
+   */
   public void setId(String id) {
     this.id = id;
   }
 
+  /**
+   * Gets the node id.
+   *
+   * @return the node id
+   */
   public String getNodeId() {
     return this.nodeId;
   }
 
+  /**
+   * Sets the node id.
+   *
+   * @param nodeId the new node id
+   */
   public void setNodeId(String nodeId) {
     this.nodeId = nodeId;
   }
@@ -45,7 +74,7 @@ public class DcatDatasetId implements Serializable {
   /**
    * Instantiates a new dcat dataset id.
    *
-   * @param id the id
+   * @param id     the id
    * @param nodeId the node ID
    */
   public DcatDatasetId(String id, String nodeId) {
@@ -54,9 +83,17 @@ public class DcatDatasetId implements Serializable {
     this.nodeId = nodeId;
   }
 
+  /**
+   * Instantiates a new dcat dataset id.
+   */
   public DcatDatasetId() {
   }
 
+  /*
+   * (non-Javadoc)
+   * 
+   * @see java.lang.Object#hashCode()
+   */
   @Override
   public int hashCode() {
     final int prime = 31;
@@ -66,6 +103,11 @@ public class DcatDatasetId implements Serializable {
     return result;
   }
 
+  /*
+   * (non-Javadoc)
+   * 
+   * @see java.lang.Object#equals(java.lang.Object)
+   */
   @Override
   public boolean equals(Object obj) {
     if (this == obj) {

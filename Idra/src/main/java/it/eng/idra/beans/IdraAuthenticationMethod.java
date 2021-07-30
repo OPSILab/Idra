@@ -18,16 +18,36 @@
 
 package it.eng.idra.beans;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Enum IdraAuthenticationMethod.
+ */
 public enum IdraAuthenticationMethod {
 
-  BASIC("BASIC"), FIWARE("FIWARE"), KEYCLOAK("KEYCLOAK");
+  /** The basic. */
+  BASIC("BASIC"),
+  /** The fiware. */
+  FIWARE("FIWARE"),
+  /** The keycloak. */
+  KEYCLOAK("KEYCLOAK");
 
+  /** The text. */
   private final String text;
 
+  /**
+   * Instantiates a new idra authentication method.
+   *
+   * @param text the text
+   */
   private IdraAuthenticationMethod(final String text) {
     this.text = text;
   }
 
+  /*
+   * (non-Javadoc)
+   * 
+   * @see java.lang.Enum#toString()
+   */
   @Override
   public String toString() {
     return text;

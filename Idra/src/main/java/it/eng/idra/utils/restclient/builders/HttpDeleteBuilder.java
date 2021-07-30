@@ -24,8 +24,17 @@ import javax.ws.rs.core.MediaType;
 import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpRequestBase;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class HttpDeleteBuilder.
+ */
 public class HttpDeleteBuilder extends HttpRequestBuilder<HttpDelete> {
 
+  /**
+   * Instantiates a new http delete builder.
+   *
+   * @param url the url
+   */
   private HttpDeleteBuilder(URL url) {
     super.httpRequest = new HttpDelete(url.toString());
   }
@@ -33,7 +42,7 @@ public class HttpDeleteBuilder extends HttpRequestBuilder<HttpDelete> {
   /**
    * Gets the single instance of HttpDeleteBuilder.
    *
-   * @param url the url
+   * @param url     the url
    * @param headers the headers
    * @return single instance of HttpDeleteBuilder
    */
@@ -44,6 +53,13 @@ public class HttpDeleteBuilder extends HttpRequestBuilder<HttpDelete> {
     return builder.httpRequest;
   }
 
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * it.eng.idra.utils.restclient.builders.HttpRequestBuilder#addPayload(javax.ws.
+   * rs.core.MediaType, java.lang.String)
+   */
   @Override
   protected void addPayload(MediaType type, String data) {
     throw new RuntimeException("Payload not allowed in HTTP DELETE requests");

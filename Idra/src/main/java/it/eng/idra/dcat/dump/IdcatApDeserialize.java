@@ -38,44 +38,172 @@ import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.rdf.model.Statement;
 import org.apache.jena.riot.RiotException;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Interface IdcatApDeserialize.
+ */
 public interface IdcatApDeserialize {
 
+  /**
+   * Dump to model.
+   *
+   * @param modelText the model text
+   * @param node      the node
+   * @return the model
+   * @throws RiotException the riot exception
+   */
   public Model dumpToModel(String modelText, OdmsCatalogue node) throws RiotException;
 
+  /**
+   * Resource to dataset.
+   *
+   * @param nodeId          the node id
+   * @param datasetResource the dataset resource
+   * @return the dcat dataset
+   * @throws DcatApProfileNotValidException the dcat ap profile not valid
+   *                                        exception
+   */
   public DcatDataset resourceToDataset(String nodeId, Resource datasetResource)
       throws DcatApProfileNotValidException;
 
+  /**
+   * Deserialize concept.
+   *
+   * @param                 <T> the generic type
+   * @param nodeId          the node id
+   * @param datasetResource the dataset resource
+   * @param toExtractP      the to extract P
+   * @param type            the type
+   * @return the list
+   */
   <T extends SkosConcept> List<T> deserializeConcept(String nodeId, Resource datasetResource,
       Property toExtractP, Class<T> type);
 
+  /**
+   * Deserialize language.
+   *
+   * @param datasetResource the dataset resource
+   * @return the list
+   */
   List<String> deserializeLanguage(Resource datasetResource);
 
+  /**
+   * Deserialize temporal coverage.
+   *
+   * @param nodeId          the node id
+   * @param datasetResource the dataset resource
+   * @return the dct period of time
+   */
   DctPeriodOfTime deserializeTemporalCoverage(String nodeId, Resource datasetResource);
 
+  /**
+   * Deserialize spatial coverage.
+   *
+   * @param nodeId          the node id
+   * @param datasetResource the dataset resource
+   * @return the dct location
+   */
   DctLocation deserializeSpatialCoverage(String nodeId, Resource datasetResource);
 
+  /**
+   * Deserialize other identifier.
+   *
+   * @param datasetResource the dataset resource
+   * @return the list
+   */
   List<String> deserializeOtherIdentifier(Resource datasetResource);
 
+  /**
+   * Deserialize dct standard.
+   *
+   * @param nodeId          the node id
+   * @param datasetResource the dataset resource
+   * @return the list
+   */
   List<DctStandard> deserializeDctStandard(String nodeId, Resource datasetResource);
 
+  /**
+   * Deserialize contact point.
+   *
+   * @param nodeId          the node id
+   * @param datasetResource the dataset resource
+   * @return the list
+   */
   List<VCardOrganization> deserializeContactPoint(String nodeId, Resource datasetResource);
 
+  /**
+   * Deserialize foaf agent.
+   *
+   * @param nodeId         the node id
+   * @param agentStatement the agent statement
+   * @return the foaf agent
+   */
   FoafAgent deserializeFoafAgent(String nodeId, Statement agentStatement);
 
+  /**
+   * Deserialize frequency.
+   *
+   * @param datasetResource the dataset resource
+   * @return the string
+   */
   String deserializeFrequency(Resource datasetResource);
 
+  /**
+   * Resource to dcat distribution.
+   *
+   * @param r      the r
+   * @param nodeId the node id
+   * @return the dcat distribution
+   */
   DcatDistribution resourceToDcatDistribution(Resource r, String nodeId);
 
+  /**
+   * Deserialize checksum.
+   *
+   * @param nodeId the node id
+   * @param r      the r
+   * @return the spdx checksum
+   */
   SpdxChecksum deserializeChecksum(String nodeId, Resource r);
 
+  /**
+   * Deserialize format.
+   *
+   * @param r the r
+   * @return the string
+   */
   String deserializeFormat(Resource r);
 
+  /**
+   * Extract format from uri.
+   *
+   * @param uri the uri
+   * @return the string
+   */
   String extractFormatFromUri(String uri);
 
+  /**
+   * Extract theme from uri.
+   *
+   * @param uri the uri
+   * @return the string
+   */
   String extractThemeFromUri(String uri);
 
+  /**
+   * Extract language from uri.
+   *
+   * @param uri the uri
+   * @return the string
+   */
   String extractLanguageFromUri(String uri);
 
+  /**
+   * Gets the dataset pattern.
+   *
+   * @param format the format
+   * @return the dataset pattern
+   */
   Pattern getDatasetPattern(DcatApFormat format);
 
 }

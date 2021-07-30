@@ -30,23 +30,23 @@ public class Organization {
 
   /** The website. */
   private String website;
-  
+
   /** The description. */
   private String description;
-  
+
   /** The roles. */
   private Set<Role> roles;
-  
+
   /** The enabled. */
   private boolean enabled;
-  
+
   /** The id. */
   private String id;
-  
+
   /** The domain id. */
   @SerializedName(value = "domain_id")
   private String domainId;
-  
+
   /** The name. */
   private String name;
 
@@ -179,18 +179,16 @@ public class Organization {
   /**
    * Instantiates a new organization.
    *
-   * @param website the website
+   * @param website     the website
    * @param description the description
-   * @param roles the roles
-   * @param enabled the enabled
-   * @param id the id
-   * @param domainId the domain id
-   * @param name the name
+   * @param roles       the roles
+   * @param enabled     the enabled
+   * @param id          the id
+   * @param domainId    the domain id
+   * @param name        the name
    */
-  public Organization(String website, String description, 
-      Set<Role> roles, boolean enabled, String id, 
-      String domainId,
-      String name) {
+  public Organization(String website, String description, Set<Role> roles, boolean enabled,
+      String id, String domainId, String name) {
     this.website = website;
     this.description = description;
     this.roles = roles;

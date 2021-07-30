@@ -30,11 +30,22 @@ import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.Provider;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class FiwareIdmAuthenticationFilter.
+ */
 @Secured
 @Provider
 @Priority(1)
 public class FiwareIdmAuthenticationFilter implements ContainerRequestFilter {
 
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * javax.ws.rs.container.ContainerRequestFilter#filter(javax.ws.rs.container.
+   * ContainerRequestContext)
+   */
   @Override
   public void filter(ContainerRequestContext requestContext) throws IOException {
 

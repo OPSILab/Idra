@@ -11,7 +11,7 @@ public class CkanSearchResult {
 
   /** The count. */
   private Long count;
-  
+
   /** The results. */
   private List<Dataset> results;
 
@@ -24,11 +24,10 @@ public class CkanSearchResult {
   /**
    * Instantiates a new ckan search result.
    *
-   * @param count the count
+   * @param count  the count
    * @param result the result
    */
-  public CkanSearchResult(Long count,
-      List<Dataset> result) {
+  public CkanSearchResult(Long count, List<Dataset> result) {
     super();
     this.count = count;
     this.results = result;
@@ -70,7 +69,9 @@ public class CkanSearchResult {
     this.results = result;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see java.lang.Object#toString()
    */
   @Override

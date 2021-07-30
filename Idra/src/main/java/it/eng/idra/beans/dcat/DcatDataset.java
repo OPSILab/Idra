@@ -61,6 +61,7 @@ import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
 import org.hibernate.annotations.Where;
 
+// TODO: Auto-generated Javadoc
 /**
  * Represents a DCAT Dataset.
  *
@@ -72,61 +73,125 @@ import org.hibernate.annotations.Where;
 @IdClass(DcatDatasetId.class)
 public class DcatDataset implements Serializable {
 
+  /** The Constant serialVersionUID. */
   private static final long serialVersionUID = 1L;
 
+  /** The id. */
   // Custom fields
   private String id;
-  
+
+  /** The node id. */
   @Column(name = "nodeID")
   @SerializedName(value = "nodeID")
   private String nodeId;
-  
+
+  /** The node name. */
   private String nodeName;
-  
+
+  /** The has stored rdf. */
   @Column(name = "hasStoredRDF")
   @SerializedName(value = "hasStoredRDF")
   private boolean hasStoredRdf = false;
-  
+
+  /** The Constant RDFClass. */
   private static final transient Resource RDFClass = DCAT.Dataset;
 
   // DCAT fields
 
+  /** The title. */
   // Mandatory
   private DcatProperty title;
+
+  /** The description. */
   private DcatProperty description;
 
+  /** The distributions. */
   // Recommended
   private List<DcatDistribution> distributions;
+
+  /** The theme. */
   private List<SkosConceptTheme> theme;
+
+  /** The publisher. */
   private FoafAgent publisher;
+
+  /** The contact point. */
   private List<VCardOrganization> contactPoint;
+
+  /** The keywords. */
   private List<String> keywords;
 
+  /** The access rights. */
   // Optional
   private DcatProperty accessRights;
+
+  /** The conforms to. */
   private List<DctStandard> conformsTo;
+
+  /** The documentation. */
   private List<DcatProperty> documentation;
+
+  /** The frequency. */
   private DcatProperty frequency;
+
+  /** The has version. */
   private List<DcatProperty> hasVersion;
+
+  /** The is version of. */
   private List<DcatProperty> isVersionOf;
+
+  /** The landing page. */
   private DcatProperty landingPage;
+
+  /** The language. */
   private List<DcatProperty> language;
+
+  /** The provenance. */
   private List<DcatProperty> provenance;
+
+  /** The related resource. */
   private List<DcatProperty> relatedResource;
+
+  /** The release date. */
   private DcatProperty releaseDate;
+
+  /** The update date. */
   private DcatProperty updateDate;
+
+  /** The identifier. */
   private DcatProperty identifier;
+
+  /** The other identifier. */
   private List<DcatProperty> otherIdentifier;
+
+  /** The sample. */
   private List<DcatProperty> sample;
+
+  /** The source. */
   private List<DcatProperty> source;
+
+  /** The spatial coverage. */
   private DctLocation spatialCoverage;
+
+  /** The temporal coverage. */
   private DctPeriodOfTime temporalCoverage;
+
+  /** The type. */
   private DcatProperty type;
+
+  /** The version. */
   private DcatProperty version;
+
+  /** The version notes. */
   private List<DcatProperty> versionNotes;
 
+  /** The rights holder. */
   private FoafAgent rightsHolder;
+
+  /** The creator. */
   private FoafAgent creator;
+
+  /** The subject. */
   private List<SkosConceptSubject> subject;
 
   // private String legacyIdentifier;
@@ -136,6 +201,9 @@ public class DcatDataset implements Serializable {
   // level
   // private DCATProperty licenseTitle;
 
+  /**
+   * Instantiates a new dcat dataset.
+   */
   public DcatDataset() {
   }
 
@@ -374,6 +442,11 @@ public class DcatDataset implements Serializable {
 
   }
 
+  /**
+   * Gets the id.
+   *
+   * @return the id
+   */
   @Id
   // @GeneratedValue(generator = "uuid")
   // @GenericGenerator(name = "uuid", strategy = "uuid2")
@@ -382,41 +455,86 @@ public class DcatDataset implements Serializable {
     return id;
   }
 
+  /**
+   * Sets the id.
+   *
+   * @param id the new id
+   */
   public void setId(String id) {
     this.id = id;
   }
 
+  /**
+   * Gets the node id.
+   *
+   * @return the node id
+   */
   @Id
   public String getNodeId() {
     return nodeId;
   }
 
+  /**
+   * Sets the node id.
+   *
+   * @param nodeId the new node id
+   */
   public void setNodeId(String nodeId) {
     this.nodeId = nodeId;
   }
 
+  /**
+   * Gets the node name.
+   *
+   * @return the node name
+   */
   @Transient
   public String getNodeName() {
     return nodeName;
   }
 
+  /**
+   * Sets the node name.
+   *
+   * @param nodeName the new node name
+   */
   public void setNodeName(String nodeName) {
     this.nodeName = nodeName;
   }
 
+  /**
+   * Gets the rdf class.
+   *
+   * @return the rdf class
+   */
   @Transient
   public static Resource getRdfClass() {
     return RDFClass;
   }
 
+  /**
+   * Gets the checks for stored rdf.
+   *
+   * @return the checks for stored rdf
+   */
   public boolean getHasStoredRdf() {
     return hasStoredRdf;
   }
 
+  /**
+   * Sets the checks for stored rdf.
+   *
+   * @param hasStoredRdf the new checks for stored rdf
+   */
   public void setHasStoredRdf(boolean hasStoredRdf) {
     this.hasStoredRdf = hasStoredRdf;
   }
 
+  /**
+   * Gets the title.
+   *
+   * @return the title
+   */
   @Embedded
   @AttributeOverrides({
       @AttributeOverride(name = "value", 
@@ -425,10 +543,20 @@ public class DcatDataset implements Serializable {
     return title;
   }
 
+  /**
+   * Sets the title.
+   *
+   * @param title the new title
+   */
   protected void setTitle(DcatProperty title) {
     this.title = title;
   }
 
+  /**
+   * Gets the description.
+   *
+   * @return the description
+   */
   @Embedded
   @AttributeOverrides({
       @AttributeOverride(name = "value", 
@@ -437,10 +565,20 @@ public class DcatDataset implements Serializable {
     return description;
   }
 
+  /**
+   * Sets the description.
+   *
+   * @param description the new description
+   */
   protected void setDescription(DcatProperty description) {
     this.description = description;
   }
 
+  /**
+   * Gets the identifier.
+   *
+   * @return the identifier
+   */
   @Embedded
   @AttributeOverrides({
       @AttributeOverride(name = "value", 
@@ -449,10 +587,20 @@ public class DcatDataset implements Serializable {
     return identifier;
   }
 
+  /**
+   * Sets the identifier.
+   *
+   * @param dcatIdentifier the new identifier
+   */
   protected void setIdentifier(DcatProperty dcatIdentifier) {
     this.identifier = dcatIdentifier;
   }
 
+  /**
+   * Gets the other identifier.
+   *
+   * @return the other identifier
+   */
   @LazyCollection(LazyCollectionOption.FALSE)
   @ElementCollection
   @CollectionTable(name = "dcat_otherIdentifier", joinColumns = {
@@ -464,10 +612,20 @@ public class DcatDataset implements Serializable {
     return otherIdentifier;
   }
 
+  /**
+   * Sets the other identifier.
+   *
+   * @param otherIdentifier the new other identifier
+   */
   public void setOtherIdentifier(List<DcatProperty> otherIdentifier) {
     this.otherIdentifier = otherIdentifier;
   }
 
+  /**
+   * Gets the release date.
+   *
+   * @return the release date
+   */
   @Embedded
   @AttributeOverrides({
       @AttributeOverride(name = "value", column = @Column(name = "releaseDate")) })
@@ -475,30 +633,60 @@ public class DcatDataset implements Serializable {
     return releaseDate;
   }
 
+  /**
+   * Sets the release date.
+   *
+   * @param releaseDate the new release date
+   */
   protected void setReleaseDate(DcatProperty releaseDate) {
     this.releaseDate = releaseDate;
   }
 
+  /**
+   * Gets the update date.
+   *
+   * @return the update date
+   */
   @Embedded
   @AttributeOverrides({ @AttributeOverride(name = "value", column = @Column(name = "updateDate")) })
   public DcatProperty getUpdateDate() {
     return updateDate;
   }
 
+  /**
+   * Sets the update date.
+   *
+   * @param modified the new update date
+   */
   protected void setUpdateDate(DcatProperty modified) {
     this.updateDate = modified;
   }
 
+  /**
+   * Gets the version.
+   *
+   * @return the version
+   */
   @Embedded
   @AttributeOverrides({ @AttributeOverride(name = "value", column = @Column(name = "version")) })
   public DcatProperty getVersion() {
     return version;
   }
 
+  /**
+   * Sets the version.
+   *
+   * @param version the new version
+   */
   protected void setVersion(DcatProperty version) {
     this.version = version;
   }
 
+  /**
+   * Gets the version notes.
+   *
+   * @return the version notes
+   */
   @LazyCollection(LazyCollectionOption.FALSE)
   @ElementCollection
   @CollectionTable(name = "dcat_versionNotes", joinColumns = {
@@ -510,10 +698,20 @@ public class DcatDataset implements Serializable {
     return versionNotes;
   }
 
+  /**
+   * Sets the version notes.
+   *
+   * @param versionNotes the new version notes
+   */
   protected void setVersionNotes(List<DcatProperty> versionNotes) {
     this.versionNotes = versionNotes;
   }
 
+  /**
+   * Gets the landing page.
+   *
+   * @return the landing page
+   */
   @Embedded
   @AttributeOverrides({
       @AttributeOverride(name = "value", 
@@ -522,10 +720,20 @@ public class DcatDataset implements Serializable {
     return landingPage;
   }
 
+  /**
+   * Sets the landing page.
+   *
+   * @param landingPage the new landing page
+   */
   protected void setLandingPage(DcatProperty landingPage) {
     this.landingPage = landingPage;
   }
 
+  /**
+   * Gets the contact point.
+   *
+   * @return the contact point
+   */
   @LazyCollection(LazyCollectionOption.FALSE)
   @OneToMany(cascade = { CascadeType.ALL })
   // @Fetch(FetchMode.SELECT)
@@ -535,6 +743,11 @@ public class DcatDataset implements Serializable {
     return contactPoint;
   }
 
+  /**
+   * Sets the contact point.
+   *
+   * @param contactPoint the new contact point
+   */
   protected void setContactPoint(List<VCardOrganization> contactPoint) {
     // this.contactPoint = contactPoint != null ? contactPoint
     // : Arrays.asList(new VCardOrganization(DCAT.contactPoint.getURI(), "",
@@ -543,36 +756,71 @@ public class DcatDataset implements Serializable {
     this.contactPoint = contactPoint;
   }
 
+  /**
+   * Gets the frequency.
+   *
+   * @return the frequency
+   */
   @Embedded
   @AttributeOverrides({ @AttributeOverride(name = "value", column = @Column(name = "frequency")) })
   public DcatProperty getFrequency() {
     return frequency;
   }
 
+  /**
+   * Sets the frequency.
+   *
+   * @param frequency the new frequency
+   */
   protected void setFrequency(DcatProperty frequency) {
     this.frequency = frequency;
   }
 
+  /**
+   * Gets the spatial coverage.
+   *
+   * @return the spatial coverage
+   */
   @OneToOne(cascade = CascadeType.ALL)
   @JoinColumn(name = "spatialCoverage_id")
   public DctLocation getSpatialCoverage() {
     return spatialCoverage;
   }
 
+  /**
+   * Sets the spatial coverage.
+   *
+   * @param spatialCoverage the new spatial coverage
+   */
   protected void setSpatialCoverage(DctLocation spatialCoverage) {
     this.spatialCoverage = spatialCoverage;
   }
 
+  /**
+   * Gets the temporal coverage.
+   *
+   * @return the temporal coverage
+   */
   @OneToOne(cascade = CascadeType.ALL)
   @JoinColumn(name = "temporalCoverage_id")
   public DctPeriodOfTime getTemporalCoverage() {
     return temporalCoverage;
   }
 
+  /**
+   * Sets the temporal coverage.
+   *
+   * @param temporalCoverage the new temporal coverage
+   */
   protected void setTemporalCoverage(DctPeriodOfTime temporalCoverage) {
     this.temporalCoverage = temporalCoverage;
   }
 
+  /**
+   * Gets the language.
+   *
+   * @return the language
+   */
   @LazyCollection(LazyCollectionOption.FALSE)
   @ElementCollection
   @CollectionTable(name = "dcat_language", joinColumns = {
@@ -583,6 +831,11 @@ public class DcatDataset implements Serializable {
     return language;
   }
 
+  /**
+   * Sets the language.
+   *
+   * @param language the new language
+   */
   protected void setLanguage(List<DcatProperty> language) {
     this.language = language;
   }
@@ -602,12 +855,22 @@ public class DcatDataset implements Serializable {
   // this.licenseTitle = licenseTitle;
   // }
 
+  /**
+   * Gets the publisher.
+   *
+   * @return the publisher
+   */
   @OneToOne(cascade = CascadeType.ALL)
   @JoinColumn(name = "publisher_id")
   public FoafAgent getPublisher() {
     return publisher;
   }
 
+  /**
+   * Sets the publisher.
+   *
+   * @param publisher the new publisher
+   */
   protected void setPublisher(FoafAgent publisher) {
     // this.publisher = publisher != null ? publisher
     // : new FOAFAgent(DCTerms.publisher.getURI(), "", "", "", "", "", "",
@@ -615,6 +878,11 @@ public class DcatDataset implements Serializable {
     this.publisher = publisher;
   }
 
+  /**
+   * Gets the theme.
+   *
+   * @return the theme
+   */
   @LazyCollection(LazyCollectionOption.FALSE)
   @OneToMany(cascade = { CascadeType.ALL })
   @JoinColumns({ @JoinColumn(name = "dataset_id", referencedColumnName = "dataset_id"),
@@ -624,6 +892,11 @@ public class DcatDataset implements Serializable {
     return theme;
   }
 
+  /**
+   * Sets the theme.
+   *
+   * @param theme the new theme
+   */
   protected void setTheme(List<SkosConceptTheme> theme) {
     this.theme = theme;
   }
@@ -633,6 +906,11 @@ public class DcatDataset implements Serializable {
    * 
    * @CollectionTable( name="distribution",
    * joinColumns=@JoinColumn(name="dataset_id") )
+   */
+  /**
+   * Gets the distributions.
+   *
+   * @return the distributions
    */
   /*
    * @OneToMany(fetch = FetchType.LAZY, cascade = {
@@ -648,6 +926,11 @@ public class DcatDataset implements Serializable {
 
   }
 
+  /**
+   * Sets the distributions.
+   *
+   * @param distributions the new distributions
+   */
   protected void setDistributions(List<DcatDistribution> distributions) {
     this.distributions = distributions;
   }
@@ -666,6 +949,11 @@ public class DcatDataset implements Serializable {
 
   }
 
+  /**
+   * Gets the keywords.
+   *
+   * @return the keywords
+   */
   @LazyCollection(LazyCollectionOption.FALSE)
   @ElementCollection
   @CollectionTable(name = "dcat_keyword", joinColumns = {
@@ -675,6 +963,11 @@ public class DcatDataset implements Serializable {
     return this.keywords;
   }
 
+  /**
+   * Sets the keywords.
+   *
+   * @param keywords the new keywords
+   */
   protected void setKeywords(List<String> keywords) {
     this.keywords = keywords;
   }
@@ -686,6 +979,11 @@ public class DcatDataset implements Serializable {
    * setKeywords(keywords); }
    */
 
+  /**
+   * Gets the access rights.
+   *
+   * @return the access rights
+   */
   @Embedded
   @AttributeOverrides({
       @AttributeOverride(name = "value", column = @Column(name = "accessRights")) })
@@ -693,10 +991,20 @@ public class DcatDataset implements Serializable {
     return accessRights;
   }
 
+  /**
+   * Sets the access rights.
+   *
+   * @param accessRights the new access rights
+   */
   protected void setAccessRights(DcatProperty accessRights) {
     this.accessRights = accessRights;
   }
 
+  /**
+   * Gets the conforms to.
+   *
+   * @return the conforms to
+   */
   @LazyCollection(LazyCollectionOption.FALSE)
   @OneToMany(cascade = { CascadeType.ALL })
   // @Fetch(FetchMode.SELECT)
@@ -706,10 +1014,20 @@ public class DcatDataset implements Serializable {
     return conformsTo;
   }
 
+  /**
+   * Sets the conforms to.
+   *
+   * @param conformsTo the new conforms to
+   */
   protected void setConformsTo(List<DctStandard> conformsTo) {
     this.conformsTo = conformsTo;
   }
 
+  /**
+   * Gets the documentation.
+   *
+   * @return the documentation
+   */
   @LazyCollection(LazyCollectionOption.FALSE)
   @ElementCollection
   @CollectionTable(name = "dcat_documentation", joinColumns = {
@@ -722,10 +1040,20 @@ public class DcatDataset implements Serializable {
     return documentation;
   }
 
+  /**
+   * Sets the documentation.
+   *
+   * @param documentation the new documentation
+   */
   protected void setDocumentation(List<DcatProperty> documentation) {
     this.documentation = documentation;
   }
 
+  /**
+   * Gets the related resource.
+   *
+   * @return the related resource
+   */
   @LazyCollection(LazyCollectionOption.FALSE)
   @ElementCollection
   @CollectionTable(name = "dcat_relatedResource", joinColumns = {
@@ -738,10 +1066,20 @@ public class DcatDataset implements Serializable {
     return relatedResource;
   }
 
+  /**
+   * Sets the related resource.
+   *
+   * @param relatedResource the new related resource
+   */
   public void setRelatedResource(List<DcatProperty> relatedResource) {
     this.relatedResource = relatedResource;
   }
 
+  /**
+   * Gets the checks for version.
+   *
+   * @return the checks for version
+   */
   @LazyCollection(LazyCollectionOption.FALSE)
   @ElementCollection
   @CollectionTable(name = "dcat_hasVersion", joinColumns = {
@@ -754,10 +1092,20 @@ public class DcatDataset implements Serializable {
     return hasVersion;
   }
 
+  /**
+   * Sets the checks for version.
+   *
+   * @param hasVersion the new checks for version
+   */
   protected void setHasVersion(List<DcatProperty> hasVersion) {
     this.hasVersion = hasVersion;
   }
 
+  /**
+   * Gets the checks if is version of.
+   *
+   * @return the checks if is version of
+   */
   @LazyCollection(LazyCollectionOption.FALSE)
   @ElementCollection
   @CollectionTable(name = "dcat_isVersionOf", joinColumns = {
@@ -770,10 +1118,20 @@ public class DcatDataset implements Serializable {
     return isVersionOf;
   }
 
+  /**
+   * Sets the checks if is version of.
+   *
+   * @param isVersionOf the new checks if is version of
+   */
   protected void setIsVersionOf(List<DcatProperty> isVersionOf) {
     this.isVersionOf = isVersionOf;
   }
 
+  /**
+   * Gets the provenance.
+   *
+   * @return the provenance
+   */
   @LazyCollection(LazyCollectionOption.FALSE)
   @ElementCollection
   @CollectionTable(name = "dcat_provenance", joinColumns = {
@@ -784,10 +1142,20 @@ public class DcatDataset implements Serializable {
     return provenance;
   }
 
+  /**
+   * Sets the provenance.
+   *
+   * @param provenance the new provenance
+   */
   protected void setProvenance(List<DcatProperty> provenance) {
     this.provenance = provenance;
   }
 
+  /**
+   * Gets the sample.
+   *
+   * @return the sample
+   */
   @LazyCollection(LazyCollectionOption.FALSE)
   @ElementCollection
   @CollectionTable(name = "dcat_sample", joinColumns = {
@@ -798,10 +1166,20 @@ public class DcatDataset implements Serializable {
     return sample;
   }
 
+  /**
+   * Sets the sample.
+   *
+   * @param sample the new sample
+   */
   protected void setSample(List<DcatProperty> sample) {
     this.sample = sample;
   }
 
+  /**
+   * Gets the source.
+   *
+   * @return the source
+   */
   @LazyCollection(LazyCollectionOption.FALSE)
   @ElementCollection
   @CollectionTable(name = "dcat_source", joinColumns = {
@@ -812,20 +1190,40 @@ public class DcatDataset implements Serializable {
     return source;
   }
 
+  /**
+   * Sets the source.
+   *
+   * @param source the new source
+   */
   protected void setSource(List<DcatProperty> source) {
     this.source = source;
   }
 
+  /**
+   * Gets the type.
+   *
+   * @return the type
+   */
   @Embedded
   @AttributeOverrides({ @AttributeOverride(name = "value", column = @Column(name = "type")) })
   public DcatProperty getType() {
     return type;
   }
 
+  /**
+   * Sets the type.
+   *
+   * @param type the new type
+   */
   protected void setType(DcatProperty type) {
     this.type = type;
   }
 
+  /**
+   * Gets the subject.
+   *
+   * @return the subject
+   */
   @LazyCollection(LazyCollectionOption.FALSE)
   @OneToMany(cascade = { CascadeType.ALL })
   @JoinColumns({ @JoinColumn(name = "dataset_id", referencedColumnName = "dataset_id"),
@@ -835,26 +1233,51 @@ public class DcatDataset implements Serializable {
     return subject;
   }
 
+  /**
+   * Sets the subject.
+   *
+   * @param subject the new subject
+   */
   public void setSubject(List<SkosConceptSubject> subject) {
     this.subject = subject;
   }
 
+  /**
+   * Gets the rights holder.
+   *
+   * @return the rights holder
+   */
   @OneToOne(cascade = CascadeType.ALL)
   @JoinColumn(name = "holder_id")
   public FoafAgent getRightsHolder() {
     return rightsHolder;
   }
 
+  /**
+   * Sets the rights holder.
+   *
+   * @param rightsHolder the new rights holder
+   */
   public void setRightsHolder(FoafAgent rightsHolder) {
     this.rightsHolder = rightsHolder;
   }
 
+  /**
+   * Gets the creator.
+   *
+   * @return the creator
+   */
   @OneToOne(cascade = CascadeType.ALL)
   @JoinColumn(name = "creator_id")
   public FoafAgent getCreator() {
     return creator;
   }
 
+  /**
+   * Sets the creator.
+   *
+   * @param creator the new creator
+   */
   public void setCreator(FoafAgent creator) {
     this.creator = creator;
   }
@@ -864,6 +1287,11 @@ public class DcatDataset implements Serializable {
    * nodeID Alternatively is used otherIdentifier + nodeID
    */
 
+  /*
+   * (non-Javadoc)
+   * 
+   * @see java.lang.Object#equals(java.lang.Object)
+   */
   @Override
   public boolean equals(Object obj) {
 
@@ -885,6 +1313,11 @@ public class DcatDataset implements Serializable {
     }
   }
 
+  /*
+   * (non-Javadoc)
+   * 
+   * @see java.lang.Object#hashCode()
+   */
   @Override
   public int hashCode() {
     return this.getIdentifier().hashCode();
@@ -1193,6 +1626,11 @@ public class DcatDataset implements Serializable {
 
   }
 
+  /*
+   * (non-Javadoc)
+   * 
+   * @see java.lang.Object#toString()
+   */
   @Override
   public String toString() {
     return "DCATDataset [id=" + id + ", nodeID=" + nodeId + ", title=" + title.getValue()

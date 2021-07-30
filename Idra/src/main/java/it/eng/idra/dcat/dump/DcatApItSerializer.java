@@ -42,16 +42,34 @@ import org.apache.jena.vocabulary.RDF;
 import org.apache.jena.vocabulary.SKOS;
 import org.apache.jena.vocabulary.VCARD4;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class DcatApItSerializer.
+ */
 public class DcatApItSerializer extends DcatApSerializer {
 
+  /** The start date prop. */
   private static Property startDateProp = ResourceFactory
       .createProperty(DCATAP_IT_BASE_URI + "startDate");
+
+  /** The end date prop. */
   private static Property endDateProp = ResourceFactory
       .createProperty(DCATAP_IT_BASE_URI + "endDate");
 
+  /**
+   * Instantiates a new dcat ap it serializer.
+   */
   private DcatApItSerializer() {
   }
 
+  /**
+   * Adds the dataset to model.
+   *
+   * @param dataset the dataset
+   * @param model   the model
+   * @return the model
+   * @throws BadURIException the bad URI exception
+   */
   protected static Model addDatasetToModel(DcatDataset dataset, Model model)
       throws BadURIException {
 
@@ -180,6 +198,13 @@ public class DcatApItSerializer extends DcatApSerializer {
 
   }
 
+  /**
+   * Serialize contact point.
+   *
+   * @param contactPointList the contact point list
+   * @param model            the model
+   * @param datasetResource  the dataset resource
+   */
   private static void serializeContactPoint(List<VCardOrganization> contactPointList, Model model,
       Resource datasetResource) {
 
@@ -256,7 +281,13 @@ public class DcatApItSerializer extends DcatApSerializer {
 
   }
 
-
+  /**
+   * Serialize foaf agent.
+   *
+   * @param agent          the agent
+   * @param model          the model
+   * @param parentResource the parent resource
+   */
   protected static void serializeFoafAgent(FoafAgent agent, Model model, Resource parentResource) {
     if (agent != null) {
 
@@ -282,6 +313,13 @@ public class DcatApItSerializer extends DcatApSerializer {
 
   }
 
+  /**
+   * Serialize temporal coverage.
+   *
+   * @param temporalCoverage the temporal coverage
+   * @param model            the model
+   * @param datasetResource  the dataset resource
+   */
   protected static void serializeTemporalCoverage(DctPeriodOfTime temporalCoverage, Model model,
       Resource datasetResource) {
 
@@ -295,6 +333,13 @@ public class DcatApItSerializer extends DcatApSerializer {
     }
   }
 
+  /**
+   * Adds the distribution to model.
+   *
+   * @param model           the model
+   * @param datasetResource the dataset resource
+   * @param distribution    the distribution
+   */
   private static void addDistributionToModel(Model model, Resource datasetResource,
       DcatDistribution distribution) {
 

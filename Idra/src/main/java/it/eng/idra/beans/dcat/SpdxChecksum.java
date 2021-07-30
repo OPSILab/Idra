@@ -38,43 +38,66 @@ import org.apache.solr.common.SolrInputDocument;
 import org.hibernate.annotations.GenericGenerator;
 import org.json.JSONObject;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class SpdxChecksum.
+ */
 @Entity
 @Table(name = "dcat_checksum")
 public class SpdxChecksum {
 
+  /** The Constant RDFClass. */
   private static final transient Resource RDFClass = ResourceFactory
       .createResource("http://spdx.org/rdf/terms#Checksum");
 
+  /** The id. */
   private String id;
-  
+
+  /** The node id. */
   @SerializedName(value = "nodeID")
   private transient String nodeId;
+
+  /** The uri. */
   private String uri;
+
+  /** The algorithm. */
   private DcatProperty algorithm;
+
+  /** The checksum value. */
   private DcatProperty checksumValue;
 
+  /**
+   * Instantiates a new spdx checksum.
+   */
   public SpdxChecksum() {
   }
 
   /**
    * Instantiates a new spdx checksum.
    *
-   * @param uri the uri
-   * @param algorithm the algorithm
+   * @param uri           the uri
+   * @param algorithm     the algorithm
    * @param checksumValue the checksum value
-   * @param nodeId the node ID
+   * @param nodeId        the node ID
    */
-  public SpdxChecksum(String uri, String algorithm, 
-      String checksumValue, String nodeId) {
+  public SpdxChecksum(String uri, String algorithm, String checksumValue, String nodeId) {
     super();
     this.nodeId = nodeId;
     setUri(uri);
-    setAlgorithm(new DcatProperty(ResourceFactory.createProperty("http://spdx.org/rdf/terms#algorithm"),
-        ResourceFactory.createResource("http://spdx.org/rdf/terms#checksumAlgorithm_sha1"), algorithm));
-    setChecksumValue(new DcatProperty(ResourceFactory.createProperty("http://spdx.org/rdf/terms#checksumValue"),
-        RDFS.Literal, checksumValue));
+    setAlgorithm(
+        new DcatProperty(ResourceFactory.createProperty("http://spdx.org/rdf/terms#algorithm"),
+            ResourceFactory.createResource("http://spdx.org/rdf/terms#checksumAlgorithm_sha1"),
+            algorithm));
+    setChecksumValue(
+        new DcatProperty(ResourceFactory.createProperty("http://spdx.org/rdf/terms#checksumValue"),
+            RDFS.Literal, checksumValue));
   }
 
+  /**
+   * Gets the id.
+   *
+   * @return the id
+   */
   @Id
   @GeneratedValue(generator = "uuid")
   @GenericGenerator(name = "uuid", strategy = "uuid2")
@@ -83,45 +106,89 @@ public class SpdxChecksum {
     return id;
   }
 
+  /**
+   * Sets the id.
+   *
+   * @param id the new id
+   */
   public void setId(String id) {
     this.id = id;
   }
 
+  /**
+   * Gets the node id.
+   *
+   * @return the node id
+   */
   public String getNodeId() {
     return nodeId;
   }
 
+  /**
+   * Sets the node id.
+   *
+   * @param nodeId the new node id
+   */
   public void setNodeId(String nodeId) {
     this.nodeId = nodeId;
   }
 
+  /**
+   * Gets the uri.
+   *
+   * @return the uri
+   */
   @Transient
   public String getUri() {
     return uri;
   }
 
+  /**
+   * Sets the uri.
+   *
+   * @param uri the new uri
+   */
   public void setUri(String uri) {
     this.uri = StringUtils.isNotBlank(uri) ? uri : "http://spdx.org/rdf/terms#checksum";
   }
 
+  /**
+   * Gets the algorithm.
+   *
+   * @return the algorithm
+   */
   @Embedded
   @AttributeOverrides({ @AttributeOverride(name = "value", column = @Column(name = "algorithm")) })
   public DcatProperty getAlgorithm() {
     return algorithm;
   }
 
+  /**
+   * Sets the algorithm.
+   *
+   * @param algorithm the new algorithm
+   */
   public void setAlgorithm(DcatProperty algorithm) {
     this.algorithm = algorithm;
   }
 
+  /**
+   * Gets the checksum value.
+   *
+   * @return the checksum value
+   */
   @Embedded
-  @AttributeOverrides({ 
-      @AttributeOverride(name = "value", 
-        column = @Column(name = "checksumValue")) })
+  @AttributeOverrides({
+      @AttributeOverride(name = "value", column = @Column(name = "checksumValue")) })
   public DcatProperty getChecksumValue() {
     return checksumValue;
   }
 
+  /**
+   * Sets the checksum value.
+   *
+   * @param checksumValue the new checksum value
+   */
   public void setChecksumValue(DcatProperty checksumValue) {
     this.checksumValue = checksumValue;
   }
@@ -145,13 +212,12 @@ public class SpdxChecksum {
   /**
    * Doc to spdx checksum.
    *
-   * @param doc the doc
-   * @param uri the uri
+   * @param doc    the doc
+   * @param uri    the uri
    * @param nodeId the node id
    * @return the spdx checksum
    */
-  public static SpdxChecksum docToSpdxChecksum(SolrDocument doc, 
-      String uri, String nodeId) {
+  public static SpdxChecksum docToSpdxChecksum(SolrDocument doc, String uri, String nodeId) {
     SpdxChecksum c = new SpdxChecksum(uri, doc.getFieldValue("algorithm").toString(),
         doc.getFieldValue("checksumValue").toString(), nodeId);
     c.setId(doc.getFieldValue("id").toString());
@@ -162,27 +228,36 @@ public class SpdxChecksum {
   /**
    * Json to spdx checksum.
    *
-   * @param doc the doc
-   * @param uri the uri
+   * @param doc    the doc
+   * @param uri    the uri
    * @param nodeId the node id
    * @return the spdx checksum
    */
-  public static SpdxChecksum jsonToSpdxChecksum(JSONObject doc, 
-      String uri, String nodeId) {
+  public static SpdxChecksum jsonToSpdxChecksum(JSONObject doc, String uri, String nodeId) {
     return new SpdxChecksum(uri, doc.has("algorithm") ? doc.getString("algorithm") : "",
         doc.has("checksumValue") ? doc.getString("checksumValue") : "", nodeId);
 
   }
 
+  /**
+   * Gets the rdf class.
+   *
+   * @return the rdf class
+   */
   @Transient
   public static Resource getRdfClass() {
     return RDFClass;
   }
 
+  /*
+   * (non-Javadoc)
+   * 
+   * @see java.lang.Object#toString()
+   */
   @Override
   public String toString() {
-    return "SPDXChecksum [uri=" + uri 
-        + ", algorithm=" + algorithm + ", checksumValue=" + checksumValue + "]";
+    return "SPDXChecksum [uri=" + uri + ", algorithm=" + algorithm + ", checksumValue="
+        + checksumValue + "]";
   }
 
 }

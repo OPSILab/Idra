@@ -20,16 +20,23 @@ package it.eng.idra.authentication.fiware.model;
 
 import java.util.Set;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class Identity.
+ */
 @Deprecated
 public class Identity {
 
+  /** The methods. */
   private Set<String> methods;
+
+  /** The password. */
   private Password password;
 
   /**
    * Instantiates a new identity.
    *
-   * @param methods the methods
+   * @param methods  the methods
    * @param password the password
    */
   public Identity(Set<String> methods, Password password) {
@@ -38,18 +45,38 @@ public class Identity {
     this.password = password;
   }
 
+  /**
+   * Gets the methods.
+   *
+   * @return the methods
+   */
   public Set<String> getMethods() {
     return methods;
   }
 
+  /**
+   * Sets the methods.
+   *
+   * @param methods the new methods
+   */
   public void setMethods(Set<String> methods) {
     this.methods = methods;
   }
 
+  /**
+   * Gets the password.
+   *
+   * @return the password
+   */
   public Password getPassword() {
     return password;
   }
 
+  /**
+   * Sets the password.
+   *
+   * @param password the new password
+   */
   public void setPassword(Password password) {
     this.password = password;
   }

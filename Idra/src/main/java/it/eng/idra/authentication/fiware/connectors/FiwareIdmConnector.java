@@ -31,47 +31,44 @@ public abstract class FiwareIdmConnector {
 
   /** The client id. */
   protected String clientId;
-  
+
   /** The client secret. */
   protected String clientSecret;
-  
+
   /** The redirect uri. */
   protected String redirectUri;
-  
+
   /** The protocol. */
   protected String protocol;
-  
+
   /** The host. */
   protected String host;
-  
+
   /** The port. */
   protected int port;
 
   /** The base url. */
   protected String baseUrl;
-  
+
   /** The Constant path_token. */
-  protected static final String path_token = 
-      PropertyManager.getProperty(IdmProperty.IDM_PATH_TOKEN);
-  
+  protected static final String path_token = PropertyManager
+      .getProperty(IdmProperty.IDM_PATH_TOKEN);
+
   /** The Constant path_user. */
   protected static final String path_user = PropertyManager.getProperty(IdmProperty.IDM_PATH_USER);
 
   /**
    * Instantiates a new fiware idm connector.
    *
-   * @param protocol the protocol
-   * @param host the host
-   * @param port the port
-   * @param clientId the client id
+   * @param protocol     the protocol
+   * @param host         the host
+   * @param port         the port
+   * @param clientId     the client id
    * @param clientSecret the client secret
-   * @param redirectUri the redirect uri
+   * @param redirectUri  the redirect uri
    */
-  public FiwareIdmConnector(String protocol,
-      String host, int port, 
-      String clientId, 
-      String clientSecret,
-      String redirectUri) {
+  public FiwareIdmConnector(String protocol, String host, int port, String clientId,
+      String clientSecret, String redirectUri) {
     super();
     this.clientId = clientId;
     this.clientSecret = clientSecret;

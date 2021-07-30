@@ -44,44 +44,60 @@ import org.apache.logging.log4j.Logger;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class WebScraper.
+ */
 public class WebScraper {
 
+  /** The logger. */
   private static Logger logger = LogManager.getLogger(WebScraper.class);
 
+  /** The Constant PAGINATION_RETRY_NUM. */
   private static final int PAGINATION_RETRY_NUM;
+
+  /** The Constant DATASET_TIMEOUT. */
   private static final int DATASET_TIMEOUT;
+
+  /** The Constant COUNTDOWN_LATCH_TIMEOUT. */
   private static final long COUNTDOWN_LATCH_TIMEOUT;
+
+  /** The Constant WEB_SCRAPER_RANGE_SCALE_NUM. */
   private static final int WEB_SCRAPER_RANGE_SCALE_NUM;
 
   static {
-    PAGINATION_RETRY_NUM = 
-        Integer.parseInt(
-            PropertyManager.getProperty(IdraProperty.WEB_SCRAPER_PAGINATION_RETRY_NUM));
-    DATASET_TIMEOUT = 
-        Integer.parseInt(PropertyManager.getProperty(IdraProperty.WEB_SCRAPER_DATASET_TIMEOUT));
-    COUNTDOWN_LATCH_TIMEOUT = 
-        Long.parseLong(PropertyManager.getProperty(IdraProperty.WEB_SCRAPER_GLOBAL_TIMEOUT));
+    PAGINATION_RETRY_NUM = Integer
+        .parseInt(PropertyManager.getProperty(IdraProperty.WEB_SCRAPER_PAGINATION_RETRY_NUM));
+    DATASET_TIMEOUT = Integer
+        .parseInt(PropertyManager.getProperty(IdraProperty.WEB_SCRAPER_DATASET_TIMEOUT));
+    COUNTDOWN_LATCH_TIMEOUT = Long
+        .parseLong(PropertyManager.getProperty(IdraProperty.WEB_SCRAPER_GLOBAL_TIMEOUT));
     WEB_SCRAPER_RANGE_SCALE_NUM = Integer
         .parseInt(PropertyManager.getProperty(IdraProperty.WEB_SCRAPER_RANGE_SCALE_NUM));
   }
 
+  /**
+   * Instantiates a new web scraper.
+   */
   private WebScraper() {
   }
 
   /**
    * Gets the dataset document by increment.
    *
-   * @param conf the conf
+   * @param conf           the conf
    * @param incrementValue the increment value
    * @return the dataset document by increment
-   * @throws IOException Signals that an I/O exception has occurred.
-   * @throws NavigationTypeNotValidException the navigation type not valid exception
+   * @throws IOException                     Signals that an I/O exception has
+   *                                         occurred.
+   * @throws NavigationTypeNotValidException the navigation type not valid
+   *                                         exception
    */
   public static Document getDatasetDocumentByIncrement(WebScraperSitemap conf, int incrementValue)
       throws IOException, NavigationTypeNotValidException {
 
-    return Jsoup.connect(buildRangeUrl(conf.getStartUrl(), 
-        conf.getNavigationParameter(), incrementValue))
+    return Jsoup
+        .connect(buildRangeUrl(conf.getStartUrl(), conf.getNavigationParameter(), incrementValue))
         .timeout(DATASET_TIMEOUT).get();
 
   }
@@ -89,16 +105,18 @@ public class WebScraper {
   /**
    * Gets the dataset document by increment.
    *
-   * @param startUrl the start url
-   * @param navParam the nav param
+   * @param startUrl       the start url
+   * @param navParam       the nav param
    * @param incrementValue the increment value
    * @return the dataset document by increment
-   * @throws IOException Signals that an I/O exception has occurred.
-   * @throws NavigationTypeNotValidException the navigation type not valid exception
+   * @throws IOException                     Signals that an I/O exception has
+   *                                         occurred.
+   * @throws NavigationTypeNotValidException the navigation type not valid
+   *                                         exception
    */
   public static Document getDatasetDocumentByIncrement(String startUrl,
-      NavigationParameter navParam,
-      int incrementValue) throws IOException, NavigationTypeNotValidException {
+      NavigationParameter navParam, int incrementValue)
+      throws IOException, NavigationTypeNotValidException {
     String finalUrl = buildRangeUrl(startUrl, navParam, incrementValue);
     // System.out.println(finalUrl);
 
@@ -111,9 +129,10 @@ public class WebScraper {
    *
    * @param sitemap the sitemap
    * @return the datasets document
-   * @throws InterruptedException the interrupted exception
-   * @throws PageNumberNotParseableException the page number not parseable exception
-   * @throws SitemapNotValidException the sitemap not valid exception
+   * @throws InterruptedException            the interrupted exception
+   * @throws PageNumberNotParseableException the page number not parseable
+   *                                         exception
+   * @throws SitemapNotValidException        the sitemap not valid exception
    */
   public static List<Document> getDatasetsDocument(WebScraperSitemap sitemap)
       throws InterruptedException, PageNumberNotParseableException, SitemapNotValidException {
@@ -136,6 +155,12 @@ public class WebScraper {
 
   }
 
+  /**
+   * Validate sitemap.
+   *
+   * @param sitemap the sitemap
+   * @throws SitemapNotValidException the sitemap not valid exception
+   */
   private static void validateSitemap(WebScraperSitemap sitemap) throws SitemapNotValidException {
     NavigationParameter navParam = sitemap.getNavigationParameter();
 
@@ -144,34 +169,40 @@ public class WebScraper {
       try {
         NavigationType.valueOf(navParam.getType().toString());
       } catch (IllegalArgumentException | NullPointerException e) {
-        throw new SitemapNotValidException("The input Sitemap "
-            + "is not valid: The Navigation Type is not valid");
+        throw new SitemapNotValidException(
+            "The input Sitemap " + "is not valid: The Navigation Type is not valid");
       }
 
       if (StringUtils.isBlank(navParam.getName())) {
-        throw new SitemapNotValidException("The input Sitemap "
-            + "is not valid: The Navigation Param Name is not valid");
+        throw new SitemapNotValidException(
+            "The input Sitemap " + "is not valid: The Navigation Param Name is not valid");
       }
 
-      if (navParam.getPagesNumber() == null 
+      if (navParam.getPagesNumber() == null
           || StringUtils.isBlank(navParam.getPagesNumber().toString())) {
-        if (navParam.getPageSelectors() == null 
-            || navParam.getPageSelectors().size() != 2) {
+        if (navParam.getPageSelectors() == null || navParam.getPageSelectors().size() != 2) {
           throw new SitemapNotValidException(
               "The input Sitemap is not valid: Both PagesNumber and PagesSelectors are empty.");
         }
       }
 
     } else {
-      throw new SitemapNotValidException("The input Sitemap "
-          + "is not valid: The Navigation Type is empty");
+      throw new SitemapNotValidException(
+          "The input Sitemap " + "is not valid: The Navigation Type is empty");
     }
 
   }
 
-  private static List<Document> getDatasetsDocumentByRange(String startUrl, 
-      NavigationParameter navParam)
-      throws InterruptedException {
+  /**
+   * Gets the datasets document by range.
+   *
+   * @param startUrl the start url
+   * @param navParam the nav param
+   * @return the datasets document by range
+   * @throws InterruptedException the interrupted exception
+   */
+  private static List<Document> getDatasetsDocumentByRange(String startUrl,
+      NavigationParameter navParam) throws InterruptedException {
 
     List<Document> rangeResult = Collections.synchronizedList(new ArrayList<Document>());
     Integer rangeScale = WEB_SCRAPER_RANGE_SCALE_NUM;
@@ -198,8 +229,8 @@ public class WebScraper {
             calculateRangeRest(startValue, endValue, rangeScale), rangeResult, rangeLatch)).start();
       } else {
         // All the other threads are launched with range rest 0
-        new Thread(new RangeWorker(startUrl, navParam, 
-            i, rangeScale, 0, rangeResult, rangeLatch)).start();
+        new Thread(new RangeWorker(startUrl, navParam, i, rangeScale, 0, rangeResult, rangeLatch))
+            .start();
       }
     }
 
@@ -207,18 +238,26 @@ public class WebScraper {
     rangeLatch.await(COUNTDOWN_LATCH_TIMEOUT, TimeUnit.MILLISECONDS);
     // skipped = (startValue-endValue) - rangeResult.size();
     // if (skipped > 0)
-    logger.info(
-        "All threads returned\n Returned documents: " 
-          + rangeResult.size() + " - Expected: " + (endValue - startValue));
+    logger.info("All threads returned\n Returned documents: " + rangeResult.size() + " - Expected: "
+        + (endValue - startValue));
     // rangeResult.stream().forEach(d ->
     // System.out.println(d.select("div#notices div:nth-of-type(10)")));
     return rangeResult;
 
   }
 
+  /**
+   * Gets the datasets document by page.
+   *
+   * @param startUrl the start url
+   * @param navParam the nav param
+   * @return the datasets document by page
+   * @throws PageNumberNotParseableException the page number not parseable
+   *                                         exception
+   * @throws InterruptedException            the interrupted exception
+   */
   private static List<Document> getDatasetsDocumentByPage(String startUrl,
-      NavigationParameter navParam)
-      throws PageNumberNotParseableException, InterruptedException {
+      NavigationParameter navParam) throws PageNumberNotParseableException, InterruptedException {
 
     List<Document> pageResult = Collections.synchronizedList(new ArrayList<Document>());
     List<PageSelector> pageSelectors = navParam.getPageSelectors();
@@ -236,8 +275,7 @@ public class WebScraper {
      */
 
     try {
-      if ((threadNumber = navParam.getPagesNumber()) == null
-          || threadNumber == 0) {
+      if ((threadNumber = navParam.getPagesNumber()) == null || threadNumber == 0) {
         threadNumber = calculatePageThreadNumber(startUrl, navParam, pageSelectors);
       }
 
@@ -268,7 +306,16 @@ public class WebScraper {
 
   }
 
- 
+  /**
+   * Calculate page thread number.
+   *
+   * @param startUrl      the start url
+   * @param navParam      the nav param
+   * @param pageSelectors the page selectors
+   * @return the integer
+   * @throws PageNumberNotParseableException the page number not parseable
+   *                                         exception
+   */
   private static Integer calculatePageThreadNumber(String startUrl, NavigationParameter navParam,
       List<PageSelector> pageSelectors) throws PageNumberNotParseableException {
 
@@ -290,7 +337,7 @@ public class WebScraper {
 
             /* **** Extract the pages number from the Last Page Link **********/
             String lastPageLink = firstPageDocument.select(selector.getSelector()).attr("href");
-            pagesNumber = (startValue == 0 ? 1 : 0) 
+            pagesNumber = (startValue == 0 ? 1 : 0)
                 + parseLastPageValueFromUrl(navParam.getName(), lastPageLink);
 
             /*
@@ -308,8 +355,8 @@ public class WebScraper {
           }
         } catch (IOException | PageNumberNotParseableException e) {
           logger.info("\nThread: " + Thread.currentThread().getId() + " Error: " + e.getMessage()
-              + " while retrieving the pagination"
-              + " from first Page Document\nAttempt n: " + retryNum);
+              + " while retrieving the pagination" + " from first Page Document\nAttempt n: "
+              + retryNum);
           retry = true;
           retryNum--;
           if (retryNum == 0) {
@@ -320,15 +367,14 @@ public class WebScraper {
 
       } while (retry);
 
-      throw new IOException("It was reached the "
-          + "max connection attempts for Dataset Document retrieval");
+      throw new IOException(
+          "It was reached the " + "max connection attempts for Dataset Document retrieval");
 
     } catch (Exception e) {
 
       /* *************** MANUAL MODE **********************/
       if (navParam.getPagesNumber() == null) {
-        throw new PageNumberNotParseableException(
-            "It was not possible to get the last Page "
+        throw new PageNumberNotParseableException("It was not possible to get the last Page "
             + "Value neither with Automatic nor Manual mode");
       } else {
         return navParam.getPagesNumber();
@@ -339,22 +385,20 @@ public class WebScraper {
   /**
    * Gets the selector by name.
    *
-   * @param bases the bases
+   * @param bases        the bases
    * @param selectorName the selector name
    * @return the selector by name
-   * @throws WebScraperSelectorNotFoundException the web scraper selector not found exception
+   * @throws WebScraperSelectorNotFoundException the web scraper selector not
+   *                                             found exception
    */
-  public static WebScraperSelector getSelectorByName(
-      List<? extends WebScraperSelector> bases, String selectorName)
-      throws WebScraperSelectorNotFoundException {
+  public static WebScraperSelector getSelectorByName(List<? extends WebScraperSelector> bases,
+      String selectorName) throws WebScraperSelectorNotFoundException {
     try {
-      return bases.stream().filter(item -> 
-      selectorName.equalsIgnoreCase(item.getName())).collect(Collectors.toList())
-          .get(0);
+      return bases.stream().filter(item -> selectorName.equalsIgnoreCase(item.getName()))
+          .collect(Collectors.toList()).get(0);
     } catch (Exception e) {
-      throw new WebScraperSelectorNotFoundException(
-          "Web Scraper Selector with name " 
-      + selectorName + " was not found - Error: " + e.getMessage());
+      throw new WebScraperSelectorNotFoundException("Web Scraper Selector with name " + selectorName
+          + " was not found - Error: " + e.getMessage());
     }
 
   }
@@ -362,25 +406,33 @@ public class WebScraper {
   /**
    * Gets the selectors by name.
    *
-   * @param selectors the selectors
+   * @param selectors    the selectors
    * @param selectorName the selector name
    * @return the selectors by name
-   * @throws WebScraperSelectorNotFoundException the web scraper selector not found exception
+   * @throws WebScraperSelectorNotFoundException the web scraper selector not
+   *                                             found exception
    */
-  public static List<WebScraperSelector> getSelectorsByName(
-      List<WebScraperSelector> selectors, String selectorName)
-      throws WebScraperSelectorNotFoundException {
+  public static List<WebScraperSelector> getSelectorsByName(List<WebScraperSelector> selectors,
+      String selectorName) throws WebScraperSelectorNotFoundException {
     try {
       return selectors.stream().filter(item -> selectorName.equalsIgnoreCase(item.getName()))
           .collect(Collectors.toList());
     } catch (Exception e) {
-      throw new WebScraperSelectorNotFoundException(
-          "Web Scraper Selectors with name " + selectorName 
-          + " were not found - Error: " + e.getMessage());
+      throw new WebScraperSelectorNotFoundException("Web Scraper Selectors with name "
+          + selectorName + " were not found - Error: " + e.getMessage());
     }
 
   }
 
+  /**
+   * Parses the last page value from url.
+   *
+   * @param navParamName the nav param name
+   * @param url          the url
+   * @return the integer
+   * @throws PageNumberNotParseableException the page number not parseable
+   *                                         exception
+   */
   /* ********** PAGE UTILITY METHODS *****************************/
   private static Integer parseLastPageValueFromUrl(String navParamName, String url)
       throws PageNumberNotParseableException {
@@ -415,6 +467,14 @@ public class WebScraper {
         "It is not possible to extract the Page number from passed URL!");
   }
 
+  /**
+   * Calculate range thread number.
+   *
+   * @param startValue the start value
+   * @param endValue   the end value
+   * @param scale      the scale
+   * @return the int
+   */
   /* ********** RANGE UTILITY METHODS *****************************/
   private static int calculateRangeThreadNumber(int startValue, int endValue, int scale) {
     int range = endValue - startValue;
@@ -424,15 +484,32 @@ public class WebScraper {
 
   }
 
+  /**
+   * Calculate range rest.
+   *
+   * @param startValue the start value
+   * @param endValue   the end value
+   * @param scale      the scale
+   * @return the int
+   */
   private static int calculateRangeRest(int startValue, int endValue, int scale) {
     int range = endValue - startValue;
     return Math.floorMod(range, scale);
 
   }
 
-  private static String buildRangeUrl(String startUrl, 
-      NavigationParameter param, int incrementValue)
-      throws NavigationTypeNotValidException {
+  /**
+   * Builds the range url.
+   *
+   * @param startUrl       the start url
+   * @param param          the param
+   * @param incrementValue the increment value
+   * @return the string
+   * @throws NavigationTypeNotValidException the navigation type not valid
+   *                                         exception
+   */
+  private static String buildRangeUrl(String startUrl, NavigationParameter param,
+      int incrementValue) throws NavigationTypeNotValidException {
 
     if (param.getType().equals(NavigationType.PATH_RANGE)) {
       return startUrl + "/" + param.getName() + "/"

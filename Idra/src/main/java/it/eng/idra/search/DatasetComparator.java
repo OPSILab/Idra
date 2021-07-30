@@ -7,34 +7,50 @@ import java.util.Comparator;
 import java.util.GregorianCalendar;
 import java.util.TimeZone;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Enum DatasetComparator.
+ */
 public enum DatasetComparator implements Comparator<DcatDataset> {
+
+  /** The identifier sort. */
   IDENTIFIER_SORT {
     public int compare(DcatDataset o1, DcatDataset o2) {
       return o1.getId().compareTo(o2.getId());
     }
   },
+
+  /** The nodeid sort. */
   NODEID_SORT {
     public int compare(DcatDataset o1, DcatDataset o2) {
       return o1.getNodeId().compareTo(o2.getNodeId());
     }
   },
+
+  /** The title sort. */
   TITLE_SORT {
     public int compare(DcatDataset o1, DcatDataset o2) {
       return o1.getTitle().getValue().compareTo(o2.getTitle().getValue());
     }
   },
+
+  /** The publisher name sort. */
   PUBLISHER_NAME_SORT {
     public int compare(DcatDataset o1, DcatDataset o2) {
       return o1.getPublisher().getName().getValue()
           .compareTo(o2.getPublisher().getName().getValue());
     }
   },
+
+  /** The contactpoint fn sort. */
   CONTACTPOINT_FN_SORT {
     public int compare(DcatDataset o1, DcatDataset o2) {
       return o1.getContactPoint().get(0).getFn().getValue()
           .compareTo(o2.getContactPoint().get(0).getFn().getValue());
     }
   },
+
+  /** The contactpoint hasemail sort. */
   CONTACTPOINT_HASEMAIL_SORT {
     public int compare(DcatDataset o1, DcatDataset o2) {
       return o1.getContactPoint().get(0).getHasEmail().getValue()
@@ -45,9 +61,10 @@ public enum DatasetComparator implements Comparator<DcatDataset> {
   // public int compare(DCATDataset o1, DCATDataset o2) {
   // return o1.getLicense().getValue().compareTo(o2.getLicense().getValue());
   // }
+  /** The issued sort. */
   // },
   ISSUED_SORT {
-    
+
     /**
      * compare.
      */
@@ -69,6 +86,8 @@ public enum DatasetComparator implements Comparator<DcatDataset> {
       return date1.compareTo(date2);
     }
   },
+
+  /** The modified sort. */
   MODIFIED_SORT {
     /**
      * compare.
@@ -93,6 +112,9 @@ public enum DatasetComparator implements Comparator<DcatDataset> {
 
   /**
    * compare.
+   *
+   * @param other the other
+   * @return the comparator
    */
   public static Comparator<DcatDataset> decending(final Comparator<DcatDataset> other) {
     return new Comparator<DcatDataset>() {
@@ -104,6 +126,9 @@ public enum DatasetComparator implements Comparator<DcatDataset> {
 
   /**
    * compare.
+   *
+   * @param multipleOptions the multiple options
+   * @return the comparator
    */
   public static Comparator<DcatDataset> getComparator(final DatasetComparator... multipleOptions) {
     return new Comparator<DcatDataset>() {

@@ -18,10 +18,20 @@
 
 package it.eng.idra.beans.odms;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class OdmsCatalogueOfflineException.
+ */
 public class OdmsCatalogueOfflineException extends Exception {
 
+  /** The Constant serialVersionUID. */
   private static final long serialVersionUID = 1L;
 
+  /**
+   * Instantiates a new odms catalogue offline exception.
+   *
+   * @param message the message
+   */
   public OdmsCatalogueOfflineException(String message) {
     super(message);
   }

@@ -26,24 +26,44 @@ import org.apache.solr.common.SolrDocument;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class SkosConceptTheme.
+ */
 @Entity
 @Table(name = "theme")
 @DiscriminatorValue("1")
 public class SkosConceptTheme extends SkosConcept {
 
+  /** The Constant serialVersionUID. */
   private static final long serialVersionUID = 1L;
 
+  /**
+   * Instantiates a new skos concept theme.
+   */
   public SkosConceptTheme() {
     super();
   }
 
+  /**
+   * Instantiates a new skos concept theme.
+   *
+   * @param concept the concept
+   */
   public SkosConceptTheme(SkosConcept concept) {
-    super(concept.getPropertyUri(), 
-        concept.getResourceUri(), concept.getPrefLabel(), concept.getNodeId());
+    super(concept.getPropertyUri(), concept.getResourceUri(), concept.getPrefLabel(),
+        concept.getNodeId());
   }
 
-  public SkosConceptTheme(String propertyUri, String resourceUri,
-      List<SkosPrefLabel> prefLabel,
+  /**
+   * Instantiates a new skos concept theme.
+   *
+   * @param propertyUri the property uri
+   * @param resourceUri the resource uri
+   * @param prefLabel   the pref label
+   * @param nodeId      the node id
+   */
+  public SkosConceptTheme(String propertyUri, String resourceUri, List<SkosPrefLabel> prefLabel,
       String nodeId) {
     super(propertyUri, resourceUri, prefLabel, nodeId);
   }
@@ -51,13 +71,12 @@ public class SkosConceptTheme extends SkosConcept {
   /**
    * Json to skos concept.
    *
-   * @param obj the obj
+   * @param obj         the obj
    * @param propertyUri the property uri
-   * @param nodeId the node ID
+   * @param nodeId      the node ID
    * @return the skos concept theme
    */
-  public static SkosConceptTheme jsonToSkosConcept(JSONObject obj, 
-      String propertyUri, 
+  public static SkosConceptTheme jsonToSkosConcept(JSONObject obj, String propertyUri,
       String nodeId) {
 
     return new SkosConceptTheme(propertyUri, obj.optString("resourceUri"),
@@ -67,16 +86,15 @@ public class SkosConceptTheme extends SkosConcept {
   /**
    * Doc to SKOS concept.
    *
-   * @param doc the doc
+   * @param doc         the doc
    * @param propertyUri the property uri
-   * @param nodeId the node ID
+   * @param nodeId      the node ID
    * @return the skos concept theme
    */
-  public static SkosConceptTheme docToSkosConcept(SolrDocument doc, 
-      String propertyUri, String nodeId) {
-    SkosConceptTheme t = new SkosConceptTheme(propertyUri, 
-        (String) doc.getFieldValue("resourceUri"),
-        SkosPrefLabel.jsonArrayToPrefLabelList(
+  public static SkosConceptTheme docToSkosConcept(SolrDocument doc, String propertyUri,
+      String nodeId) {
+    SkosConceptTheme t = new SkosConceptTheme(propertyUri,
+        (String) doc.getFieldValue("resourceUri"), SkosPrefLabel.jsonArrayToPrefLabelList(
             new JSONArray(doc.getFieldValue("prefLabel").toString()), nodeId),
         nodeId);
     t.setId(doc.getFieldValue("id").toString());

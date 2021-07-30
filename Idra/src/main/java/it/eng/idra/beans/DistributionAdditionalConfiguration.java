@@ -29,18 +29,32 @@ import javax.persistence.Lob;
 import javax.persistence.Table;
 import org.hibernate.annotations.GenericGenerator;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class DistributionAdditionalConfiguration.
+ */
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @Table(name = "distribution_additional_config")
 public class DistributionAdditionalConfiguration {
 
+  /** The id. */
   private String id;
+
+  /** The node id. */
   @Column(name = "nodeID")
   @SerializedName(value = "nodeID")
   private String nodeId;
+
+  /** The type. */
   private String type;
+
+  /** The query. */
   private String query;
 
+  /**
+   * Instantiates a new distribution additional configuration.
+   */
   public DistributionAdditionalConfiguration() {
     super();
   }
@@ -48,7 +62,7 @@ public class DistributionAdditionalConfiguration {
   /**
    * Instantiates a new distribution additional configuration.
    *
-   * @param id the id
+   * @param id     the id
    * @param nodeId the node ID
    */
   public DistributionAdditionalConfiguration(String id, String nodeId) {
@@ -57,6 +71,11 @@ public class DistributionAdditionalConfiguration {
     this.nodeId = nodeId;
   }
 
+  /**
+   * Gets the id.
+   *
+   * @return the id
+   */
   @Id
   @GeneratedValue(generator = "uuid")
   @GenericGenerator(name = "uuid", strategy = "uuid2")
@@ -65,31 +84,66 @@ public class DistributionAdditionalConfiguration {
     return id;
   }
 
+  /**
+   * Sets the id.
+   *
+   * @param id the new id
+   */
   public void setId(String id) {
     this.id = id;
   }
 
+  /**
+   * Gets the node id.
+   *
+   * @return the node id
+   */
   public String getNodeId() {
     return nodeId;
   }
 
+  /**
+   * Sets the node id.
+   *
+   * @param nodeId the new node id
+   */
   public void setNodeId(String nodeId) {
     this.nodeId = nodeId;
   }
 
+  /**
+   * Gets the type.
+   *
+   * @return the type
+   */
   public String getType() {
     return type;
   }
 
+  /**
+   * Sets the type.
+   *
+   * @param type the new type
+   */
   public void setType(String type) {
     this.type = type;
   }
 
+  /**
+   * Gets the query.
+   *
+   * @return the query
+   */
   @Lob
   public String getQuery() {
     return query;
   }
 
+  /**
+   * Sets the query.
+   *
+   * @param query the new query
+   */
   public void setQuery(String query) {
     this.query = query;
   }

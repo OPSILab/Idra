@@ -25,18 +25,21 @@ import it.eng.idra.utils.PropertyManager;
 import java.sql.Connection;
 import java.sql.SQLException;
 
+// TODO: Auto-generated Javadoc
 /**
  * This class manage the connection to db. Only an instance of this class can be
  * created.
  */
 public class DbConnectionManager {
 
+  /** The instance. */
   private static DbConnectionManager INSTANCE;
-  
+
   static {
     INSTANCE = new DbConnectionManager();
   }
 
+  /** The cpds. */
   private final HikariDataSource cpds;
   // private Properties PropertyManager;
 
@@ -63,10 +66,21 @@ public class DbConnectionManager {
     cpds = new HikariDataSource(config);
   }
 
+  /**
+   * Gets the db connection.
+   *
+   * @return the db connection
+   * @throws SQLException the SQL exception
+   */
   public static Connection getDbConnection() throws SQLException {
     return INSTANCE.cpds.getConnection();
   }
 
+  /**
+   * Close db connection.
+   *
+   * @throws SQLException the SQL exception
+   */
   public static void closeDbConnection() throws SQLException {
     INSTANCE.cpds.close();
   }

@@ -44,14 +44,26 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class JunarConnector.
+ */
 @SuppressWarnings("deprecation")
 public class JunarConnector implements IodmsConnector {
 
+  /** The node. */
   private OdmsCatalogue node;
+
+  /** The node id. */
   private String nodeId;
+
+  /** The Constant JSON_TYPE. */
   public static final MediaType JSON_TYPE = MediaType.APPLICATION_JSON_TYPE;
+
+  /** The logger. */
   private static Logger logger = LogManager.getLogger(JunarConnector.class);
 
+  /** The Constant junarResourcesType. */
   private static final Map<String, String> junarResourcesType = new HashMap<String, String>();
 
   static {
@@ -65,27 +77,53 @@ public class JunarConnector implements IodmsConnector {
      */
   }
 
+  /**
+   * Instantiates a new junar connector.
+   *
+   * @param node the node
+   */
   public JunarConnector(OdmsCatalogue node) {
     this.node = node;
     this.nodeId = String.valueOf(node.getId());
   }
 
+  /*
+   * (non-Javadoc)
+   * 
+   * @see it.eng.idra.connectors.IodmsConnector#findDatasets(java.util.HashMap)
+   */
   @Override
   public List<DcatDataset> findDatasets(HashMap<String, Object> searchParameters) throws Exception {
     ArrayList<DcatDataset> resultDatasets = new ArrayList<DcatDataset>();
     return resultDatasets;
   }
 
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * it.eng.idra.connectors.IodmsConnector#countSearchDatasets(java.util.HashMap)
+   */
   @Override
   public int countSearchDatasets(HashMap<String, Object> searchParameters) throws Exception {
     return 0;
   }
 
+  /*
+   * (non-Javadoc)
+   * 
+   * @see it.eng.idra.connectors.IodmsConnector#countDatasets()
+   */
   @Override
   public int countDatasets() throws Exception {
     return getAllDatasets().size();
   }
 
+  /*
+   * (non-Javadoc)
+   * 
+   * @see it.eng.idra.connectors.IodmsConnector#getAllDatasets()
+   */
   @Override
   public List<DcatDataset> getAllDatasets() throws Exception {
 
@@ -93,9 +131,8 @@ public class JunarConnector implements IodmsConnector {
 
     ArrayList<DcatDataset> dcatDatasets = new ArrayList<DcatDataset>();
 
-    Optional<String> returnedJson = Optional
-        .ofNullable(sendGetRequest(node.getHost() 
-            + "/api/v2/resources?auth_key=" + node.getApiKey() + "&format=json"));
+    Optional<String> returnedJson = Optional.ofNullable(sendGetRequest(
+        node.getHost() + "/api/v2/resources?auth_key=" + node.getApiKey() + "&format=json"));
 
     if (!returnedJson.isPresent()) {
       throw new OdmsCatalogueOfflineException(" The ODMS node is currently unreachable");
@@ -118,8 +155,8 @@ public class JunarConnector implements IodmsConnector {
         }
         dataset = null;
       } catch (Exception e) {
-        logger.warn("There was an error: " 
-             + e.getMessage() + " while deserializing Dataset - " + i + " - SKIPPED");
+        logger.warn("There was an error: " + e.getMessage() + " while deserializing Dataset - " + i
+            + " - SKIPPED");
       }
     }
 
@@ -130,9 +167,15 @@ public class JunarConnector implements IodmsConnector {
 
   }
 
+  /*
+   * (non-Javadoc)
+   * 
+   * @see it.eng.idra.connectors.IodmsConnector#datasetToDcat(java.lang.Object,
+   * it.eng.idra.beans.odms.OdmsCatalogue)
+   */
   @Override
-  public DcatDataset datasetToDcat(Object d,
-      OdmsCatalogue node) throws JSONException, ParseException {
+  public DcatDataset datasetToDcat(Object d, OdmsCatalogue node)
+      throws JSONException, ParseException {
 
     JSONObject dataset = (JSONObject) d;
 
@@ -150,15 +193,15 @@ public class JunarConnector implements IodmsConnector {
     description = dataset.optString("description");
 
     try {
-      issued = CommonUtil.fixBadUtcDate(
-          CommonUtil.fromMillisToUtcDate(dataset.optLong("created_at")));
+      issued = CommonUtil
+          .fixBadUtcDate(CommonUtil.fromMillisToUtcDate(dataset.optLong("created_at")));
     } catch (IllegalArgumentException skip) {
       logger.debug(skip.getLocalizedMessage());
     }
 
     try {
-      modified = CommonUtil.fixBadUtcDate(
-          CommonUtil.fromMillisToUtcDate(dataset.optLong("modified_at")));
+      modified = CommonUtil
+          .fixBadUtcDate(CommonUtil.fromMillisToUtcDate(dataset.optLong("modified_at")));
     } catch (IllegalArgumentException skip) {
       logger.debug(skip.getLocalizedMessage());
     }
@@ -179,21 +222,27 @@ public class JunarConnector implements IodmsConnector {
       publisher = deserializeFoafAgent(dataset, "user", DCTerms.publisher, nodeId);
     }
     List<SkosConceptTheme> themeList = null;
-    themeList = deserializeConcept(dataset, "category_name", 
-        DCAT.theme, nodeId, SkosConceptTheme.class);
+    themeList = deserializeConcept(dataset, "category_name", DCAT.theme, nodeId,
+        SkosConceptTheme.class);
 
     String frequency = null;
     frequency = dataset.optString("frequency");
     ArrayList<DcatDistribution> distributionList = new ArrayList<DcatDistribution>();
     distributionList = retrieveDistributionList(dataset, node.getApiKey());
 
-    return new DcatDataset(nodeId, identifier, title, description,
-        distributionList, themeList, publisher,
-        new ArrayList<VCardOrganization>(), keywords,
-        null, null, null, frequency, null, null, landingPage, null, null, issued, modified,
-        null, null, null, null, null, "JUNAR", null, null, null, null, null, null);
+    return new DcatDataset(nodeId, identifier, title, description, distributionList, themeList,
+        publisher, new ArrayList<VCardOrganization>(), keywords, null, null, null, frequency, null,
+        null, landingPage, null, null, issued, modified, null, null, null, null, null, "JUNAR",
+        null, null, null, null, null, null);
   }
 
+  /**
+   * Retrieve distribution list.
+   *
+   * @param dataset the dataset
+   * @param apikey  the apikey
+   * @return the array list
+   */
   private ArrayList<DcatDistribution> retrieveDistributionList(JSONObject dataset, String apikey) {
 
     ArrayList<DcatDistribution> distributionList = new ArrayList<DcatDistribution>();
@@ -205,23 +254,31 @@ public class JunarConnector implements IodmsConnector {
 
     junarResourcesType.entrySet().forEach((e) -> {
       distribution.put("mediaType", e.getValue());
-      distribution.put("downloadURL", 
+      distribution.put("downloadURL",
           String.format(uriPattern, dataset.getString("guid"), e.getKey()));
 
       try {
         distributionList.add(distributionToDcat(distribution, null, nodeId));
       } catch (Exception ex) {
-        logger.info("There was an error while deserializing a Distribution: " 
-             + ex.getMessage() + " - SKIPPED");
+        logger.info("There was an error while deserializing a Distribution: " + ex.getMessage()
+            + " - SKIPPED");
       }
     });
 
     return distributionList;
   }
 
-  protected DcatDistribution distributionToDcat(JSONObject obj,
-      DctLicenseDocument license, String nodeId)
-      throws Exception {
+  /**
+   * Distribution to dcat.
+   *
+   * @param obj     the obj
+   * @param license the license
+   * @param nodeId  the node id
+   * @return the dcat distribution
+   * @throws Exception the exception
+   */
+  protected DcatDistribution distributionToDcat(JSONObject obj, DctLicenseDocument license,
+      String nodeId) throws Exception {
 
     String accessUrl = null;
     String description = null;
@@ -242,16 +299,26 @@ public class JunarConnector implements IodmsConnector {
     mediaType = obj.optString("mediaType");
     accessUrl = downloadUrl = obj.getString("downloadURL");
 
-    return new DcatDistribution(nodeId, accessUrl, description,
-        format, license, byteSize, checksum, documentation,
-        downloadUrl, language, linkedSchemas, mediaType,
-        releaseDate, updateDate, rights, status, title);
+    return new DcatDistribution(nodeId, accessUrl, description, format, license, byteSize, checksum,
+        documentation, downloadUrl, language, linkedSchemas, mediaType, releaseDate, updateDate,
+        rights, status, title);
 
   }
 
-  protected <T extends SkosConcept> List<T> deserializeConcept(
-      JSONObject obj, String fieldName, Property property,
-      String nodeId, Class<T> type) throws JSONException {
+  /**
+   * Deserialize concept.
+   *
+   * @param           <T> the generic type
+   * @param obj       the obj
+   * @param fieldName the field name
+   * @param property  the property
+   * @param nodeId    the node id
+   * @param type      the type
+   * @return the list
+   * @throws JSONException the JSON exception
+   */
+  protected <T extends SkosConcept> List<T> deserializeConcept(JSONObject obj, String fieldName,
+      Property property, String nodeId, Class<T> type) throws JSONException {
 
     List<T> result = new ArrayList<T>();
 
@@ -279,28 +346,47 @@ public class JunarConnector implements IodmsConnector {
     return result;
   }
 
-  protected FoafAgent deserializeFoafAgent(JSONObject dataset, 
-      String fieldName, Property property, String nodeId) {
+  /**
+   * Deserialize foaf agent.
+   *
+   * @param dataset   the dataset
+   * @param fieldName the field name
+   * @param property  the property
+   * @param nodeId    the node id
+   * @return the foaf agent
+   */
+  protected FoafAgent deserializeFoafAgent(JSONObject dataset, String fieldName, Property property,
+      String nodeId) {
     try {
       String publishername = dataset.optString("user");
 
-      return new FoafAgent(property.getURI(), null, 
-          publishername, null, null, null, publishername, nodeId);
+      return new FoafAgent(property.getURI(), null, publishername, null, null, null, publishername,
+          nodeId);
     } catch (JSONException ignore) {
       logger.info("Agent object not valid! - Skipped");
     }
     return null;
   }
 
+  /*
+   * (non-Javadoc)
+   * 
+   * @see it.eng.idra.connectors.IodmsConnector#getDataset(java.lang.String)
+   */
   @Override
   public DcatDataset getDataset(String datasetId) throws Exception {
     return null;
   }
 
+  /*
+   * (non-Javadoc)
+   * 
+   * @see it.eng.idra.connectors.IodmsConnector#getChangedDatasets(java.util.List,
+   * java.lang.String)
+   */
   @Override
   public OdmsSynchronizationResult getChangedDatasets(List<DcatDataset> oldDatasets,
-      String startingDate)
-      throws Exception {
+      String startingDate) throws Exception {
     ArrayList<DcatDataset> newDatasets = (ArrayList<DcatDataset>) getAllDatasets();
 
     OdmsSynchronizationResult syncrhoResult = new OdmsSynchronizationResult();
@@ -364,6 +450,13 @@ public class JunarConnector implements IodmsConnector {
     return syncrhoResult;
   }
 
+  /**
+   * Send get request.
+   *
+   * @param urlString the url string
+   * @return the string
+   * @throws Exception the exception
+   */
   private String sendGetRequest(String urlString) throws Exception {
     try {
       RestClient client = new RestClientImpl();

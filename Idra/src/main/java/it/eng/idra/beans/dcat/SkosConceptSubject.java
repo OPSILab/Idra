@@ -26,24 +26,44 @@ import org.apache.solr.common.SolrDocument;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class SkosConceptSubject.
+ */
 @Entity
 @Table(name = "subject")
 @DiscriminatorValue("2")
 public class SkosConceptSubject extends SkosConcept {
 
+  /** The Constant serialVersionUID. */
   private static final long serialVersionUID = 1L;
 
+  /**
+   * Instantiates a new skos concept subject.
+   */
   public SkosConceptSubject() {
     super();
   }
 
+  /**
+   * Instantiates a new skos concept subject.
+   *
+   * @param concept the concept
+   */
   public SkosConceptSubject(SkosConcept concept) {
-    super(concept.getPropertyUri(), concept.getResourceUri(),
-        concept.getPrefLabel(), concept.getNodeId());
+    super(concept.getPropertyUri(), concept.getResourceUri(), concept.getPrefLabel(),
+        concept.getNodeId());
   }
 
-  public SkosConceptSubject(String propertyUri, String resourceUri,
-      List<SkosPrefLabel> prefLabel, 
+  /**
+   * Instantiates a new skos concept subject.
+   *
+   * @param propertyUri the property uri
+   * @param resourceUri the resource uri
+   * @param prefLabel   the pref label
+   * @param nodeId      the node id
+   */
+  public SkosConceptSubject(String propertyUri, String resourceUri, List<SkosPrefLabel> prefLabel,
       String nodeId) {
     super(propertyUri, resourceUri, prefLabel, nodeId);
   }
@@ -51,13 +71,12 @@ public class SkosConceptSubject extends SkosConcept {
   /**
    * Json to skos concept.
    *
-   * @param obj the obj
+   * @param obj         the obj
    * @param propertyUri the property uri
-   * @param nodeId the node ID
+   * @param nodeId      the node ID
    * @return the skos concept subject
    */
-  public static SkosConceptSubject jsonToSkosConcept(JSONObject obj,
-      String propertyUri, 
+  public static SkosConceptSubject jsonToSkosConcept(JSONObject obj, String propertyUri,
       String nodeId) {
 
     return new SkosConceptSubject(propertyUri, obj.optString("resourceUri"),
@@ -67,17 +86,16 @@ public class SkosConceptSubject extends SkosConcept {
   /**
    * Doc to skos concept.
    *
-   * @param doc the doc
+   * @param doc         the doc
    * @param propertyUri the property uri
-   * @param nodeId the node id
+   * @param nodeId      the node id
    * @return the skos concept subject
    */
-  public static SkosConceptSubject docToSkosConcept(SolrDocument doc, 
-      String propertyUri, String nodeId) {
+  public static SkosConceptSubject docToSkosConcept(SolrDocument doc, String propertyUri,
+      String nodeId) {
 
-    SkosConceptSubject t = new SkosConceptSubject(propertyUri, 
-        (String) doc.getFieldValue("resourceUri"),
-        SkosPrefLabel.jsonArrayToPrefLabelList(
+    SkosConceptSubject t = new SkosConceptSubject(propertyUri,
+        (String) doc.getFieldValue("resourceUri"), SkosPrefLabel.jsonArrayToPrefLabelList(
             new JSONArray(doc.getFieldValue("prefLabel").toString()), nodeId),
         nodeId);
     t.setId(doc.getFieldValue("id").toString());

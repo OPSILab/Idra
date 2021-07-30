@@ -22,6 +22,10 @@ import it.eng.idra.beans.RdfPrefix;
 import java.sql.SQLException;
 import java.util.List;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class RdfPrefixManager.
+ */
 public class RdfPrefixManager {
 
   /**

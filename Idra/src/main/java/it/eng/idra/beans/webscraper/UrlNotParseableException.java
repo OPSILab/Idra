@@ -18,10 +18,20 @@
 
 package it.eng.idra.beans.webscraper;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class UrlNotParseableException.
+ */
 public class UrlNotParseableException extends Exception {
 
+  /** The Constant serialVersionUID. */
   private static final long serialVersionUID = 1L;
 
+  /**
+   * Instantiates a new url not parseable exception.
+   *
+   * @param message the message
+   */
   public UrlNotParseableException(String message) {
     super(message);
   }

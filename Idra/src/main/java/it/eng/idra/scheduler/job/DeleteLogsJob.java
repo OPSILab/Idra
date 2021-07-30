@@ -28,15 +28,28 @@ import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.quartz.PersistJobDataAfterExecution;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class DeleteLogsJob.
+ */
 @PersistJobDataAfterExecution
 @DisallowConcurrentExecution
 public class DeleteLogsJob implements Job {
 
+  /** The logger. */
   private static Logger logger = LogManager.getLogger(DeleteLogsJob.class);
 
+  /**
+   * Instantiates a new delete logs job.
+   */
   public DeleteLogsJob() {
   }
 
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.quartz.Job#execute(org.quartz.JobExecutionContext)
+   */
   @Override
   public void execute(JobExecutionContext context) throws JobExecutionException {
     // TODO Auto-generated method stub

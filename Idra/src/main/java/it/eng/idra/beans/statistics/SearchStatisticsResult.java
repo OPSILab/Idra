@@ -18,19 +18,34 @@
 
 package it.eng.idra.beans.statistics;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class SearchStatisticsResult.
+ */
 public class SearchStatisticsResult {
 
+  /** The live. */
   private int live;
+
+  /** The sparql. */
   private int sparql;
+
+  /** The cache. */
   private int cache;
   // private int day;
   // private int month;
   // private int week;
   // private int year;
 
+  /** The start label. */
   private String startLabel;
+
+  /** The end label. */
   private String endLabel;
 
+  /**
+   * Instantiates a new search statistics result.
+   */
   public SearchStatisticsResult() {
 
   }
@@ -38,8 +53,8 @@ public class SearchStatisticsResult {
   /**
    * Instantiates a new search statistics result.
    *
-   * @param live the live
-   * @param cache the cache
+   * @param live   the live
+   * @param cache  the cache
    * @param sparql the sparql
    */
   public SearchStatisticsResult(int live, int cache, int sparql) {
@@ -48,26 +63,56 @@ public class SearchStatisticsResult {
     this.sparql = sparql;
   }
 
+  /**
+   * Gets the live.
+   *
+   * @return the live
+   */
   public int getLive() {
     return live;
   }
 
+  /**
+   * Sets the live.
+   *
+   * @param live the new live
+   */
   public void setLive(int live) {
     this.live = live;
   }
 
+  /**
+   * Gets the sparql.
+   *
+   * @return the sparql
+   */
   public int getSparql() {
     return sparql;
   }
 
+  /**
+   * Sets the sparql.
+   *
+   * @param sparql the new sparql
+   */
   public void setSparql(int sparql) {
     this.sparql = sparql;
   }
 
+  /**
+   * Gets the cache.
+   *
+   * @return the cache
+   */
   public int getCache() {
     return cache;
   }
 
+  /**
+   * Sets the cache.
+   *
+   * @param cache the new cache
+   */
   public void setCache(int cache) {
     this.cache = cache;
   }
@@ -104,22 +149,47 @@ public class SearchStatisticsResult {
   // this.year = year;
   // }
 
+  /**
+   * Gets the start label.
+   *
+   * @return the start label
+   */
   public String getStartLabel() {
     return startLabel;
   }
 
+  /**
+   * Sets the start label.
+   *
+   * @param startLabel the new start label
+   */
   public void setStartLabel(String startLabel) {
     this.startLabel = startLabel;
   }
 
+  /**
+   * Gets the end label.
+   *
+   * @return the end label
+   */
   public String getEndLabel() {
     return endLabel;
   }
 
+  /**
+   * Sets the end label.
+   *
+   * @param endLabel the new end label
+   */
   public void setEndLabel(String endLabel) {
     this.endLabel = endLabel;
   }
 
+  /*
+   * (non-Javadoc)
+   * 
+   * @see java.lang.Object#toString()
+   */
   @Override
   public String toString() {
     return "SearchStatisticsResult [live=" + live + ", sparql=" + sparql + ", cache=" + cache + "]";

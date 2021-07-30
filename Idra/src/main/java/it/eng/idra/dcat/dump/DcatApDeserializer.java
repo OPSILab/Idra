@@ -72,19 +72,19 @@ import org.apache.jena.vocabulary.VCARD4;
 public class DcatApDeserializer implements IdcatApDeserialize {
 
   /** The Constant rdfDatasetPattern. */
-  protected static final Pattern rdfDatasetPattern = 
-      Pattern.compile("\\w*<dcat:Dataset rdf:about=\\\"(.*)\\\"");
-  
+  protected static final Pattern rdfDatasetPattern = Pattern
+      .compile("\\w*<dcat:Dataset rdf:about=\\\"(.*)\\\"");
+
   /** The Constant turtleDatasetPattern. */
-  protected static final Pattern turtleDatasetPattern = 
-      Pattern.compile("<(.*)>\\R\\s*a dcat:Dataset");
+  protected static final Pattern turtleDatasetPattern = Pattern
+      .compile("<(.*)>\\R\\s*a dcat:Dataset");
 
   /** The Constant THEME_BASE_URI. */
   protected static final String THEME_BASE_URI = "http://publications.europa.eu/resource/authority/data-theme/";
-  
+
   /** The Constant GEO_BASE_URI. */
   protected static final String GEO_BASE_URI = "http://publications.europa.eu/mdr/authority/place";
-  
+
   /** The Constant GEO_BASE_URI_ALT. */
   protected static final String GEO_BASE_URI_ALT = "http://www.geonames.org";
 
@@ -96,6 +96,11 @@ public class DcatApDeserializer implements IdcatApDeserialize {
 
   /**
    * Instantiates a new dcat ap deserializer.
+   *
+   * @param modelText the model text
+   * @param node      the node
+   * @return the model
+   * @throws RiotException the riot exception
    */
   public Model dumpToModel(String modelText, OdmsCatalogue node) throws RiotException {
 
@@ -104,15 +109,13 @@ public class DcatApDeserializer implements IdcatApDeserialize {
     Model model = ModelFactory.createDefaultModel();
     for (DcatApFormat format : DcatApFormat.values()) {
       try {
-        model.read(new ByteArrayInputStream(
-            modelText.getBytes(StandardCharsets.UTF_8)), nodeBaseUri,
-            format.formatName());
+        model.read(new ByteArrayInputStream(modelText.getBytes(StandardCharsets.UTF_8)),
+            nodeBaseUri, format.formatName());
         node.setDcatFormat(format);
         break;
       } catch (RiotException e) {
-        if (!e.getMessage().contains("Content is not allowed in prolog")
-            && !e.getMessage().contains("[line: 1, col: 1 ] "
-                + "Expected BNode or IRI: Got: [DIRECTIVE:prefix]")) {
+        if (!e.getMessage().contains("Content is not allowed in prolog") && !e.getMessage()
+            .contains("[line: 1, col: 1 ] " + "Expected BNode or IRI: Got: [DIRECTIVE:prefix]")) {
           throw e;
         } else {
           continue;
@@ -124,8 +127,14 @@ public class DcatApDeserializer implements IdcatApDeserialize {
 
   /**
    * Instantiates a new dcat ap deserializer.
+   *
+   * @param nodeId          the node id
+   * @param datasetResource the dataset resource
+   * @return the dcat dataset
+   * @throws DcatApProfileNotValidException the dcat ap profile not valid
+   *                                        exception
    */
-  public DcatDataset resourceToDataset(String nodeId, Resource datasetResource) 
+  public DcatDataset resourceToDataset(String nodeId, Resource datasetResource)
       throws DcatApProfileNotValidException {
     // Properties to be mapped among different CKAN fallback fields
 
@@ -290,15 +299,11 @@ public class DcatApDeserializer implements IdcatApDeserialize {
       distributionList.add(resourceToDcatDistribution(distrIt.next().getResource(), nodeId));
     }
     DcatDataset mapped;
-    mapped = new DcatDataset(nodeId, identifier, title,
-        description, distributionList, theme, publisher,
-        contactPointList, keywords, accessRights, 
-        conformsTo, documentation, frequency, 
-        hasVersion, isVersionOf, landingPage, language, 
-        provenance, releaseDate, updateDate, 
-        otherIdentifier, sample, source, spatialCoverage,
-        temporalCoverage, type, version, versionNotes, 
-        null, null, new ArrayList<SkosConceptSubject>(), relatedResource);
+    mapped = new DcatDataset(nodeId, identifier, title, description, distributionList, theme,
+        publisher, contactPointList, keywords, accessRights, conformsTo, documentation, frequency,
+        hasVersion, isVersionOf, landingPage, language, provenance, releaseDate, updateDate,
+        otherIdentifier, sample, source, spatialCoverage, temporalCoverage, type, version,
+        versionNotes, null, null, new ArrayList<SkosConceptSubject>(), relatedResource);
 
     distributionList = null;
     contactPointList = null;
@@ -347,6 +352,7 @@ public class DcatApDeserializer implements IdcatApDeserialize {
    * @param parentResource the parent resource
    * @param toExtractP     the to extract P
    * @param type           the type
+   * @return the list
    */
 
   public <T extends SkosConcept> List<T> deserializeConcept(String nodeId, Resource parentResource,
@@ -447,7 +453,8 @@ public class DcatApDeserializer implements IdcatApDeserialize {
             .getProperty(ResourceFactory.createProperty("http://schema.org#startDate")).getString();
       }
 
-      if (temporalResource.hasProperty(ResourceFactory.createProperty("http://schema.org#endDate"))) {
+      if (temporalResource
+          .hasProperty(ResourceFactory.createProperty("http://schema.org#endDate"))) {
         endDate = temporalResource
             .getProperty(ResourceFactory.createProperty("http://schema.org#endDate")).getString();
       }
@@ -553,6 +560,7 @@ public class DcatApDeserializer implements IdcatApDeserialize {
    *
    * @param nodeId          the node ID
    * @param datasetResource the dataset resource
+   * @return the list
    */
   public List<DctStandard> deserializeDctStandard(String nodeId, Resource datasetResource) {
 
@@ -737,12 +745,16 @@ public class DcatApDeserializer implements IdcatApDeserialize {
 
   /**
    * DcatDistribution.
+   *
+   * @param r      the r
+   * @param nodeId the node id
+   * @return the dcat distribution
    */
   public DcatDistribution resourceToDcatDistribution(Resource r, String nodeId) {
 
     String accessUrl = null;
     String description = null;
-    String format = null;    
+    String format = null;
     String documentation = null;
     String downloadUrl = null;
     String releaseDate = null;
@@ -753,7 +765,7 @@ public class DcatApDeserializer implements IdcatApDeserialize {
     String licenseVersion = null;
     String licenseType = null;
     SkosConceptStatus status = null;
-    
+
     // Manage required accessURL property
     if (r.hasProperty(DCAT.accessURL)) {
       Resource accessR = r.getPropertyResourceValue(DCAT.accessURL);
@@ -830,7 +842,7 @@ public class DcatApDeserializer implements IdcatApDeserialize {
     if (r.hasProperty(DCTerms.modified)) {
       updateDate = extractDate(r.getProperty(DCTerms.modified));
     }
-    
+
     String rights = null;
     if (r.hasProperty(DCTerms.rights)) {
       rights = r.getProperty(DCTerms.rights).getString();
@@ -914,6 +926,8 @@ public class DcatApDeserializer implements IdcatApDeserialize {
   /**
    * extractFormatFromURI.
    *
+   * @param uri the uri
+   * @return the string
    */
   public String extractFormatFromUri(String uri) {
 
@@ -930,6 +944,8 @@ public class DcatApDeserializer implements IdcatApDeserialize {
   /**
    * extractThemeFromURI.
    *
+   * @param uri the uri
+   * @return the string
    */
   public String extractThemeFromUri(String uri) {
 
@@ -960,13 +976,13 @@ public class DcatApDeserializer implements IdcatApDeserialize {
   /**
    * extractLanguageFromURI.
    *
+   * @param uri the uri
+   * @return the string
    */
   public String extractLanguageFromUri(String uri) {
 
-    Matcher matcher = Pattern.compile(
-        "http:\\/\\/publications\\.europa\\.eu\\"
-        + "/(mdr|resource)\\/authority\\/language(\\/|#)(\\w*)")
-        .matcher(uri);
+    Matcher matcher = Pattern.compile("http:\\/\\/publications\\.europa\\.eu\\"
+        + "/(mdr|resource)\\/authority\\/language(\\/|#)(\\w*)").matcher(uri);
     String result = null;
 
     return (matcher.find() && (result = matcher.group(3)) != null) ? result : "";
@@ -976,6 +992,8 @@ public class DcatApDeserializer implements IdcatApDeserialize {
   /**
    * getDatasetPattern.
    *
+   * @param format the format
+   * @return the dataset pattern
    */
   public Pattern getDatasetPattern(DcatApFormat format) {
 

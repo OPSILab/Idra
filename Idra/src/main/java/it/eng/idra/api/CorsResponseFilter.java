@@ -32,13 +32,15 @@ import javax.ws.rs.ext.Provider;
 @Provider
 public class CorsResponseFilter implements ContainerResponseFilter {
 
-  
   /**
    * filter.
+   *
+   * @param requestContext  the request context
+   * @param responseContext the response context
+   * @throws IOException Signals that an I/O exception has occurred.
    */
   public void filter(ContainerRequestContext requestContext,
-      ContainerResponseContext responseContext)
-      throws IOException {
+      ContainerResponseContext responseContext) throws IOException {
 
     MultivaluedMap<String, Object> headers = responseContext.getHeaders();
 

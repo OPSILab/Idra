@@ -18,10 +18,20 @@
 
 package it.eng.idra.utils;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class GsonUtilException.
+ */
 public class GsonUtilException extends Exception {
 
+  /** The Constant serialVersionUID. */
   private static final long serialVersionUID = 1L;
 
+  /**
+   * Instantiates a new gson util exception.
+   *
+   * @param message the message
+   */
   public GsonUtilException(String message) {
     super(message);
   }

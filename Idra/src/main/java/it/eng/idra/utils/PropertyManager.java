@@ -25,8 +25,13 @@ import java.io.IOException;
 import java.util.Optional;
 import java.util.Properties;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class PropertyManager.
+ */
 public class PropertyManager {
 
+  /** The props. */
   private static Properties props = null;
 
   static {
@@ -40,16 +45,34 @@ public class PropertyManager {
     }
   }
 
+  /**
+   * Gets the property.
+   *
+   * @param propName the prop name
+   * @return the property
+   */
   public static String getProperty(IdraProperty propName) {
     Optional<String> prop = Optional.ofNullable(System.getenv(propName.toString()));
     return prop.orElse(props.getProperty(propName.toString()));
   }
 
+  /**
+   * Gets the property.
+   *
+   * @param propName the prop name
+   * @return the property
+   */
   public static String getProperty(IdmProperty propName) {
     Optional<String> prop = Optional.ofNullable(System.getenv(propName.toString()));
     return prop.orElse(props.getProperty(propName.toString()));
   }
 
+  /**
+   * Gets the property.
+   *
+   * @param propName the prop name
+   * @return the property
+   */
   public static String getProperty(RestProperty propName) {
     Optional<String> prop = Optional.ofNullable(System.getenv(propName.toString()));
     return prop.orElse(props.getProperty(propName.toString()));

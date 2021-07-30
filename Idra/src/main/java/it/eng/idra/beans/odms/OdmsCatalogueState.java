@@ -18,6 +18,14 @@
 
 package it.eng.idra.beans.odms;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Enum OdmsCatalogueState.
+ */
 public enum OdmsCatalogueState {
-  ONLINE, OFFLINE
+
+  /** The online. */
+  ONLINE,
+  /** The offline. */
+  OFFLINE
 }

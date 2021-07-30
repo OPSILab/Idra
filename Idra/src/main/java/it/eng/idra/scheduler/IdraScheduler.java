@@ -47,13 +47,29 @@ import static org.quartz.TriggerKey.triggerKey;
 import static org.quartz.SimpleScheduleBuilder.simpleSchedule;
 import static org.quartz.ee.servlet.QuartzInitializerListener.QUARTZ_FACTORY_KEY;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class IdraScheduler.
+ */
 public class IdraScheduler {
 
+  /** The idra scheduler. */
   private static IdraScheduler idraScheduler = null;
+
+  /** The logger. */
   private static Logger logger = LogManager.getLogger(IdraScheduler.class);
+
+  /** The scheduler. */
   private static Scheduler scheduler = null;
+
+  /** The Constant QUARTZ_FACTORY_KEY_MINE. */
   public static final String QUARTZ_FACTORY_KEY_MINE = "org.quartz.impl.StdSchedulerFactory.KEY";
 
+  /**
+   * Instantiates a new idra scheduler.
+   *
+   * @param sched the sched
+   */
   private IdraScheduler(Scheduler sched) {
     scheduler = sched;
   }
@@ -61,10 +77,11 @@ public class IdraScheduler {
   /**
    * Inits the.
    *
-   * @param ctx the ctx
+   * @param ctx          the ctx
    * @param synchOnStart the synch on start
-   * @param dumpOnStart the dump on start
-   * @throws SchedulerCannotBeInitialisedException the scheduler cannot be initialised exception
+   * @param dumpOnStart  the dump on start
+   * @throws SchedulerCannotBeInitialisedException the scheduler cannot be
+   *                                               initialised exception
    */
   public static void init(ServletContext ctx, boolean synchOnStart, boolean dumpOnStart)
       throws SchedulerCannotBeInitialisedException {
@@ -84,7 +101,8 @@ public class IdraScheduler {
    * Gets the singleton instance.
    *
    * @return the singleton instance
-   * @throws SchedulerNotInitialisedException the scheduler not initialised exception
+   * @throws SchedulerNotInitialisedException the scheduler not initialised
+   *                                          exception
    */
   public static IdraScheduler getSingletonInstance() throws SchedulerNotInitialisedException {
     if (idraScheduler == null) {
@@ -199,7 +217,7 @@ public class IdraScheduler {
    * Reschedule job.
    *
    * @param jobName the job name
-   * @param node the node
+   * @param node    the node
    */
   public void rescheduleJob(String jobName, OdmsCatalogue node) {
     try {
@@ -207,17 +225,16 @@ public class IdraScheduler {
 
         Trigger newTrigger = TriggerBuilder.newTrigger()
             .withIdentity(Integer.toString(node.getId()), "triggers")
-            .startAt(Date.from(node.getRegisterDate()
-                .toInstant().plusSeconds(node.getRefreshPeriod())))
-            .withSchedule(simpleSchedule()
-                .repeatForever().withIntervalInSeconds(node.getRefreshPeriod())
-                .withMisfireHandlingInstructionNextWithExistingCount())
+            .startAt(
+                Date.from(node.getRegisterDate().toInstant().plusSeconds(node.getRefreshPeriod())))
+            .withSchedule(
+                simpleSchedule().repeatForever().withIntervalInSeconds(node.getRefreshPeriod())
+                    .withMisfireHandlingInstructionNextWithExistingCount())
             .build();
 
         scheduler.rescheduleJob(triggerKey(jobName, "triggers"), newTrigger);
-        logger.info(
-            "Job for node " + node.getName() 
-                + " rescheduled with new refresh period of " + node.getRefreshPeriod());
+        logger.info("Job for node " + node.getName() + " rescheduled with new refresh period of "
+            + node.getRefreshPeriod());
       } else {
         logger.info("Job doesn't exist");
       }
@@ -254,11 +271,10 @@ public class IdraScheduler {
    */
   public void startCataloguesDumpJob(boolean dumpNow) {
     try {
-      JobDetail job = JobBuilder.newJob(DcatApDumpJob.class)
-          .withIdentity("dump_catalogues", "jobs").build();
+      JobDetail job = JobBuilder.newJob(DcatApDumpJob.class).withIdentity("dump_catalogues", "jobs")
+          .build();
       Trigger trigger = TriggerBuilder.newTrigger().withIdentity("dump_catalogues", "triggers")
-          .withSchedule(
-              CronScheduleBuilder.dailyAtHourAndMinute(0, 0)
+          .withSchedule(CronScheduleBuilder.dailyAtHourAndMinute(0, 0)
               .withMisfireHandlingInstructionDoNothing())
           .build();
       scheduler.scheduleJob(job, trigger);
@@ -280,25 +296,33 @@ public class IdraScheduler {
 
   }
 
+  /**
+   * Inits the synch scheduler.
+   *
+   * @param startNow the start now
+   */
   protected void initSynchScheduler(boolean startNow) {
-    for (final OdmsCatalogue node : 
-        OdmsManager.getOdmsCataloguesbyFederationLevel(OdmsCatalogueFederationLevel.LEVEL_2,
-        OdmsCatalogueFederationLevel.LEVEL_3)) {
+    for (final OdmsCatalogue node : OdmsManager.getOdmsCataloguesbyFederationLevel(
+        OdmsCatalogueFederationLevel.LEVEL_2, OdmsCatalogueFederationLevel.LEVEL_3)) {
       if (node.isActive()) {
         logger.info("Catalogue Name: " + node.getName());
         logger.info("Catalogue Lock: " + node.getSynchLock());
         logger.info("Catalogue Datasets Count: " + node.getDatasetCount());
         logger.info("Catalogue Start offset: " + node.getDatasetStart());
         this.startCataloguesSynchJob(node, startNow);
-        //this.getJobDetail(Integer.toString(node.getId()));
+        // this.getJobDetail(Integer.toString(node.getId()));
       }
     }
   }
 
+  /**
+   * Gets the catalogues job detail.
+   *
+   * @return the catalogues job detail
+   */
   protected void getCataloguesJobDetail() {
-    for (final OdmsCatalogue node : 
-        OdmsManager.getOdmsCataloguesbyFederationLevel(OdmsCatalogueFederationLevel.LEVEL_2,
-        OdmsCatalogueFederationLevel.LEVEL_3)) {
+    for (final OdmsCatalogue node : OdmsManager.getOdmsCataloguesbyFederationLevel(
+        OdmsCatalogueFederationLevel.LEVEL_2, OdmsCatalogueFederationLevel.LEVEL_3)) {
       if (node.isActive()) {
         this.getJobDetail(Integer.toString(node.getId()));
       }
@@ -308,7 +332,7 @@ public class IdraScheduler {
   /**
    * Start catalogues synch job.
    *
-   * @param node the node
+   * @param node     the node
    * @param startNow the start now
    */
   public void startCataloguesSynchJob(OdmsCatalogue node, boolean startNow) {
@@ -322,22 +346,21 @@ public class IdraScheduler {
         Date d = Date.from(node.getRegisterDate().toInstant().plusSeconds(node.getRefreshPeriod()));
 
         Trigger trigger = TriggerBuilder.newTrigger()
-            .withIdentity(Integer.toString(node.getId()), "triggers")
-            .startAt(d).withSchedule(simpleSchedule()
-                .repeatForever().withIntervalInSeconds(node.getRefreshPeriod())
-                .withMisfireHandlingInstructionNextWithExistingCount())
+            .withIdentity(Integer.toString(node.getId()), "triggers").startAt(d)
+            .withSchedule(
+                simpleSchedule().repeatForever().withIntervalInSeconds(node.getRefreshPeriod())
+                    .withMisfireHandlingInstructionNextWithExistingCount())
             .build();
 
         scheduler.scheduleJob(job, trigger);
         logger.info("Synch Job scheduled for catalogue " + node.getName());
 
       } catch (SchedulerException e) {
-        logger.error("Error while scheduling synch job for catalogue " 
-            + node.getName() + ": " + e.getMessage());
+        logger.error("Error while scheduling synch job for catalogue " + node.getName() + ": "
+            + e.getMessage());
       } catch (Exception e) {
-        logger
-            .error("Generic Error while scheduling synch job for catalogue " 
-                + node.getName() + ": " + e.getMessage());
+        logger.error("Generic Error while scheduling synch job for catalogue " + node.getName()
+            + ": " + e.getMessage());
       }
 
       if (startNow) {
@@ -345,8 +368,8 @@ public class IdraScheduler {
         try {
           scheduler.triggerJob(jobKey(Integer.toString(node.getId()), "jobs"));
         } catch (SchedulerException e) {
-          logger.error("Error while Starting synch job for catalogue: " 
-              + node.getName() + " " + e.getMessage());
+          logger.error("Error while Starting synch job for catalogue: " + node.getName() + " "
+              + e.getMessage());
         }
       }
     }
@@ -361,26 +384,23 @@ public class IdraScheduler {
     try {
       JobDetail job = JobBuilder.newJob(OauthTokenSynchJob.class)
           .withIdentity("synchToken_" + Integer.toString(node.getId()), "jobs")
-          .usingJobData("nodeID", node.getId())
-          .build();
+          .usingJobData("nodeID", node.getId()).build();
 
       Trigger trigger = TriggerBuilder.newTrigger()
           .withIdentity("synchToken_" + Integer.toString(node.getId()), "triggers")
-          .withSchedule(simpleSchedule().repeatForever()
-              .withIntervalInSeconds(3000) // Ogni 55 min fa il
-              .withMisfireHandlingInstructionNowWithRemainingCount()
-          ).startNow().build();
+          .withSchedule(simpleSchedule().repeatForever().withIntervalInSeconds(3000)
+              .withMisfireHandlingInstructionNowWithRemainingCount())
+          .startNow().build();
 
       scheduler.scheduleJob(job, trigger);
       logger.info("Token Synch Job scheduled for catalogue " + node.getName());
 
     } catch (SchedulerException e) {
-      logger.error("Error while scheduling Token synch job for catalogue " 
-            + node.getName() + ": " + e.getMessage());
+      logger.error("Error while scheduling Token synch job for catalogue " + node.getName() + ": "
+          + e.getMessage());
     } catch (Exception e) {
-      logger.error(
-          "Generic Error while scheduling Token synch job for catalogue " 
-               + node.getName() + ": " + e.getMessage());
+      logger.error("Generic Error while scheduling Token synch job for catalogue " + node.getName()
+          + ": " + e.getMessage());
     }
   }
 

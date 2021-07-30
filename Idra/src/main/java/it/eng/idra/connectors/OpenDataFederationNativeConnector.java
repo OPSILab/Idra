@@ -60,18 +60,39 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class OpenDataFederationNativeConnector.
+ */
 public class OpenDataFederationNativeConnector implements IodmsConnector {
 
+  /** The node. */
   private OdmsCatalogue node;
+
+  /** The node id. */
   private String nodeId;
+
+  /** The Constant JSON_TYPE. */
   public static final MediaType JSON_TYPE = MediaType.APPLICATION_JSON_TYPE;
+
+  /** The logger. */
   private static Logger logger = LogManager.getLogger(OpenDataFederationNativeConnector.class);
 
+  /**
+   * Instantiates a new open data federation native connector.
+   *
+   * @param node the node
+   */
   public OpenDataFederationNativeConnector(OdmsCatalogue node) {
     this.node = node;
     this.nodeId = String.valueOf(node.getId());
   }
 
+  /*
+   * (non-Javadoc)
+   * 
+   * @see it.eng.idra.connectors.IodmsConnector#findDatasets(java.util.HashMap)
+   */
   @Override
   public List<DcatDataset> findDatasets(HashMap<String, Object> searchParameters) throws Exception {
 
@@ -114,6 +135,11 @@ public class OpenDataFederationNativeConnector implements IodmsConnector {
 
   }
 
+  /*
+   * (non-Javadoc)
+   * 
+   * @see it.eng.idra.connectors.IodmsConnector#countDatasets()
+   */
   @Override
   public int countDatasets() throws Exception {
 
@@ -132,6 +158,12 @@ public class OpenDataFederationNativeConnector implements IodmsConnector {
 
   }
 
+  /*
+   * (non-Javadoc)
+   * 
+   * @see it.eng.idra.connectors.IodmsConnector#datasetToDcat(java.lang.Object,
+   * it.eng.idra.beans.odms.OdmsCatalogue)
+   */
   @Override
   public DcatDataset datasetToDcat(Object d, OdmsCatalogue node) throws Exception {
 
@@ -180,8 +212,8 @@ public class OpenDataFederationNativeConnector implements IodmsConnector {
     contactPointList = deserializeContactPoint(dataset, DCAT.contactPoint, nodeId);
 
     if (dataset.has("keywords")) {
-      keywords = GsonUtil.json2Obj(
-          dataset.getJSONArray("keywords").toString(), GsonUtil.stringListType);
+      keywords = GsonUtil.json2Obj(dataset.getJSONArray("keywords").toString(),
+          GsonUtil.stringListType);
     }
     String accessRights = null;
     accessRights = dataset.optString("accessRights");
@@ -189,13 +221,13 @@ public class OpenDataFederationNativeConnector implements IodmsConnector {
     conformsTo = deserializeStandard(dataset, "conformsTo", nodeId);
 
     if (dataset.has("documentation")) {
-      documentation = GsonUtil.json2Obj(
-          dataset.getJSONArray("documentation").toString(), GsonUtil.stringListType);
+      documentation = GsonUtil.json2Obj(dataset.getJSONArray("documentation").toString(),
+          GsonUtil.stringListType);
     }
 
     if (dataset.has("relatedResource")) {
-      relatedResource = GsonUtil.json2Obj(
-          dataset.getJSONArray("relatedResource").toString(), GsonUtil.stringListType);
+      relatedResource = GsonUtil.json2Obj(dataset.getJSONArray("relatedResource").toString(),
+          GsonUtil.stringListType);
     }
 
     if (dataset.has("frequency")) {
@@ -206,26 +238,26 @@ public class OpenDataFederationNativeConnector implements IodmsConnector {
     }
 
     if (dataset.has("hasVersion")) {
-      hasVersion = GsonUtil.json2Obj(
-          dataset.getJSONArray("hasVersion").toString(), GsonUtil.stringListType);
+      hasVersion = GsonUtil.json2Obj(dataset.getJSONArray("hasVersion").toString(),
+          GsonUtil.stringListType);
     }
 
     if (dataset.has("isVersionOf")) {
-      isVersionOf = GsonUtil.json2Obj(
-          dataset.getJSONArray("isVersionOf").toString(), GsonUtil.stringListType);
+      isVersionOf = GsonUtil.json2Obj(dataset.getJSONArray("isVersionOf").toString(),
+          GsonUtil.stringListType);
     }
 
     String landingPage = null;
     landingPage = dataset.optString("landingPage");
 
     if (dataset.has("language")) {
-      language = GsonUtil.json2Obj(
-          dataset.getJSONArray("language").toString(), GsonUtil.stringListType);
+      language = GsonUtil.json2Obj(dataset.getJSONArray("language").toString(),
+          GsonUtil.stringListType);
     }
 
     if (dataset.has("provenance")) {
-      provenance = GsonUtil.json2Obj(
-          dataset.getJSONArray("provenance").toString(), GsonUtil.stringListType);
+      provenance = GsonUtil.json2Obj(dataset.getJSONArray("provenance").toString(),
+          GsonUtil.stringListType);
     }
 
     if (dataset.has("releaseDate")) {
@@ -237,18 +269,18 @@ public class OpenDataFederationNativeConnector implements IodmsConnector {
     }
 
     if (dataset.has("otherIdentifier")) {
-      otherIdentifier = GsonUtil.json2Obj(
-          dataset.getJSONArray("otherIdentifier").toString(), GsonUtil.stringListType);
+      otherIdentifier = GsonUtil.json2Obj(dataset.getJSONArray("otherIdentifier").toString(),
+          GsonUtil.stringListType);
     }
 
     if (dataset.has("sample")) {
-      sample = GsonUtil.json2Obj(
-          dataset.getJSONArray("sample").toString(), GsonUtil.stringListType);
+      sample = GsonUtil.json2Obj(dataset.getJSONArray("sample").toString(),
+          GsonUtil.stringListType);
     }
 
     if (dataset.has("source")) {
-      source = GsonUtil.json2Obj(
-          dataset.getJSONArray("source").toString(), GsonUtil.stringListType);
+      source = GsonUtil.json2Obj(dataset.getJSONArray("source").toString(),
+          GsonUtil.stringListType);
     }
 
     if (dataset.has("temporal")) {
@@ -256,13 +288,13 @@ public class OpenDataFederationNativeConnector implements IodmsConnector {
     }
     String type = null;
     type = dataset.optString("type");
-    
+
     String version = null;
     version = dataset.optString("version");
 
     if (dataset.has("versionNotes")) {
-      versionNotes = GsonUtil.json2Obj(
-          dataset.getJSONArray("versionNotes").toString(), GsonUtil.stringListType);
+      versionNotes = GsonUtil.json2Obj(dataset.getJSONArray("versionNotes").toString(),
+          GsonUtil.stringListType);
     }
 
     if (dataset.has("rightsHolder")) {
@@ -273,8 +305,8 @@ public class OpenDataFederationNativeConnector implements IodmsConnector {
       creator = deserializeFoafAgent(dataset, "creator", DCTerms.creator, nodeId);
     }
     List<SkosConceptSubject> subjectList = null;
-    subjectList = deserializeConcept(dataset, "subject", 
-        DCTerms.subject, nodeId, SkosConceptSubject.class);
+    subjectList = deserializeConcept(dataset, "subject", DCTerms.subject, nodeId,
+        SkosConceptSubject.class);
     DctLocation spatialCoverage = null;
     spatialCoverage = deserializeSpatial(dataset, nodeId);
 
@@ -284,25 +316,27 @@ public class OpenDataFederationNativeConnector implements IodmsConnector {
         try {
           distributionList.add(distributionToDcat(distrArray.getJSONObject(i), nodeId));
         } catch (Exception e) {
-          logger.info("There was an error while deserializing a Distribution: " 
-               + e.getMessage() + " - SKIPPED");
+          logger.info("There was an error while deserializing a Distribution: " + e.getMessage()
+              + " - SKIPPED");
         }
       }
     }
 
-    return new DcatDataset(nodeId, identifier, 
-        title, description, distributionList, themeList, publisher,
-        contactPointList, keywords, accessRights,
-        conformsTo, documentation, frequency,
-        hasVersion, isVersionOf,
-        landingPage, language, provenance, releaseDate,
-        updateDate, otherIdentifier, sample, source, spatialCoverage,
-        temporalCoverage, type, version, versionNotes,
-        rightsHolder, creator, subjectList, relatedResource);
+    return new DcatDataset(nodeId, identifier, title, description, distributionList, themeList,
+        publisher, contactPointList, keywords, accessRights, conformsTo, documentation, frequency,
+        hasVersion, isVersionOf, landingPage, language, provenance, releaseDate, updateDate,
+        otherIdentifier, sample, source, spatialCoverage, temporalCoverage, type, version,
+        versionNotes, rightsHolder, creator, subjectList, relatedResource);
 
   }
 
-
+  /**
+   * Deserialize temporal.
+   *
+   * @param dataset the dataset
+   * @param nodeId  the node id
+   * @return the dct period of time
+   */
   protected DctPeriodOfTime deserializeTemporal(JSONObject dataset, String nodeId) {
 
     try {
@@ -315,24 +349,43 @@ public class OpenDataFederationNativeConnector implements IodmsConnector {
     return null;
   }
 
-  protected FoafAgent deserializeFoafAgent(JSONObject dataset, 
-      String fieldName, Property property, String nodeId) {
+  /**
+   * Deserialize foaf agent.
+   *
+   * @param dataset   the dataset
+   * @param fieldName the field name
+   * @param property  the property
+   * @param nodeId    the node id
+   * @return the foaf agent
+   */
+  protected FoafAgent deserializeFoafAgent(JSONObject dataset, String fieldName, Property property,
+      String nodeId) {
 
     try {
       JSONObject obj = dataset.getJSONObject(fieldName);
       return new FoafAgent(property.getURI(), obj.optString("resourceUri"), obj.optString("name"),
-          obj.optString("mbox"), obj.optString("homepage"),
-          obj.optString("type"), obj.optString("identifier"), nodeId);
+          obj.optString("mbox"), obj.optString("homepage"), obj.optString("type"),
+          obj.optString("identifier"), nodeId);
     } catch (JSONException ignore) {
       logger.info("Agent object not valid! - Skipped");
     }
     return null;
   }
 
-
-  protected <T extends SkosConcept> List<T> deserializeConcept(JSONObject obj,
-      String fieldName, Property property,
-      String nodeId, Class<T> type) throws JSONException {
+  /**
+   * Deserialize concept.
+   *
+   * @param           <T> the generic type
+   * @param obj       the obj
+   * @param fieldName the field name
+   * @param property  the property
+   * @param nodeId    the node id
+   * @param type      the type
+   * @return the list
+   * @throws JSONException the JSON exception
+   */
+  protected <T extends SkosConcept> List<T> deserializeConcept(JSONObject obj, String fieldName,
+      Property property, String nodeId, Class<T> type) throws JSONException {
 
     List<T> result = new ArrayList<T>();
 
@@ -355,9 +408,8 @@ public class OpenDataFederationNativeConnector implements IodmsConnector {
           }
 
           try {
-            result.add(type.getDeclaredConstructor(SkosConcept.class).newInstance(
-                new SkosConcept(property.getURI(),
-                    themeObj.optString("resourceUri"), prefLabelList, nodeId)));
+            result.add(type.getDeclaredConstructor(SkosConcept.class).newInstance(new SkosConcept(
+                property.getURI(), themeObj.optString("resourceUri"), prefLabelList, nodeId)));
           } catch (InstantiationException | IllegalAccessException | IllegalArgumentException
               | InvocationTargetException | NoSuchMethodException | SecurityException e) {
             // TODO Auto-generated catch block
@@ -370,9 +422,17 @@ public class OpenDataFederationNativeConnector implements IodmsConnector {
     return result;
   }
 
-  protected List<VCardOrganization> deserializeContactPoint(JSONObject dataset, 
-      Property property, String nodeId)
-      throws JSONException {
+  /**
+   * Deserialize contact point.
+   *
+   * @param dataset  the dataset
+   * @param property the property
+   * @param nodeId   the node id
+   * @return the list
+   * @throws JSONException the JSON exception
+   */
+  protected List<VCardOrganization> deserializeContactPoint(JSONObject dataset, Property property,
+      String nodeId) throws JSONException {
 
     List<VCardOrganization> contactPList = new ArrayList<VCardOrganization>();
 
@@ -381,12 +441,11 @@ public class OpenDataFederationNativeConnector implements IodmsConnector {
       for (int i = 0; i < contactArray.length(); i++) {
         JSONObject contactObj = contactArray.optJSONObject(i);
         if (contactObj != null) {
-          contactPList.add(new VCardOrganization(property.getURI(),
-              contactObj.optString("resourceUri"),
-              contactObj.optString("fn"), contactObj.optString("hasEmail"),
-              contactObj.optString("hasURL"),
-              contactObj.optString("hasTelephoneValue"), 
-              contactObj.optString("hasTelephoneType"), nodeId));
+          contactPList
+              .add(new VCardOrganization(property.getURI(), contactObj.optString("resourceUri"),
+                  contactObj.optString("fn"), contactObj.optString("hasEmail"),
+                  contactObj.optString("hasURL"), contactObj.optString("hasTelephoneValue"),
+                  contactObj.optString("hasTelephoneType"), nodeId));
         }
       }
     }
@@ -394,6 +453,15 @@ public class OpenDataFederationNativeConnector implements IodmsConnector {
     return contactPList;
   }
 
+  /**
+   * Deserialize standard.
+   *
+   * @param obj       the obj
+   * @param fieldName the field name
+   * @param nodeId    the node id
+   * @return the list
+   * @throws JSONException the JSON exception
+   */
   protected List<DctStandard> deserializeStandard(JSONObject obj, String fieldName, String nodeId)
       throws JSONException {
 
@@ -414,9 +482,8 @@ public class OpenDataFederationNativeConnector implements IodmsConnector {
             }
           }
 
-          standardList.add(new DctStandard(standardObj.optString("uri"), 
-              standardObj.optString("identifier"),
-              standardObj.optString("title"), 
+          standardList.add(new DctStandard(standardObj.optString("uri"),
+              standardObj.optString("identifier"), standardObj.optString("title"),
               standardObj.optString("description"), referenceDocumentation, nodeId));
         }
       }
@@ -425,6 +492,13 @@ public class OpenDataFederationNativeConnector implements IodmsConnector {
     return standardList;
   }
 
+  /**
+   * Deserialize license.
+   *
+   * @param obj    the obj
+   * @param nodeId the node id
+   * @return the dct license document
+   */
   protected DctLicenseDocument deserializeLicense(JSONObject obj, String nodeId) {
 
     try {
@@ -440,6 +514,13 @@ public class OpenDataFederationNativeConnector implements IodmsConnector {
 
   }
 
+  /**
+   * Deserialize spatial.
+   *
+   * @param dataset the dataset
+   * @param nodeId  the node id
+   * @return the dct location
+   */
   protected DctLocation deserializeSpatial(JSONObject dataset, String nodeId) {
 
     try {
@@ -452,6 +533,14 @@ public class OpenDataFederationNativeConnector implements IodmsConnector {
     return null;
   }
 
+  /**
+   * Distribution to dcat.
+   *
+   * @param obj    the obj
+   * @param nodeId the node id
+   * @return the dcat distribution
+   * @throws Exception the exception
+   */
   protected DcatDistribution distributionToDcat(JSONObject obj, String nodeId) throws Exception {
 
     String accessUrl = null;
@@ -474,16 +563,16 @@ public class OpenDataFederationNativeConnector implements IodmsConnector {
     byteSize = obj.optString("byteSize");
 
     if (obj.has("documentation")) {
-      documentation = GsonUtil.json2Obj(
-          obj.getJSONArray("documentation").toString(), GsonUtil.stringListType);
+      documentation = GsonUtil.json2Obj(obj.getJSONArray("documentation").toString(),
+          GsonUtil.stringListType);
     }
 
     String downloadUrl = null;
     downloadUrl = obj.optString("downloadURL");
 
     if (obj.has("language")) {
-      language = GsonUtil.json2Obj(
-          obj.getJSONArray("language").toString(), GsonUtil.stringListType);
+      language = GsonUtil.json2Obj(obj.getJSONArray("language").toString(),
+          GsonUtil.stringListType);
     }
     DctLicenseDocument license = null;
     license = deserializeLicense(obj, nodeId);
@@ -501,19 +590,24 @@ public class OpenDataFederationNativeConnector implements IodmsConnector {
     String rights = null;
     rights = obj.optString("rights");
     try {
-      status = deserializeConcept(obj, "status", ResourceFactory.createProperty("http://www.w3.org/ns/adms#status"),
-          nodeId, SkosConceptStatus.class).get(0);
+      status = deserializeConcept(obj, "status",
+          ResourceFactory.createProperty("http://www.w3.org/ns/adms#status"), nodeId,
+          SkosConceptStatus.class).get(0);
     } catch (IndexOutOfBoundsException e) {
       e.printStackTrace();
     }
 
-    return new DcatDistribution(nodeId, accessUrl,
-        description, format, license, byteSize, null, documentation,
-        downloadUrl, language, linkedSchemas, 
-        mediaType, releaseDate, updateDate, rights, status, title);
+    return new DcatDistribution(nodeId, accessUrl, description, format, license, byteSize, null,
+        documentation, downloadUrl, language, linkedSchemas, mediaType, releaseDate, updateDate,
+        rights, status, title);
 
   }
 
+  /*
+   * (non-Javadoc)
+   * 
+   * @see it.eng.idra.connectors.IodmsConnector#getDataset(java.lang.String)
+   */
   @Override
   public DcatDataset getDataset(String datasetId) throws Exception {
 
@@ -522,6 +616,11 @@ public class OpenDataFederationNativeConnector implements IodmsConnector {
 
   }
 
+  /*
+   * (non-Javadoc)
+   * 
+   * @see it.eng.idra.connectors.IodmsConnector#getAllDatasets()
+   */
   @Override
   public List<DcatDataset> getAllDatasets() throws Exception {
 
@@ -543,8 +642,8 @@ public class OpenDataFederationNativeConnector implements IodmsConnector {
         dataset = null;
 
       } catch (Exception e) {
-        logger.info("There was an error: " + e.getMessage() 
-              + " while deserializing Dataset - " + i + " - SKIPPED");
+        logger.info("There was an error: " + e.getMessage() + " while deserializing Dataset - " + i
+            + " - SKIPPED");
       }
     }
 
@@ -555,10 +654,15 @@ public class OpenDataFederationNativeConnector implements IodmsConnector {
     return dcatDatasets;
   }
 
+  /*
+   * (non-Javadoc)
+   * 
+   * @see it.eng.idra.connectors.IodmsConnector#getChangedDatasets(java.util.List,
+   * java.lang.String)
+   */
   @Override
   public OdmsSynchronizationResult getChangedDatasets(List<DcatDataset> oldDatasets,
-      String startingDateString)
-      throws Exception {
+      String startingDateString) throws Exception {
 
     ArrayList<DcatDataset> newDatasets = (ArrayList<DcatDataset>) getAllDatasets();
     OdmsSynchronizationResult syncrhoResult = new OdmsSynchronizationResult();
@@ -647,6 +751,12 @@ public class OpenDataFederationNativeConnector implements IodmsConnector {
   // return null;
   // }
 
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * it.eng.idra.connectors.IodmsConnector#countSearchDatasets(java.util.HashMap)
+   */
   @Override
   public int countSearchDatasets(HashMap<String, Object> searchParameters) throws Exception {
 
@@ -687,6 +797,12 @@ public class OpenDataFederationNativeConnector implements IodmsConnector {
 
   }
 
+  /**
+   * Builds the query native string.
+   *
+   * @param searchParameters the search parameters
+   * @return the string
+   */
   private String buildQueryNativeString(HashMap<String, Object> searchParameters) {
     String query = "";
     String[] issued = {};
@@ -739,11 +855,11 @@ public class OpenDataFederationNativeConnector implements IodmsConnector {
       } else if (key.equals("tags")) {
 
         if (isFirst) {
-          query += "tags" + ":" + "(" 
-                 + ((String) value).replace(",", " " + defaultOperator + " ") + ")";
+          query += "tags" + ":" + "(" + ((String) value).replace(",", " " + defaultOperator + " ")
+              + ")";
         } else {
-          query += " OR tags" + ":" 
-                 + "(" + ((String) value).replace(",", " " + defaultOperator + " ") + ")";
+          query += " OR tags" + ":" + "("
+              + ((String) value).replace(",", " " + defaultOperator + " ") + ")";
         }
         isFirst = false;
 

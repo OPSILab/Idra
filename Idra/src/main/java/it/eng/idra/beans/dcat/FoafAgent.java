@@ -38,6 +38,7 @@ import org.apache.solr.common.SolrDocument;
 import org.apache.solr.common.SolrInputDocument;
 import org.hibernate.annotations.GenericGenerator;
 
+// TODO: Auto-generated Javadoc
 /**
  * Represents a DCAT Agent, the Dataset publisher.
  *
@@ -48,26 +49,44 @@ import org.hibernate.annotations.GenericGenerator;
 @Table(name = "dcat_agent")
 public class FoafAgent {
 
+  /** The id. */
   private String id;
 
+  /** The name. */
   // Mandatory
   private DcatProperty name;
 
   // Recommended
 
+  /** The resource uri. */
   private String resourceUri;
+
+  /** The property uri. */
   private String propertyUri;
+
+  /** The mbox. */
   private DcatProperty mbox;
+
+  /** The homepage. */
   private DcatProperty homepage;
+
+  /** The type. */
   private DcatProperty type;
+
+  /** The identifier. */
   private DcatProperty identifier;
-  
+
+  /** The node id. */
   @SerializedName(value = "nodeID")
   private transient String nodeId;
 
+  /**
+   * Instantiates a new foaf agent.
+   */
   public FoafAgent() {
   }
 
+  /** The Constant RDFClass. */
   private static final transient Resource RDFClass = FOAF.Agent;
 
   // public FOAFAgent(String name, String mbox, String homepage, String type,
@@ -88,17 +107,15 @@ public class FoafAgent {
    *
    * @param propertyUri the property uri
    * @param resourceUri the resource uri
-   * @param name the name
-   * @param mbox the mbox
-   * @param homepage the homepage
-   * @param type the type
-   * @param identifier the identifier
-   * @param nodeId the node ID
+   * @param name        the name
+   * @param mbox        the mbox
+   * @param homepage    the homepage
+   * @param type        the type
+   * @param identifier  the identifier
+   * @param nodeId      the node ID
    */
-  public FoafAgent(String propertyUri, 
-      String resourceUri, String name, 
-      String mbox, String homepage, String type,
-      String identifier, String nodeId) {
+  public FoafAgent(String propertyUri, String resourceUri, String name, String mbox,
+      String homepage, String type, String identifier, String nodeId) {
 
     setNodeId(nodeId);
     setPropertyUri(propertyUri);
@@ -111,6 +128,11 @@ public class FoafAgent {
 
   }
 
+  /**
+   * Gets the id.
+   *
+   * @return the id
+   */
   /*
    * @Id
    * 
@@ -128,32 +150,67 @@ public class FoafAgent {
     return id;
   }
 
+  /**
+   * Sets the id.
+   *
+   * @param id the new id
+   */
   public void setId(String id) {
     this.id = id;
   }
 
+  /**
+   * Gets the node id.
+   *
+   * @return the node id
+   */
   public String getNodeId() {
     return nodeId;
   }
 
+  /**
+   * Sets the node id.
+   *
+   * @param nodeId the new node id
+   */
   public void setNodeId(String nodeId) {
     this.nodeId = nodeId;
   }
 
+  /**
+   * Gets the rdf class.
+   *
+   * @return the rdf class
+   */
   @Transient
   public static Resource getRdfClass() {
     return RDFClass;
   }
 
+  /**
+   * Gets the property uri.
+   *
+   * @return the property uri
+   */
   @Transient
   public String getPropertyUri() {
     return propertyUri;
   }
 
+  /**
+   * Sets the property uri.
+   *
+   * @param propertyUri the new property uri
+   */
   public void setPropertyUri(String propertyUri) {
     this.propertyUri = propertyUri;
   }
 
+  /**
+   * Gets the resource uri.
+   *
+   * @return the resource uri
+   */
   public String getResourceUri() {
     return resourceUri;
   }
@@ -169,6 +226,11 @@ public class FoafAgent {
     this.resourceUri = resourceUri;
   }
 
+  /**
+   * Gets the name.
+   *
+   * @return the name
+   */
   @Embedded
   @AttributeOverrides({ @AttributeOverride(name = "value", column = @Column(name = "name")) })
   public DcatProperty getName() {
@@ -186,36 +248,71 @@ public class FoafAgent {
     }
   }
 
+  /**
+   * Gets the mbox.
+   *
+   * @return the mbox
+   */
   @Embedded
   @AttributeOverrides({ @AttributeOverride(name = "value", column = @Column(name = "mbox")) })
   public DcatProperty getMbox() {
     return mbox;
   }
 
+  /**
+   * Sets the mbox.
+   *
+   * @param mbox the new mbox
+   */
   public void setMbox(DcatProperty mbox) {
     this.mbox = mbox;
   }
 
+  /**
+   * Gets the homepage.
+   *
+   * @return the homepage
+   */
   @Embedded
   @AttributeOverrides({ @AttributeOverride(name = "value", column = @Column(name = "homepage")) })
   public DcatProperty getHomepage() {
     return homepage;
   }
 
+  /**
+   * Sets the homepage.
+   *
+   * @param homepage the new homepage
+   */
   public void setHomepage(DcatProperty homepage) {
     this.homepage = homepage;
   }
 
+  /**
+   * Gets the type.
+   *
+   * @return the type
+   */
   @Embedded
   @AttributeOverrides({ @AttributeOverride(name = "value", column = @Column(name = "type")) })
   public DcatProperty getType() {
     return type;
   }
 
+  /**
+   * Sets the type.
+   *
+   * @param type the new type
+   */
   public void setType(DcatProperty type) {
     this.type = type;
   }
 
+  /**
+   * Gets the identifier.
+   *
+   * @return the identifier
+   */
   @Embedded
   @AttributeOverrides({
       @AttributeOverride(name = "value", 
@@ -224,6 +321,11 @@ public class FoafAgent {
     return identifier;
   }
 
+  /**
+   * Sets the identifier.
+   *
+   * @param identifier the new identifier
+   */
   public void setIdentifier(DcatProperty identifier) {
     this.identifier = identifier;
   }
@@ -253,9 +355,9 @@ public class FoafAgent {
   /**
    * Doc to foaf agent.
    *
-   * @param doc the doc
+   * @param doc         the doc
    * @param propertyUri the property uri
-   * @param nodeId the node id
+   * @param nodeId      the node id
    * @return the foaf agent
    */
   public static FoafAgent docToFoafAgent(SolrDocument doc, String propertyUri, String nodeId) {
@@ -267,11 +369,16 @@ public class FoafAgent {
     return f;
   }
 
+  /*
+   * (non-Javadoc)
+   * 
+   * @see java.lang.Object#toString()
+   */
   @Override
   public String toString() {
-    return "FOAFAgent [id=" + id + ", name=" 
-        + name + ", propertyUri=" + propertyUri + ", mbox=" + mbox + ", homepage="
-        + homepage + ", type=" + type + ", identifier=" + identifier + ", nodeID=" + nodeId + "]";
+    return "FOAFAgent [id=" + id + ", name=" + name + ", propertyUri=" + propertyUri + ", mbox="
+        + mbox + ", homepage=" + homepage + ", type=" + type + ", identifier=" + identifier
+        + ", nodeID=" + nodeId + "]";
   }
 
 }
