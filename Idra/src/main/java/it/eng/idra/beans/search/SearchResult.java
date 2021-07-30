@@ -19,7 +19,6 @@
 package it.eng.idra.beans.search;
 
 import it.eng.idra.beans.dcat.DcatDataset;
-
 import java.util.List;
 
 public class SearchResult {

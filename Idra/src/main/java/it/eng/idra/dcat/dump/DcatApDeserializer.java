@@ -36,7 +36,6 @@ import it.eng.idra.beans.dcat.SpdxChecksum;
 import it.eng.idra.beans.dcat.VCardOrganization;
 import it.eng.idra.beans.odms.OdmsCatalogue;
 import it.eng.idra.utils.CommonUtil;
-
 import java.io.ByteArrayInputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.nio.charset.StandardCharsets;
@@ -45,7 +44,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 import org.apache.commons.lang3.StringUtils;
 import org.apache.jena.iri.IRIFactory;
 import org.apache.jena.rdf.model.LiteralRequiredException;

@@ -1,5 +1,6 @@
 package it.eng.idra.beans.opendatasoft;
 
+import com.google.gson.annotations.SerializedName;
 import java.util.List;
 
 public class InnerDatasetMetaDefault {
@@ -9,22 +10,33 @@ public class InnerDatasetMetaDefault {
   private String language;
   private String description;
   private String license;
-  private Integer records_count;
+  @SerializedName(value = "records_count")
+  private Integer recordsCount;
   private String title;
-  private String source_domain;
-  private String source_dataset;
+  @SerializedName(value = "source_domain")
+  private String sourceDomain;
+  @SerializedName(value = "source_dataset")
+  private String sourceDataset;
   private String modified;
-  private Object parent_domain;
-  private Object oauth_scope;
+  @SerializedName(value = "parent_domain")
+  private Object parentDomain;
+  @SerializedName(value = "oauth_scope")
+  private Object oauthScope;
   private List<String> attributions;
   private String references;
   private List<String> keyword;
-  private String source_domain_title;
-  private String source_domain_address;
-  private String data_processed;
-  private String metadata_processed;
-  private String geographic_area_mode;
-  private Object geographic_area;
+  @SerializedName(value = "source_domain_title")
+  private String sourceDomainTitle;
+  @SerializedName(value = "source_domain_address")
+  private String sourceDomainAddress;
+  @SerializedName(value = "data_processed")
+  private String dataProcessed;
+  @SerializedName(value = "metadata_processed")
+  private String metadataProcessed;
+  @SerializedName(value = "geographic_area_mode")
+  private String geographicAreaMode;
+  @SerializedName(value = "geographic_area")
+  private Object geographicArea;
 
   public String getPublisher() {
     return publisher;
@@ -66,12 +78,12 @@ public class InnerDatasetMetaDefault {
     this.license = license;
   }
 
-  public Integer getRecords_count() {
-    return records_count;
+  public Integer getRecordsCount() {
+    return recordsCount;
   }
 
-  public void setRecords_count(Integer records_count) {
-    this.records_count = records_count;
+  public void setRecordsCount(Integer recordsCount) {
+    this.recordsCount = recordsCount;
   }
 
   public String getTitle() {
@@ -82,20 +94,20 @@ public class InnerDatasetMetaDefault {
     this.title = title;
   }
 
-  public String getSource_domain() {
-    return source_domain;
+  public String getSourceDomain() {
+    return sourceDomain;
   }
 
-  public void setSource_domain(String source_domain) {
-    this.source_domain = source_domain;
+  public void setSourceDomain(String sourceDomain) {
+    this.sourceDomain = sourceDomain;
   }
 
-  public String getSource_dataset() {
-    return source_dataset;
+  public String getSourceDataset() {
+    return sourceDataset;
   }
 
-  public void setSource_dataset(String source_dataset) {
-    this.source_dataset = source_dataset;
+  public void setSourceDataset(String sourceDataset) {
+    this.sourceDataset = sourceDataset;
   }
 
   public String getModified() {
@@ -106,20 +118,20 @@ public class InnerDatasetMetaDefault {
     this.modified = modified;
   }
 
-  public Object getParent_domain() {
-    return parent_domain;
+  public Object getParentDomain() {
+    return parentDomain;
   }
 
-  public void setParent_domain(Object parent_domain) {
-    this.parent_domain = parent_domain;
+  public void setParentDomain(Object parentDomain) {
+    this.parentDomain = parentDomain;
   }
 
-  public Object getOauth_scope() {
-    return oauth_scope;
+  public Object getOauthScope() {
+    return oauthScope;
   }
 
-  public void setOauth_scope(Object oauth_scope) {
-    this.oauth_scope = oauth_scope;
+  public void setOauthScope(Object oauthScope) {
+    this.oauthScope = oauthScope;
   }
 
   public List<String> getAttributions() {
@@ -146,52 +158,52 @@ public class InnerDatasetMetaDefault {
     this.keyword = keyword;
   }
 
-  public String getSource_domain_title() {
-    return source_domain_title;
+  public String getSourceDomainTitle() {
+    return sourceDomainTitle;
   }
 
-  public void setSource_domain_title(String source_domain_title) {
-    this.source_domain_title = source_domain_title;
+  public void setSourceDomainTitle(String sourceDomainTitle) {
+    this.sourceDomainTitle = sourceDomainTitle;
   }
 
-  public String getSource_domain_address() {
-    return source_domain_address;
+  public String getSourceDomainAddress() {
+    return sourceDomainAddress;
   }
 
-  public void setSource_domain_address(String source_domain_address) {
-    this.source_domain_address = source_domain_address;
+  public void setSourceDomainAddress(String sourceDomainAddress) {
+    this.sourceDomainAddress = sourceDomainAddress;
   }
 
-  public String getData_processed() {
-    return data_processed;
+  public String getDataProcessed() {
+    return dataProcessed;
   }
 
-  public void setData_processed(String data_processed) {
-    this.data_processed = data_processed;
+  public void setDataProcessed(String dataProcessed) {
+    this.dataProcessed = dataProcessed;
   }
 
-  public String getMetadata_processed() {
-    return metadata_processed;
+  public String getMetadataProcessed() {
+    return metadataProcessed;
   }
 
-  public void setMetadata_processed(String metadata_processed) {
-    this.metadata_processed = metadata_processed;
+  public void setMetadataProcessed(String metadataProcessed) {
+    this.metadataProcessed = metadataProcessed;
   }
 
-  public String getGeographic_area_mode() {
-    return geographic_area_mode;
+  public String getGeographicAreaMode() {
+    return geographicAreaMode;
   }
 
-  public void setGeographic_area_mode(String geographic_area_mode) {
-    this.geographic_area_mode = geographic_area_mode;
+  public void setGeographicAreaMode(String geographicAreaMode) {
+    this.geographicAreaMode = geographicAreaMode;
   }
 
-  public Object getGeographic_area() {
-    return geographic_area;
+  public Object getGeographicArea() {
+    return geographicArea;
   }
 
-  public void setGeographic_area(Object geographic_area) {
-    this.geographic_area = geographic_area;
+  public void setGeographicArea(Object geographicArea) {
+    this.geographicArea = geographicArea;
   }
 
 }

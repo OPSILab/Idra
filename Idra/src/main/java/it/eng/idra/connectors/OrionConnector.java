@@ -39,7 +39,6 @@ import it.eng.idra.management.OdmsManager;
 import it.eng.idra.utils.CommonUtil;
 import it.eng.idra.utils.GsonUtil;
 import it.eng.idra.utils.PropertyManager;
-
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.nio.file.Files;
@@ -49,7 +48,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
-
 import org.apache.commons.lang3.StringUtils;
 import org.apache.jena.vocabulary.DCAT;
 import org.apache.jena.vocabulary.DCTerms;
@@ -317,7 +315,7 @@ public class OrionConnector implements IodmsConnector {
         for (int i = 0; i < tmpArr.length(); i++) {
           JSONObject tmp = tmpArr.getJSONObject(i);
           DcatDistribution distro = new DcatDistribution();
-          distro.setNodeID(nodeId);
+          distro.setNodeId(nodeId);
           // downloadURL e accessURL vengono settati dal metadata cache manager
           // Formato di default per orion
           distro.setFormat("fiware-ngsi");
@@ -379,7 +377,7 @@ public class OrionConnector implements IodmsConnector {
             conf.setFiwareService(o.optString("fiwareService", null));
             conf.setFiwareServicePath(o.optString("fiwareServicePath", null));
             conf.setQuery(o.getString("query"));
-            conf.setNodeID(nodeId);
+            conf.setNodeId(nodeId);
             // TODO: add validation for query
             distro.setDistributionAdditionalConfig(conf);
           } else {

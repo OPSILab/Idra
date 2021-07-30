@@ -20,10 +20,8 @@ package it.eng.idra.management;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
-
 import it.eng.idra.beans.IdraProperty;
 import it.eng.idra.utils.PropertyManager;
-
 import java.sql.Connection;
 import java.sql.SQLException;
 

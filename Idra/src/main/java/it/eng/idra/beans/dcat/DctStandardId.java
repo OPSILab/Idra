@@ -24,7 +24,7 @@ public class DctStandardId implements Serializable {
 
   private static final long serialVersionUID = 1L;
   private String id;
-  private String nodeID;
+  private String nodeId;
 
   public String getId() {
     return this.id;
@@ -34,24 +34,24 @@ public class DctStandardId implements Serializable {
     this.id = id;
   }
 
-  public String getNodeID() {
-    return this.nodeID;
+  public String getNodeId() {
+    return this.nodeId;
   }
 
-  public void setNodeID(String nodeID) {
-    this.nodeID = nodeID;
+  public void setNodeId(String nodeId) {
+    this.nodeId = nodeId;
   }
 
   /**
    * Instantiates a new dct standard id.
    *
    * @param id the id
-   * @param nodeID the node ID
+   * @param nodeId the node ID
    */
-  public DctStandardId(String id, String nodeID) {
+  public DctStandardId(String id, String nodeId) {
     super();
     this.id = id;
-    this.nodeID = nodeID;
+    this.nodeId = nodeId;
   }
 
   public DctStandardId() {
@@ -62,7 +62,7 @@ public class DctStandardId implements Serializable {
     final int prime = 31;
     int result = 1;
     result = prime * result + ((id == null) ? 0 : id.hashCode());
-    result = prime * result + ((nodeID == null) ? 0 : nodeID.hashCode());
+    result = prime * result + ((nodeId == null) ? 0 : nodeId.hashCode());
     return result;
   }
 
@@ -85,11 +85,11 @@ public class DctStandardId implements Serializable {
     } else if (!id.equals(other.id)) {
       return false;
     }
-    if (nodeID == null) {
-      if (other.nodeID != null) {
+    if (nodeId == null) {
+      if (other.nodeId != null) {
         return false;
       }
-    } else if (!nodeID.equals(other.nodeID)) {
+    } else if (!nodeId.equals(other.nodeId)) {
       return false;
     }
     return true;

@@ -20,7 +20,6 @@ package it.eng.idra.search;
 
 import it.eng.idra.beans.EuroVocLanguage;
 import it.eng.idra.beans.exception.EuroVocTranslationNotFoundException;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -28,7 +27,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
-
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;

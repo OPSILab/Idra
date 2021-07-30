@@ -20,9 +20,7 @@ package it.eng.idra.utils.restclient.builders;
 
 import java.net.URL;
 import java.util.Map;
-
 import javax.ws.rs.core.MediaType;
-
 import org.apache.http.client.methods.HttpOptions;
 import org.apache.http.client.methods.HttpRequestBase;
 

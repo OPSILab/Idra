@@ -21,7 +21,6 @@ package it.eng.idra.connectors;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
 import com.google.common.collect.Sets.SetView;
-
 import it.eng.idra.beans.IdraProperty;
 import it.eng.idra.beans.dcat.DcatApFormat;
 import it.eng.idra.beans.dcat.DcatApProfile;
@@ -33,7 +32,6 @@ import it.eng.idra.dcat.dump.DcatApItDeserializer;
 import it.eng.idra.dcat.dump.DcatApSerializer;
 import it.eng.idra.management.OdmsManager;
 import it.eng.idra.utils.PropertyManager;
-
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -82,8 +80,8 @@ public class DcatDumpConnector implements IodmsConnector {
     this.node = node;
     this.nodeId = String.valueOf(node.getId());
 
-    if (node.getDCATProfile() != null) {
-      switch (node.getDCATProfile()) {
+    if (node.getDcatProfile() != null) {
+      switch (node.getDcatProfile()) {
 
         case DCATAP_IT:
           deserializer = new DcatApItDeserializer();
@@ -97,7 +95,7 @@ public class DcatDumpConnector implements IodmsConnector {
     } else {
       // If no profile was provided, instantiate a base DCATAP Deserializer and set
       // the profile
-      node.setDCATProfile(DcatApProfile.DCATAP);
+      node.setDcatProfile(DcatApProfile.DCATAP);
       deserializer = new DcatApDeserializer();
     }
 
@@ -161,7 +159,7 @@ public class DcatDumpConnector implements IodmsConnector {
     String dumpString = null;
 
     try {
-      if (StringUtils.isNotBlank(dumpUrl = node.getDumpURL())) {
+      if (StringUtils.isNotBlank(dumpUrl = node.getDumpUrl())) {
         node.setDumpFilePath(null);
         return getDatasetsFromDumpUrl(dumpUrl);
       } else if (StringUtils.isNotBlank(dumpString = node.getDumpString())) {

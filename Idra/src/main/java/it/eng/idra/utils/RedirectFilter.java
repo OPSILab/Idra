@@ -2,7 +2,6 @@ package it.eng.idra.utils;
 
 import java.io.IOException;
 import java.io.InputStream;
-
 import javax.ws.rs.client.ClientRequestContext;
 import javax.ws.rs.client.ClientResponseContext;
 import javax.ws.rs.client.ClientResponseFilter;

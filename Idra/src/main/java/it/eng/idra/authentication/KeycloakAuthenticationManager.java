@@ -24,10 +24,8 @@ import it.eng.idra.authentication.fiware.model.Token;
 import it.eng.idra.authentication.keycloak.connector.KeycloakConnectorImpl;
 import it.eng.idra.authentication.keycloak.model.KeycloakUser;
 import it.eng.idra.utils.PropertyManager;
-
 import java.net.URI;
 import java.util.Set;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.ws.rs.core.Response;
@@ -134,7 +132,7 @@ public class KeycloakAuthenticationManager extends AuthenticationManager {
     Token token = (Token) tokenObj;
 
     try {
-      validateAdminRole(connector.getUserInfo(token.getAccess_token()));
+      validateAdminRole(connector.getUserInfo(token.getAccessToken()));
       return true;
     } catch (Exception e) {
       return false;

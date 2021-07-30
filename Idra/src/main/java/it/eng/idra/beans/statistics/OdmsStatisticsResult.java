@@ -18,14 +18,19 @@
 
 package it.eng.idra.beans.statistics;
 
+import com.google.gson.annotations.SerializedName;
+
 public class OdmsStatisticsResult {
 
   private int added;
   private int deleted;
   private int updated;
-  private int added_RDF;
-  private int deleted_RDF;
-  private int updated_RDF;
+  @SerializedName(value = "added_RDF")
+  private int addedRdf;
+  @SerializedName(value = "deleted_RDF")
+  private int deletedRdf;
+  @SerializedName(value = "updated_RDF")
+  private int updatedRdf;
 
   public OdmsStatisticsResult() {
 
@@ -37,18 +42,18 @@ public class OdmsStatisticsResult {
    * @param added the added
    * @param deleted the deleted
    * @param updated the updated
-   * @param added_RDF the added RDF
-   * @param deleted_RDF the deleted RDF
-   * @param updated_RDF the updated RDF
+   * @param addedRdf the added RDF
+   * @param deletedRdf the deleted RDF
+   * @param updatedRdf the updated RDF
    */
   public OdmsStatisticsResult(int added, int deleted, 
-      int updated, int added_RDF, int deleted_RDF, int updated_RDF) {
+      int updated, int addedRdf, int deletedRdf, int updatedRdf) {
     this.added = added;
     this.deleted = deleted;
     this.updated = updated;
-    this.added_RDF = added_RDF;
-    this.deleted_RDF = deleted_RDF;
-    this.updated_RDF = updated_RDF;
+    this.addedRdf = addedRdf;
+    this.deletedRdf = deletedRdf;
+    this.updatedRdf = updatedRdf;
   }
 
   public int getAdded() {
@@ -75,34 +80,34 @@ public class OdmsStatisticsResult {
     this.updated = updated;
   }
 
-  public int getAdded_RDF() {
-    return added_RDF;
+  public int getAddedRdf() {
+    return addedRdf;
   }
 
-  public void setAdded_RDF(int added_RDF) {
-    this.added_RDF = added_RDF;
+  public void setAddedRdf(int addedRdf) {
+    this.addedRdf = addedRdf;
   }
 
-  public int getDeleted_RDF() {
-    return deleted_RDF;
+  public int getDeletedRdf() {
+    return deletedRdf;
   }
 
-  public void setDeleted_RDF(int deleted_RDF) {
-    this.deleted_RDF = deleted_RDF;
+  public void setDeletedRdf(int deletedRdf) {
+    this.deletedRdf = deletedRdf;
   }
 
-  public int getUpdated_RDF() {
-    return updated_RDF;
+  public int getUpdatedRdf() {
+    return updatedRdf;
   }
 
-  public void setUpdated_RDF(int updated_RDF) {
-    this.updated_RDF = updated_RDF;
+  public void setUpdatedRdf(int updatedRdf) {
+    this.updatedRdf = updatedRdf;
   }
 
   @Override
   public String toString() {
     return "ODMSStatisticsResult [added=" + added 
         + ", deleted=" + deleted + ", updated=" + updated + ", added_RDF="
-        + added_RDF + ", deleted_RDF=" + deleted_RDF + ", updated_RDF=" + updated_RDF + "]";
+        + addedRdf + ", deleted_RDF=" + deletedRdf + ", updated_RDF=" + updatedRdf + "]";
   }
 }

@@ -57,7 +57,6 @@ import it.eng.idra.utils.GsonUtil;
 import it.eng.idra.utils.GsonUtilException;
 import it.eng.idra.utils.PropertyManager;
 import it.eng.idra.utils.RedirectFilter;
-
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -73,7 +72,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DefaultValue;
@@ -96,7 +94,6 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.StreamingOutput;
-
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.jena.query.QueryParseException;
@@ -764,9 +761,9 @@ public class ClientApi {
       datalet.setRegisterDate(now);
       datalet.setLastSeenDate(now);
       datalet.setViews(1);
-      datalet.setDatasetID(datasetIdentifier);
-      datalet.setDistributionID(distributionIdentifier);
-      datalet.setNodeID(nodeIdentifier);
+      datalet.setDatasetId(datasetIdentifier);
+      datalet.setDistributionId(distributionIdentifier);
+      datalet.setNodeId(nodeIdentifier);
 
       List<Datalet> existingDatalets = null;
 
@@ -1213,7 +1210,7 @@ public class ClientApi {
       OdmsCatalogue cat = FederationCore.getOdmsCatalogue(Integer.parseInt(nodeIdentifier));
       if (cat.isActive()) {
         DcatDataset result = MetadataCacheManager.getDatasetById(datasetIdentifier);
-        if (result.getNodeID().equals(nodeIdentifier)) {
+        if (result.getNodeId().equals(nodeIdentifier)) {
           return Response.status(Response.Status.OK)
               .entity(GsonUtil.obj2Json(result, GsonUtil.datasetType)).build();
         } else {
@@ -1279,8 +1276,8 @@ public class ClientApi {
       DcatDistribution distribution = MetadataCacheManager
           .getDistributionById(distributionIdentifier);
 
-      if ((distribution.getNodeID().equals(nodeIdentifier)) 
-          && (dataset.getNodeID().equals(nodeIdentifier))) {
+      if ((distribution.getNodeId().equals(nodeIdentifier)) 
+          && (dataset.getNodeId().equals(nodeIdentifier))) {
         return Response.status(Response.Status.OK)
             .entity(GsonUtil.obj2Json(distribution, GsonUtil.distributionType))
             .build();

@@ -19,7 +19,6 @@
 package it.eng.idra.authentication.basic;
 
 import it.eng.idra.utils.JsonRequired;
-
 import java.util.Date;
 
 // TODO: Auto-generated Javadoc

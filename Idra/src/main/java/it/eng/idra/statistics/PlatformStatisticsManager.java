@@ -11,10 +11,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
-
 import org.apache.commons.lang.StringUtils;
-
-
 
 public class PlatformStatisticsManager {
 
@@ -68,15 +65,15 @@ public class PlatformStatisticsManager {
       /* MANAGE FACETS */
       FacetsStatistics facetsStats = new FacetsStatistics(
           distributionFormats.getFacets().stream()
-          .filter(x -> x.getSearch_parameter().equals("format"))
+          .filter(x -> x.getSearchParameter().equals("format"))
               .map(x -> x.getValues()).findFirst().get(),
 
           resultForFacets.getFacets().stream()
-          .filter(x -> x.getSearch_parameter().equals("distributionLicenses"))
+          .filter(x -> x.getSearchParameter().equals("distributionLicenses"))
               .map(x -> x.getValues()).findFirst().get(),
 
           resultForFacets.getFacets().stream()
-          .filter(x -> x.getSearch_parameter().equals("datasetThemes"))
+          .filter(x -> x.getSearchParameter().equals("datasetThemes"))
               .map(x -> x.getValues()).findFirst().get());
       result.setFacets(facetsStats);
 

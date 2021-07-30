@@ -19,7 +19,6 @@
 package it.eng.idra.beans;
 
 import it.eng.idra.utils.JsonRequired;
-
 import java.time.ZonedDateTime;
 import java.util.List;
 

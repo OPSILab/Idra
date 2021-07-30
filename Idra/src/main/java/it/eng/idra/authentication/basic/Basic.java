@@ -20,7 +20,6 @@ package it.eng.idra.authentication.basic;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
-
 import javax.ws.rs.NameBinding;
 
 // TODO: Auto-generated Javadoc

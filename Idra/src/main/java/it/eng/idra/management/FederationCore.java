@@ -49,7 +49,6 @@ import it.eng.idra.scheduler.IdraScheduler;
 import it.eng.idra.scheduler.exception.SchedulerNotInitialisedException;
 import it.eng.idra.search.EuroVocTranslator;
 import it.eng.idra.utils.PropertyManager;
-
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.sql.SQLException;
@@ -310,7 +309,7 @@ public class FederationCore {
    */
 
   public static List<OdmsCatalogue> getOdmsCatalogues() {
-    return OdmsManager.getOdmsCatalogues();
+    return OdmsManager.getOdmsCataloguesList();
   }
 
   public static List<OdmsCatalogue> getOdmsCatalogues(boolean withImage) 

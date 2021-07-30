@@ -20,7 +20,6 @@ package it.eng.idra.authentication.filters;
 
 import it.eng.idra.authentication.BasicAuthenticationManager;
 import it.eng.idra.authentication.Secured;
-
 import java.io.IOException;
 import javax.annotation.Priority;
 import javax.ws.rs.NotAuthorizedException;

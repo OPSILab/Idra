@@ -18,6 +18,7 @@
 
 package it.eng.idra.beans.statistics;
 
+import com.google.gson.annotations.SerializedName;
 import javax.persistence.Column;
 import javax.persistence.ColumnResult;
 import javax.persistence.ConstructorResult;
@@ -42,17 +43,24 @@ import javax.persistence.Table;
 public class OdmsStatistics {
 
   private int id;
-  private int nodeID;
+  @SerializedName(value = "nodeID")
+  private int nodeId;
   private String name;
   private int day;
   private int month;
   private int year;
-  private int added_datasets;
-  private int updated_datasets;
-  private int deleted_datasets;
-  private int added_RDF;
-  private int updated_RDF;
-  private int deleted_RDF;
+  @SerializedName(value = "added_datasets")
+  private int addedDatasets;
+  @SerializedName(value = "updated_datasets")
+  private int updatedDatasets;
+  @SerializedName(value = "deleted_datasets")
+  private int deletedDatasets;
+  @SerializedName(value = "added_RDF")
+  private int addedRdf;
+  @SerializedName(value = "updated_RDF")
+  private int updatedRdf;
+  @SerializedName(value = "deleted_RDF")
+  private int deletedRdf;
 
   public OdmsStatistics() {
 
@@ -61,35 +69,35 @@ public class OdmsStatistics {
   /**
    * Instantiates a new odms statistics.
    *
-   * @param nodeID the node ID
+   * @param nodeId the node ID
    * @param name the name
    * @param day the day
    * @param month the month
    * @param year the year
-   * @param added_datasets the added datasets
-   * @param updated_datasets the updated datasets
-   * @param deleted_datasets the deleted datasets
-   * @param added_RDF the added RDF
-   * @param updated_RDF the updated RDF
-   * @param deleted_RDF the deleted RDF
+   * @param addedDatasets the added datasets
+   * @param updatedDatasets the updated datasets
+   * @param deletedDatasets the deleted datasets
+   * @param addedRdf the added RDF
+   * @param updatedRdf the updated RDF
+   * @param deletedRdf the deleted RDF
    */
-  public OdmsStatistics(int nodeID, String name, 
+  public OdmsStatistics(int nodeId, String name, 
       int day, int month, int year, 
-      int added_datasets, int updated_datasets,
-      int deleted_datasets, int added_RDF, 
-      int updated_RDF, int deleted_RDF) {
+      int addedDatasets, int updatedDatasets,
+      int deletedDatasets, int addedRdf, 
+      int updatedRdf, int deletedRdf) {
     super();
-    this.nodeID = nodeID;
+    this.nodeId = nodeId;
     this.name = name;
     this.day = day;
     this.month = month;
     this.year = year;
-    this.added_datasets = added_datasets;
-    this.updated_datasets = updated_datasets;
-    this.deleted_datasets = deleted_datasets;
-    this.added_RDF = added_RDF;
-    this.updated_RDF = updated_RDF;
-    this.deleted_RDF = deleted_RDF;
+    this.addedDatasets = addedDatasets;
+    this.updatedDatasets = updatedDatasets;
+    this.deletedDatasets = deletedDatasets;
+    this.addedRdf = addedRdf;
+    this.updatedRdf = updatedRdf;
+    this.deletedRdf = deletedRdf;
   }
 
   @Id
@@ -104,12 +112,12 @@ public class OdmsStatistics {
   }
 
   @Column(name = "nodeID")
-  public int getNodeID() {
-    return nodeID;
+  public int getNodeId() {
+    return nodeId;
   }
 
-  public void setNodeID(int nodeID) {
-    this.nodeID = nodeID;
+  public void setNodeId(int nodeId) {
+    this.nodeId = nodeId;
   }
 
   @Column(name = "name")
@@ -149,87 +157,87 @@ public class OdmsStatistics {
   }
 
   @Column(name = "added_datasets")
-  public int getAdded_datasets() {
-    return added_datasets;
+  public int getAddedDatasets() {
+    return addedDatasets;
   }
 
-  public void setAdded_datasets(int added_datasets) {
-    this.added_datasets = added_datasets;
+  public void setAddedDatasets(int addedDatasets) {
+    this.addedDatasets = addedDatasets;
   }
 
-  public void incAdded_datasets(int added_datasets) {
-    this.added_datasets += added_datasets;
+  public void incAddedDatasets(int addedDatasets) {
+    this.addedDatasets += addedDatasets;
   }
 
   @Column(name = "updated_datasets")
-  public int getUpdated_datasets() {
-    return updated_datasets;
+  public int getUpdatedDatasets() {
+    return updatedDatasets;
   }
 
-  public void setUpdated_datasets(int updated_datasets) {
-    this.updated_datasets = updated_datasets;
+  public void setUpdatedDatasets(int updatedDatasets) {
+    this.updatedDatasets = updatedDatasets;
   }
 
-  public void incUpdated_datasets(int updated_datasets) {
-    this.updated_datasets += updated_datasets;
+  public void incUpdatedDatasets(int updatedDatasets) {
+    this.updatedDatasets += updatedDatasets;
   }
 
   @Column(name = "deleted_datasets")
-  public int getDeleted_datasets() {
-    return deleted_datasets;
+  public int getDeletedDatasets() {
+    return deletedDatasets;
   }
 
-  public void setDeleted_datasets(int deleted_datasets) {
-    this.deleted_datasets = deleted_datasets;
+  public void setDeletedDatasets(int deletedDatasets) {
+    this.deletedDatasets = deletedDatasets;
   }
 
-  public void incDeleted_datasets(int deleted_datasets) {
-    this.deleted_datasets += deleted_datasets;
+  public void incDeletedDatasets(int deletedDatasets) {
+    this.deletedDatasets += deletedDatasets;
   }
 
   @Column(name = "added_RDF")
-  public int getAdded_RDF() {
-    return added_RDF;
+  public int getAddedRdf() {
+    return addedRdf;
   }
 
-  public void setAdded_RDF(int added_RDF) {
-    this.added_RDF = added_RDF;
+  public void setAddedRdf(int addedRdf) {
+    this.addedRdf = addedRdf;
   }
 
   @Column(name = "updated_RDF")
-  public int getUpdated_RDF() {
-    return updated_RDF;
+  public int getUpdatedRdf() {
+    return updatedRdf;
   }
 
-  public void incAdded_RDF(int added_RDF) {
-    this.added_RDF += added_RDF;
+  public void incAddedRdf(int addedRdf) {
+    this.addedRdf += addedRdf;
   }
 
-  public void setUpdated_RDF(int updated_RDF) {
-    this.updated_RDF = updated_RDF;
+  public void setUpdatedRdf(int updatedRdf) {
+    this.updatedRdf = updatedRdf;
   }
 
   @Column(name = "deleted_RDF")
-  public int getDeleted_RDF() {
-    return deleted_RDF;
+  public int getDeletedRdf() {
+    return deletedRdf;
   }
 
-  public void incUpdated_RDF(int updated_RDF) {
-    this.updated_RDF += updated_RDF;
+  public void incUpdatedRdf(int updatedRdf) {
+    this.updatedRdf += updatedRdf;
   }
 
-  public void setDeleted_RDF(int deleted_RDF) {
-    this.deleted_RDF = deleted_RDF;
+  public void setDeletedRdf(int deletedRdf) {
+    this.deletedRdf = deletedRdf;
   }
 
-  public void incDeleted_RDF(int deleted_RDF) {
-    this.deleted_RDF += deleted_RDF;
+  public void incDeletedRdf(int deletedRdf) {
+    this.deletedRdf += deletedRdf;
   }
 
   @Override
   public String toString() {
     return "ODMSStatistics [id=" + id + ", nodeID=" 
-        + nodeID + ", day=" + day + ", month=" + month + ", year=" + year
+        + nodeId + ", day=" + day + ", month=" + month + ", year=" + year
         + "]";
   }
 

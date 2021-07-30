@@ -19,7 +19,6 @@
 package it.eng.idra.beans.odms;
 
 import com.google.gson.annotations.Expose;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;

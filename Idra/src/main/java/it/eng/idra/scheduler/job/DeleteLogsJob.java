@@ -20,7 +20,6 @@ package it.eng.idra.scheduler.job;
 
 import it.eng.idra.management.PersistenceManager;
 import java.time.ZonedDateTime;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.quartz.DisallowConcurrentExecution;

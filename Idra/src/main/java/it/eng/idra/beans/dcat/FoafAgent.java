@@ -18,8 +18,8 @@
 
 package it.eng.idra.beans.dcat;
 
+import com.google.gson.annotations.SerializedName;
 import it.eng.idra.cache.CacheContentType;
-
 import javax.persistence.AttributeOverride;
 import javax.persistence.AttributeOverrides;
 import javax.persistence.Column;
@@ -29,7 +29,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Transient;
-
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.sparql.vocabulary.FOAF;
 import org.apache.jena.vocabulary.DCTerms;
@@ -62,7 +61,9 @@ public class FoafAgent {
   private DcatProperty homepage;
   private DcatProperty type;
   private DcatProperty identifier;
-  private transient String nodeID;
+  
+  @SerializedName(value = "nodeID")
+  private transient String nodeId;
 
   public FoafAgent() {
   }
@@ -92,14 +93,14 @@ public class FoafAgent {
    * @param homepage the homepage
    * @param type the type
    * @param identifier the identifier
-   * @param nodeID the node ID
+   * @param nodeId the node ID
    */
   public FoafAgent(String propertyUri, 
       String resourceUri, String name, 
       String mbox, String homepage, String type,
-      String identifier, String nodeID) {
+      String identifier, String nodeId) {
 
-    setNodeID(nodeID);
+    setNodeId(nodeId);
     setPropertyUri(propertyUri);
     setResourceUri(resourceUri);
     setName(new DcatProperty(FOAF.name, RDFS.Literal, name));
@@ -131,16 +132,16 @@ public class FoafAgent {
     this.id = id;
   }
 
-  public String getNodeID() {
-    return nodeID;
+  public String getNodeId() {
+    return nodeId;
   }
 
-  public void setNodeID(String nodeID) {
-    this.nodeID = nodeID;
+  public void setNodeId(String nodeId) {
+    this.nodeId = nodeId;
   }
 
   @Transient
-  public static Resource getRDFClass() {
+  public static Resource getRdfClass() {
     return RDFClass;
   }
 
@@ -237,7 +238,7 @@ public class FoafAgent {
 
     SolrInputDocument doc = new SolrInputDocument();
     doc.addField("id", this.id);
-    doc.addField("nodeID", this.nodeID);
+    doc.addField("nodeID", this.nodeId);
     doc.addField("content_type", contentType.toString());
     doc.addField("resourceUri", this.resourceUri);
     doc.addField("identifier", this.getIdentifier().getValue());
@@ -270,7 +271,7 @@ public class FoafAgent {
   public String toString() {
     return "FOAFAgent [id=" + id + ", name=" 
         + name + ", propertyUri=" + propertyUri + ", mbox=" + mbox + ", homepage="
-        + homepage + ", type=" + type + ", identifier=" + identifier + ", nodeID=" + nodeID + "]";
+        + homepage + ", type=" + type + ", identifier=" + identifier + ", nodeID=" + nodeId + "]";
   }
 
 }

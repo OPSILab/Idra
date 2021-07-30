@@ -6,7 +6,6 @@ import it.eng.idra.utils.GsonUtil;
 import it.eng.idra.utils.GsonUtilException;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
@@ -15,7 +14,6 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
-
 import org.apache.commons.lang3.StringUtils;
 
 // TODO: Auto-generated Javadoc

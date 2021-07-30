@@ -18,8 +18,8 @@
 
 package it.eng.idra.beans.dcat;
 
+import com.google.gson.annotations.SerializedName;
 import it.eng.idra.cache.CacheContentType;
-
 import javax.persistence.AttributeOverride;
 import javax.persistence.AttributeOverrides;
 import javax.persistence.Column;
@@ -29,7 +29,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Transient;
-
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.rdf.model.ResourceFactory;
 import org.apache.jena.vocabulary.DCTerms;
@@ -46,7 +45,8 @@ public class DctLocation {
   private static final transient Resource RDFClass = DCTerms.Location;
 
   private String id;
-  private transient String nodeID;
+  @SerializedName(value = "nodeID")
+  private transient String nodeId;
   private String uri;
   private DcatProperty geographicalIdentifier;
   private DcatProperty geographicalName;
@@ -62,14 +62,14 @@ public class DctLocation {
    * @param geographicalIdentifier the geographical identifier
    * @param geographicalName the geographical name
    * @param geometry the geometry
-   * @param nodeID the node ID
+   * @param nodeId the node ID
    */
   public DctLocation(String uri, String geographicalIdentifier,
       String geographicalName, String geometry,
-      String nodeID) {
+      String nodeId) {
     super();
     setUri(uri);
-    this.nodeID = nodeID;
+    this.nodeId = nodeId;
     setGeographicalIdentifier(
         new DcatProperty(ResourceFactory.createProperty("http://dati.gov.it/onto/dcatapit#geographicalIdentifier"),
             RDFS.Literal, geographicalIdentifier));
@@ -132,16 +132,16 @@ public class DctLocation {
     this.geometry = geometry;
   }
 
-  public String getNodeID() {
-    return nodeID;
+  public String getNodeId() {
+    return nodeId;
   }
 
-  public void setNodeID(String nodeID) {
-    this.nodeID = nodeID;
+  public void setNodeId(String nodeId) {
+    this.nodeId = nodeId;
   }
 
   @Transient
-  public static Resource getRDFClass() {
+  public static Resource getRdfClass() {
     return RDFClass;
   }
 
@@ -154,7 +154,7 @@ public class DctLocation {
   public SolrInputDocument toDoc(CacheContentType contentType) {
     SolrInputDocument doc = new SolrInputDocument();
     doc.addField("id", this.id);
-    doc.addField("nodeID", this.nodeID);
+    doc.addField("nodeID", this.nodeId);
     doc.addField("content_type", contentType.toString());
     doc.addField("geographicalIdentifier",
         this.geographicalIdentifier != null ? this.geographicalIdentifier.getValue() : "");

@@ -21,7 +21,6 @@ package it.eng.idra.connectors;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-
 import it.eng.idra.beans.dcat.DcatDataset;
 import it.eng.idra.beans.dcat.DcatDistribution;
 import it.eng.idra.beans.dcat.DctLicenseDocument;
@@ -46,7 +45,6 @@ import it.eng.idra.management.StatisticsManager;
 import it.eng.idra.utils.CommonUtil;
 import it.eng.idra.utils.GsonUtil;
 import it.eng.idra.utils.GsonUtilException;
-
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.net.MalformedURLException;
@@ -123,7 +121,7 @@ public class CkanConnector implements IodmsConnector {
       CKANException, MalformedURLException, OdmsCatalogueOfflineException,
       OdmsCatalogueNotFoundException, OdmsCatalogueForbiddenException {
 
-    Client c = new Client(new Connection(node.getHost()), node.getAPIKey());
+    Client c = new Client(new Connection(node.getHost()), node.getApiKey());
 
     Dataset.SearchResults result;
     try {
@@ -185,7 +183,7 @@ public class CkanConnector implements IodmsConnector {
     }
 
     logger.info("-- CKAN Connector Request sent -- " + "ROWS: " + rows);
-    Client c = new Client(new Connection(node.getHost()), node.getAPIKey());
+    Client c = new Client(new Connection(node.getHost()), node.getApiKey());
     // si pu� fare qui il trick
     ArrayList<DcatDataset> dcatResults = new ArrayList<DcatDataset>();
     logger.info(dcatResults.size());
@@ -727,7 +725,7 @@ public class CkanConnector implements IodmsConnector {
       OdmsCatalogueOfflineException, 
       OdmsCatalogueNotFoundException, OdmsCatalogueForbiddenException {
 
-    Client c = new Client(new Connection(node.getHost()), node.getAPIKey());
+    Client c = new Client(new Connection(node.getHost()), node.getApiKey());
     Dataset dataset;
     try {
       dataset = c.getDataset(datasetId);
@@ -762,7 +760,7 @@ public class CkanConnector implements IodmsConnector {
     ArrayList<DcatDataset> dcatResults = new ArrayList<DcatDataset>();
 
     logger.info("-- CKAN Connector Request sent -- First synchronization ");
-    Client c = new Client(new Connection(node.getHost()), node.getAPIKey());
+    Client c = new Client(new Connection(node.getHost()), node.getApiKey());
 
     logger.info("\n-----------------------\n");
     logger.info("NODE - Dataset count: " + node.getDatasetCount());
@@ -824,7 +822,7 @@ public class CkanConnector implements IodmsConnector {
     // The old datasets list is not used in CKAN Connector, The list of
     // Datasets IDs is used instead
 
-    Client c = new Client(new Connection(node.getHost()), node.getAPIKey());
+    Client c = new Client(new Connection(node.getHost()), node.getApiKey());
 
     OdmsSynchronizationResult syncrhoResult = new OdmsSynchronizationResult();
 
@@ -1259,7 +1257,7 @@ public class CkanConnector implements IodmsConnector {
     logger.info("Live query: " + query);
 
     logger.info("-- CKAN Connector Request sent --" + "ROWS: " + rows);
-    Client c = new Client(new Connection(node.getHost()), node.getAPIKey());
+    Client c = new Client(new Connection(node.getHost()), node.getApiKey());
     logger.info(dcatResults.size());
     Dataset.SearchResults result;
     try {

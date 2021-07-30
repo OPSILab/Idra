@@ -20,9 +20,7 @@ package it.eng.idra.utils.restclient.builders;
 
 import java.util.Map;
 import java.util.logging.Logger;
-
 import javax.ws.rs.core.MediaType;
-
 import org.apache.http.client.methods.HttpRequestBase;
 
 public abstract class HttpRequestBuilder<T extends HttpRequestBase> {

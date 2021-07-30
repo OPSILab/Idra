@@ -28,8 +28,6 @@ import javax.persistence.Id;
 import javax.persistence.SqlResultSetMapping;
 import javax.persistence.Table;
 
-
-
 @SqlResultSetMapping(name = "SearchStatisticsResult", classes = {
     @ConstructorResult(targetClass = SearchStatisticsResult.class, columns = {
         @ColumnResult(name = "live", type = Integer.class), 

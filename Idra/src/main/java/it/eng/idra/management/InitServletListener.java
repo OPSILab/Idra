@@ -22,10 +22,8 @@ import it.eng.idra.beans.IdraProperty;
 import it.eng.idra.utils.PropertyManager;
 import java.net.Authenticator;
 import java.net.PasswordAuthentication;
-
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
-
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

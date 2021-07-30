@@ -18,10 +18,10 @@
 
 package it.eng.idra.beans.dcat;
 
+import com.google.gson.annotations.SerializedName;
 import it.eng.idra.cache.CacheContentType;
 import it.eng.idra.utils.GsonUtil;
 import it.eng.idra.utils.GsonUtilException;
-
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.List;
@@ -37,7 +37,6 @@ import javax.persistence.JoinColumns;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
-
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.vocabulary.SKOS;
 import org.apache.solr.common.SolrDocument;
@@ -47,7 +46,6 @@ import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
 import org.json.JSONArray;
 import org.json.JSONObject;
-
 
 /**
  * Represents a SKOS Concept, e.g SKOSConceptTheme or SKOSConceptSubject.
@@ -73,7 +71,8 @@ public class SkosConcept implements Serializable {
   private String propertyUri;
   private List<SkosPrefLabel> prefLabel;
 
-  private transient String nodeID;
+  @SerializedName(value = "nodeID")
+  private transient String nodeId;
 
   public SkosConcept() {
   }
@@ -86,13 +85,13 @@ public class SkosConcept implements Serializable {
    * @param propertyUri the property uri
    * @param resourceUri the resource uri
    * @param prefLabel the pref label
-   * @param nodeID the node ID
+   * @param nodeId the node ID
    */
   public SkosConcept(String propertyUri, 
       String resourceUri, List<SkosPrefLabel> prefLabel,
-      String nodeID) {
+      String nodeId) {
 
-    setNodeID(nodeID);
+    setNodeId(nodeId);
     setPropertyUri(propertyUri);
     setResourceUri(resourceUri);
     setPrefLabel(prefLabel != null ? prefLabel : Arrays.asList(new SkosPrefLabel()));
@@ -119,16 +118,16 @@ public class SkosConcept implements Serializable {
     this.id = id;
   }
 
-  public String getNodeID() {
-    return nodeID;
+  public String getNodeId() {
+    return nodeId;
   }
 
-  public void setNodeID(String nodeID) {
-    this.nodeID = nodeID;
+  public void setNodeId(String nodeId) {
+    this.nodeId = nodeId;
   }
 
   @Transient
-  public static Resource getRDFClass() {
+  public static Resource getRdfClass() {
     return RDFClass;
   }
 
@@ -179,7 +178,7 @@ public class SkosConcept implements Serializable {
 
     SolrInputDocument doc = new SolrInputDocument();
     doc.addField("id", this.id);
-    doc.addField("nodeID", this.nodeID);
+    doc.addField("nodeID", this.nodeId);
     doc.addField("content_type", contentType.toString());
     doc.addField("resourceUri", this.resourceUri);
 

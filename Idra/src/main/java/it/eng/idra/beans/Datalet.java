@@ -18,6 +18,7 @@
 
 package it.eng.idra.beans;
 
+import com.google.gson.annotations.SerializedName;
 import java.io.Serializable;
 import java.time.ZonedDateTime;
 import javax.persistence.Column;
@@ -37,7 +38,8 @@ public class Datalet implements Serializable {
   private String id;
 
   @Column(name = "datalet_html", columnDefinition = "LONGTEXT")
-  private String datalet_html;
+  @SerializedName(value = "datalet_html")
+  private String dataletHtml;
 
   @Column(name = "title")
   private String title;
@@ -62,13 +64,16 @@ public class Datalet implements Serializable {
   private int views;
 
   @Column(name = "dataset_id")
-  private String datasetID;
+  @SerializedName(value = "datasetID")
+  private String datasetId;
 
   @Column(name = "nodeID")
-  private String nodeID;
+  @SerializedName(value = "nodeID")
+  private String nodeId;
 
   @Column(name = "distribution_id")
-  private String distributionID;
+  @SerializedName(value = "distributionID")
+  private String distributionId;
 
   public Datalet() {
     super();
@@ -78,25 +83,25 @@ public class Datalet implements Serializable {
    * Instantiates a new datalet.
    *
    * @param id the id
-   * @param datalet_html the datalet html
-   * @param datasetID the dataset ID
-   * @param distributionID the distribution ID
-   * @param nodeID the node ID
+   * @param dataletHtml the datalet html
+   * @param datasetId the dataset ID
+   * @param distributionId the distribution ID
+   * @param nodeId the node ID
    * @param customTitle the custom title
    * @param registerDate the register date
    * @param lastSeenDate the last seen date
    * @param views the views
    */
-  public Datalet(String id, String datalet_html,
-      String datasetID, String distributionID, String nodeID,
+  public Datalet(String id, String dataletHtml,
+      String datasetId, String distributionId, String nodeId,
       boolean customTitle, ZonedDateTime registerDate, ZonedDateTime lastSeenDate, int views) {
     super();
     this.id = id;
-    this.datalet_html = datalet_html;
-    this.datasetID = datasetID;
-    this.datasetID = datasetID;
-    this.nodeID = nodeID;
-    this.distributionID = distributionID;
+    this.dataletHtml = dataletHtml;
+    this.datasetId = datasetId;
+    this.datasetId = datasetId;
+    this.nodeId = nodeId;
+    this.distributionId = distributionId;
     this.customTitle = customTitle;
     this.registerDate = registerDate;
     this.lastSeenDate = lastSeenDate;
@@ -111,28 +116,28 @@ public class Datalet implements Serializable {
     this.id = id;
   }
 
-  public String getDistributionID() {
-    return distributionID;
+  public String getDistributionId() {
+    return distributionId;
   }
 
-  public void setDistributionID(String distributionID) {
-    this.distributionID = distributionID;
+  public void setDistributionId(String distributionId) {
+    this.distributionId = distributionId;
   }
 
-  public String getNodeID() {
-    return nodeID;
+  public String getNodeId() {
+    return nodeId;
   }
 
-  public void setNodeID(String nodeID) {
-    this.nodeID = nodeID;
+  public void setNodeId(String nodeId) {
+    this.nodeId = nodeId;
   }
 
   public String getDatalet_html() {
-    return datalet_html;
+    return dataletHtml;
   }
 
-  public void setDatalet_html(String datalet_html) {
-    this.datalet_html = datalet_html;
+  public void setDatalet_html(String dataletHtml) {
+    this.dataletHtml = dataletHtml;
   }
 
   public String getTitle() {
@@ -151,12 +156,12 @@ public class Datalet implements Serializable {
     this.description = description;
   }
 
-  public String getDatasetID() {
-    return datasetID;
+  public String getDatasetId() {
+    return datasetId;
   }
 
-  public void setDatasetID(String datasetID) {
-    this.datasetID = datasetID;
+  public void setDatasetId(String datasetId) {
+    this.datasetId = datasetId;
   }
 
   public boolean isCustomTitle() {
@@ -194,7 +199,7 @@ public class Datalet implements Serializable {
   @Override
   public String toString() {
     return "Datalet [id=" + id + ", \ndistID=" 
-        + distributionID + ", \ndatasetID=" + datasetID + ", \nnodeID=" + nodeID
+        + distributionId + ", \ndatasetID=" + datasetId + ", \nnodeID=" + nodeId
         + "]";
   }
 

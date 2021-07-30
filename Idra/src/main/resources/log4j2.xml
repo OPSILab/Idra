@@ -17,47 +17,47 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <Configuration status="INFO">
-	<Appenders>
-		<Console name="STDOUT" target="SYSTEM_OUT">
-			<PatternLayout pattern="%d %-5p %C{2} (%F:%L) - %m%n" />
-		</Console>
+<Appenders>
+<Console name="STDOUT" target="SYSTEM_OUT">
+<PatternLayout pattern="%d %-5p %C{2} (%F:%L) - %m%n" />
+</Console>
 
-<!-- 		<JPA name="jpaAppender" persistenceUnitName="loggingPersistenceUnit" -->
-<!--         	 entityClassName="it.eng.idra.beans.JpaLogEntity" /> -->
+<!-- <JPA name="jpaAppender" persistenceUnitName="loggingPersistenceUnit" -->
+<!--          entityClassName="it.eng.idra.beans.JpaLogEntity" /> -->
 
-		<!-- <JDBC name="databaseAppender" tableName="logs">
-			<ConnectionFactory class="it.eng.idra.management.DBConnectionManager"
-				method="getDbConnection" />
-			<Column name="dated" isEventTimestamp="true" />
-			<Column name="level" pattern="%level" />
-			<Column name="logger" pattern="%logger" />
-			<Column name="message" pattern="%message" />
-		</JDBC>  -->
+<!-- <JDBC name="databaseAppender" tableName="logs">
+<ConnectionFactory class="it.eng.idra.management.DBConnectionManager"
+method="getDbConnection" />
+<Column name="dated" isEventTimestamp="true" />
+<Column name="level" pattern="%level" />
+<Column name="logger" pattern="%logger" />
+<Column name="message" pattern="%message" />
+</JDBC>  -->
 
-	</Appenders>
+</Appenders>
 
-	<Loggers>
-		<Logger name="org.apache.log4j.xml" level="ERROR" />
-		<Logger name="org.hibernate" level="ERROR" />
-<!-- 		<Logger name="com.mchange.v2.c3p0" level="ERROR" /> -->
-<!-- 		<Logger name="com.mchange" level="ERROR" /> -->
-		<Logger name="com.zaxxer.hikari" level="ERROR" /> -->
+<Loggers>
+<Logger name="org.apache.log4j.xml" level="ERROR" />
+<Logger name="org.hibernate" level="ERROR" />
+<!-- <Logger name="com.mchange.v2.c3p0" level="ERROR" /> -->
+<!-- <Logger name="com.mchange" level="ERROR" /> -->
+<Logger name="com.zaxxer.hikari" level="ERROR" /> -->
 
-		<Logger name="log4j.logger.org.hibernate" level="ERROR" />
-		<Logger name="org.apache.solr" level="ERROR"></Logger>
-		<Logger name="log4j.logger.org.hibernate.SQL" level="ERROR"></Logger>
-		<Logger name="log4j.logger.org.hibernate.type" level="ERROR"></Logger>
-		<Logger name="log4j.category.org.apache.http.wire" level="FATAL"></Logger>
-		<Logger name="it.eng.idra.connectors.webscraper.RangeWorker" level="DEBUG"></Logger>
-		<Logger name="it.eng.idra.connectors.webscraper.PageWorker" level="DEBUG"></Logger>
-		
-		<!-- <Logger name="com.mchange.v2.log.MLog" level="ERROR"> -->
-		<!-- <AppenderRef ref="STDOUT" /> -->
-		<!-- </Logger> -->
-		<Root level="INFO">
-			<AppenderRef ref="STDOUT" />
-<!--  			<appender-ref ref="databaseAppender" /> -->
-<!--  			<AppenderRef ref="jpaAppender"/>  -->
-		</Root>
-	</Loggers>
+<Logger name="log4j.logger.org.hibernate" level="ERROR" />
+<Logger name="org.apache.solr" level="ERROR"></Logger>
+<Logger name="log4j.logger.org.hibernate.SQL" level="ERROR"></Logger>
+<Logger name="log4j.logger.org.hibernate.type" level="ERROR"></Logger>
+<Logger name="log4j.category.org.apache.http.wire" level="FATAL"></Logger>
+<Logger name="it.eng.idra.connectors.webscraper.RangeWorker" level="DEBUG"></Logger>
+<Logger name="it.eng.idra.connectors.webscraper.PageWorker" level="DEBUG"></Logger>
+
+<!-- <Logger name="com.mchange.v2.log.MLog" level="ERROR"> -->
+<!-- <AppenderRef ref="STDOUT" /> -->
+<!-- </Logger> -->
+<Root level="INFO">
+<AppenderRef ref="STDOUT" />
+<!--  <appender-ref ref="databaseAppender" /> -->
+<!--  <AppenderRef ref="jpaAppender"/>  -->
+</Root>
+</Loggers>
 </Configuration>

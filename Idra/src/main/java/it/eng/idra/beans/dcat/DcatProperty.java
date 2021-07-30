@@ -20,12 +20,9 @@
 package it.eng.idra.beans.dcat;
 
 import it.eng.idra.cache.CacheContentType;
-
 import java.util.UUID;
-
 import javax.persistence.Embeddable;
 import javax.persistence.Transient;
-
 import org.apache.jena.rdf.model.Property;
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.rdf.model.ResourceFactory;
@@ -60,7 +57,7 @@ public class DcatProperty {
    */
   public DcatProperty(String uri, String value) {
     // values = null;
-    setURI(uri);
+    setUri(uri);
     setValue(value);
   }
 
@@ -80,7 +77,7 @@ public class DcatProperty {
   public DcatProperty(Property property, Resource range, String value) {
     // values = null;
     setProperty(property);
-    setURI(property.getURI());
+    setUri(property.getURI());
     setRange(range);
     setValue(value);
   }
@@ -94,7 +91,7 @@ public class DcatProperty {
    */
   public DcatProperty(String uri, Resource range, String value) {
     // values = null;
-    setURI(uri);
+    setUri(uri);
     setRange(range);
     setValue(value);
   }
@@ -115,11 +112,11 @@ public class DcatProperty {
   // }
 
   @Transient
-  public String getURI() {
+  public String getUri() {
     return uri;
   }
 
-  public void setURI(String uri) {
+  public void setUri(String uri) {
     this.uri = uri != null ? uri : "";
   }
 

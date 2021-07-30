@@ -18,6 +18,7 @@
 
 package it.eng.idra.authentication.fiware.model;
 
+import com.google.gson.annotations.SerializedName;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -37,7 +38,8 @@ public class UserInfo {
   private Set<Role> roles;
   
   /** The app id. */
-  private String app_id;
+  @SerializedName(value = "app_id")
+  private String appId;
   
   /** The is gravatar enabled. */
   private boolean isGravatarEnabled;
@@ -49,10 +51,12 @@ public class UserInfo {
   private String id;
   
   /** The authorization decision. */
-  private String authorization_decision;
+  @SerializedName(value = "authorization_decision")
+  private String authorizationDecision;
   
   /** The app azf domain. */
-  private String app_azf_domain;
+  @SerializedName(value = "app_azf_domain")
+  private String appAzfDomain;
   
   /** The username. */
   private String username;
@@ -64,12 +68,12 @@ public class UserInfo {
     organizations = new HashSet<Organization>();
     displayName = new String();
     roles = new HashSet<Role>();
-    app_id = new String();
+    appId = new String();
     isGravatarEnabled = false;
     email = new String();
     id = new String();
-    authorization_decision = new String();
-    app_azf_domain = new String();
+    authorizationDecision = new String();
+    appAzfDomain = new String();
     username = new String();
   }
 
@@ -79,18 +83,18 @@ public class UserInfo {
    * @param organizations the organizations
    * @param displayName the display name
    * @param role the role
-   * @param app_id the app id
+   * @param appId the app id
    * @param isGravatarEnabled the is gravatar enabled
    * @param email the email
    * @param id the id
    */
   public UserInfo(Set<Organization> organizations,
-      String displayName, Set<Role> role, String app_id,
+      String displayName, Set<Role> role, String appId,
       boolean isGravatarEnabled, String email, String id) {
     this.organizations = organizations;
     this.displayName = displayName;
     this.roles = role;
-    this.app_id = app_id;
+    this.appId = appId;
     this.isGravatarEnabled = isGravatarEnabled;
     this.email = email;
     this.id = id;
@@ -137,17 +141,17 @@ public class UserInfo {
    *
    * @return the app id
    */
-  public String getApp_id() {
-    return app_id;
+  public String getAppId() {
+    return appId;
   }
 
   /**
    * Sets the app id.
    *
-   * @param app_id the new app id
+   * @param appId the new app id
    */
-  public void setApp_id(String app_id) {
-    this.app_id = app_id;
+  public void setAppId(String appId) {
+    this.appId = appId;
   }
 
   /**
@@ -227,17 +231,17 @@ public class UserInfo {
    *
    * @return the authorization decision
    */
-  public String getAuthorization_decision() {
-    return authorization_decision;
+  public String getAuthorizationDecision() {
+    return authorizationDecision;
   }
 
   /**
    * Sets the authorization decision.
    *
-   * @param authorization_decision the new authorization decision
+   * @param authorizationDecision the new authorization decision
    */
-  public void setAuthorization_decision(String authorization_decision) {
-    this.authorization_decision = authorization_decision;
+  public void setAuthorizationDecision(String authorizationDecision) {
+    this.authorizationDecision = authorizationDecision;
   }
 
   /**
@@ -245,17 +249,17 @@ public class UserInfo {
    *
    * @return the app azf domain
    */
-  public String getApp_azf_domain() {
-    return app_azf_domain;
+  public String getAppAzfDomain() {
+    return appAzfDomain;
   }
 
   /**
    * Sets the app azf domain.
    *
-   * @param app_azf_domain the new app azf domain
+   * @param appAzfDomain the new app azf domain
    */
-  public void setApp_azf_domain(String app_azf_domain) {
-    this.app_azf_domain = app_azf_domain;
+  public void setAppAzfDomain(String appAzfDomain) {
+    this.appAzfDomain = appAzfDomain;
   }
 
   /**

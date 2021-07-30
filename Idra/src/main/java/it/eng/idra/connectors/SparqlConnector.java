@@ -39,7 +39,6 @@ import it.eng.idra.management.OdmsManager;
 import it.eng.idra.utils.CommonUtil;
 import it.eng.idra.utils.GsonUtil;
 import it.eng.idra.utils.PropertyManager;
-
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.nio.file.Files;
@@ -51,7 +50,6 @@ import java.util.List;
 import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 import org.apache.commons.lang3.StringUtils;
 import org.apache.jena.vocabulary.DCAT;
 import org.apache.jena.vocabulary.DCTerms;
@@ -98,31 +96,31 @@ public class SparqlConnector implements IodmsConnector {
   public DcatDataset datasetToDcat(Object dataset, OdmsCatalogue node) throws Exception {
     JSONObject j = (JSONObject) dataset;
 
-    String title = null, description = null, accessRights = null, frequency = null, landingPage = null,
-        releaseDate = null, updateDate = null, identifier = null, type = null, version = null;
-
-    String publisherIdentifier = null, publisherUri = null, publisherName = null, publisherMbox = null,
-        publisherHomepage = null, publisherType = null;
-    String holderIdentifier = null, holderUri = null, holderName = null, holderMbox = null, holderHomepage = null,
-        holderType = null;
-    String creatorIdentifier = null, creatorUri = null, creatorName = null, creatorMbox = null, creatorHomepage = null,
-        creatorType = null;
-    String startDate = null, endDate = null;
-    String vCardUri = null, vCardFn = null, vCardHasEmail = null;
+    String title = null;
+    String description = null;
+    String releaseDate = null;
+    String updateDate = null;
+    String identifier = null;
     List<DctStandard> conformsTo = new ArrayList<DctStandard>();
-    FoafAgent publisher = null, rightsHolder = null, creator = null;
+    FoafAgent publisher = null;
+    FoafAgent rightsHolder = null;
+    FoafAgent creator = null;
     List<VCardOrganization> contactPointList = new ArrayList<VCardOrganization>();
     DctPeriodOfTime temporalCoverage = null;
     DctLocation spatialCoverage = null;
-    DctLicenseDocument license = null;
-    String geographicalIdentifier = null, geographicalName = null, geometry = null;
     List<SkosConceptTheme> themeList = new ArrayList<SkosConceptTheme>();
     List<SkosConceptSubject> subjectList = null;
-    List<String> keywords = new ArrayList<String>(), documentation = new ArrayList<String>(),
-        hasVersion = new ArrayList<String>(), isVersionOf = new ArrayList<String>(), language = new ArrayList<String>(),
-        provenance = new ArrayList<String>(), otherIdentifier = new ArrayList<String>(),
-        sample = new ArrayList<String>(), source = new ArrayList<String>(), versionNotes = new ArrayList<String>(),
-        relatedResource = new ArrayList<String>();
+    List<String> keywords = new ArrayList<String>();
+    List<String> documentation = new ArrayList<String>();
+    List<String> hasVersion = new ArrayList<String>();
+    List<String> isVersionOf = new ArrayList<String>();
+    List<String> language = new ArrayList<String>();
+    List<String> provenance = new ArrayList<String>();
+    List<String> otherIdentifier = new ArrayList<String>();
+    List<String> sample = new ArrayList<String>();
+    List<String> source = new ArrayList<String>();
+    List<String> versionNotes = new ArrayList<String>();
+    List<String> relatedResource = new ArrayList<String>();
 
     List<DcatDistribution> distributionList = new ArrayList<DcatDistribution>();
 
@@ -275,11 +273,15 @@ public class SparqlConnector implements IodmsConnector {
       versionNotes = GsonUtil.json2Obj(
           j.getJSONArray("versionNotes").toString(), GsonUtil.stringListType);
     }
-
+    String accessRights = null;
     accessRights = j.optString("accessRight", null);
+    String landingPage = null;
     landingPage = j.optString("landingPage", null);
+    String type = null;
     type = j.optString("type", null);
+    String version = null;
     version = j.optString("version", null);
+    String frequency = null;
     frequency = j.optString("frequency", null);
 
     if (j.has("releaseDate")) {
@@ -295,7 +297,9 @@ public class SparqlConnector implements IodmsConnector {
           j.getJSONObject("spatialCoverage").optString("geographicalName", null),
           j.getJSONObject("spatialCoverage").optString("geometry", null), nodeId);
     }
-
+    
+    String startDate = null;
+    String endDate = null;
     if (StringUtils.isNotBlank(startDate) 
         && StringUtils.isNotBlank(endDate)) {
       temporalCoverage = new DctPeriodOfTime(DCTerms.temporal.getURI(), startDate, endDate, nodeId);
@@ -318,7 +322,7 @@ public class SparqlConnector implements IodmsConnector {
             }
             SparqlDistributionConfig conf = new SparqlDistributionConfig();
             conf.setQuery(o.getString("query"));
-            conf.setNodeID(nodeId);
+            conf.setNodeId(nodeId);
             conf.setFormats(o.optString("formats", ""));
             // TODO: add validation for query
             List<String> formats = 
@@ -360,7 +364,7 @@ public class SparqlConnector implements IodmsConnector {
   public DcatDistribution getSparqlDistribution(JSONObject tmp,
       String format, SparqlDistributionConfig c) {
     DcatDistribution distro = new DcatDistribution();
-    distro.setNodeID(nodeId);
+    distro.setNodeId(nodeId);
     // downloadURL e accessURL vengono settati dal metadata cache manager
     distro.setFormat(format);
 
@@ -381,8 +385,8 @@ public class SparqlConnector implements IodmsConnector {
 
     String url = node.getHost() + "?" + query;
 
-    distro.setAccessURL(url);
-    distro.setDownloadURL(url);
+    distro.setAccessUrl(url);
+    distro.setDownloadUrl(url);
 
     distro.setDescription(tmp.optString("description"));
     distro.setTitle(tmp.optString("title"));

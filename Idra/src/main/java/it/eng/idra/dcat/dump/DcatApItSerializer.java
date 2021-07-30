@@ -26,9 +26,7 @@ import it.eng.idra.beans.dcat.FoafAgent;
 import it.eng.idra.beans.dcat.VCardOrganization;
 import it.eng.idra.beans.odms.OdmsCatalogue;
 import it.eng.idra.utils.CommonUtil;
-
 import java.util.List;
-
 import org.apache.commons.lang.StringUtils;
 import org.apache.jena.datatypes.xsd.impl.XSDDateType;
 import org.apache.jena.iri.IRI;
@@ -130,7 +128,7 @@ public class DcatApItSerializer extends DcatApSerializer {
       addDistributionToModel(model, datasetResource, distribution);
     }
 
-    OdmsCatalogue node = nodeResources.get(new Integer(dataset.getNodeID()));
+    OdmsCatalogue node = nodeResources.get(new Integer(dataset.getNodeId()));
 
     /*
      * Add the Catalogue with the Dataset to the global Model
@@ -209,7 +207,7 @@ public class DcatApItSerializer extends DcatApSerializer {
           // Add all properties to the Resource, that is the object of the
           // contactPoint property
           contactPointR.addProperty(RDF.type, VCARD4.Kind)
-              .addProperty(RDF.type, VCardOrganization.getRDFClass())
+              .addProperty(RDF.type, VCardOrganization.getRdfClass())
               .addLiteral(contactPoint.getFn().getProperty(), contactPoint.getFn().getValue());
           // .addProperty(VCARD4.hasTelephone, telephoneResource);
           if (!contactPointR.hasProperty(VCARD4.hasTelephone)) {
@@ -244,7 +242,7 @@ public class DcatApItSerializer extends DcatApSerializer {
             addDcatPropertyAsResource(contactPoint.getHasEmail(), contactPointR, model, false);
           }
 
-          addDcatPropertyAsResource(contactPoint.getHasURL(), contactPointR, model, false);
+          addDcatPropertyAsResource(contactPoint.getHasUrl(), contactPointR, model, false);
 
           // Add contactPoint property to the dataset Resource;
           datasetResource.addProperty(model.createProperty(contactPoint.getPropertyUri()),
@@ -276,7 +274,7 @@ public class DcatApItSerializer extends DcatApSerializer {
       addDcatPropertyAsLiteral(agent.getType(), agentResource, model);
       addDcatPropertyAsLiteral(agent.getIdentifier(), agentResource, model);
       addDcatPropertyAsResource(agent.getHomepage(), agentResource, model, false);
-      addDcatPropertyAsLiteral(new DcatProperty(RDF.type, null, FoafAgent.getRDFClass().getURI()),
+      addDcatPropertyAsLiteral(new DcatProperty(RDF.type, null, FoafAgent.getRdfClass().getURI()),
           agentResource, model);
 
       parentResource.addProperty(model.createProperty(agent.getPropertyUri()), agentResource);
@@ -289,7 +287,7 @@ public class DcatApItSerializer extends DcatApSerializer {
 
     if (temporalCoverage != null) {
       datasetResource.addProperty(model.createProperty(temporalCoverage.getUri()),
-          model.createResource(DctPeriodOfTime.getRDFClass())
+          model.createResource(DctPeriodOfTime.getRdfClass())
               .addProperty(startDateProp, temporalCoverage.getStartDate().getValue(),
                   XSDDateType.XSDdate)
               .addProperty(endDateProp, temporalCoverage.getEndDate().getValue(),
@@ -300,9 +298,9 @@ public class DcatApItSerializer extends DcatApSerializer {
   private static void addDistributionToModel(Model model, Resource datasetResource,
       DcatDistribution distribution) {
 
-    Resource distResource = model.createResource(DcatDistribution.getRDFClass());
+    Resource distResource = model.createResource(DcatDistribution.getRdfClass());
 
-    addDcatPropertyAsResource(distribution.getAccessURL(), distResource, model, false);
+    addDcatPropertyAsResource(distribution.getAccessUrl(), distResource, model, false);
 
     addDcatPropertyAsLiteral(distribution.getDescription(), distResource, model);
 
@@ -312,7 +310,7 @@ public class DcatApItSerializer extends DcatApSerializer {
 
     addDcatPropertyAsLiteral(distribution.getByteSize(), distResource, model);
 
-    addDcatPropertyAsResource(distribution.getDownloadURL(), distResource, model, false);
+    addDcatPropertyAsResource(distribution.getDownloadUrl(), distResource, model, false);
 
     distResource.addProperty(distribution.getUpdateDate().getProperty(),
         distribution.getUpdateDate().getValue(), XSDDateType.XSDdateTime);

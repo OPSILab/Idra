@@ -40,7 +40,6 @@ import java.time.ZonedDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
-
 import javax.persistence.EntityExistsException;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -51,7 +50,6 @@ import javax.persistence.Persistence;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import javax.ws.rs.NotFoundException;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.Hibernate;
@@ -578,7 +576,7 @@ public class PersistenceManager {
     TypedQuery<RemoteCatalogue> q = em.createQuery("SELECT d FROM RemoteCatalogue d ",
         RemoteCatalogue.class);
     catalogues = (HashMap<String, String>) q.getResultList().stream()
-        .collect(Collectors.toMap(RemoteCatalogue::getCatalogueName, RemoteCatalogue::getURL));
+        .collect(Collectors.toMap(RemoteCatalogue::getCatalogueName, RemoteCatalogue::getUrl));
     return catalogues;
   }
 

@@ -25,7 +25,6 @@ import it.eng.idra.beans.search.SparqlResultFormat;
 import it.eng.idra.management.FederationCore;
 import it.eng.idra.management.RdfPrefixManager;
 import it.eng.idra.utils.PropertyManager;
-
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -51,7 +50,6 @@ import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.shared.JenaException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
 import org.eclipse.rdf4j.model.IRI;
 import org.eclipse.rdf4j.model.ValueFactory;
 import org.eclipse.rdf4j.repository.Repository;
@@ -60,8 +58,6 @@ import org.eclipse.rdf4j.repository.RepositoryException;
 import org.eclipse.rdf4j.repository.http.HTTPRepository;
 import org.eclipse.rdf4j.rio.RDFFormat;
 import org.eclipse.rdf4j.rio.RDFParseException;
-
-
 
 /**
  * Java class to manage Linked Open Data in the Open Data Federation. This class

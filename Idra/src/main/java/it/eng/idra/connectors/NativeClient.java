@@ -24,7 +24,6 @@ import it.eng.idra.beans.odms.OdmsCatalogueForbiddenException;
 import it.eng.idra.beans.odms.OdmsCatalogueNotFoundException;
 import it.eng.idra.beans.odms.OdmsCatalogueOfflineException;
 import it.eng.idra.utils.PropertyManager;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;

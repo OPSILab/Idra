@@ -34,19 +34,17 @@ import it.eng.idra.beans.odms.OdmsManagerException;
 import it.eng.idra.beans.odms.OdmsSynchLock;
 import it.eng.idra.beans.orion.OrionCatalogueConfiguration;
 import it.eng.idra.connectors.IodmsConnector;
+import it.eng.idra.dcat.dump.DcatApDeserializer;
 import it.eng.idra.dcat.dump.DcatApItDeserializer;
 import it.eng.idra.dcat.dump.DcatApSerializer;
-import it.eng.idra.dcat.dump.DcatApDeserializer;
 import it.eng.idra.utils.CommonUtil;
 import it.eng.idra.utils.PropertyManager;
-
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
-
 import org.apache.commons.lang.StringUtils;
 import org.apache.jena.rdf.model.Model;
 import org.apache.logging.log4j.LogManager;
@@ -150,7 +148,7 @@ public class OdmsManager {
    *
    * @return the odms catalogues
    */
-  public static List<OdmsCatalogue> getOdmsCatalogues() {
+  public static List<OdmsCatalogue> getOdmsCataloguesList() {
 
     while (getNodesLock) {
       try {
@@ -439,7 +437,7 @@ public class OdmsManager {
           if (node.getNodeType().equals(OdmsCatalogueType.DCATDUMP)) {
             if (StringUtils.isNotBlank(node.getDumpString())) {
               Model m = null;
-              switch (node.getDCATProfile()) {
+              switch (node.getDcatProfile()) {
 
                 case DCATAP_IT:
                   m = new DcatApItDeserializer().dumpToModel(node.getDumpString(), node);
@@ -815,7 +813,7 @@ public class OdmsManager {
     try {
 
       return manageBeansJpa
-          .jpaGetMessagesCount(getOdmsCatalogues().stream()
+          .jpaGetMessagesCount(getOdmsCataloguesList().stream()
               .map(node -> node.getId()).collect(Collectors.toList()));
 
     } catch (Exception e) {

@@ -35,7 +35,6 @@ import it.eng.idra.management.OdmsManager;
 import it.eng.idra.management.StatisticsManager;
 import it.eng.idra.search.EuroVocTranslator;
 import it.eng.idra.utils.PropertyManager;
-
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.time.Duration;
@@ -47,14 +46,12 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-
 import java.util.stream.Collectors;
 import javax.persistence.EntityExistsException;
 import javax.persistence.RollbackException;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
 import org.apache.solr.client.solrj.SolrClient;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrQuery.SortClause;
@@ -69,10 +66,6 @@ import org.apache.solr.common.SolrException;
 import org.apache.solr.core.CoreContainer;
 import org.eclipse.rdf4j.repository.RepositoryException;
 import org.eclipse.rdf4j.rio.RDFParseException;
-
-
-
-
 
 // TODO: Auto-generated Javadoc
 /**
@@ -433,7 +426,7 @@ public class MetadataCacheManager {
     // System.out.println(dataset.getId()+" "+dataset.getNodeID());
     server.deleteByQuery(
         "_root_:" + "\"" + matchingDataset.getId() 
-        + "\"" + " AND nodeID:" + matchingDataset.getNodeID());
+        + "\"" + " AND nodeID:" + matchingDataset.getNodeId());
     server.commit();
 
     jpaInstance.jpaClose();
@@ -1784,7 +1777,7 @@ public class MetadataCacheManager {
 
     boolean hasStoredRdf = false;
     List<DcatDistribution> distributionsToAdd = 
-        dataset.getDistributions().stream().filter(x -> x.isRDF())
+        dataset.getDistributions().stream().filter(x -> x.isRdf())
         .collect(Collectors.toList());
 
     if (distributionsToAdd != null && !distributionsToAdd.isEmpty()) {
@@ -1793,35 +1786,35 @@ public class MetadataCacheManager {
 
         // if (dist.isRDF()) {
 
-        logger.info("Adding new RDF to LODCache - " + dist.getAccessURL().getValue());
+        logger.info("Adding new RDF to LODCache - " + dist.getAccessUrl().getValue());
         try {
 
           int rdfAdded;
-          if (dist.getAccessURL().getValue().contains("'")) {
-            rdfAdded = LodCacheManager.addRdf(dist.getAccessURL().getValue().split("'")[1]);
+          if (dist.getAccessUrl().getValue().contains("'")) {
+            rdfAdded = LodCacheManager.addRdf(dist.getAccessUrl().getValue().split("'")[1]);
           } else {
-            rdfAdded = LodCacheManager.addRdf(dist.getAccessURL().getValue());
+            rdfAdded = LodCacheManager.addRdf(dist.getAccessUrl().getValue());
           }
 
           // Set to true the "storedRDF" flag if
           // adding RDF was successful
           if (rdfAdded != 0) {
             hasStoredRdf = true;
-            dist.setStoredRDF(true);
+            dist.setStoredRdf(true);
 
             // cachePersistence.jpaUpdateDistribution(dist, getTransaction);
             logger.info("Adding new RDF to LODCache - " 
-                 + dist.getAccessURL().getValue() + " -Successful");
+                 + dist.getAccessUrl().getValue() + " -Successful");
           } else {
             logger.info("Adding new RDF to LODCache - " 
-                 + dist.getAccessURL().getValue() + " - Skipped");
+                 + dist.getAccessUrl().getValue() + " - Skipped");
 
           }
 
         } catch (Exception e) {
 
           logger.error("Exception while adding rdf: " 
-              + dist.getAccessURL().getValue() + " " + e.getMessage()
+              + dist.getAccessUrl().getValue() + " " + e.getMessage()
               + "\n Then this RDF was skipped and not stored on LODCache");
 
         }
@@ -1834,7 +1827,7 @@ public class MetadataCacheManager {
      * distribution with RDF stored in LODCache
      */
     if (hasStoredRdf) {
-      dataset.setHasStoredRDF(hasStoredRdf);
+      dataset.setHasStoredRdf(hasStoredRdf);
     }
     // cachePersistence.jpaUpdateDataset(dataset, getTransaction);
     distributionsToAdd = null;
@@ -1869,8 +1862,8 @@ public class MetadataCacheManager {
         url = internalApi + "/" + distroConf.getId() 
             + "/catalogue/" + node.getId(); // dovrei mettere l'id
       }
-      distribution.setDownloadURL(url);
-      distribution.setAccessURL(url);
+      distribution.setDownloadUrl(url);
+      distribution.setAccessUrl(url);
       cachePersistence.jpaUpdateDistribution(distribution, false);
     }
   }

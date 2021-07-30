@@ -19,7 +19,6 @@
 package it.eng.idra.beans.search;
 
 import it.eng.idra.utils.JsonRequired;
-
 import java.util.List;
 
 public class SearchRequest {

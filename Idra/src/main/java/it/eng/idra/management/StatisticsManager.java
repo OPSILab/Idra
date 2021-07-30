@@ -40,7 +40,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 import org.apache.commons.lang.WordUtils;
 import org.joda.time.DateTime;
 import org.json.JSONArray;
@@ -99,12 +98,12 @@ public class StatisticsManager {
 
       } else {
 
-        odmsStat.incAdded_datasets(addedDataset);
-        odmsStat.incDeleted_datasets(deletedDataset);
-        odmsStat.incUpdated_datasets(updatedDataset);
-        odmsStat.incAdded_RDF(addedRdf);
-        odmsStat.incDeleted_RDF(deletedRdf);
-        odmsStat.incUpdated_RDF(updatedRdf);
+        odmsStat.incAddedDatasets(addedDataset);
+        odmsStat.incDeletedDatasets(deletedDataset);
+        odmsStat.incUpdatedDatasets(updatedDataset);
+        odmsStat.incAddedRdf(addedRdf);
+        odmsStat.incDeletedRdf(deletedRdf);
+        odmsStat.incUpdatedRdf(updatedRdf);
         manageBeansJpa.updateOdmsStatistics(odmsStat);
       }
 
@@ -612,9 +611,9 @@ public class StatisticsManager {
       added.put(stats.getAdded());
       deleted.put(stats.getDeleted());
       updated.put(stats.getUpdated());
-      addedRdf.put(stats.getAdded_RDF());
-      deletedRdf.put(stats.getDeleted_RDF());
-      updatedRdf.put(stats.getUpdated_RDF());
+      addedRdf.put(stats.getAddedRdf());
+      deletedRdf.put(stats.getDeletedRdf());
+      updatedRdf.put(stats.getUpdatedRdf());
 
       switch (aggregationLevel.name()) {
         case "day":
@@ -651,9 +650,9 @@ public class StatisticsManager {
         added.put(stats.getAdded());
         deleted.put(stats.getDeleted());
         updated.put(stats.getUpdated());
-        addedRdf.put(stats.getAdded_RDF());
-        deletedRdf.put(stats.getDeleted_RDF());
-        updatedRdf.put(stats.getUpdated_RDF());
+        addedRdf.put(stats.getAddedRdf());
+        deletedRdf.put(stats.getDeletedRdf());
+        updatedRdf.put(stats.getUpdatedRdf());
 
         label.put(endDate.getYear() + "-" + getMonthForInt(endDate.getMonthValue()));
       }
@@ -667,9 +666,9 @@ public class StatisticsManager {
         added.put(stats.getAdded());
         deleted.put(stats.getDeleted());
         updated.put(stats.getUpdated());
-        addedRdf.put(stats.getAdded_RDF());
-        deletedRdf.put(stats.getDeleted_RDF());
-        updatedRdf.put(stats.getUpdated_RDF());
+        addedRdf.put(stats.getAddedRdf());
+        deletedRdf.put(stats.getDeletedRdf());
+        updatedRdf.put(stats.getUpdatedRdf());
         label.put(endDate.getYear());
       }
 
@@ -766,9 +765,9 @@ public class StatisticsManager {
       added.put(stats.getAdded());
       deleted.put(stats.getDeleted());
       updated.put(stats.getUpdated());
-      addedRdf.put(stats.getAdded_RDF());
-      deletedRdf.put(stats.getDeleted_RDF());
-      updatedRdf.put(stats.getUpdated_RDF());
+      addedRdf.put(stats.getAddedRdf());
+      deletedRdf.put(stats.getDeletedRdf());
+      updatedRdf.put(stats.getUpdatedRdf());
       label.put(nodesId[i]);
     }
 

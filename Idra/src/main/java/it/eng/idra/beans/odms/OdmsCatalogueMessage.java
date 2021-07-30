@@ -18,6 +18,7 @@
 
 package it.eng.idra.beans.odms;
 
+import com.google.gson.annotations.SerializedName;
 import java.time.ZonedDateTime;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -36,7 +37,8 @@ public class OdmsCatalogueMessage {
   private int id;
 
   @Column(name = "nodeID", unique = false, nullable = false)
-  private int nodeID;
+  @SerializedName(value = "nodeID")
+  private int nodeId;
 
   @Column(name = "message", unique = false, nullable = false, columnDefinition = "LONGTEXT")
   private String message;
@@ -53,14 +55,14 @@ public class OdmsCatalogueMessage {
    * Instantiates a new odms catalogue message.
    *
    * @param id the id
-   * @param nodeID the node ID
+   * @param nodeId the node ID
    * @param message the message
    * @param date the date
    */
-  public OdmsCatalogueMessage(int id, int nodeID, String message, ZonedDateTime date) {
+  public OdmsCatalogueMessage(int id, int nodeId, String message, ZonedDateTime date) {
     super();
     this.id = id;
-    this.nodeID = nodeID;
+    this.nodeId = nodeId;
     this.message = message;
     this.date = date;
   }
@@ -68,13 +70,13 @@ public class OdmsCatalogueMessage {
   /**
    * Instantiates a new odms catalogue message.
    *
-   * @param nodeID the node ID
+   * @param nodeId the node ID
    * @param message the message
    * @param date the date
    */
-  public OdmsCatalogueMessage(int nodeID, String message, ZonedDateTime date) {
+  public OdmsCatalogueMessage(int nodeId, String message, ZonedDateTime date) {
     super();
-    this.nodeID = nodeID;
+    this.nodeId = nodeId;
     this.message = message;
     this.date = date;
   }
@@ -87,12 +89,12 @@ public class OdmsCatalogueMessage {
     this.id = id;
   }
 
-  public int getNodeID() {
-    return nodeID;
+  public int getNodeId() {
+    return nodeId;
   }
 
-  public void setNodeID(int nodeID) {
-    this.nodeID = nodeID;
+  public void setNodeId(int nodeId) {
+    this.nodeId = nodeId;
   }
 
   public String getMessage() {

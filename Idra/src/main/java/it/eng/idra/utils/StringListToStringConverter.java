@@ -22,7 +22,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import javax.persistence.AttributeConverter;
-
 import org.apache.commons.lang3.StringUtils;
 
 public class StringListToStringConverter implements AttributeConverter<List<String>, String> {

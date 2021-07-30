@@ -27,7 +27,6 @@ import it.eng.idra.beans.odms.OdmsCatalogue;
 import it.eng.idra.cache.LodCacheManager;
 import it.eng.idra.cache.MetadataCacheManager;
 import it.eng.idra.utils.PropertyManager;
-
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;

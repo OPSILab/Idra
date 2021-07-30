@@ -18,14 +18,13 @@
 
 package it.eng.idra.beans.dcat;
 
+import com.google.gson.annotations.SerializedName;
 import it.eng.idra.cache.CacheContentType;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
-
 import javax.persistence.AttributeOverride;
 import javax.persistence.AttributeOverrides;
 import javax.persistence.CollectionTable;
@@ -38,7 +37,6 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.Table;
 import javax.persistence.Transient;
-
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.rdf.model.ResourceFactory;
 import org.apache.jena.vocabulary.DCTerms;
@@ -63,7 +61,8 @@ public class DctStandard implements Serializable {
   private String uri;
 
   private String id;
-  private transient String nodeID;
+  @SerializedName(value = "nodeID")
+  private transient String nodeId;
   private DcatProperty identifier;
   private DcatProperty title;
   private DcatProperty description;
@@ -80,16 +79,16 @@ public class DctStandard implements Serializable {
    * @param title the title
    * @param description the description
    * @param referenceDocumentation the reference documentation
-   * @param nodeID the node ID
+   * @param nodeId the node ID
    */
   public DctStandard(String uri, String identifier, 
       String title, String description,
       List<String> referenceDocumentation,
-      String nodeID) {
+      String nodeId) {
 
     super();
     setUri(uri);
-    this.nodeID = nodeID;
+    this.nodeId = nodeId;
     setIdentifier(new DcatProperty(DCTerms.identifier, RDFS.Literal, identifier));
     setTitle(new DcatProperty(DCTerms.title, RDFS.Literal, title));
     setDescription(new DcatProperty(DCTerms.description, RDFS.Literal, description));
@@ -174,16 +173,16 @@ public class DctStandard implements Serializable {
   }
 
   //@Id
-  public String getNodeID() {
-    return nodeID;
+  public String getNodeId() {
+    return nodeId;
   }
 
-  public void setNodeID(String nodeID) {
-    this.nodeID = nodeID;
+  public void setNodeId(String nodeId) {
+    this.nodeId = nodeId;
   }
 
   @Transient
-  public static Resource getRDFClass() {
+  public static Resource getRdfClass() {
     return RDFClass;
   }
 
@@ -196,7 +195,7 @@ public class DctStandard implements Serializable {
   public SolrInputDocument toDoc(CacheContentType contentType) {
     SolrInputDocument doc = new SolrInputDocument();
     doc.addField("id", this.id);
-    doc.addField("nodeID", this.nodeID);
+    doc.addField("nodeID", this.nodeId);
     doc.addField("content_type", contentType.toString());
     doc.addField("uri", this.uri);
     doc.addField("identifier", this.getIdentifier().getValue());

@@ -32,7 +32,6 @@ import it.eng.idra.beans.dcat.DctPeriodOfTime;
 import it.eng.idra.beans.dcat.DctStandard;
 import it.eng.idra.beans.dcat.FoafAgent;
 import it.eng.idra.beans.dcat.SkosConcept;
-import it.eng.idra.beans.dcat.SkosConceptSubject;
 import it.eng.idra.beans.dcat.SkosConceptTheme;
 import it.eng.idra.beans.dcat.SkosPrefLabel;
 import it.eng.idra.beans.dcat.SpdxChecksum;
@@ -48,7 +47,6 @@ import it.eng.idra.utils.GsonUtil;
 import it.eng.idra.utils.GsonUtilException;
 import it.eng.idra.utils.restclient.RestClient;
 import it.eng.idra.utils.restclient.RestClientImpl;
-
 import java.lang.reflect.InvocationTargetException;
 import java.net.MalformedURLException;
 import java.text.ParseException;
@@ -66,7 +64,6 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
-
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpResponse;
 import org.apache.jena.vocabulary.DCAT;
@@ -77,7 +74,6 @@ import org.ckan.CKANException;
 import org.ckan.Extra;
 import org.ckan.Resource;
 import org.ckan.Tag;
-
 
 public class SpodConnector implements IodmsConnector {
 
@@ -406,7 +402,8 @@ public class SpodConnector implements IodmsConnector {
             break;
           case "theme":
             themeList
-                .addAll(extractConceptList(DCAT.theme.getURI(), extractValueList(e.getValue()), SkosConceptTheme.class));
+                .addAll(extractConceptList(DCAT.theme.getURI(), 
+                    extractValueList(e.getValue()), SkosConceptTheme.class));
             break;
           case "access_rights":
             accessRights = e.getValue();
@@ -471,6 +468,7 @@ public class SpodConnector implements IodmsConnector {
             } else {
               version = tempVer;
             }
+            break;
           case "version_notes":
             versionNotes = extractValueList(e.getValue());
             break;

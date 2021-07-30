@@ -20,9 +20,7 @@ package it.eng.idra.utils.restclient;
 
 import java.net.MalformedURLException;
 import java.util.Map;
-
 import javax.ws.rs.core.MediaType;
-
 import org.apache.http.HttpResponse;
 
 public interface RestClient {

@@ -18,8 +18,8 @@
 
 package it.eng.idra.beans.dcat;
 
+import com.google.gson.annotations.SerializedName;
 import it.eng.idra.cache.CacheContentType;
-
 import javax.persistence.AttributeOverride;
 import javax.persistence.AttributeOverrides;
 import javax.persistence.Column;
@@ -29,7 +29,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Transient;
-
 import org.apache.commons.lang.StringUtils;
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.sparql.vocabulary.FOAF;
@@ -49,7 +48,9 @@ public class DctLicenseDocument {
   private static final transient Resource RDFClass = DCTerms.LicenseDocument;
 
   private String id;
-  private transient String nodeID;
+  
+  @SerializedName(value = "nodeID")
+  private transient String nodeId;
 
   private String uri;
   private DcatProperty name;
@@ -66,13 +67,13 @@ public class DctLicenseDocument {
    * @param name the name
    * @param type the type
    * @param versionInfo the version info
-   * @param nodeID the node ID
+   * @param nodeId the node ID
    */
   public DctLicenseDocument(String uri, String name, String type, 
-      String versionInfo, String nodeID) {
+      String versionInfo, String nodeId) {
 
     setUri(uri);
-    this.nodeID = nodeID;
+    this.nodeId = nodeId;
     setName(new DcatProperty(FOAF.name, RDFS.Literal, name));
     setVersionInfo(new DcatProperty(OWL.versionInfo, RDFS.Literal, versionInfo));
     setType(new DcatProperty(DCTerms.type, SKOS.Concept, type));
@@ -141,16 +142,16 @@ public class DctLicenseDocument {
     this.uri = StringUtils.isNotBlank(uri) ? uri : DCTerms.license.getURI();
   }
 
-  public String getNodeID() {
-    return nodeID;
+  public String getNodeId() {
+    return nodeId;
   }
 
-  public void setNodeID(String nodeID) {
-    this.nodeID = nodeID;
+  public void setNodeId(String nodeId) {
+    this.nodeId = nodeId;
   }
 
   @Transient
-  public static Resource getRDFClass() {
+  public static Resource getRdfClass() {
     return RDFClass;
   }
 
@@ -163,7 +164,7 @@ public class DctLicenseDocument {
   public SolrInputDocument toDoc(CacheContentType contentType) {
     SolrInputDocument doc = new SolrInputDocument();
     doc.addField("id", this.id);
-    doc.addField("nodeID", this.nodeID);
+    doc.addField("nodeID", this.nodeId);
     doc.addField("content_type", contentType.toString());
     doc.addField("uri", StringUtils.isNotBlank(this.uri) ? this.uri : "");
     doc.addField("name", this.name != null ? this.name.getValue() : "");

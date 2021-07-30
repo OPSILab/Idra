@@ -18,7 +18,6 @@
 
 package it.eng.idra.scheduler.exception;
 
-
 public class SchedulerNotInitialisedException extends Exception {
   
   private static final long serialVersionUID = -4091208752860181734L;

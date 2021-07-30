@@ -3,7 +3,6 @@ package it.eng.idra.connectors;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
 import com.google.common.collect.Sets.SetView;
-
 import it.eng.idra.beans.dcat.DcatDataset;
 import it.eng.idra.beans.dcat.DcatDistribution;
 import it.eng.idra.beans.dcat.DctLicenseDocument;
@@ -22,7 +21,6 @@ import it.eng.idra.beans.odms.OdmsSynchronizationResult;
 import it.eng.idra.utils.CommonUtil;
 import it.eng.idra.utils.restclient.RestClient;
 import it.eng.idra.utils.restclient.RestClientImpl;
-
 import java.lang.reflect.InvocationTargetException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -34,9 +32,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.TimeZone;
-
 import javax.ws.rs.core.MediaType;
-
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpResponse;
 import org.apache.jena.rdf.model.Property;
@@ -47,7 +43,6 @@ import org.apache.logging.log4j.Logger;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
 
 @SuppressWarnings("deprecation")
 public class JunarConnector implements IodmsConnector {
@@ -100,7 +95,7 @@ public class JunarConnector implements IodmsConnector {
 
     Optional<String> returnedJson = Optional
         .ofNullable(sendGetRequest(node.getHost() 
-            + "/api/v2/resources?auth_key=" + node.getAPIKey() + "&format=json"));
+            + "/api/v2/resources?auth_key=" + node.getApiKey() + "&format=json"));
 
     if (!returnedJson.isPresent()) {
       throw new OdmsCatalogueOfflineException(" The ODMS node is currently unreachable");
@@ -190,7 +185,7 @@ public class JunarConnector implements IodmsConnector {
     String frequency = null;
     frequency = dataset.optString("frequency");
     ArrayList<DcatDistribution> distributionList = new ArrayList<DcatDistribution>();
-    distributionList = retrieveDistributionList(dataset, node.getAPIKey());
+    distributionList = retrieveDistributionList(dataset, node.getApiKey());
 
     return new DcatDataset(nodeId, identifier, title, description,
         distributionList, themeList, publisher,
@@ -378,9 +373,5 @@ public class JunarConnector implements IodmsConnector {
       throw e;
     }
   }
-
-//  private static boolean isSet(String string) {
-//    return string != null && string.length() > 0;
-//  }
 
 }

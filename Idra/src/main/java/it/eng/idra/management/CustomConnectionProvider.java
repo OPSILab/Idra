@@ -21,7 +21,6 @@ package it.eng.idra.management;
 import it.eng.idra.beans.IdraProperty;
 import java.util.Map;
 import java.util.Optional;
-
 import org.hibernate.HibernateException;
 import org.hibernate.hikaricp.internal.HikariCPConnectionProvider;
 

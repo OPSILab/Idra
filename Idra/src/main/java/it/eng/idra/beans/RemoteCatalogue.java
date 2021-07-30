@@ -18,6 +18,7 @@
 
 package it.eng.idra.beans;
 
+import com.google.gson.annotations.SerializedName;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -38,7 +39,8 @@ public class RemoteCatalogue {
   private String catalogueName;
 
   @Column(name = "URL", unique = false)
-  private String URL;
+  @SerializedName(value = "URL")
+  private String url;
 
   @Column(name = "editable", unique = false)
   private boolean editable;
@@ -50,7 +52,8 @@ public class RemoteCatalogue {
   private String password;
 
   @Column(name = "clientID", unique = false)
-  private String clientID;
+  @SerializedName(value = "clientID")
+  private String clientId;
 
   @Column(name = "clientSecret", unique = false)
   private String clientSecret;
@@ -81,12 +84,12 @@ public class RemoteCatalogue {
     this.catalogueName = catName;
   }
 
-  public String getURL() {
-    return URL;
+  public String getUrl() {
+    return url;
   }
 
-  public void setURL(String newURL) {
-    this.URL = newURL;
+  public void setUrl(String newUrl) {
+    this.url = newUrl;
   }
 
   public boolean getEditable() {
@@ -113,12 +116,12 @@ public class RemoteCatalogue {
     this.password = password;
   }
 
-  public String getClientID() {
-    return clientID;
+  public String getClientId() {
+    return clientId;
   }
 
-  public void setClientID(String clientID) {
-    this.clientID = clientID;
+  public void setClientId(String clientId) {
+    this.clientId = clientId;
   }
 
   public String getClientSecret() {
@@ -140,10 +143,10 @@ public class RemoteCatalogue {
   @Override
   public String toString() {
     return "\nRemoteCatalogue [id=" + id 
-        + ", catalogueName=" + catalogueName + ", URL=" + URL + ", editable="
+        + ", catalogueName=" + catalogueName + ", URL=" + url + ", editable="
         + editable + ", isIdra=" + isIdra 
         + ", username=" + username + ", password=" + password + ", clientID="
-        + clientID + ", clientSecret=" + clientSecret + ", portal=" + portal + "]";
+        + clientId + ", clientSecret=" + clientSecret + ", portal=" + portal + "]";
   }
 
 }

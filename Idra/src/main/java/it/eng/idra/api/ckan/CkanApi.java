@@ -11,11 +11,9 @@ import it.eng.idra.cache.MetadataCacheManager;
 import it.eng.idra.management.FederationCore;
 import it.eng.idra.search.FederatedSearch;
 import it.eng.idra.utils.GsonUtil;
-
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
@@ -26,7 +24,6 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
-
 import org.apache.commons.lang3.StringUtils;
 import org.ckan.Dataset;
 import org.json.JSONObject;
@@ -188,7 +185,7 @@ public class CkanApi {
         OdmsCatalogue cat = FederationCore.getOdmsCatalogue(Integer.parseInt(catalogueIdentifier));
         if (cat.isActive()) {
           DcatDataset result = MetadataCacheManager.getDatasetById(datasetIdentifier);
-          if (result.getNodeID().equals(catalogueIdentifier)) {
+          if (result.getNodeId().equals(catalogueIdentifier)) {
             res.setResult(CkanUtils.toCkanDataset(result));
           } else {
             CkanErrorResponse err = new CkanErrorResponse("",

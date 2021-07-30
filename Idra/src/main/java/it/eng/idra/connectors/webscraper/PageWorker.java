@@ -24,7 +24,6 @@ import it.eng.idra.beans.webscraper.NavigationType;
 import it.eng.idra.beans.webscraper.NavigationTypeNotValidException;
 import it.eng.idra.beans.webscraper.UrlNotParseableException;
 import it.eng.idra.utils.PropertyManager;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -32,14 +31,11 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
-
-
 
 public class PageWorker implements Runnable {
 

@@ -19,10 +19,8 @@
 package it.eng.idra.beans.dcat;
 
 import it.eng.idra.beans.odms.OdmsCatalogue;
-
 import java.util.List;
 import java.util.stream.Collectors;
-
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.sparql.vocabulary.FOAF;
 import org.apache.jena.vocabulary.DCAT;
@@ -209,7 +207,7 @@ public class DcatCatalog {
    *
    * @return the RDF class
    */
-  public static Resource getRDFClass() {
+  public static Resource getRdfClass() {
     return RDFClass;
   }
 

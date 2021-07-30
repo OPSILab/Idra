@@ -18,8 +18,8 @@
 
 package it.eng.idra.beans.dcat;
 
+import com.google.gson.annotations.SerializedName;
 import it.eng.idra.cache.CacheContentType;
-
 import javax.persistence.AttributeOverride;
 import javax.persistence.AttributeOverrides;
 import javax.persistence.Column;
@@ -29,7 +29,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Transient;
-
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.rdf.model.ResourceFactory;
 import org.apache.jena.vocabulary.DCTerms;
@@ -45,7 +44,8 @@ public class DctPeriodOfTime {
   private static final transient Resource RDFClass = DCTerms.PeriodOfTime;
 
   private String id;
-  private transient String nodeID;
+  @SerializedName(value = "nodeID")
+  private transient String nodeId;
   private String uri;
 
   private DcatProperty startDate;
@@ -54,10 +54,18 @@ public class DctPeriodOfTime {
   public DctPeriodOfTime() {
   }
 
-  public DctPeriodOfTime(String uri, String startDate, String endDate, String nodeID) {
+  /**
+   * Instantiates a new dct period of time.
+   *
+   * @param uri the uri
+   * @param startDate the start date
+   * @param endDate the end date
+   * @param nodeId the node id
+   */
+  public DctPeriodOfTime(String uri, String startDate, String endDate, String nodeId) {
     super();
     setUri(uri);
-    this.nodeID = nodeID;
+    this.nodeId = nodeId;
     setStartDate(
         new DcatProperty(ResourceFactory.createProperty("http://schema.org#startDate"), RDFS.Literal, startDate));
     setEndDate(new DcatProperty(ResourceFactory.createProperty("http://schema.org#endDate"), RDFS.Literal, endDate));
@@ -69,12 +77,12 @@ public class DctPeriodOfTime {
    * @param uri the uri
    * @param startDate the start date
    * @param endDate the end date
-   * @param nodeID the node ID
+   * @param nodeId the node ID
    */
-  public DctPeriodOfTime(String uri, DcatProperty startDate, DcatProperty endDate, String nodeID) {
+  public DctPeriodOfTime(String uri, DcatProperty startDate, DcatProperty endDate, String nodeId) {
     super();
     setUri(uri);
-    this.nodeID = nodeID;
+    this.nodeId = nodeId;
     setStartDate(startDate);
     setEndDate(endDate);
   }
@@ -120,7 +128,7 @@ public class DctPeriodOfTime {
   }
 
   @Transient
-  public static Resource getRDFClass() {
+  public static Resource getRdfClass() {
     return RDFClass;
   }
 
@@ -133,7 +141,7 @@ public class DctPeriodOfTime {
   public SolrInputDocument toDoc(CacheContentType contentType) {
     SolrInputDocument doc = new SolrInputDocument();
     doc.addField("id", this.id);
-    doc.addField("nodeID", this.nodeID);
+    doc.addField("nodeID", this.nodeId);
     doc.addField("content_type", contentType.toString());
     doc.addField("startDate", this.startDate != null ? this.startDate.getValue() : "");
     doc.addField("endDate", this.endDate != null ? this.endDate.getValue() : "");
@@ -162,12 +170,12 @@ public class DctPeriodOfTime {
         + ", startDate=" + startDate + ", endDate=" + endDate + "]";
   }
 
-  public String getNodeID() {
-    return nodeID;
+  public String getNodeId() {
+    return nodeId;
   }
 
-  public void setNodeID(String nodeID) {
-    this.nodeID = nodeID;
+  public void setNodeId(String nodeId) {
+    this.nodeId = nodeId;
   }
 
 }

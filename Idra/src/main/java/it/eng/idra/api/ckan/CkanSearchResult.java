@@ -1,7 +1,6 @@
 package it.eng.idra.api.ckan;
 
 import java.util.List;
-
 import org.ckan.Dataset;
 
 // TODO: Auto-generated Javadoc

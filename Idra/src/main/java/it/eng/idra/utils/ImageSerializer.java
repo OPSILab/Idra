@@ -22,7 +22,6 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
-
 import it.eng.idra.beans.odms.OdmsCatalogueImage;
 import java.lang.reflect.Type;
 

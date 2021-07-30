@@ -19,7 +19,6 @@
 package it.eng.idra.beans;
 
 import it.eng.idra.utils.JsonRequired;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;

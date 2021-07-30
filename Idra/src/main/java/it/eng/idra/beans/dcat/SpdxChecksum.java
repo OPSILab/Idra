@@ -18,8 +18,8 @@
 
 package it.eng.idra.beans.dcat;
 
+import com.google.gson.annotations.SerializedName;
 import it.eng.idra.cache.CacheContentType;
-
 import javax.persistence.AttributeOverride;
 import javax.persistence.AttributeOverrides;
 import javax.persistence.Column;
@@ -29,7 +29,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Transient;
-
 import org.apache.commons.lang3.StringUtils;
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.rdf.model.ResourceFactory;
@@ -47,7 +46,9 @@ public class SpdxChecksum {
       .createResource("http://spdx.org/rdf/terms#Checksum");
 
   private String id;
-  private transient String nodeID;
+  
+  @SerializedName(value = "nodeID")
+  private transient String nodeId;
   private String uri;
   private DcatProperty algorithm;
   private DcatProperty checksumValue;
@@ -61,12 +62,12 @@ public class SpdxChecksum {
    * @param uri the uri
    * @param algorithm the algorithm
    * @param checksumValue the checksum value
-   * @param nodeID the node ID
+   * @param nodeId the node ID
    */
   public SpdxChecksum(String uri, String algorithm, 
-      String checksumValue, String nodeID) {
+      String checksumValue, String nodeId) {
     super();
-    this.nodeID = nodeID;
+    this.nodeId = nodeId;
     setUri(uri);
     setAlgorithm(new DcatProperty(ResourceFactory.createProperty("http://spdx.org/rdf/terms#algorithm"),
         ResourceFactory.createResource("http://spdx.org/rdf/terms#checksumAlgorithm_sha1"), algorithm));
@@ -86,12 +87,12 @@ public class SpdxChecksum {
     this.id = id;
   }
 
-  public String getNodeID() {
-    return nodeID;
+  public String getNodeId() {
+    return nodeId;
   }
 
-  public void setNodeID(String nodeID) {
-    this.nodeID = nodeID;
+  public void setNodeId(String nodeId) {
+    this.nodeId = nodeId;
   }
 
   @Transient
@@ -134,7 +135,7 @@ public class SpdxChecksum {
   public SolrInputDocument toDoc(CacheContentType contentType) {
     SolrInputDocument doc = new SolrInputDocument();
     doc.addField("id", this.id);
-    doc.addField("nodeID", this.nodeID);
+    doc.addField("nodeID", this.nodeId);
     doc.addField("content_type", contentType.toString());
     doc.addField("algorithm", this.algorithm != null ? this.algorithm.getValue() : "");
     doc.addField("checksumValue", this.checksumValue != null ? this.checksumValue.getValue() : "");
@@ -174,7 +175,7 @@ public class SpdxChecksum {
   }
 
   @Transient
-  public static Resource getRDFClass() {
+  public static Resource getRdfClass() {
     return RDFClass;
   }
 

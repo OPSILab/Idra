@@ -24,12 +24,10 @@ import it.eng.idra.utils.restclient.builders.HttpGetBuilder;
 import it.eng.idra.utils.restclient.builders.HttpHeadBuilder;
 import it.eng.idra.utils.restclient.builders.HttpPostBuilder;
 import it.eng.idra.utils.restclient.builders.HttpPutBuilder;
-
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Map;
 import java.util.logging.Logger;
-
 import javax.ws.rs.core.MediaType;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;

@@ -1,7 +1,6 @@
 package it.eng.idra.search;
 
 import it.eng.idra.beans.dcat.DcatDataset;
-
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Comparator;
@@ -16,7 +15,7 @@ public enum DatasetComparator implements Comparator<DcatDataset> {
   },
   NODEID_SORT {
     public int compare(DcatDataset o1, DcatDataset o2) {
-      return o1.getNodeID().compareTo(o2.getNodeID());
+      return o1.getNodeId().compareTo(o2.getNodeId());
     }
   },
   TITLE_SORT {

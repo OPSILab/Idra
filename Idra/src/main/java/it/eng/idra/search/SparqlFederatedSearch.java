@@ -20,9 +20,7 @@ package it.eng.idra.search;
 
 import it.eng.idra.beans.search.SparqlResultFormat;
 import it.eng.idra.cache.LodCacheManager;
-
 import org.apache.http.HttpException;
-
 import org.apache.jena.query.QueryParseException;
 
 public class SparqlFederatedSearch {

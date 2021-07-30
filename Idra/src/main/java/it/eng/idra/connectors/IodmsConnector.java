@@ -21,7 +21,6 @@ package it.eng.idra.connectors;
 import it.eng.idra.beans.dcat.DcatDataset;
 import it.eng.idra.beans.odms.OdmsCatalogue;
 import it.eng.idra.beans.odms.OdmsSynchronizationResult;
-
 import java.util.HashMap;
 import java.util.List;
 

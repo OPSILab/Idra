@@ -21,7 +21,6 @@ package it.eng.idra.connectors;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
 import com.google.common.collect.Sets.SetView;
-
 import it.eng.idra.beans.dcat.DcatDataset;
 import it.eng.idra.beans.dcat.DcatDistribution;
 import it.eng.idra.beans.dcat.DctLocation;
@@ -57,7 +56,6 @@ import java.util.function.Predicate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
-
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.text.WordUtils;
 import org.apache.jena.vocabulary.DCAT;
@@ -583,8 +581,8 @@ public class WebConnector implements IodmsConnector {
 
             for (String downloadUrlValue : fetchMultipleValuesBySelector(document, sel)) {
               DcatDistribution dist = new DcatDistribution(nodeId);
-              dist.setDownloadURL(downloadUrlValue);
-              dist.setAccessURL(downloadUrlValue);
+              dist.setDownloadUrl(downloadUrlValue);
+              dist.setAccessUrl(downloadUrlValue);
               dinamicMap.put(downloadUrlValue, dist);
             }
 
@@ -669,13 +667,13 @@ public class WebConnector implements IodmsConnector {
       return staticMap.values().stream().map(distr -> {
         return StringUtils.isNotBlank(distr.getFormat().getValue()) ? distr
             : distr.setFormat(CommonUtil.extractFormatFromFileExtension(
-                distr.getDownloadURL().getValue()));
+                distr.getDownloadUrl().getValue()));
       }).collect(Collectors.toList());
     } else {
       return dinamicMap.values().stream().map(distr -> {
         return StringUtils.isNotBlank(distr.getFormat().getValue()) ? distr
             : distr.setFormat(CommonUtil.extractFormatFromFileExtension(
-                distr.getDownloadURL().getValue()));
+                distr.getDownloadUrl().getValue()));
       }).collect(Collectors.toList());
     }
 

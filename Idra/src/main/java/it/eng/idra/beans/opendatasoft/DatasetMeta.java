@@ -1,23 +1,22 @@
 package it.eng.idra.beans.opendatasoft;
 
 import com.google.gson.annotations.SerializedName;
-
 import java.util.Map;
 
 public class DatasetMeta {
 
   @SerializedName("default")
-  private InnerDatasetMetaDefault _default;
+  private InnerDatasetMetaDefault defaultMeta;
   private Map<String, Object> dcat;
   private Map<String, Object> inspire;
   private Map<String, Object> custom;
 
   public InnerDatasetMetaDefault get_default() {
-    return _default;
+    return defaultMeta;
   }
 
-  public void set_default(InnerDatasetMetaDefault _default) {
-    this._default = _default;
+  public void set_default(InnerDatasetMetaDefault defaultMeta) {
+    this.defaultMeta = defaultMeta;
   }
 
   public Map<String, Object> getDcat() {

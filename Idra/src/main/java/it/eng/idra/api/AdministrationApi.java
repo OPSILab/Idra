@@ -48,7 +48,6 @@ import it.eng.idra.beans.odms.OdmsCatalogueOfflineException;
 import it.eng.idra.beans.odms.OdmsCatalogueType;
 import it.eng.idra.beans.odms.OdmsManagerException;
 import it.eng.idra.beans.orion.OrionCatalogueConfiguration;
-
 import it.eng.idra.beans.sparql.SparqlCatalogueConfiguration;
 import it.eng.idra.beans.statistics.StatisticsRequest;
 import it.eng.idra.cache.CachePersistenceManager;
@@ -62,7 +61,6 @@ import it.eng.idra.utils.CommonUtil;
 import it.eng.idra.utils.GsonUtil;
 import it.eng.idra.utils.GsonUtilException;
 import it.eng.idra.utils.PropertyManager;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -103,9 +101,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Response.StatusType;
 import javax.ws.rs.core.StreamingOutput;
-
 import org.apache.commons.io.IOUtils;
-
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -169,7 +165,7 @@ public class AdministrationApi {
       // If the node type is DCATDUMP, if the dump URL is blank, try to get the
       // dump from the uploaded file
       if (node.getNodeType().equals(OdmsCatalogueType.DCATDUMP)) {
-        if (StringUtils.isBlank(node.getDumpURL()) && StringUtils.isBlank(node.getDumpString())) {
+        if (StringUtils.isBlank(node.getDumpUrl()) && StringUtils.isBlank(node.getDumpString())) {
           if (fileInputStream == null) {
             throw new IOException("The dump part of the request is empty");
           }
@@ -182,13 +178,13 @@ public class AdministrationApi {
                 "The node must have either the dumpURL or dump file in the \" dump \" "
                     + "part of the multipart request");
           }
-        } else if (StringUtils.isBlank(node.getDumpURL()) 
+        } else if (StringUtils.isBlank(node.getDumpUrl()) 
             && StringUtils.isNotBlank(node.getDumpString())) {
           logger.info("Dump catalogue with dumpString");
         }
       } else {
 
-        node.setDumpURL(null);
+        node.setDumpUrl(null);
         node.setDumpFilePath(null);
       }
 
@@ -221,7 +217,7 @@ public class AdministrationApi {
             (OrionCatalogueConfiguration) node.getAdditionalConfig();
         if (orionConfig.isAuthenticated()) {
           if (StringUtils.isBlank(orionConfig.getOauth2Endpoint()) 
-              || StringUtils.isBlank(orionConfig.getClientID())
+              || StringUtils.isBlank(orionConfig.getClientId())
               || StringUtils.isBlank(orionConfig.getClientSecret())) {
             ErrorResponse error = new ErrorResponse(
                 String.valueOf(Response.Status.BAD_REQUEST.getStatusCode()),
@@ -369,7 +365,7 @@ public class AdministrationApi {
       }
 
       if (node.getNodeType().equals(OdmsCatalogueType.DCATDUMP)) {
-        if (StringUtils.isBlank(node.getDumpURL()) && StringUtils.isBlank(node.getDumpString())
+        if (StringUtils.isBlank(node.getDumpUrl()) && StringUtils.isBlank(node.getDumpString())
             && StringUtils.isNotBlank(node.getDumpFilePath())) {
 
           // Read the content of the file from the file system
@@ -560,9 +556,9 @@ public class AdministrationApi {
 
       // TODO: Manage update of DCATDUMP catalogue dumpstring
       if (requestNode.getNodeType().equals(OdmsCatalogueType.DCATDUMP)) {
-        if ((StringUtils.isBlank(currentNode.getDumpURL()) 
-            && StringUtils.isNotBlank(requestNode.getDumpURL()))
-            && (!requestNode.getDumpURL().equals(currentNode.getDumpURL()))) {
+        if ((StringUtils.isBlank(currentNode.getDumpUrl()) 
+            && StringUtils.isNotBlank(requestNode.getDumpUrl()))
+            && (!requestNode.getDumpUrl().equals(currentNode.getDumpUrl()))) {
           logger.info("Updating the DUMP Url for node: " + currentNode.getHost());
         } else {
           String dumpString = IOUtils.toString(fileInputStream, StandardCharsets.UTF_8);
@@ -903,7 +899,7 @@ public class AdministrationApi {
       String username = remCatalogue.getUsername();
       // decrypt password
       String password = CommonUtil.decrypt(remCatalogue.getPassword());
-      String basePath = remCatalogue.getURL();
+      String basePath = remCatalogue.getUrl();
 
       client = ClientBuilder.newClient();
       String compiledUri = basePath + "Idra/api/v1/administration/login";
@@ -998,7 +994,7 @@ public class AdministrationApi {
     try {
       logger.debug(" -------------------------- Caso Login IDM FIWARE");
       RemoteCatalogue remCatalogue = FederationCore.getRemCat(Integer.parseInt(id));
-      String clientId = remCatalogue.getClientID();
+      String clientId = remCatalogue.getClientId();
       String clientSecret = remCatalogue.getClientSecret();
       // decrypt password
       String portalUrl = remCatalogue.getPortal();
@@ -1037,7 +1033,7 @@ public class AdministrationApi {
       }
 
       // ------------------------------------------------------------------
-      String basePath = remCatalogue.getURL();
+      String basePath = remCatalogue.getUrl();
       client = ClientBuilder.newClient();
       String compiledUri2 = basePath + "Idra/api/v1/administration/catalogues?withImage=true";
       WebTarget webTarget2 = client.target(compiledUri2);
@@ -1257,11 +1253,11 @@ public class AdministrationApi {
 
           Token t = (Token) authInstance.login(null, null, code);
           UserInfo info = FiwareIdmAuthenticationManager.getInstance()
-              .getUserInfo(t.getAccess_token());
+              .getUserInfo(t.getAccessToken());
 
-          token = t.getAccess_token();
+          token = t.getAccessToken();
 
-          String refreshToken = t.getRefresh_token();
+          String refreshToken = t.getRefreshToken();
 
           if (token != null && ((String) token).trim().length() > 0) {
             return Response.seeOther(URI.create(
@@ -1282,11 +1278,11 @@ public class AdministrationApi {
 
           Token k = (Token) authInstance.login(null, null, code);
           KeycloakUser keycloakUser = KeycloakAuthenticationManager.getInstance()
-                .getUserInfo(k.getAccess_token());
+                .getUserInfo(k.getAccessToken());
 
-          token = k.getAccess_token();
+          token = k.getAccessToken();
 
-          refreshToken = k.getRefresh_token();
+          refreshToken = k.getRefreshToken();
 
           if (token != null && ((String) token).trim().length() > 0) {
             return Response.seeOther(URI.create(
@@ -1294,7 +1290,7 @@ public class AdministrationApi {
                   .cookie(new NewCookie("loggedin", (String) token, "/", "", "comment", 100, false))
                   .cookie(new NewCookie("refresh_token", refreshToken,
                       "/", "", "comment", 100, false))
-                  .cookie(new NewCookie("username", keycloakUser.getPreferred_username(),
+                  .cookie(new NewCookie("username", keycloakUser.getPreferredUsername(),
                       "/", "", "comment", 100, false)).build();
           } else {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
@@ -1344,12 +1340,12 @@ public class AdministrationApi {
 
           Token t = (Token) authInstance.login(null, null, code);
           UserInfo info = FiwareIdmAuthenticationManager.getInstance()
-              .getUserInfo(t.getAccess_token());
+              .getUserInfo(t.getAccessToken());
 
-          token = t.getAccess_token();
+          token = t.getAccessToken();
           token = (String) token;
 
-          String refreshToken = t.getRefresh_token();
+          String refreshToken = t.getRefreshToken();
 
           if (token != null && ((String) token).trim().length() > 0) {
             HttpSession session = httpRequest.getSession();
@@ -1372,18 +1368,18 @@ public class AdministrationApi {
 
           Token k = (Token) authInstance.login(null, null, code);
           KeycloakUser keycloakUser = KeycloakAuthenticationManager.getInstance()
-              .getUserInfo(k.getAccess_token());
+              .getUserInfo(k.getAccessToken());
 
-          token = k.getAccess_token();
+          token = k.getAccessToken();
 
-          refreshToken = k.getRefresh_token();
+          refreshToken = k.getRefreshToken();
 
           if (token != null && ((String) token).trim().length() > 0) {
             return Response.seeOther(URI.create(
                 PropertyManager.getProperty(IdraProperty.IDRA_CATALOGUE_BASEPATH)))
               .cookie(new NewCookie("loggedin", (String) token, "/", "", "comment", 100, false))
               .cookie(new NewCookie("refresh_token", refreshToken, "/", "", "comment", 100, false))
-              .cookie(new NewCookie("username", keycloakUser.getPreferred_username(),
+              .cookie(new NewCookie("username", keycloakUser.getPreferredUsername(),
                   "/", "", "comment", 100, false)).build();
           } else {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();

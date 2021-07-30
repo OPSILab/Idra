@@ -19,7 +19,6 @@
 package it.eng.idra.beans.sparql;
 
 import it.eng.idra.beans.DistributionAdditionalConfiguration;
-
 import javax.persistence.Entity;
 
 @Entity
@@ -36,12 +35,12 @@ public class SparqlDistributionConfig extends DistributionAdditionalConfiguratio
    *
    * @param query the query
    * @param formats the formats
-   * @param nodeID the node ID
+   * @param nodeId the node ID
    */
-  public SparqlDistributionConfig(String query, String formats, String nodeID) {
+  public SparqlDistributionConfig(String query, String formats, String nodeId) {
     super();
     this.formats = formats;
-    this.setNodeID(nodeID);
+    this.setNodeId(nodeId);
     this.setType("SPARQL");
     this.setQuery(query);
   }

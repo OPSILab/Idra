@@ -18,8 +18,8 @@
 
 package it.eng.idra.beans.dcat;
 
+import com.google.gson.annotations.SerializedName;
 import it.eng.idra.cache.CacheContentType;
-
 import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.Column;
@@ -28,7 +28,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Transient;
-
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.vocabulary.SKOS;
 import org.apache.solr.common.SolrDocument;
@@ -48,7 +47,9 @@ import org.json.JSONObject;
 public class SkosPrefLabel {
 
   private String id;
-  private transient String nodeID;
+  
+  @SerializedName(value = "nodeID")
+  private transient String nodeId;
 
   private String language;
   private String value;
@@ -63,11 +64,11 @@ public class SkosPrefLabel {
    *
    * @param language the language
    * @param value the value
-   * @param nodeID the node ID
+   * @param nodeId the node ID
    */
-  public SkosPrefLabel(String language, String value, String nodeID) {
+  public SkosPrefLabel(String language, String value, String nodeId) {
 
-    setNodeID(nodeID);
+    setNodeId(nodeId);
     setLanguage(language);
     setValue(value);
   }
@@ -84,16 +85,16 @@ public class SkosPrefLabel {
     this.id = id;
   }
 
-  public String getNodeID() {
-    return nodeID;
+  public String getNodeId() {
+    return nodeId;
   }
 
-  public void setNodeID(String nodeID) {
-    this.nodeID = nodeID;
+  public void setNodeId(String nodeId) {
+    this.nodeId = nodeId;
   }
 
   @Transient
-  public static Resource getRDFClass() {
+  public static Resource getRdfClass() {
     return RDFClass;
   }
 
@@ -123,7 +124,7 @@ public class SkosPrefLabel {
 
     SolrInputDocument doc = new SolrInputDocument();
     doc.addField("id", this.id);
-    doc.addField("nodeID", this.nodeID);
+    doc.addField("nodeID", this.nodeId);
     doc.addField("content_type", contentType.toString());
     doc.addField("value", this.getValue());
     doc.addField("language", this.getLanguage());

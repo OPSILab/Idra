@@ -40,7 +40,6 @@ import it.eng.idra.beans.search.SearchResult;
 import it.eng.idra.management.FederationCore;
 import it.eng.idra.utils.CommonUtil;
 import it.eng.idra.utils.PropertyManager;
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
@@ -56,7 +55,6 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
-
 import org.apache.commons.lang.StringUtils;
 import org.apache.jena.datatypes.RDFDatatype;
 import org.apache.jena.datatypes.xsd.XSDhexBinary;
@@ -298,7 +296,7 @@ public class DcatApSerializer {
       addDistributionToModel(model, datasetResource, distribution);
     }
 
-    OdmsCatalogue node = nodeResources.get(new Integer(dataset.getNodeID()));
+    OdmsCatalogue node = nodeResources.get(new Integer(dataset.getNodeId()));
 
     /*
      * Add the Catalogue with the Dataset to the global Model
@@ -355,7 +353,7 @@ public class DcatApSerializer {
       Resource datasetResource) {
     if (temporalCoverage != null) {
       datasetResource.addProperty(model.createProperty(temporalCoverage.getUri()),
-          model.createResource(DctPeriodOfTime.getRDFClass())
+          model.createResource(DctPeriodOfTime.getRdfClass())
               .addProperty(temporalCoverage.getStartDate().getProperty(),
                   temporalCoverage.getStartDate().getValue(), XSDDateType.XSDdate)
               .addProperty(temporalCoverage.getEndDate().getProperty(),
@@ -368,7 +366,7 @@ public class DcatApSerializer {
 
     if (spatialCoverage != null) {
 
-      Resource spatialResource = model.createResource(DctLocation.getRDFClass());
+      Resource spatialResource = model.createResource(DctLocation.getRdfClass());
       String geoUri = null;
       // Initialize spatial Resource
 
@@ -438,9 +436,9 @@ public class DcatApSerializer {
 
           if (StringUtils.isNotBlank(contactPoint.getResourceUri())) {
             contactPointR = model.createResource(contactPoint.getResourceUri(),
-                VCardOrganization.getRDFClass());
+                VCardOrganization.getRdfClass());
           } else {
-            contactPointR = model.createResource(VCardOrganization.getRDFClass());
+            contactPointR = model.createResource(VCardOrganization.getRdfClass());
           }
 
           // .addProperty(RDF.type, VCARD4.Kind)
@@ -456,7 +454,7 @@ public class DcatApSerializer {
             addDcatPropertyAsResource(contactPoint.getHasEmail(), contactPointR, model, false);
           }
 
-          addDcatPropertyAsResource(contactPoint.getHasURL(), contactPointR, model, false);
+          addDcatPropertyAsResource(contactPoint.getHasUrl(), contactPointR, model, false);
 
           // Add contactPoint property to dataset Resource;
           datasetResource.addProperty(model.createProperty(contactPoint.getPropertyUri()),
@@ -476,9 +474,9 @@ public class DcatApSerializer {
       Resource agentResource = null;
 
       if (StringUtils.isNotBlank(agent.getResourceUri()) && isValidUri(agent.getResourceUri())) {
-        agentResource = model.createResource(agent.getResourceUri(), FoafAgent.getRDFClass());
+        agentResource = model.createResource(agent.getResourceUri(), FoafAgent.getRdfClass());
       } else {
-        agentResource = model.createResource(FoafAgent.getRDFClass());
+        agentResource = model.createResource(FoafAgent.getRdfClass());
       }
 
       addDcatPropertyAsLiteral(agent.getName(), agentResource, model);
@@ -536,9 +534,9 @@ public class DcatApSerializer {
   private static void addDistributionToModel(Model model, Resource datasetResource,
       DcatDistribution distribution) {
 
-    Resource distResource = model.createResource(DcatDistribution.getRDFClass());
+    Resource distResource = model.createResource(DcatDistribution.getRdfClass());
 
-    addDcatPropertyAsResource(distribution.getAccessURL(), distResource, model, false);
+    addDcatPropertyAsResource(distribution.getAccessUrl(), distResource, model, false);
 
     addDcatPropertyAsLiteral(distribution.getDescription(), distResource, model);
 
@@ -558,7 +556,7 @@ public class DcatApSerializer {
           .forEach(item -> distResource.addProperty(item.getProperty(), item.getValue()));
     }
 
-    addDcatPropertyAsResource(distribution.getDownloadURL(), distResource, model, false);
+    addDcatPropertyAsResource(distribution.getDownloadUrl(), distResource, model, false);
 
     serializeDctStandard(distribution.getLinkedSchemas(), distResource, model);
 
@@ -594,7 +592,7 @@ public class DcatApSerializer {
 
     if (checksum != null) {
       distResource.addProperty(model.createProperty(checksum.getUri()),
-          model.createResource(SpdxChecksum.getRDFClass())
+          model.createResource(SpdxChecksum.getRdfClass())
               .addProperty(checksum.getAlgorithm().getProperty(),
                   checksum.getAlgorithm().getValue())
               .addProperty(checksum.getChecksumValue().getProperty(),
@@ -612,9 +610,9 @@ public class DcatApSerializer {
 
       // Initialize license Resource
       if (StringUtils.isNotBlank(license.getUri())) {
-        licenseResource = model.createResource(license.getUri(), DctLicenseDocument.getRDFClass());
+        licenseResource = model.createResource(license.getUri(), DctLicenseDocument.getRdfClass());
       } else {
-        licenseResource = model.createResource(DctLicenseDocument.getRDFClass());
+        licenseResource = model.createResource(DctLicenseDocument.getRdfClass());
       }
 
       try {
@@ -651,9 +649,9 @@ public class DcatApSerializer {
         Resource standardResource = null;
 
         if (StringUtils.isNotBlank(standard.getUri())) {
-          standardResource = model.createResource(standard.getUri(), DctStandard.getRDFClass());
+          standardResource = model.createResource(standard.getUri(), DctStandard.getRdfClass());
         } else {
-          standardResource = model.createResource(DctStandard.getRDFClass());
+          standardResource = model.createResource(DctStandard.getRdfClass());
         }
 
         standardResource

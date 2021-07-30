@@ -19,22 +19,17 @@
 package it.eng.idra.authentication.keycloak.connector;
 
 import com.google.gson.Gson;
-
 import it.eng.idra.authentication.fiware.model.GrantErrorMessage;
 import it.eng.idra.authentication.fiware.model.Token;
 import it.eng.idra.authentication.keycloak.model.KeycloakUser;
 import it.eng.idra.utils.restclient.RestClient;
 import it.eng.idra.utils.restclient.RestClientImpl;
-
 import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
-
 import javax.ws.rs.core.MediaType;
-
 import org.apache.http.HttpResponse;
-
 
 // TODO: Auto-generated Javadoc
 /**

@@ -19,7 +19,6 @@
 package it.eng.idra.authentication.fiware.connectors;
 
 import com.google.gson.Gson;
-
 import it.eng.idra.authentication.fiware.configuration.IdmProperty;
 import it.eng.idra.authentication.fiware.model.Auth;
 import it.eng.idra.authentication.fiware.model.Domain;
@@ -32,21 +31,14 @@ import it.eng.idra.authentication.fiware.model.UserTokenBean;
 import it.eng.idra.utils.PropertyManager;
 import it.eng.idra.utils.restclient.RestClient;
 import it.eng.idra.utils.restclient.RestClientImpl;
-
 import java.util.Base64;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-
 import javax.ws.rs.core.MediaType;
-
 import org.apache.http.Header;
 import org.apache.http.HttpResponse;
-
-
-
-
 
 // TODO: Auto-generated Javadoc
 /**

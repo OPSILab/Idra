@@ -21,7 +21,6 @@ package it.eng.idra.authentication;
 import it.eng.idra.beans.IdraAuthenticationMethod;
 import it.eng.idra.beans.IdraProperty;
 import it.eng.idra.utils.PropertyManager;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.Response;
 

@@ -25,7 +25,6 @@ import it.eng.idra.management.FederationCore;
 import it.eng.idra.management.PersistenceManager;
 import it.eng.idra.utils.CommonUtil;
 import it.eng.idra.utils.GsonUtil;
-
 import java.math.BigInteger;
 import java.nio.charset.Charset;
 import java.security.NoSuchAlgorithmException;
@@ -37,7 +36,6 @@ import java.util.List;
 import java.util.Random;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.Response;
-
 import org.apache.commons.io.IOUtils;
 import org.apache.logging.log4j.Logger;
 

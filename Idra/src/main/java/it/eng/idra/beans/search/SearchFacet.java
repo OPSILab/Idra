@@ -18,17 +18,18 @@
 
 package it.eng.idra.beans.search;
 
+import com.google.gson.annotations.SerializedName;
 import it.eng.idra.beans.odms.OdmsCatalogueNotFoundException;
 import it.eng.idra.management.FederationCore;
 import it.eng.idra.management.OdmsManager;
-
 import org.apache.solr.client.solrj.response.FacetField.Count;
 
 public class SearchFacet {
 
   private String facet;
   private String keyword;
-  private String search_value;
+  @SerializedName(value = "search_value")
+  private String searchValue;
 
   public SearchFacet() {
 
@@ -39,13 +40,13 @@ public class SearchFacet {
    *
    * @param facet the facet
    * @param keywordQuery the keyword query
-   * @param search_value the search value
+   * @param searchValue the search value
    */
-  public SearchFacet(String facet, String keywordQuery, String search_value) {
+  public SearchFacet(String facet, String keywordQuery, String searchValue) {
     super();
     this.facet = facet;
     this.keyword = keywordQuery;
-    this.search_value = search_value;
+    this.searchValue = searchValue;
   }
 
   /**
@@ -57,7 +58,7 @@ public class SearchFacet {
     super();
     this.facet = c.toString();
     this.keyword = c.getName();
-    this.search_value = c.getName();
+    this.searchValue = c.getName();
   }
 
   /**
@@ -77,13 +78,13 @@ public class SearchFacet {
         this.facet = c.getName() + " (" + c.getCount() + ")";
         this.keyword = c.getName();
       }
-      this.search_value = c.getName();
+      this.searchValue = c.getName();
     } else if ("catalogues".equals(category)) {
       try {
         this.facet = OdmsManager.getOdmsCatalogue(
             Integer.parseInt(c.getName())).getName() + " (" + c.getCount() + ")";
         this.keyword = OdmsManager.getOdmsCatalogue(Integer.parseInt(c.getName())).getName();
-        this.search_value = this.keyword;
+        this.searchValue = this.keyword;
       } catch (NumberFormatException | OdmsCatalogueNotFoundException e) {
         // TODO Auto-generated catch block
         e.printStackTrace();
@@ -91,7 +92,7 @@ public class SearchFacet {
     } else {
       this.facet = c.toString();
       this.keyword = c.getName();
-      this.search_value = c.getName();
+      this.searchValue = c.getName();
     }
   }
 
@@ -111,18 +112,18 @@ public class SearchFacet {
     this.keyword = keywordQuery;
   }
 
-  public String getSearch_value() {
-    return search_value;
+  public String getSearchValue() {
+    return searchValue;
   }
 
-  public void setSearch_value(String search_value) {
-    this.search_value = search_value;
+  public void setSearchValue(String searchValue) {
+    this.searchValue = searchValue;
   }
 
   @Override
   public String toString() {
     return "SearchFacet [facet=" 
-      + facet + ", keyword=" + keyword + ", search_value=" + search_value + "]";
+      + facet + ", keyword=" + keyword + ", search_value=" + searchValue + "]";
   }
 
   @Override

@@ -1,5 +1,6 @@
 package it.eng.idra.authentication.keycloak.model;
 
+import com.google.gson.annotations.SerializedName;
 import java.util.Set;
 
 // TODO: Auto-generated Javadoc
@@ -12,7 +13,8 @@ public class KeycloakUser {
   private String sub;
   
   /** The email verified. */
-  private boolean email_verified;
+  @SerializedName(value = "email_verified")
+  private boolean emailVerified;
   
   /** The roles. */
   private Set<String> roles;
@@ -21,13 +23,16 @@ public class KeycloakUser {
   private String name;
   
   /** The preferred username. */
-  private String preferred_username;
+  @SerializedName(value = "preferred_username")
+  private String preferredUsername;
   
   /** The given name. */
-  private String given_name;
+  @SerializedName(value = "given_name")
+  private String givenName;
   
   /** The family name. */
-  private String family_name;
+  @SerializedName(value = "family_name")
+  private String familyName;
   
   /** The email. */
   private String email;
@@ -43,25 +48,25 @@ public class KeycloakUser {
    * Instantiates a new keycloak user.
    *
    * @param sub the sub
-   * @param email_verified the email verified
+   * @param emailVerified the email verified
    * @param roles the roles
    * @param name the name
-   * @param preferred_username the preferred username
-   * @param given_name the given name
-   * @param family_name the family name
+   * @param preferredUsername the preferred username
+   * @param givenName the given name
+   * @param familyName the family name
    * @param email the email
    */
-  public KeycloakUser(String sub, boolean email_verified, 
-      Set<String> roles, String name, String preferred_username,
-      String given_name, String family_name, String email) {
+  public KeycloakUser(String sub, boolean emailVerified, 
+      Set<String> roles, String name, String preferredUsername,
+      String givenName, String familyName, String email) {
     super();
     this.sub = sub;
-    this.email_verified = email_verified;
+    this.emailVerified = emailVerified;
     this.roles = roles;
     this.name = name;
-    this.preferred_username = preferred_username;
-    this.given_name = given_name;
-    this.family_name = family_name;
+    this.preferredUsername = preferredUsername;
+    this.givenName = givenName;
+    this.familyName = familyName;
     this.email = email;
   }
 
@@ -88,17 +93,17 @@ public class KeycloakUser {
    *
    * @return true, if is email verified
    */
-  public boolean isEmail_verified() {
-    return email_verified;
+  public boolean isEmailVerified() {
+    return emailVerified;
   }
 
   /**
    * Sets the email verified.
    *
-   * @param email_verified the new email verified
+   * @param emailVerified the new email verified
    */
-  public void setEmail_verified(boolean email_verified) {
-    this.email_verified = email_verified;
+  public void setEmailVerified(boolean emailVerified) {
+    this.emailVerified = emailVerified;
   }
 
   /**
@@ -142,17 +147,17 @@ public class KeycloakUser {
    *
    * @return the preferred username
    */
-  public String getPreferred_username() {
-    return preferred_username;
+  public String getPreferredUsername() {
+    return preferredUsername;
   }
 
   /**
    * Sets the preferred username.
    *
-   * @param preferred_username the new preferred username
+   * @param preferredUsername the new preferred username
    */
-  public void setPreferred_username(String preferred_username) {
-    this.preferred_username = preferred_username;
+  public void setPreferredUsername(String preferredUsername) {
+    this.preferredUsername = preferredUsername;
   }
 
   /**
@@ -160,17 +165,17 @@ public class KeycloakUser {
    *
    * @return the given name
    */
-  public String getGiven_name() {
-    return given_name;
+  public String getGivenName() {
+    return givenName;
   }
 
   /**
    * Sets the given name.
    *
-   * @param given_name the new given name
+   * @param givenName the new given name
    */
-  public void setGiven_name(String given_name) {
-    this.given_name = given_name;
+  public void setGivenName(String givenName) {
+    this.givenName = givenName;
   }
 
   /**
@@ -178,17 +183,17 @@ public class KeycloakUser {
    *
    * @return the family name
    */
-  public String getFamily_name() {
-    return family_name;
+  public String getFamilyName() {
+    return familyName;
   }
 
   /**
    * Sets the family name.
    *
-   * @param family_name the new family name
+   * @param familyName the new family name
    */
-  public void setFamily_name(String family_name) {
-    this.family_name = family_name;
+  public void setFamilyName(String familyName) {
+    this.familyName = familyName;
   }
 
   /**
@@ -215,9 +220,9 @@ public class KeycloakUser {
   @Override
   public String toString() {
     return "KeycloakUser [sub=" + sub + ", "
-        + "email_verified=" + email_verified + ", roles=" + roles + ", name=" + name
-        + ", preferred_username=" + preferred_username + ", "
-            + "given_name=" + given_name + ", family_name=" + family_name
+        + "email_verified=" + emailVerified + ", roles=" + roles + ", name=" + name
+        + ", preferred_username=" + preferredUsername + ", "
+            + "given_name=" + givenName + ", family_name=" + familyName
         + ", email=" + email + "]";
   }
 

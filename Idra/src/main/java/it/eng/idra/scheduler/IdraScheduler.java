@@ -27,7 +27,6 @@ import it.eng.idra.scheduler.job.DcatApDumpJob;
 import it.eng.idra.scheduler.job.DeleteLogsJob;
 import it.eng.idra.scheduler.job.OauthTokenSynchJob;
 import it.eng.idra.scheduler.job.OdmsSynchJob;
-
 import java.util.Date;
 import java.util.List;
 import javax.servlet.ServletContext;
@@ -43,7 +42,6 @@ import org.quartz.SchedulerException;
 import org.quartz.Trigger;
 import org.quartz.TriggerBuilder;
 import org.quartz.impl.StdSchedulerFactory;
-
 import static org.quartz.JobKey.jobKey;
 import static org.quartz.TriggerKey.triggerKey;
 import static org.quartz.SimpleScheduleBuilder.simpleSchedule;

@@ -25,13 +25,10 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
-
 import it.eng.idra.beans.odms.OdmsCatalogueAdditionalConfiguration;
 import it.eng.idra.beans.orion.OrionCatalogueConfiguration;
 import it.eng.idra.beans.sparql.SparqlCatalogueConfiguration;
-
 import java.lang.reflect.Type;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -91,7 +88,7 @@ public class OdmsCatalogueAdditionalConfigurationDeserializer implements
       jsonObject.addProperty("isAuthenticated", c.isAuthenticated());
       jsonObject.addProperty("authToken", c.getAuthToken());
       jsonObject.addProperty("ngsild", c.isNgsild());
-      jsonObject.addProperty("clientID", c.getClientID());
+      jsonObject.addProperty("clientID", c.getClientId());
       jsonObject.addProperty("clientSecret", c.getClientSecret());
       jsonObject.addProperty("oauth2Endpoint", c.getOauth2Endpoint());
       jsonObject.addProperty("orionDatasetDumpString", c.getOrionDatasetDumpString());

@@ -19,7 +19,6 @@
 package it.eng.idra.beans.orion;
 
 import it.eng.idra.beans.DistributionAdditionalConfiguration;
-
 import javax.persistence.Entity;
 
 @Entity
@@ -28,6 +27,7 @@ public class OrionDistributionConfig extends DistributionAdditionalConfiguration
 
   private String fiwareService;
   private String fiwareServicePath;
+  private String linkHeader;
 
   public OrionDistributionConfig() {
     this.setType("ORION");
@@ -39,14 +39,14 @@ public class OrionDistributionConfig extends DistributionAdditionalConfiguration
    * @param query the query
    * @param fiwareService the fiware service
    * @param fiwareServicePath the fiware service path
-   * @param nodeID the node ID
+   * @param nodeId the node ID
    */
   public OrionDistributionConfig(String query, String fiwareService,
-      String fiwareServicePath, String nodeID) {
+      String fiwareServicePath, String nodeId) {
     super();
     this.fiwareService = fiwareService;
     this.fiwareServicePath = fiwareServicePath;
-    this.setNodeID(nodeID);
+    this.setNodeId(nodeId);
     this.setType("ORION");
     this.setQuery(query);
   }
@@ -67,4 +67,11 @@ public class OrionDistributionConfig extends DistributionAdditionalConfiguration
     this.fiwareServicePath = fiwareServicePath;
   }
 
+  public String getLinkHeader() {
+    return linkHeader;
+  }
+
+  public void setLinkHeader(String linkHeader) {
+    this.linkHeader = linkHeader;
+  }
 }

@@ -19,13 +19,10 @@
 package it.eng.idra.beans.webscraper;
 
 import com.google.gson.annotations.SerializedName;
-
 import it.eng.idra.beans.IdraProperty;
 import it.eng.idra.utils.PropertyManager;
-
 import java.util.Arrays;
 import java.util.List;
-
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;

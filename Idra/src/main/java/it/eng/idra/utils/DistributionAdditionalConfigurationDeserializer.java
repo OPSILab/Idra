@@ -25,13 +25,10 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
-
 import it.eng.idra.beans.DistributionAdditionalConfiguration;
 import it.eng.idra.beans.orion.OrionDistributionConfig;
 import it.eng.idra.beans.sparql.SparqlDistributionConfig;
-
 import java.lang.reflect.Type;
-
 import org.json.JSONObject;
 
 public class DistributionAdditionalConfigurationDeserializer implements
@@ -65,7 +62,7 @@ public class DistributionAdditionalConfigurationDeserializer implements
     final JsonObject jsonObject = new JsonObject();
     jsonObject.addProperty("id", arg0.getId());
     jsonObject.addProperty("type", arg0.getType());
-    jsonObject.addProperty("nodeID", arg0.getNodeID());
+    jsonObject.addProperty("nodeID", arg0.getNodeId());
     if (arg0.getType().toLowerCase().equals("orion")) {
       OrionDistributionConfig c = (OrionDistributionConfig) arg0;
       jsonObject.addProperty("query", c.getQuery());

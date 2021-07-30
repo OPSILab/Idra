@@ -20,6 +20,7 @@ package it.eng.idra.beans.odms;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.JsonAdapter;
+import com.google.gson.annotations.SerializedName;
 
 import it.eng.idra.beans.dcat.DcatApFormat;
 import it.eng.idra.beans.dcat.DcatApProfile;
@@ -82,7 +83,8 @@ public class OdmsCatalogue {
   private String homepage;
 
   @Column(name = "api_key", unique = false, nullable = true)
-  private String APIKey;
+  @SerializedName(value = "APIKey")
+  private String apiKey;
 
   @JsonRequired
   @Column(name = "type", unique = false, nullable = false)
@@ -170,7 +172,8 @@ public class OdmsCatalogue {
   private String dumpFilePath;
 
   @Column(name = "dumpURL", unique = true, nullable = true)
-  private String dumpURL;
+  @SerializedName(value = "dumpURL")
+  private String dumpUrl;
 
   @Column(name = "isActive", nullable = true)
   @Expose
@@ -210,7 +213,7 @@ public class OdmsCatalogue {
    * @param name the name
    * @param host the host
    * @param homepage the homepage
-   * @param APIKey the API key
+   * @param apIKey the API key
    * @param nodeType the node type
    * @param federationLevel the federation level
    * @param datasetCount the dataset count
@@ -227,7 +230,7 @@ public class OdmsCatalogue {
   // Throws exception if the type of new object is not allowed
   public OdmsCatalogue(String name, 
       String host, String homepage, 
-      String APIKey, 
+      String apIKey, 
       OdmsCatalogueType nodeType,
       OdmsCatalogueFederationLevel federationLevel, int datasetCount, OdmsCatalogueState nodeState,
       ZonedDateTime registerDate, 
@@ -238,7 +241,7 @@ public class OdmsCatalogue {
     this.setName(name);
     this.setHost(host);
     this.setHomepage(homepage);
-    this.setAPIKey(APIKey);
+    this.setApiKey(apIKey);
     this.setNodeType(nodeType);
     this.setFederationLevel(federationLevel);
     this.setDatasetCount(datasetCount);
@@ -262,14 +265,14 @@ public class OdmsCatalogue {
    * @param name the name
    * @param host the host
    * @param homepage the homepage
-   * @param APIKey the API key
+   * @param apiKey the API key
    * @param nodeType the node type
    * @param integrationLevel the integration level
    * @param datasetCount the dataset count
    * @param nodeState the node state
    * @param registerDate the register date
    * @param lastUpdateDate the last update date
-   * @param refresh_period the refresh period
+   * @param refreshPeriod the refresh period
    * @param description the description
    * @param image the image
    * @param rdfCount the rdf count
@@ -279,12 +282,12 @@ public class OdmsCatalogue {
   // Throws exception if the type of new object is not allowed
   public OdmsCatalogue(int id, String name, 
       String host, String homepage, 
-      String APIKey, 
+      String apiKey, 
       OdmsCatalogueType nodeType,
       OdmsCatalogueFederationLevel integrationLevel, int datasetCount, OdmsCatalogueState nodeState,
       ZonedDateTime registerDate, 
       ZonedDateTime lastUpdateDate, 
-      int refresh_period, 
+      int refreshPeriod, 
       String description, String image,
       int rdfCount, String location, String locationDescription) {
 
@@ -292,14 +295,14 @@ public class OdmsCatalogue {
     this.setName(name);
     this.setHost(host);
     this.setHomepage(homepage);
-    this.setAPIKey(APIKey);
+    this.setApiKey(apiKey);
     this.setNodeType(nodeType);
     this.setFederationLevel(integrationLevel);
     this.setDatasetCount(datasetCount);
     this.setNodeState(nodeState);
     this.setRegisterDate(registerDate);
     this.setLastUpdateDate(lastUpdateDate);
-    this.setRefreshPeriod(refresh_period);
+    this.setRefreshPeriod(refreshPeriod);
     this.setDescription(description);
     this.setImage(new OdmsCatalogueImage(image));
     this.setSynchLock(OdmsSynchLock.NONE);
@@ -316,14 +319,14 @@ public class OdmsCatalogue {
    * @param name the name
    * @param host the host
    * @param homepage the homepage
-   * @param APIKey the API key
+   * @param apIKey the API key
    * @param nodeType the node type
    * @param integrationLevel the integration level
    * @param datasetCount the dataset count
    * @param nodeState the node state
    * @param registerDate the register date
    * @param lastUpdateDate the last update date
-   * @param refresh_period the refresh period
+   * @param refreshPeriod the refresh period
    * @param description the description
    * @param image the image
    * @param rdfCount the rdf count
@@ -333,12 +336,12 @@ public class OdmsCatalogue {
    */
   public OdmsCatalogue(int id, String name, 
       String host, String homepage, 
-      String APIKey,
+      String apIKey,
       OdmsCatalogueType nodeType,
       OdmsCatalogueFederationLevel integrationLevel, int datasetCount, OdmsCatalogueState nodeState,
       ZonedDateTime registerDate, 
       ZonedDateTime lastUpdateDate,
-      int refresh_period, 
+      int refreshPeriod, 
       String description, String image,
       int rdfCount, int startDataset, String location, String locationDescription) {
 
@@ -346,14 +349,14 @@ public class OdmsCatalogue {
     this.setName(name);
     this.setHost(host);
     this.setHomepage(homepage);
-    this.setAPIKey(APIKey);
+    this.setApiKey(apIKey);
     this.setNodeType(nodeType);
     this.setFederationLevel(integrationLevel);
     this.setDatasetCount(datasetCount);
     this.setNodeState(nodeState);
     this.setRegisterDate(registerDate);
     this.setLastUpdateDate(lastUpdateDate);
-    this.setRefreshPeriod(refresh_period);
+    this.setRefreshPeriod(refreshPeriod);
     this.setDescription(description);
     this.setImage(new OdmsCatalogueImage(image));
     this.setSynchLock(OdmsSynchLock.NONE);
@@ -399,12 +402,12 @@ public class OdmsCatalogue {
     this.homepage = homepage;
   }
 
-  public String getAPIKey() {
-    return APIKey;
+  public String getApiKey() {
+    return apiKey;
   }
 
-  public void setAPIKey(String aPIKey) {
-    APIKey = aPIKey;
+  public void setApiKey(String apiKey) {
+    this.apiKey = apiKey;
   }
 
   public String getPublisherName() {
@@ -610,12 +613,12 @@ public class OdmsCatalogue {
     this.dumpString = dumpString;
   }
 
-  public String getDumpURL() {
-    return dumpURL;
+  public String getDumpUrl() {
+    return dumpUrl;
   }
 
-  public void setDumpURL(String dumpURL) {
-    this.dumpURL = dumpURL;
+  public void setDumpUrl(String dumpUrl) {
+    this.dumpUrl = dumpUrl;
   }
 
   public String getDumpFilePath() {
@@ -626,11 +629,11 @@ public class OdmsCatalogue {
     this.dumpFilePath = dumpFilePath;
   }
 
-  public DcatApProfile getDCATProfile() {
+  public DcatApProfile getDcatProfile() {
     return dcatProfile;
   }
 
-  public void setDCATProfile(DcatApProfile profile) {
+  public void setDcatProfile(DcatApProfile profile) {
     this.dcatProfile = profile;
   }
 

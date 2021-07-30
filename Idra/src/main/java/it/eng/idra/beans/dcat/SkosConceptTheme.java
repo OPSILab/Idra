@@ -19,11 +19,9 @@
 package it.eng.idra.beans.dcat;
 
 import java.util.List;
-
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.Table;
-
 import org.apache.solr.common.SolrDocument;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -41,13 +39,13 @@ public class SkosConceptTheme extends SkosConcept {
 
   public SkosConceptTheme(SkosConcept concept) {
     super(concept.getPropertyUri(), 
-        concept.getResourceUri(), concept.getPrefLabel(), concept.getNodeID());
+        concept.getResourceUri(), concept.getPrefLabel(), concept.getNodeId());
   }
 
   public SkosConceptTheme(String propertyUri, String resourceUri,
       List<SkosPrefLabel> prefLabel,
-      String nodeID) {
-    super(propertyUri, resourceUri, prefLabel, nodeID);
+      String nodeId) {
+    super(propertyUri, resourceUri, prefLabel, nodeId);
   }
 
   /**

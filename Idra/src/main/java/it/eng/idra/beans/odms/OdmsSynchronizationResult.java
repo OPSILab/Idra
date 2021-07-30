@@ -19,7 +19,6 @@
 package it.eng.idra.beans.odms;
 
 import it.eng.idra.beans.dcat.DcatDataset;
-
 import java.util.ArrayList;
 import java.util.List;
 

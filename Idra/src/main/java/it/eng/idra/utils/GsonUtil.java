@@ -28,7 +28,6 @@ import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
 import com.google.gson.reflect.TypeToken;
-
 import it.eng.idra.authentication.basic.LoggedUser;
 import it.eng.idra.beans.ConfigurationParameter;
 import it.eng.idra.beans.Datalet;
@@ -67,7 +66,6 @@ import it.eng.idra.beans.statistics.KeywordStatistics;
 import it.eng.idra.beans.statistics.KeywordStatisticsResult;
 import it.eng.idra.beans.statistics.StatisticsRequest;
 import it.eng.idra.statistics.PlatformStatistcs;
-
 import java.lang.reflect.Field;
 import java.lang.reflect.Type;
 import java.time.ZoneOffset;
@@ -78,8 +76,6 @@ import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
-
-
 
 public final class GsonUtil {
 

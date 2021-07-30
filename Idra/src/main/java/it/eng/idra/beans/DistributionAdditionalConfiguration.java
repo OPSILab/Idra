@@ -18,6 +18,8 @@
 
 package it.eng.idra.beans;
 
+import com.google.gson.annotations.SerializedName;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -25,7 +27,6 @@ import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.Lob;
 import javax.persistence.Table;
-
 import org.hibernate.annotations.GenericGenerator;
 
 @Entity
@@ -34,7 +35,9 @@ import org.hibernate.annotations.GenericGenerator;
 public class DistributionAdditionalConfiguration {
 
   private String id;
-  private String nodeID;
+  @Column(name = "nodeID")
+  @SerializedName(value = "nodeID")
+  private String nodeId;
   private String type;
   private String query;
 
@@ -46,12 +49,12 @@ public class DistributionAdditionalConfiguration {
    * Instantiates a new distribution additional configuration.
    *
    * @param id the id
-   * @param nodeID the node ID
+   * @param nodeId the node ID
    */
-  public DistributionAdditionalConfiguration(String id, String nodeID) {
+  public DistributionAdditionalConfiguration(String id, String nodeId) {
     super();
     this.id = id;
-    this.nodeID = nodeID;
+    this.nodeId = nodeId;
   }
 
   @Id
@@ -66,12 +69,12 @@ public class DistributionAdditionalConfiguration {
     this.id = id;
   }
 
-  public String getNodeID() {
-    return nodeID;
+  public String getNodeId() {
+    return nodeId;
   }
 
-  public void setNodeID(String nodeID) {
-    this.nodeID = nodeID;
+  public void setNodeId(String nodeId) {
+    this.nodeId = nodeId;
   }
 
   public String getType() {

@@ -18,17 +18,18 @@
 
 package it.eng.idra.beans.search;
 
+import com.google.gson.annotations.SerializedName;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-
 import org.apache.commons.lang.StringUtils;
 import org.apache.solr.client.solrj.response.FacetField;
 
 public class SearchFacetsList {
 
   private String displayName;
-  private String search_parameter;
+  @SerializedName(value = "search_parameter")
+  private String searchParameter;
   private List<SearchFacet> values;
 
   public SearchFacetsList() {
@@ -39,13 +40,13 @@ public class SearchFacetsList {
    * Instantiates a new search facets list.
    *
    * @param displayName the display name
-   * @param search_parameter the search parameter
+   * @param searchParameter the search parameter
    * @param values the values
    */
-  public SearchFacetsList(String displayName, String search_parameter, List<SearchFacet> values) {
+  public SearchFacetsList(String displayName, String searchParameter, List<SearchFacet> values) {
     super();
     this.displayName = displayName;
-    this.search_parameter = search_parameter;
+    this.searchParameter = searchParameter;
     this.values = values;
   }
 
@@ -59,35 +60,35 @@ public class SearchFacetsList {
     String category = f.getName();
     switch (category) {
       case "keywords":
-        this.search_parameter = "tags";
+        this.searchParameter = "tags";
         this.displayName = "Tags";
         break;
       case "distributionFormats":
-        this.search_parameter = category;
+        this.searchParameter = category;
         this.displayName = "Formats";
         break;
       case "distributionLicenses":
-        this.search_parameter = category;
+        this.searchParameter = category;
         this.displayName = "Licenses";
         break;
       case "nodeID":
-        this.search_parameter = "catalogues";
+        this.searchParameter = "catalogues";
         this.displayName = "Catalogues";
         break;
       case "datasetThemes":
-        this.search_parameter = category;
+        this.searchParameter = category;
         this.displayName = "Categories";
         break;
       default:
-        this.search_parameter = category;
-        this.displayName = StringUtils.capitalise(category);
+        this.searchParameter = category;
+        this.displayName = StringUtils.capitalize(category);
         break;
     }
 
     this.values = new ArrayList<SearchFacet>();
     this.values.addAll(
         f.getValues().stream().map(x -> 
-        new SearchFacet(x, this.search_parameter)).collect(Collectors.toList()));
+        new SearchFacet(x, this.searchParameter)).collect(Collectors.toList()));
   }
 
   public String getDisplayName() {
@@ -98,12 +99,12 @@ public class SearchFacetsList {
     this.displayName = displayName;
   }
 
-  public String getSearch_parameter() {
-    return search_parameter;
+  public String getSearchParameter() {
+    return searchParameter;
   }
 
-  public void setSearch_parameter(String search_parameter) {
-    this.search_parameter = search_parameter;
+  public void setSearchParameter(String searchParameter) {
+    this.searchParameter = searchParameter;
   }
 
   public List<SearchFacet> getValues() {

@@ -23,9 +23,7 @@ import it.eng.idra.beans.odms.OdmsCatalogueNotFoundException;
 import it.eng.idra.beans.odms.OdmsManagerException;
 import it.eng.idra.beans.orion.OrionCatalogueConfiguration;
 import it.eng.idra.management.OdmsManager;
-
 import java.util.HashMap;
-
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
@@ -36,7 +34,6 @@ import javax.ws.rs.core.MultivaluedHashMap;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.StatusType;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.glassfish.jersey.client.authentication.HttpAuthenticationFeature;
@@ -92,7 +89,7 @@ public class OauthTokenSynchJob implements Job {
     Client client = ClientBuilder.newClient();
 
     HttpAuthenticationFeature feature = 
-        HttpAuthenticationFeature.basic(conf.getClientID(), conf.getClientSecret());
+        HttpAuthenticationFeature.basic(conf.getClientId(), conf.getClientSecret());
     client.register(feature);
 
     WebTarget webTarget = client.target(conf.getOauth2Endpoint());

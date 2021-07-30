@@ -19,7 +19,6 @@
 package it.eng.idra.beans.sparql;
 
 import it.eng.idra.beans.odms.OdmsCatalogueAdditionalConfiguration;
-
 import javax.persistence.Entity;
 import javax.persistence.Table;
 import javax.persistence.Transient;

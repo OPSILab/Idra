@@ -29,11 +29,9 @@ import it.eng.idra.beans.dcat.FoafAgent;
 import it.eng.idra.beans.dcat.SkosConceptSubject;
 import it.eng.idra.beans.dcat.SkosConceptTheme;
 import it.eng.idra.beans.dcat.VCardOrganization;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
-
 import org.apache.commons.lang3.StringUtils;
 import org.apache.jena.rdf.model.LiteralRequiredException;
 import org.apache.jena.rdf.model.Property;

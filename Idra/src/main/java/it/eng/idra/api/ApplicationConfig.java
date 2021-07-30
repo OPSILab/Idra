@@ -19,10 +19,8 @@
 package it.eng.idra.api;
 
 import it.eng.idra.authentication.AuthenticationManager;
-
 import java.util.HashSet;
 import java.util.Set;
-
 import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.core.Application;
 

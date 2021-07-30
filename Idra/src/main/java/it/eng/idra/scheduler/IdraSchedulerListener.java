@@ -21,10 +21,8 @@ package it.eng.idra.scheduler;
 import it.eng.idra.beans.IdraProperty;
 import it.eng.idra.scheduler.exception.SchedulerCannotBeInitialisedException;
 import it.eng.idra.utils.PropertyManager;
-
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 

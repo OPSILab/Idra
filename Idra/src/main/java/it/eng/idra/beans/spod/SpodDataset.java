@@ -1,7 +1,6 @@
 package it.eng.idra.beans.spod;
 
 import java.util.List;
-
 import org.ckan.Dataset;
 
 public class SpodDataset extends Dataset {

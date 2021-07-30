@@ -1,33 +1,38 @@
 package it.eng.idra.beans.opendatasoft;
 
+import com.google.gson.annotations.SerializedName;
 import java.util.List;
 
 public class InnerDataset {
 
-  private String dataset_id;
-  private String dataset_uid;
+  @SerializedName(value = "dataset_id")
+  private String datasetId;
+  @SerializedName(value = "dataset_uid")
+  private String datasetUid;
   private List<Object> attachements;
-  private Boolean has_records;
-  private Boolean data_visible;
+  @SerializedName(value = "has_records")
+  private Boolean hasRecords;
+  @SerializedName(value = "data_visible")
+  private Boolean dataVisible;
 
   private List<InnerDatasetField> fields;
   private DatasetMeta metas;
   private List<String> features;
 
-  public String getDataset_id() {
-    return dataset_id;
+  public String getDatasetId() {
+    return datasetId;
   }
 
-  public void setDataset_id(String dataset_id) {
-    this.dataset_id = dataset_id;
+  public void setDatasetId(String datasetId) {
+    this.datasetId = datasetId;
   }
 
   public String getDataset_uid() {
-    return dataset_uid;
+    return datasetUid;
   }
 
-  public void setDataset_uid(String dataset_uid) {
-    this.dataset_uid = dataset_uid;
+  public void setDatasetUid(String datasetUid) {
+    this.datasetUid = datasetUid;
   }
 
   public List<Object> getAttachements() {
@@ -38,20 +43,20 @@ public class InnerDataset {
     this.attachements = attachements;
   }
 
-  public Boolean getHas_records() {
-    return has_records;
+  public Boolean getHasRecords() {
+    return hasRecords;
   }
 
-  public void setHas_records(Boolean has_records) {
-    this.has_records = has_records;
+  public void setHasRecords(Boolean hasRecords) {
+    this.hasRecords = hasRecords;
   }
 
-  public Boolean getData_visible() {
-    return data_visible;
+  public Boolean getDataVisible() {
+    return dataVisible;
   }
 
-  public void setData_visible(Boolean data_visible) {
-    this.data_visible = data_visible;
+  public void setDataVisible(Boolean dataVisible) {
+    this.dataVisible = dataVisible;
   }
 
   public List<InnerDatasetField> getFields() {

@@ -19,9 +19,8 @@
 package it.eng.idra.authentication.fiware.model;
 
 import com.google.gson.annotations.JsonAdapter;
-
+import com.google.gson.annotations.SerializedName;
 import it.eng.idra.utils.TokenGsonManager;
-
 import java.util.Set;
 
 // TODO: Auto-generated Javadoc
@@ -33,13 +32,16 @@ import java.util.Set;
 public class Token {
 
   /** The access token. */
-  private String access_token;
+  @SerializedName(value = "access_token")
+  private String accessToken;
 
   /** The expires in. */
-  private Integer expires_in;
+  @SerializedName(value = "expires_in")
+  private Integer expiresIn;
 
   /** The token type. */
-  private String token_type;
+  @SerializedName(value = "token_type")
+  private String tokenType;
 
   /** The state. */
   private String state;
@@ -48,25 +50,26 @@ public class Token {
   private Set<String> scope;
 
   /** The refresh token. */
-  private String refresh_token;
+  @SerializedName(value = "refresh_token")
+  private String refreshToken;
 
   /**
    * Instantiates a new token.
    *
-   * @param access_token  the access token
-   * @param token_type    the token type
-   * @param expires_in    the expires in
-   * @param refresh_token the refresh token
+   * @param accessToken  the access token
+   * @param tokenType    the token type
+   * @param expiresIn    the expires in
+   * @param refreshToken the refresh token
    * @param scope         the scope
    * @param state         the state
    */
-  public Token(String access_token, String token_type, 
-      Integer expires_in, String refresh_token, Set<String> scope,
+  public Token(String accessToken, String tokenType, 
+      Integer expiresIn, String refreshToken, Set<String> scope,
       String state) {
-    this.access_token = access_token;
-    this.token_type = token_type;
-    this.expires_in = expires_in;
-    this.refresh_token = refresh_token;
+    this.accessToken = accessToken;
+    this.tokenType = tokenType;
+    this.expiresIn = expiresIn;
+    this.refreshToken = refreshToken;
     this.scope = scope;
     this.state = state;
   }
@@ -74,13 +77,13 @@ public class Token {
   /**
    * Instantiates a new token.
    *
-   * @param access_token the access token
+   * @param accessToken the access token
    */
-  public Token(String access_token) {
-    this.access_token = access_token;
-    this.token_type = null;
-    this.expires_in = null;
-    this.refresh_token = null;
+  public Token(String accessToken) {
+    this.accessToken = accessToken;
+    this.tokenType = null;
+    this.expiresIn = null;
+    this.refreshToken = null;
     this.scope = null;
     this.state = null;
   }
@@ -90,17 +93,17 @@ public class Token {
    *
    * @return the access token
    */
-  public String getAccess_token() {
-    return access_token;
+  public String getAccessToken() {
+    return accessToken;
   }
 
   /**
    * Sets the access token.
    *
-   * @param access_token the new access token
+   * @param accessToken the new access token
    */
-  public void setAccess_token(String access_token) {
-    this.access_token = access_token;
+  public void setAccessToken(String accessToken) {
+    this.accessToken = accessToken;
   }
 
   /**
@@ -108,17 +111,17 @@ public class Token {
    *
    * @return the token type
    */
-  public String getToken_type() {
-    return token_type;
+  public String getTokenType() {
+    return tokenType;
   }
 
   /**
    * Sets the token type.
    *
-   * @param token_type the new token type
+   * @param tokenType the new token type
    */
-  public void setToken_type(String token_type) {
-    this.token_type = token_type;
+  public void setTokenType(String tokenType) {
+    this.tokenType = tokenType;
   }
 
   /**
@@ -126,17 +129,17 @@ public class Token {
    *
    * @return the expires in
    */
-  public Integer getExpires_in() {
-    return expires_in;
+  public Integer getExpiresIn() {
+    return expiresIn;
   }
 
   /**
    * Sets the expires in.
    *
-   * @param expires_in the new expires in
+   * @param expiresIn the new expires in
    */
-  public void setExpires_in(Integer expires_in) {
-    this.expires_in = expires_in;
+  public void setExpiresIn(Integer expiresIn) {
+    this.expiresIn = expiresIn;
   }
 
   /**
@@ -144,17 +147,17 @@ public class Token {
    *
    * @return the refresh token
    */
-  public String getRefresh_token() {
-    return refresh_token;
+  public String getRefreshToken() {
+    return refreshToken;
   }
 
   /**
    * Sets the refresh token.
    *
-   * @param refresh_token the new refresh token
+   * @param refreshToken the new refresh token
    */
-  public void setRefresh_token(String refresh_token) {
-    this.refresh_token = refresh_token;
+  public void setRefreshToken(String refreshToken) {
+    this.refreshToken = refreshToken;
   }
 
   /**

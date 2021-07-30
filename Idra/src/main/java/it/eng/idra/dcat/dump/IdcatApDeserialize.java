@@ -30,10 +30,8 @@ import it.eng.idra.beans.dcat.SkosConcept;
 import it.eng.idra.beans.dcat.SpdxChecksum;
 import it.eng.idra.beans.dcat.VCardOrganization;
 import it.eng.idra.beans.odms.OdmsCatalogue;
-
 import java.util.List;
 import java.util.regex.Pattern;
-
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.Property;
 import org.apache.jena.rdf.model.Resource;

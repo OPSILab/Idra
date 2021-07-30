@@ -18,11 +18,11 @@
 
 package it.eng.idra.beans.dcat;
 
+import com.google.gson.annotations.SerializedName;
 import it.eng.idra.beans.odms.OdmsCatalogueNotFoundException;
 import it.eng.idra.cache.CacheContentType;
 import it.eng.idra.management.FederationCore;
 import it.eng.idra.utils.CommonUtil;
-
 import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
@@ -30,7 +30,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
-
 import javax.persistence.AttributeOverride;
 import javax.persistence.AttributeOverrides;
 import javax.persistence.CascadeType;
@@ -47,7 +46,6 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
-
 import org.apache.commons.lang3.StringUtils;
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.rdf.model.ResourceFactory;
@@ -64,7 +62,7 @@ import org.hibernate.annotations.LazyCollectionOption;
 import org.hibernate.annotations.Where;
 
 /**
- * Represents a DCAT Dataset
+ * Represents a DCAT Dataset.
  *
  * @author
  */
@@ -78,9 +76,17 @@ public class DcatDataset implements Serializable {
 
   // Custom fields
   private String id;
-  private String nodeID;
+  
+  @Column(name = "nodeID")
+  @SerializedName(value = "nodeID")
+  private String nodeId;
+  
   private String nodeName;
-  private boolean hasStoredRDF = false;
+  
+  @Column(name = "hasStoredRDF")
+  @SerializedName(value = "hasStoredRDF")
+  private boolean hasStoredRdf = false;
+  
   private static final transient Resource RDFClass = DCAT.Dataset;
 
   // DCAT fields
@@ -136,7 +142,7 @@ public class DcatDataset implements Serializable {
   /**
    * Instantiates a new dcat dataset.
    *
-   * @param nodeID           the node ID
+   * @param nodeId           the node ID
    * @param identifier       the identifier
    * @param title            the title
    * @param description      the description
@@ -169,7 +175,7 @@ public class DcatDataset implements Serializable {
    * @param subject          the subject
    * @param relatedResource  the related resource
    */
-  public DcatDataset(String nodeID, String identifier, String title, String description,
+  public DcatDataset(String nodeId, String identifier, String title, String description,
       List<DcatDistribution> distributions, List<SkosConceptTheme> theme, FoafAgent publisher,
       List<VCardOrganization> contactPoint, List<String> keywords, String accessRights,
       List<DctStandard> conformsTo, List<String> documentation, String frequency,
@@ -181,11 +187,11 @@ public class DcatDataset implements Serializable {
       List<String> relatedResource) {
 
     super();
-    setId(CommonUtil.extractSeoIdentifier(title, UUID.randomUUID().toString(), nodeID));
-    setNodeID(nodeID);
+    setId(CommonUtil.extractSeoIdentifier(title, UUID.randomUUID().toString(), nodeId));
+    setNodeId(nodeId);
 
     try {
-      setNodeName(FederationCore.getOdmsCatalogue(Integer.parseInt(nodeID)).getName());
+      setNodeName(FederationCore.getOdmsCatalogue(Integer.parseInt(nodeId)).getName());
     } catch (NumberFormatException | OdmsCatalogueNotFoundException e) {
       e.printStackTrace();
       setNodeName("");
@@ -312,7 +318,7 @@ public class DcatDataset implements Serializable {
    * Instantiates a new dcat dataset.
    *
    * @param id               the id
-   * @param nodeID           the node ID
+   * @param nodeId           the node ID
    * @param identifier       the identifier
    * @param title            the title
    * @param description      the description
@@ -344,9 +350,9 @@ public class DcatDataset implements Serializable {
    * @param creator          the creator
    * @param subject          the subject
    * @param relatedResource  the related resource
-   * @param hasStoredRDF     the has stored RDF
+   * @param hasStoredRdf     the has stored RDF
    */
-  public DcatDataset(String id, String nodeID, String identifier, String title, String description,
+  public DcatDataset(String id, String nodeId, String identifier, String title, String description,
       List<DcatDistribution> distributions, List<SkosConceptTheme> theme, FoafAgent publisher,
       List<VCardOrganization> contactPoint, List<String> keywords, String accessRights,
       List<DctStandard> conformsTo, List<String> documentation, String frequency,
@@ -355,16 +361,16 @@ public class DcatDataset implements Serializable {
       List<String> sample, List<String> source, DctLocation spatialCoverage,
       DctPeriodOfTime temporalCoverage, String type, String version, List<String> versionNotes,
       FoafAgent rightsHolder, FoafAgent creator, List<SkosConceptSubject> subject,
-      List<String> relatedResource, boolean hasStoredRDF) {
+      List<String> relatedResource, boolean hasStoredRdf) {
 
-    this(nodeID, identifier, title, description, distributions, theme, publisher, contactPoint,
+    this(nodeId, identifier, title, description, distributions, theme, publisher, contactPoint,
         keywords, accessRights, conformsTo, documentation, frequency, hasVersion, isVersionOf,
         landingPage, language, provenance, releaseDate, updateDate, otherIdentifier, sample, source,
         spatialCoverage, temporalCoverage, type, version, versionNotes, rightsHolder, creator,
         subject, relatedResource);
 
     this.setId(id);
-    this.setHasStoredRDF(hasStoredRDF);
+    this.setHasStoredRdf(hasStoredRdf);
 
   }
 
@@ -381,12 +387,12 @@ public class DcatDataset implements Serializable {
   }
 
   @Id
-  public String getNodeID() {
-    return nodeID;
+  public String getNodeId() {
+    return nodeId;
   }
 
-  public void setNodeID(String nodeID) {
-    this.nodeID = nodeID;
+  public void setNodeId(String nodeId) {
+    this.nodeId = nodeId;
   }
 
   @Transient
@@ -399,16 +405,16 @@ public class DcatDataset implements Serializable {
   }
 
   @Transient
-  public static Resource getRDFClass() {
+  public static Resource getRdfClass() {
     return RDFClass;
   }
 
-  public boolean getHasStoredRDF() {
-    return hasStoredRDF;
+  public boolean getHasStoredRdf() {
+    return hasStoredRdf;
   }
 
-  public void setHasStoredRDF(boolean hasStoredRDF) {
-    this.hasStoredRDF = hasStoredRDF;
+  public void setHasStoredRdf(boolean hasStoredRdf) {
+    this.hasStoredRdf = hasStoredRdf;
   }
 
   @Embedded
@@ -443,8 +449,8 @@ public class DcatDataset implements Serializable {
     return identifier;
   }
 
-  protected void setIdentifier(DcatProperty dcat_identifier) {
-    this.identifier = dcat_identifier;
+  protected void setIdentifier(DcatProperty dcatIdentifier) {
+    this.identifier = dcatIdentifier;
   }
 
   @LazyCollection(LazyCollectionOption.FALSE)
@@ -894,8 +900,8 @@ public class DcatDataset implements Serializable {
     SolrInputDocument doc = new SolrInputDocument();
     doc.addField("id", id);
     doc.addField("content_type", CacheContentType.dataset.toString());
-    doc.addField("nodeID", nodeID);
-    doc.addField("hasStoredRDF", hasStoredRDF);
+    doc.addField("nodeID", nodeId);
+    doc.addField("hasStoredRDF", hasStoredRdf);
 
     String descTmp = description.getValue();
     try {
@@ -1189,7 +1195,7 @@ public class DcatDataset implements Serializable {
 
   @Override
   public String toString() {
-    return "DCATDataset [id=" + id + ", nodeID=" + nodeID + ", title=" + title.getValue()
+    return "DCATDataset [id=" + id + ", nodeID=" + nodeId + ", title=" + title.getValue()
         + "identifier=" + identifier.getValue() + "]";
   }
 

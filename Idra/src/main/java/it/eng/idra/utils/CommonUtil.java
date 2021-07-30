@@ -20,7 +20,6 @@ package it.eng.idra.utils;
 
 import com.google.common.collect.Ordering;
 import it.eng.idra.beans.odms.OdmsCatalogue;
-
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;

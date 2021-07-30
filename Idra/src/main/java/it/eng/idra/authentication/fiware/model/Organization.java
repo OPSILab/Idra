@@ -18,6 +18,7 @@
 
 package it.eng.idra.authentication.fiware.model;
 
+import com.google.gson.annotations.SerializedName;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -43,7 +44,8 @@ public class Organization {
   private String id;
   
   /** The domain id. */
-  private String domain_id;
+  @SerializedName(value = "domain_id")
+  private String domainId;
   
   /** The name. */
   private String name;
@@ -143,17 +145,17 @@ public class Organization {
    *
    * @return the domain id
    */
-  public String getDomain_id() {
-    return domain_id;
+  public String getDomainId() {
+    return domainId;
   }
 
   /**
    * Sets the domain id.
    *
-   * @param domain_id the new domain id
+   * @param domainId the new domain id
    */
-  public void setDomain_id(String domain_id) {
-    this.domain_id = domain_id;
+  public void setDomainId(String domainId) {
+    this.domainId = domainId;
   }
 
   /**
@@ -182,19 +184,19 @@ public class Organization {
    * @param roles the roles
    * @param enabled the enabled
    * @param id the id
-   * @param domain_id the domain id
+   * @param domainId the domain id
    * @param name the name
    */
   public Organization(String website, String description, 
       Set<Role> roles, boolean enabled, String id, 
-      String domain_id,
+      String domainId,
       String name) {
     this.website = website;
     this.description = description;
     this.roles = roles;
     this.enabled = enabled;
     this.id = id;
-    this.domain_id = domain_id;
+    this.domainId = domainId;
     this.name = name;
   }
 
@@ -206,7 +208,7 @@ public class Organization {
     this.roles = new HashSet<Role>();
     this.enabled = true;
     this.id = "";
-    this.domain_id = "";
+    this.domainId = "";
     this.name = "";
   }
 

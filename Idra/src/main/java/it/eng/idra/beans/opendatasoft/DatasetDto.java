@@ -1,19 +1,21 @@
 package it.eng.idra.beans.opendatasoft;
 
+import com.google.gson.annotations.SerializedName;
 import java.util.List;
 
 public class DatasetDto {
 
-  private Integer total_count;
+  @SerializedName(value = "total_count")
+  private Integer totalCount;
   private List<Link> links;
   private List<Dataset> datasets;
 
-  public Integer getTotal_count() {
-    return total_count;
+  public Integer getTotalCount() {
+    return totalCount;
   }
 
-  public void setTotal_count(Integer total_count) {
-    this.total_count = total_count;
+  public void setTotalCount(Integer totalCount) {
+    this.totalCount = totalCount;
   }
 
   public List<Link> getLinks() {

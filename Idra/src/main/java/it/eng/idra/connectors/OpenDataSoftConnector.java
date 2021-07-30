@@ -4,7 +4,6 @@ import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
 import com.google.common.collect.Sets.SetView;
 import com.google.gson.Gson;
-
 import it.eng.idra.beans.dcat.DcatDataset;
 import it.eng.idra.beans.dcat.DcatDistribution;
 import it.eng.idra.beans.dcat.DctLocation;
@@ -27,7 +26,6 @@ import it.eng.idra.beans.opendatasoft.Link;
 import it.eng.idra.utils.CommonUtil;
 import it.eng.idra.utils.restclient.RestClient;
 import it.eng.idra.utils.restclient.RestClientImpl;
-
 import java.lang.reflect.InvocationTargetException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -39,7 +37,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.TimeZone;
-
 import org.apache.http.HttpResponse;
 import org.apache.jena.vocabulary.DCAT;
 import org.apache.jena.vocabulary.DCTerms;
@@ -102,8 +99,8 @@ public class OpenDataSoftConnector implements IodmsConnector {
     String href = datasource.getHref();
 
     DcatDistribution dcatDistrib = new DcatDistribution(nodeId);
-    dcatDistrib.setDownloadURL(href);
-    dcatDistrib.setAccessURL(href);
+    dcatDistrib.setDownloadUrl(href);
+    dcatDistrib.setAccessUrl(href);
 
     dcatDistrib.setMediaType(format);
     dcatDistrib.setFormat(format);
@@ -141,7 +138,7 @@ public class OpenDataSoftConnector implements IodmsConnector {
 
     }
 
-    String identifier = ds.getDataset().getDataset_id();
+    String identifier = ds.getDataset().getDatasetId();
     List<String> otherIdentifier = new ArrayList<String>();
     otherIdentifier.add(identifier);
 
@@ -240,7 +237,7 @@ public class OpenDataSoftConnector implements IodmsConnector {
       String sjson = sendGetRequest(url);
       DatasetDto datasets = new Gson().fromJson(sjson, DatasetDto.class);
 
-      totDatasets = datasets.getTotal_count();
+      totDatasets = datasets.getTotalCount();
 
       if (startIndex == 0) {
         logger.info(totDatasets + " total datasets found");

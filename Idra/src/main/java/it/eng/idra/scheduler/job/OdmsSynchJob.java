@@ -43,7 +43,6 @@ import it.eng.idra.management.OdmsManager;
 import it.eng.idra.management.StatisticsManager;
 import it.eng.idra.utils.CommonUtil;
 import it.eng.idra.utils.PropertyManager;
-
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.nio.file.Files;
@@ -53,9 +52,7 @@ import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.persistence.EntityExistsException;
-
 import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -149,7 +146,7 @@ public class OdmsSynchJob implements InterruptableJob {
 
     MetadataCacheManager.deleteAllDatasetsByOdmsCatalogue(node);
 
-    if (StringUtils.isBlank(node.getDumpURL()) && StringUtils.isBlank(node.getDumpString())
+    if (StringUtils.isBlank(node.getDumpUrl()) && StringUtils.isBlank(node.getDumpString())
         && StringUtils.isNotBlank(node.getDumpFilePath())) {
 
       // Read the content of the file from the file system
@@ -343,16 +340,16 @@ public class OdmsSynchJob implements InterruptableJob {
 
       if (distributionList != null && !distributionList.isEmpty()) {
         for (DcatDistribution d : distributionList) {
-          if (d.isRDF() && enableRdf) {
+          if (d.isRdf() && enableRdf) {
 
-            logger.info("Deleting RDF - " + d.getAccessURL().getValue());
+            logger.info("Deleting RDF - " + d.getAccessUrl().getValue());
             try {
-              LodCacheManager.deleteRdf(d.getAccessURL().getValue());
-              logger.info("Deleting RDF - " + d.getAccessURL().getValue() + "successfully");
+              LodCacheManager.deleteRdf(d.getAccessUrl().getValue());
+              logger.info("Deleting RDF - " + d.getAccessUrl().getValue() + "successfully");
               deletedRdf++;
             } catch (RepositoryException e) {
               logger.error("Deleting RDF - " 
-                  + d.getAccessURL().getValue() + "unable to complete the deletion: "
+                  + d.getAccessUrl().getValue() + "unable to complete the deletion: "
                   + e.getLocalizedMessage());
             }
           }
@@ -396,12 +393,12 @@ public class OdmsSynchJob implements InterruptableJob {
         // Repository
         if (distributionList != null && !distributionList.isEmpty()) {
           for (DcatDistribution d : distributionList) {
-            if (d.isRDF() && enableRdf) {
+            if (d.isRdf() && enableRdf) {
 
-              logger.info("Adding new RDF - " + d.getAccessURL().getValue());
+              logger.info("Adding new RDF - " + d.getAccessUrl().getValue());
 
               try {
-                addedRdf += LodCacheManager.addRdf(d.getAccessURL().getValue());
+                addedRdf += LodCacheManager.addRdf(d.getAccessUrl().getValue());
                 // logger.info("Adding
                 // RDF completed
                 // successfully");
@@ -442,20 +439,20 @@ public class OdmsSynchJob implements InterruptableJob {
       // Repository
       if (distributionList != null && !distributionList.isEmpty()) {
         for (DcatDistribution d : distributionList) {
-          if (d.isRDF()) {
+          if (d.isRdf()) {
 
-            logger.info("Updating RDF - " + d.getAccessURL().getValue());
+            logger.info("Updating RDF - " + d.getAccessUrl().getValue());
             if (node.getNodeType().equals(OdmsCatalogueType.SOCRATA)
                 || node.getNodeType().equals(OdmsCatalogueType.DKAN)) {
-              d.getAccessURL().setValue(d.getAccessURL().getValue().split("\\?")[0]);
+              d.getAccessUrl().setValue(d.getAccessUrl().getValue().split("\\?")[0]);
             }
             if (enableRdf) {
               try {
 
-                updatedRdf += LodCacheManager.updateRdf(d.getAccessURL().getValue());
+                updatedRdf += LodCacheManager.updateRdf(d.getAccessUrl().getValue());
               } catch (IOException | RepositoryException e) {
                 logger.error("Unable to update rdf: " 
-                    + d.getAccessURL().getValue() + " " + e.getLocalizedMessage());
+                    + d.getAccessUrl().getValue() + " " + e.getLocalizedMessage());
               }
             }
           }

@@ -18,8 +18,8 @@
 
 package it.eng.idra.beans.orion;
 
+import com.google.gson.annotations.SerializedName;
 import it.eng.idra.beans.odms.OdmsCatalogueAdditionalConfiguration;
-
 import javax.persistence.Entity;
 import javax.persistence.Transient;
 
@@ -29,7 +29,9 @@ public class OrionCatalogueConfiguration extends OdmsCatalogueAdditionalConfigur
   private boolean isAuthenticated;
   private String authToken;
   private String oauth2Endpoint;
-  private String clientID;
+  
+  @SerializedName(value = "clientID")
+  private String clientId;
   private String clientSecret;
   private String orionDatasetDumpString;
   private String orionDatasetFilePath;
@@ -45,23 +47,23 @@ public class OrionCatalogueConfiguration extends OdmsCatalogueAdditionalConfigur
    * @param isAuthenticated the is authenticated
    * @param authToken the auth token
    * @param oauth2Endpoint the oauth 2 endpoint
-   * @param client_id the client id
-   * @param client_secret the client secret
+   * @param clientId the client id
+   * @param clientSecret the client secret
    * @param datasets the datasets
    * @param ngsild the ngsild
    */
   public OrionCatalogueConfiguration(boolean isAuthenticated, 
       String authToken, String oauth2Endpoint, 
-      String client_id,
-      String client_secret, 
+      String clientId,
+      String clientSecret, 
       String datasets, 
       boolean ngsild) {
     super();
     this.isAuthenticated = isAuthenticated;
     this.authToken = authToken;
     this.oauth2Endpoint = oauth2Endpoint;
-    this.clientID = client_id;
-    this.clientSecret = client_secret;
+    this.clientId = clientId;
+    this.clientSecret = clientSecret;
     this.orionDatasetDumpString = datasets;
     this.ngsild = ngsild;
     this.setType("ORION");
@@ -73,19 +75,19 @@ public class OrionCatalogueConfiguration extends OdmsCatalogueAdditionalConfigur
    * @param isAuthenticated the is authenticated
    * @param authToken the auth token
    * @param oauth2Endpoint the oauth 2 endpoint
-   * @param client_id the client id
-   * @param client_secret the client secret
+   * @param clientId the client id
+   * @param clientSecret the client secret
    * @param datasets the datasets
    * @param dumpPath the dump path
    * @param ngsild the ngsild
    */
   public OrionCatalogueConfiguration(boolean isAuthenticated, 
       String authToken, String oauth2Endpoint, 
-      String client_id,
-      String client_secret, 
+      String clientId,
+      String clientSecret, 
       String datasets, 
       String dumpPath, boolean ngsild) {
-    this(isAuthenticated, authToken, oauth2Endpoint, client_id, client_secret, datasets, ngsild);
+    this(isAuthenticated, authToken, oauth2Endpoint, clientId, clientSecret, datasets, ngsild);
     this.orionDatasetFilePath = dumpPath;
   }
 
@@ -130,20 +132,20 @@ public class OrionCatalogueConfiguration extends OdmsCatalogueAdditionalConfigur
     this.oauth2Endpoint = oauth2Endpoint;
   }
 
-  public String getClientID() {
-    return clientID;
+  public String getClientId() {
+    return clientId;
   }
 
-  public void setClientID(String client_id) {
-    this.clientID = client_id;
+  public void setClientId(String clientId) {
+    this.clientId = clientId;
   }
 
   public String getClientSecret() {
     return clientSecret;
   }
 
-  public void setClientSecret(String client_secret) {
-    this.clientSecret = client_secret;
+  public void setClientSecret(String clientSecret) {
+    this.clientSecret = clientSecret;
   }
 
   public boolean isNgsild() {
@@ -159,7 +161,7 @@ public class OrionCatalogueConfiguration extends OdmsCatalogueAdditionalConfigur
     final int prime = 31;
     int result = 1;
     result = prime * result + ((authToken == null) ? 0 : authToken.hashCode());
-    result = prime * result + ((clientID == null) ? 0 : clientID.hashCode());
+    result = prime * result + ((clientId == null) ? 0 : clientId.hashCode());
     result = prime * result + ((clientSecret == null) ? 0 : clientSecret.hashCode());
     result = prime * result + (isAuthenticated ? 1231 : 1237);
     result = prime * result + ((oauth2Endpoint == null) ? 0 : oauth2Endpoint.hashCode());
@@ -189,11 +191,11 @@ public class OrionCatalogueConfiguration extends OdmsCatalogueAdditionalConfigur
     } else if (!authToken.equals(other.authToken)) {
       return false;
     }
-    if (clientID == null) {
-      if (other.clientID != null) {
+    if (clientId == null) {
+      if (other.clientId != null) {
         return false;
       }
-    } else if (!clientID.equals(other.clientID)) {
+    } else if (!clientId.equals(other.clientId)) {
       return false;
     }
     if (clientSecret == null) {

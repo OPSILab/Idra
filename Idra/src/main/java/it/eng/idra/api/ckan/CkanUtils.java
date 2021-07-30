@@ -9,7 +9,6 @@ import it.eng.idra.beans.dcat.SkosConceptTheme;
 import it.eng.idra.beans.dcat.SkosPrefLabel;
 import it.eng.idra.beans.dcat.VCardOrganization;
 import it.eng.idra.beans.search.SearchResult;
-
 import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -21,7 +20,6 @@ import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
-
 import org.apache.commons.lang3.StringUtils;
 import org.ckan.Dataset;
 import org.ckan.Extra;
@@ -223,10 +221,10 @@ public class CkanUtils {
       r.setPosition(positionDistro++);
 
       r.setResource_type(null);
-      if (distro.getDownloadURL() != null) {
+      if (distro.getDownloadUrl() != null) {
         r.setUrl(
-            StringUtils.isNotBlank(distro.getDownloadURL().getValue()) 
-            ? distro.getDownloadURL().getValue() : null);
+            StringUtils.isNotBlank(distro.getDownloadUrl().getValue()) 
+            ? distro.getDownloadUrl().getValue() : null);
       }
 
       r.setUrl_type(null);
@@ -486,7 +484,7 @@ public class CkanUtils {
           || StringUtils.isNotBlank(o.getHasEmail().getValue())
           || StringUtils.isNotBlank(o.getHasTelephoneType().getValue())
           || StringUtils.isNotBlank(o.getHasTelephoneValue().getValue())
-          || StringUtils.isNotBlank(o.getHasURL().getValue())) {
+          || StringUtils.isNotBlank(o.getHasUrl().getValue())) {
         JSONObject tmpObj = new JSONObject();
         tmpObj.put("fn", StringUtils.isNotBlank(o.getFn().getValue()) 
             ? o.getFn().getValue() : null);
@@ -498,8 +496,8 @@ public class CkanUtils {
         tmpObj.put("has_telephone_value",
             StringUtils.isNotBlank(o.getHasTelephoneValue().getValue()) 
             ? o.getHasTelephoneValue().getValue() : null);
-        tmpObj.put("has_url", StringUtils.isNotBlank(o.getHasURL().getValue()) 
-            ? o.getHasURL().getValue() : null);
+        tmpObj.put("has_url", StringUtils.isNotBlank(o.getHasUrl().getValue()) 
+            ? o.getHasUrl().getValue() : null);
 
         arContactPoint.put(tmpObj);
       }

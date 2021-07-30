@@ -93,10 +93,10 @@ public class CataloguesStatistics {
       DatasetUpdatedStatistics d = new DatasetUpdatedStatistics();
       d.setName(c.getName());
       d.setAdded((int) added.stream()
-          .filter(x -> Integer.parseInt(x.getNodeID()) == c.getId()).count());
+          .filter(x -> Integer.parseInt(x.getNodeId()) == c.getId()).count());
       // NB: gli updated mi arrivano filtrati qui
       d.setUpdated((int) updated.stream()
-          .filter(x -> Integer.parseInt(x.getNodeID()) == c.getId()).count());
+          .filter(x -> Integer.parseInt(x.getNodeId()) == c.getId()).count());
       res.add(d);
     }
 

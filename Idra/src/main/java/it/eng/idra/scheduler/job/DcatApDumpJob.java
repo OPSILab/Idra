@@ -26,7 +26,6 @@ import it.eng.idra.beans.search.SearchResult;
 import it.eng.idra.cache.MetadataCacheManager;
 import it.eng.idra.dcat.dump.DcatApSerializer;
 import it.eng.idra.utils.PropertyManager;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.quartz.DisallowConcurrentExecution;

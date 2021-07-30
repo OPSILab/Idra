@@ -33,14 +33,12 @@ import it.eng.idra.beans.dcat.SkosConceptStatus;
 import it.eng.idra.beans.dcat.SkosConceptSubject;
 import it.eng.idra.beans.dcat.SkosConceptTheme;
 import it.eng.idra.beans.dcat.SkosPrefLabel;
-import it.eng.idra.beans.dcat.SpdxChecksum;
 import it.eng.idra.beans.dcat.VCardOrganization;
 import it.eng.idra.beans.odms.OdmsCatalogue;
 import it.eng.idra.beans.odms.OdmsCatalogueOfflineException;
 import it.eng.idra.beans.odms.OdmsSynchronizationResult;
 import it.eng.idra.utils.CommonUtil;
 import it.eng.idra.utils.GsonUtil;
-
 import java.lang.reflect.InvocationTargetException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -51,7 +49,6 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.TimeZone;
 import javax.ws.rs.core.MediaType;
-
 import org.apache.jena.iri.IRIFactory;
 import org.apache.jena.rdf.model.Property;
 import org.apache.jena.rdf.model.ResourceFactory;

@@ -23,16 +23,13 @@ import it.eng.idra.authentication.fiware.configuration.IdmProperty;
 import it.eng.idra.authentication.fiware.connectors.FiwareIdmConnector;
 import it.eng.idra.authentication.fiware.connectors.Keyrock6Connector;
 import it.eng.idra.authentication.fiware.connectors.Keyrock7Connector;
-
 import it.eng.idra.authentication.fiware.model.FiwareIdmVersion;
 import it.eng.idra.authentication.fiware.model.Role;
 import it.eng.idra.authentication.fiware.model.Token;
 import it.eng.idra.authentication.fiware.model.UserInfo;
 import it.eng.idra.utils.PropertyManager;
-
 import java.net.URI;
 import java.util.Set;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.ws.rs.core.Response;
@@ -120,7 +117,7 @@ public class FiwareIdmAuthenticationManager extends AuthenticationManager {
     Token token = (Token) tokenObj;
 
     try {
-      validateAdminRole(connector.getUserInfo(token.getAccess_token()));
+      validateAdminRole(connector.getUserInfo(token.getAccessToken()));
       return true;
     } catch (Exception e) {
       return false;

@@ -18,8 +18,8 @@
 
 package it.eng.idra.beans.dcat;
 
+import com.google.gson.annotations.SerializedName;
 import it.eng.idra.cache.CacheContentType;
-
 import javax.persistence.AttributeOverride;
 import javax.persistence.AttributeOverrides;
 import javax.persistence.Column;
@@ -29,7 +29,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Transient;
-
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.vocabulary.RDF;
 import org.apache.jena.vocabulary.RDFS;
@@ -55,9 +54,15 @@ public class VCardOrganization {
   private String resourceUri;
   private String propertyUri;
   private DcatProperty fn;
-  private String nodeID;
+  
+  @SerializedName(value = "nodeID")
+  @Column(name = "nodeID")
+  private String nodeId;
+  
   private DcatProperty hasEmail;
-  private DcatProperty hasURL;
+  
+  @SerializedName(value = "hasURL")
+  private DcatProperty hasUrl;
   private DcatProperty hasTelephoneValue;
   private DcatProperty hasTelephoneType;
 
@@ -71,25 +76,25 @@ public class VCardOrganization {
    * @param resourceUri the resource uri
    * @param fn the fn
    * @param hasEmail the has email
-   * @param hasURL the has URL
+   * @param hasUrl the has URL
    * @param hasTelephoneValue the has telephone value
    * @param hasTelephoneType the has telephone type
-   * @param nodeID the node ID
+   * @param nodeId the node ID
    */
   public VCardOrganization(String propertyUri, 
       String resourceUri, 
       String fn, String hasEmail,
-      String hasURL,
+      String hasUrl,
       String hasTelephoneValue, 
       String hasTelephoneType,
-      String nodeID) {
+      String nodeId) {
     setResourceUri(resourceUri);
-    setNodeID(nodeID);
+    setNodeId(nodeId);
     setPropertyUri(propertyUri);
     setFn(new DcatProperty(VCARD4.fn, RDFS.Literal, fn));
     hasEmail = (hasEmail != null) ? hasEmail.trim() : hasEmail;
     setHasEmail(new DcatProperty(VCARD4.hasEmail, RDFS.Literal, hasEmail));
-    setHasURL(new DcatProperty(VCARD4.hasURL, RDFS.Literal, hasURL));
+    setHasUrl(new DcatProperty(VCARD4.hasURL, RDFS.Literal, hasUrl));
     setHasTelephoneValue(new DcatProperty(VCARD4.value, RDFS.Literal, hasTelephoneValue));
     setHasTelephoneType(new DcatProperty(RDF.type, RDFS.Literal, hasTelephoneType));
   }
@@ -102,21 +107,21 @@ public class VCardOrganization {
    * @param resourceUri the resource uri
    * @param fn the fn
    * @param hasEmail the has email
-   * @param hasURL the has URL
+   * @param hasUrl the has URL
    * @param hasTelephoneValue the has telephone value
    * @param hasTelephoneType the has telephone type
-   * @param nodeID the node ID
+   * @param nodeId the node ID
    */
   public VCardOrganization(String id, String propertyUri, 
-      String resourceUri, String fn, String hasEmail, String hasURL,
-      String hasTelephoneValue, String hasTelephoneType, String nodeID) {
+      String resourceUri, String fn, String hasEmail, String hasUrl,
+      String hasTelephoneValue, String hasTelephoneType, String nodeId) {
     this(propertyUri, resourceUri, fn, hasEmail,
-        hasURL, hasTelephoneValue, hasTelephoneType, nodeID);
+        hasUrl, hasTelephoneValue, hasTelephoneType, nodeId);
     this.setId(id);
   }
 
   @Transient
-  public static Resource getRDFClass() {
+  public static Resource getRdfClass() {
     return RDFClass;
   }
 
@@ -141,12 +146,12 @@ public class VCardOrganization {
     this.resourceUri = resourceUri;
   }
 
-  public String getNodeID() {
-    return nodeID;
+  public String getNodeId() {
+    return nodeId;
   }
 
-  public void setNodeID(String nodeID) {
-    this.nodeID = nodeID;
+  public void setNodeId(String nodeId) {
+    this.nodeId = nodeId;
   }
 
   @Transient
@@ -181,12 +186,12 @@ public class VCardOrganization {
 
   @Embedded
   @AttributeOverrides({ @AttributeOverride(name = "value", column = @Column(name = "hasURL")) })
-  public DcatProperty getHasURL() {
-    return hasURL;
+  public DcatProperty getHasUrl() {
+    return hasUrl;
   }
 
-  public void setHasURL(DcatProperty hasURL) {
-    this.hasURL = hasURL;
+  public void setHasUrl(DcatProperty hasUrl) {
+    this.hasUrl = hasUrl;
   }
 
   @Embedded
@@ -221,12 +226,12 @@ public class VCardOrganization {
   public SolrInputDocument toDoc(CacheContentType contentType) {
     SolrInputDocument doc = new SolrInputDocument();
     doc.addField("id", this.id);
-    doc.addField("nodeID", this.nodeID);
+    doc.addField("nodeID", this.nodeId);
     doc.addField("content_type", contentType.toString());
     doc.addField("resourceUri", this.resourceUri);
     doc.addField("fn", this.getFn().getValue());
     doc.addField("hasEmail", this.getHasEmail().getValue());
-    doc.addField("hasURL", this.getHasURL().getValue());
+    doc.addField("hasURL", this.getHasUrl().getValue());
     doc.addField("hasTelephoneValue", this.getHasTelephoneValue().getValue());
     doc.addField("hasTelephoneType", this.getHasTelephoneType().getValue());
     return doc;
@@ -252,8 +257,8 @@ public class VCardOrganization {
   @Override
   public String toString() {
     return "VCardOrganization [id=" + id + ", fn=" 
-        + fn + ", nodeID=" + nodeID + ", hasEmail=" + hasEmail + ", hasURL="
-        + hasURL + ", hasTelephone=" + hasTelephoneValue + "]";
+        + fn + ", nodeID=" + nodeId + ", hasEmail=" + hasEmail + ", hasURL="
+        + hasUrl + ", hasTelephone=" + hasTelephoneValue + "]";
   }
 
 }

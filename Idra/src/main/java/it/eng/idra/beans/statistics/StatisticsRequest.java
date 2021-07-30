@@ -19,7 +19,6 @@
 package it.eng.idra.beans.statistics;
 
 import it.eng.idra.utils.JsonRequired;
-
 import java.time.ZonedDateTime;
 
 public class StatisticsRequest {

@@ -35,7 +35,6 @@ import javax.persistence.PersistenceException;
 import javax.persistence.Query;
 import javax.persistence.RollbackException;
 import javax.persistence.TypedQuery;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -555,7 +554,7 @@ public class CachePersistenceManager {
     DcatDataset toDelete = (DcatDataset) obj;
     em.getTransaction().begin();
     matching = (DcatDataset) em.find(DcatDataset.class, 
-        new DcatDatasetId(toDelete.getId(), toDelete.getNodeID()));
+        new DcatDatasetId(toDelete.getId(), toDelete.getNodeId()));
     em.remove(matching);
     em.getTransaction().commit();
   }
@@ -582,7 +581,7 @@ public class CachePersistenceManager {
     logger.info("HIBERNATE: Delete Transaction BEGIN");
     for (DcatDataset o : objList) {
       DcatDataset dataset = (DcatDataset) em.find(DcatDataset.class, 
-          new DcatDatasetId(o.getId(), o.getNodeID()));
+          new DcatDatasetId(o.getId(), o.getNodeId()));
       // DcatDataset managed = em.merge(o);
       em.remove(dataset);
     }

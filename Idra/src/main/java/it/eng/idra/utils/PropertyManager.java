@@ -21,7 +21,6 @@ package it.eng.idra.utils;
 import it.eng.idra.authentication.fiware.configuration.IdmProperty;
 import it.eng.idra.beans.IdraProperty;
 import it.eng.idra.utils.restclient.configuration.RestProperty;
-
 import java.io.IOException;
 import java.util.Optional;
 import java.util.Properties;
