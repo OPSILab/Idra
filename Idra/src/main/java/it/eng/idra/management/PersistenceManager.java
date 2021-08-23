@@ -358,7 +358,7 @@ public class PersistenceManager {
     HashMap<Integer, Long> res = new HashMap<Integer, Long>();
     for (Integer nodeId : nodeIds) {
       Query q = em
-          .createQuery("SELECT count(*) FROM OdmsCatalogueMessage d Where d.nodeID=" + nodeId);
+          .createQuery("SELECT count(*) FROM OdmsCatalogueMessage d Where d.nodeId=" + nodeId);
       long var = (long) q.getSingleResult();
       res.put(nodeId, var);
     }

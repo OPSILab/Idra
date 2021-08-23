@@ -815,7 +815,7 @@ public class CachePersistenceManager {
     q = em.createQuery("DELETE FROM DctStandard where nodeID= " + nodeId);
     q.executeUpdate();
 
-    q = em.createQuery("DELETE FROM VCardOrganization where nodeID = " + nodeId);
+    q = em.createQuery("DELETE FROM VcardOrganization where nodeID = " + nodeId);
     q.executeUpdate();
 
     q = em.createNativeQuery("DELETE FROM dcat_distribution_documentation where nodeID= " + nodeId);
