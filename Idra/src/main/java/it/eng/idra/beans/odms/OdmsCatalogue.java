@@ -1,21 +1,17 @@
 /*******************************************************************************
  * Idra - Open Data Federation Platform
  * Copyright (C) 2021 Engineering Ingegneria Informatica S.p.A.
- * <p> 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * at your option) any later version.
- * <p> 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
- * <p>
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see http://www.gnu.org/licenses/.
  ******************************************************************************/
-
 package it.eng.idra.beans.odms;
 
 import com.google.gson.annotations.Expose;
@@ -344,7 +340,7 @@ public class OdmsCatalogue {
    * @param name                the name
    * @param host                the host
    * @param homepage            the homepage
-   * @param apIKey              the API key
+   * @param apiKey              the API key
    * @param nodeType            the node type
    * @param integrationLevel    the integration level
    * @param datasetCount        the dataset count
@@ -359,7 +355,7 @@ public class OdmsCatalogue {
    * @param location            the location
    * @param locationDescription the location description
    */
-  public OdmsCatalogue(int id, String name, String host, String homepage, String apIKey,
+  public OdmsCatalogue(int id, String name, String host, String homepage, String apiKey,
       OdmsCatalogueType nodeType, OdmsCatalogueFederationLevel integrationLevel, int datasetCount,
       OdmsCatalogueState nodeState, ZonedDateTime registerDate, ZonedDateTime lastUpdateDate,
       int refreshPeriod, String description, String image, int rdfCount, int startDataset,
@@ -369,7 +365,7 @@ public class OdmsCatalogue {
     this.setName(name);
     this.setHost(host);
     this.setHomepage(homepage);
-    this.setApiKey(apIKey);
+    this.setApiKey(apiKey);
     this.setNodeType(nodeType);
     this.setFederationLevel(integrationLevel);
     this.setDatasetCount(datasetCount);
