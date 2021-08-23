@@ -30,9 +30,6 @@ public class IdraSqlDialect extends MySQL5Dialect {
    */
   public IdraSqlDialect() {
     super();
-    /**
-     * Function to evaluate regexp in MySQL
-     */
     registerFunction("regexp", new SQLFunctionTemplate(StandardBasicTypes.BOOLEAN, "?1 REGEXP ?2"));
   }
 }

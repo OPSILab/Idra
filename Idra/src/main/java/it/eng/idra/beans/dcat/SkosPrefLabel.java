@@ -36,8 +36,6 @@ import org.json.JSONObject;
 // TODO: Auto-generated Javadoc
 /**
  * Represents a SKOS Concept label in a specific language.
- * 
- * @author
  */
 
 @Entity
