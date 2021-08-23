@@ -1,17 +1,17 @@
 /*******************************************************************************
  * Idra - Open Data Federation Platform
  * Copyright (C) 2021 Engineering Ingegneria Informatica S.p.A.
- *  
+ * <p> 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * at your option) any later version.
- *  
+ * <p> 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
- *   
+ * <p>
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see http://www.gnu.org/licenses/.
  ******************************************************************************/
@@ -116,7 +116,7 @@ public class DcatDataset implements Serializable {
   private FoafAgent publisher;
 
   /** The contact point. */
-  private List<VCardOrganization> contactPoint;
+  private List<VcardOrganization> contactPoint;
 
   /** The keywords. */
   private List<String> keywords;
@@ -245,7 +245,7 @@ public class DcatDataset implements Serializable {
    */
   public DcatDataset(String nodeId, String identifier, String title, String description,
       List<DcatDistribution> distributions, List<SkosConceptTheme> theme, FoafAgent publisher,
-      List<VCardOrganization> contactPoint, List<String> keywords, String accessRights,
+      List<VcardOrganization> contactPoint, List<String> keywords, String accessRights,
       List<DctStandard> conformsTo, List<String> documentation, String frequency,
       List<String> hasVersion, List<String> isVersionOf, String landingPage, List<String> language,
       List<String> provenance, String releaseDate, String updateDate, List<String> otherIdentifier,
@@ -422,7 +422,7 @@ public class DcatDataset implements Serializable {
    */
   public DcatDataset(String id, String nodeId, String identifier, String title, String description,
       List<DcatDistribution> distributions, List<SkosConceptTheme> theme, FoafAgent publisher,
-      List<VCardOrganization> contactPoint, List<String> keywords, String accessRights,
+      List<VcardOrganization> contactPoint, List<String> keywords, String accessRights,
       List<DctStandard> conformsTo, List<String> documentation, String frequency,
       List<String> hasVersion, List<String> isVersionOf, String landingPage, List<String> language,
       List<String> provenance, String releaseDate, String updateDate, List<String> otherIdentifier,
@@ -739,7 +739,7 @@ public class DcatDataset implements Serializable {
   // @Fetch(FetchMode.SELECT)
   @JoinColumns({ @JoinColumn(name = "dataset_id", referencedColumnName = "dataset_id"),
       @JoinColumn(name = "nodeID", referencedColumnName = "nodeID") })
-  public List<VCardOrganization> getContactPoint() {
+  public List<VcardOrganization> getContactPoint() {
     return contactPoint;
   }
 
@@ -748,7 +748,7 @@ public class DcatDataset implements Serializable {
    *
    * @param contactPoint the new contact point
    */
-  protected void setContactPoint(List<VCardOrganization> contactPoint) {
+  protected void setContactPoint(List<VcardOrganization> contactPoint) {
     // this.contactPoint = contactPoint != null ? contactPoint
     // : Arrays.asList(new VCardOrganization(DCAT.contactPoint.getURI(), "",
     // "", "", "", "", nodeID));
@@ -1525,7 +1525,7 @@ public class DcatDataset implements Serializable {
     FoafAgent publisher = null;
     FoafAgent creator = null;
     FoafAgent rightsHolder = null;
-    List<VCardOrganization> contactPointList = new ArrayList<VCardOrganization>();
+    List<VcardOrganization> contactPointList = new ArrayList<VcardOrganization>();
     List<DctStandard> conformsToList = new ArrayList<DctStandard>();
     DctLocation spatialCoverage = null;
     DctPeriodOfTime temporalCoverage = null;
@@ -1569,7 +1569,7 @@ public class DcatDataset implements Serializable {
 
         if (child.containsKey("content_type") && child.getFieldValue("content_type")
             .equals(CacheContentType.contactPoint.toString())) {
-          contactPointList.add(VCardOrganization.docToVCardOrganization(child,
+          contactPointList.add(VcardOrganization.docToVcardOrganization(child,
               DCAT.contactPoint.getURI(), nodeIdentifier));
         }
 

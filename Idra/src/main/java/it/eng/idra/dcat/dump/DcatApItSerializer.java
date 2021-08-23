@@ -1,17 +1,17 @@
 /*******************************************************************************
  * Idra - Open Data Federation Platform
  * Copyright (C) 2021 Engineering Ingegneria Informatica S.p.A.
- *  
+ * <p> 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * at your option) any later version.
- *  
+ * <p> 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
- *   
+ * <p>
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see http://www.gnu.org/licenses/.
  ******************************************************************************/
@@ -23,7 +23,7 @@ import it.eng.idra.beans.dcat.DcatDistribution;
 import it.eng.idra.beans.dcat.DcatProperty;
 import it.eng.idra.beans.dcat.DctPeriodOfTime;
 import it.eng.idra.beans.dcat.FoafAgent;
-import it.eng.idra.beans.dcat.VCardOrganization;
+import it.eng.idra.beans.dcat.VcardOrganization;
 import it.eng.idra.beans.odms.OdmsCatalogue;
 import it.eng.idra.utils.CommonUtil;
 import java.util.List;
@@ -205,11 +205,11 @@ public class DcatApItSerializer extends DcatApSerializer {
    * @param model            the model
    * @param datasetResource  the dataset resource
    */
-  private static void serializeContactPoint(List<VCardOrganization> contactPointList, Model model,
+  private static void serializeContactPoint(List<VcardOrganization> contactPointList, Model model,
       Resource datasetResource) {
 
     if (contactPointList != null && !contactPointList.isEmpty()) {
-      for (VCardOrganization contactPoint : contactPointList) {
+      for (VcardOrganization contactPoint : contactPointList) {
         try {
           Resource contactPointR = null;
 
@@ -232,7 +232,7 @@ public class DcatApItSerializer extends DcatApSerializer {
           // Add all properties to the Resource, that is the object of the
           // contactPoint property
           contactPointR.addProperty(RDF.type, VCARD4.Kind)
-              .addProperty(RDF.type, VCardOrganization.getRdfClass())
+              .addProperty(RDF.type, VcardOrganization.getRdfClass())
               .addLiteral(contactPoint.getFn().getProperty(), contactPoint.getFn().getValue());
           // .addProperty(VCARD4.hasTelephone, telephoneResource);
           if (!contactPointR.hasProperty(VCARD4.hasTelephone)) {

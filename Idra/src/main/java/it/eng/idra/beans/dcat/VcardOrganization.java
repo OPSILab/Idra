@@ -1,17 +1,17 @@
 /*******************************************************************************
  * Idra - Open Data Federation Platform
  * Copyright (C) 2021 Engineering Ingegneria Informatica S.p.A.
- *  
+ * <p> 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * at your option) any later version.
- *  
+ * <p> 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
- *   
+ * <p>
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see http://www.gnu.org/licenses/.
  ******************************************************************************/
@@ -46,7 +46,7 @@ import org.hibernate.annotations.GenericGenerator;
 
 @Entity
 @Table(name = "dcat_vcard")
-public class VCardOrganization {
+public class VcardOrganization {
 
   /** The Constant RDFClass. */
   private static final transient Resource RDFClass = VCARD4.Organization;
@@ -84,7 +84,7 @@ public class VCardOrganization {
   /**
    * Instantiates a new v card organization.
    */
-  public VCardOrganization() {
+  public VcardOrganization() {
   }
 
   /**
@@ -99,7 +99,7 @@ public class VCardOrganization {
    * @param hasTelephoneType  the has telephone type
    * @param nodeId            the node ID
    */
-  public VCardOrganization(String propertyUri, String resourceUri, String fn, String hasEmail,
+  public VcardOrganization(String propertyUri, String resourceUri, String fn, String hasEmail,
       String hasUrl, String hasTelephoneValue, String hasTelephoneType, String nodeId) {
     setResourceUri(resourceUri);
     setNodeId(nodeId);
@@ -125,7 +125,7 @@ public class VCardOrganization {
    * @param hasTelephoneType  the has telephone type
    * @param nodeId            the node ID
    */
-  public VCardOrganization(String id, String propertyUri, String resourceUri, String fn,
+  public VcardOrganization(String id, String propertyUri, String resourceUri, String fn,
       String hasEmail, String hasUrl, String hasTelephoneValue, String hasTelephoneType,
       String nodeId) {
     this(propertyUri, resourceUri, fn, hasEmail, hasUrl, hasTelephoneValue, hasTelephoneType,
@@ -353,9 +353,9 @@ public class VCardOrganization {
    * @param nodeId      the node ID
    * @return the v card organization
    */
-  public static VCardOrganization docToVCardOrganization(SolrDocument doc, String propertyUri,
+  public static VcardOrganization docToVcardOrganization(SolrDocument doc, String propertyUri,
       String nodeId) {
-    return new VCardOrganization((String) doc.getFieldValue("id"), propertyUri,
+    return new VcardOrganization((String) doc.getFieldValue("id"), propertyUri,
         (String) doc.getFieldValue("resourceUri"), doc.getFieldValue("fn").toString(),
         doc.getFieldValue("hasEmail").toString(), doc.getFieldValue("hasURL").toString(),
         doc.getFieldValue("hasTelephoneValue").toString(),

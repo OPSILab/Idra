@@ -1,17 +1,17 @@
 /*******************************************************************************
  * Idra - Open Data Federation Platform
  * Copyright (C) 2021 Engineering Ingegneria Informatica S.p.A.
- *  
+ * <p> 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * at your option) any later version.
- *  
+ * <p> 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
- *   
+ * <p>
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see http://www.gnu.org/licenses/.
  ******************************************************************************/
@@ -34,7 +34,7 @@ import it.eng.idra.beans.dcat.FoafAgent;
 import it.eng.idra.beans.dcat.SkosConcept;
 import it.eng.idra.beans.dcat.SkosPrefLabel;
 import it.eng.idra.beans.dcat.SpdxChecksum;
-import it.eng.idra.beans.dcat.VCardOrganization;
+import it.eng.idra.beans.dcat.VcardOrganization;
 import it.eng.idra.beans.odms.OdmsCatalogue;
 import it.eng.idra.beans.search.SearchResult;
 import it.eng.idra.management.FederationCore;
@@ -81,10 +81,6 @@ import org.eclipse.rdf4j.model.vocabulary.XMLSchema;
 // TODO: Auto-generated Javadoc
 /**
  * The Class DcatApSerializer.
- */
-/*
- * TODO Pensare ad un approccio con Interfaccia DCAPAPSerializer e Classi che la
- * implementano a seconda del Profilo
  */
 public class DcatApSerializer {
 
@@ -180,7 +176,7 @@ public class DcatApSerializer {
   /**
    * initializeModel.
    * 
-   * @return Model
+   * @return the model
    */
   private static Model initializeModel() {
     Model model = ModelFactory.createDefaultModel();
@@ -514,19 +510,19 @@ public class DcatApSerializer {
    * @param model            the model
    * @param datasetResource  the dataset resource
    */
-  private static void serializeContactPoint(List<VCardOrganization> contactPointList, Model model,
+  private static void serializeContactPoint(List<VcardOrganization> contactPointList, Model model,
       Resource datasetResource) {
 
     if (contactPointList != null && !contactPointList.isEmpty()) {
-      for (VCardOrganization contactPoint : contactPointList) {
+      for (VcardOrganization contactPoint : contactPointList) {
         try {
           Resource contactPointR = null;
 
           if (StringUtils.isNotBlank(contactPoint.getResourceUri())) {
             contactPointR = model.createResource(contactPoint.getResourceUri(),
-                VCardOrganization.getRdfClass());
+                VcardOrganization.getRdfClass());
           } else {
-            contactPointR = model.createResource(VCardOrganization.getRdfClass());
+            contactPointR = model.createResource(VcardOrganization.getRdfClass());
           }
 
           // .addProperty(RDF.type, VCARD4.Kind)

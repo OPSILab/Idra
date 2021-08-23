@@ -1,17 +1,17 @@
 /*******************************************************************************
  * Idra - Open Data Federation Platform
  * Copyright (C) 2021 Engineering Ingegneria Informatica S.p.A.
- *  
+ * <p> 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * at your option) any later version.
- *  
+ * <p> 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
- *   
+ * <p>
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see http://www.gnu.org/licenses/.
  ******************************************************************************/
@@ -31,7 +31,7 @@ import it.eng.idra.beans.dcat.SkosConceptStatus;
 import it.eng.idra.beans.dcat.SkosConceptTheme;
 import it.eng.idra.beans.dcat.SkosPrefLabel;
 import it.eng.idra.beans.dcat.SpdxChecksum;
-import it.eng.idra.beans.dcat.VCardOrganization;
+import it.eng.idra.beans.dcat.VcardOrganization;
 import it.eng.idra.beans.odms.OdmsCatalogue;
 import it.eng.idra.beans.odms.OdmsCatalogueForbiddenException;
 import it.eng.idra.beans.odms.OdmsCatalogueOfflineException;
@@ -249,7 +249,7 @@ public class JunarConnector implements IodmsConnector {
     distributionList = retrieveDistributionList(dataset, node.getApiKey());
 
     return new DcatDataset(nodeId, identifier, title, description, distributionList, themeList,
-        publisher, new ArrayList<VCardOrganization>(), keywords, null, null, null, frequency, null,
+        publisher, new ArrayList<VcardOrganization>(), keywords, null, null, null, frequency, null,
         null, landingPage, null, null, issued, modified, null, null, null, null, null, "JUNAR",
         null, null, null, null, null, null);
   }

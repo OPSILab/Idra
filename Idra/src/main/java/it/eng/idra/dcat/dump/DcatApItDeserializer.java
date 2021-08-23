@@ -1,17 +1,17 @@
 /*******************************************************************************
  * Idra - Open Data Federation Platform
  * Copyright (C) 2021 Engineering Ingegneria Informatica S.p.A.
- *  
+ * <p> 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * at your option) any later version.
- *  
+ * <p> 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
- *   
+ * <p>
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see http://www.gnu.org/licenses/.
  ******************************************************************************/
@@ -28,7 +28,7 @@ import it.eng.idra.beans.dcat.DctStandard;
 import it.eng.idra.beans.dcat.FoafAgent;
 import it.eng.idra.beans.dcat.SkosConceptSubject;
 import it.eng.idra.beans.dcat.SkosConceptTheme;
-import it.eng.idra.beans.dcat.VCardOrganization;
+import it.eng.idra.beans.dcat.VcardOrganization;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
@@ -109,7 +109,7 @@ public class DcatApItDeserializer extends DcatApDeserializer {
     theme = deserializeConcept(nodeId, datasetResource, DCAT.theme, SkosConceptTheme.class);
     FoafAgent publisher = null;
     publisher = deserializeFoafAgent(nodeId, datasetResource.getProperty(DCTerms.publisher));
-    List<VCardOrganization> contactPointList = null;
+    List<VcardOrganization> contactPointList = null;
     contactPointList = deserializeContactPoint(nodeId, datasetResource);
 
     // Iterate over keyword properties
@@ -134,16 +134,16 @@ public class DcatApItDeserializer extends DcatApDeserializer {
 
     // Iterate over hasVersion properties
     List<String> hasVersion = new ArrayList<String>();
-    StmtIterator hasVIt = datasetResource.listProperties(DCTerms.hasVersion);
-    while (hasVIt.hasNext()) {
-      hasVersion.add(hasVIt.next().getString());
+    StmtIterator hasVit = datasetResource.listProperties(DCTerms.hasVersion);
+    while (hasVit.hasNext()) {
+      hasVersion.add(hasVit.next().getString());
     }
 
     // Iterate over isVersionOf properties
     List<String> isVersionOf = new ArrayList<String>();
-    StmtIterator isVIt = datasetResource.listProperties(DCTerms.isVersionOf);
-    while (isVIt.hasNext()) {
-      Statement isV = isVIt.next();
+    StmtIterator isVit = datasetResource.listProperties(DCTerms.isVersionOf);
+    while (isVit.hasNext()) {
+      Statement isV = isVit.next();
       try {
         isVersionOf.add(isV.getString());
       } catch (LiteralRequiredException e) {

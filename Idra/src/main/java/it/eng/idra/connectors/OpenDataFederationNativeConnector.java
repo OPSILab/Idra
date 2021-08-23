@@ -1,17 +1,17 @@
 /*******************************************************************************
  * Idra - Open Data Federation Platform
  * Copyright (C) 2021 Engineering Ingegneria Informatica S.p.A.
- *  
+ * <p> 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * at your option) any later version.
- *  
+ * <p> 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
- *   
+ * <p>
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see http://www.gnu.org/licenses/.
  ******************************************************************************/
@@ -33,7 +33,7 @@ import it.eng.idra.beans.dcat.SkosConceptStatus;
 import it.eng.idra.beans.dcat.SkosConceptSubject;
 import it.eng.idra.beans.dcat.SkosConceptTheme;
 import it.eng.idra.beans.dcat.SkosPrefLabel;
-import it.eng.idra.beans.dcat.VCardOrganization;
+import it.eng.idra.beans.dcat.VcardOrganization;
 import it.eng.idra.beans.odms.OdmsCatalogue;
 import it.eng.idra.beans.odms.OdmsCatalogueOfflineException;
 import it.eng.idra.beans.odms.OdmsSynchronizationResult;
@@ -208,7 +208,7 @@ public class OpenDataFederationNativeConnector implements IodmsConnector {
     if (dataset.has("publisher")) {
       publisher = deserializeFoafAgent(dataset, "publisher", DCTerms.publisher, nodeId);
     }
-    List<VCardOrganization> contactPointList = new ArrayList<VCardOrganization>();
+    List<VcardOrganization> contactPointList = new ArrayList<VcardOrganization>();
     contactPointList = deserializeContactPoint(dataset, DCAT.contactPoint, nodeId);
 
     if (dataset.has("keywords")) {
@@ -431,18 +431,18 @@ public class OpenDataFederationNativeConnector implements IodmsConnector {
    * @return the list
    * @throws JSONException the JSON exception
    */
-  protected List<VCardOrganization> deserializeContactPoint(JSONObject dataset, Property property,
+  protected List<VcardOrganization> deserializeContactPoint(JSONObject dataset, Property property,
       String nodeId) throws JSONException {
 
-    List<VCardOrganization> contactPList = new ArrayList<VCardOrganization>();
+    List<VcardOrganization> contactPlist = new ArrayList<VcardOrganization>();
 
     JSONArray contactArray = dataset.optJSONArray("contactPoint");
     if (contactArray != null) {
       for (int i = 0; i < contactArray.length(); i++) {
         JSONObject contactObj = contactArray.optJSONObject(i);
         if (contactObj != null) {
-          contactPList
-              .add(new VCardOrganization(property.getURI(), contactObj.optString("resourceUri"),
+          contactPlist
+              .add(new VcardOrganization(property.getURI(), contactObj.optString("resourceUri"),
                   contactObj.optString("fn"), contactObj.optString("hasEmail"),
                   contactObj.optString("hasURL"), contactObj.optString("hasTelephoneValue"),
                   contactObj.optString("hasTelephoneType"), nodeId));
@@ -450,7 +450,7 @@ public class OpenDataFederationNativeConnector implements IodmsConnector {
       }
     }
 
-    return contactPList;
+    return contactPlist;
   }
 
   /**

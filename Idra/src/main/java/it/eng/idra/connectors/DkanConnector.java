@@ -1,17 +1,17 @@
 /*******************************************************************************
  * Idra - Open Data Federation Platform
  * Copyright (C) 2021 Engineering Ingegneria Informatica S.p.A.
- *  
+ * <p> 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * at your option) any later version.
- *  
+ * <p> 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
- *   
+ * <p>
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see http://www.gnu.org/licenses/.
  ******************************************************************************/
@@ -29,7 +29,7 @@ import it.eng.idra.beans.dcat.FoafAgent;
 import it.eng.idra.beans.dcat.SkosConcept;
 import it.eng.idra.beans.dcat.SkosConceptTheme;
 import it.eng.idra.beans.dcat.SkosPrefLabel;
-import it.eng.idra.beans.dcat.VCardOrganization;
+import it.eng.idra.beans.dcat.VcardOrganization;
 import it.eng.idra.beans.odms.OdmsCatalogue;
 import it.eng.idra.beans.odms.OdmsCatalogueForbiddenException;
 import it.eng.idra.beans.odms.OdmsCatalogueNotFoundException;
@@ -215,7 +215,7 @@ public class DkanConnector implements IodmsConnector {
         keywords.add(keywordArray.getString(i));
       }
     }
-    List<VCardOrganization> contactPointList = null;
+    List<VcardOrganization> contactPointList = null;
     contactPointList = deserializeContactPoint(dataset);
     String title = null;
     title = dataset.optString("title");
@@ -306,15 +306,15 @@ public class DkanConnector implements IodmsConnector {
    * @param dataset the dataset
    * @return the list
    */
-  protected List<VCardOrganization> deserializeContactPoint(JSONObject dataset) {
+  protected List<VcardOrganization> deserializeContactPoint(JSONObject dataset) {
 
-    List<VCardOrganization> result = new ArrayList<VCardOrganization>();
+    List<VcardOrganization> result = new ArrayList<VcardOrganization>();
 
     if (dataset.has("contactPoint")) {
 
       JSONObject contactObj = dataset.optJSONObject("contactPoint");
       if (contactObj != null) {
-        result.add(new VCardOrganization(DCAT.contactPoint.getURI(), null,
+        result.add(new VcardOrganization(DCAT.contactPoint.getURI(), null,
             contactObj.optString("fn"), contactObj.optString("hasEmail"),
             contactObj.optString("hasURL"), contactObj.optString("hasTelephoneValue"),
             contactObj.optString("hasTelephoneType"), nodeId));

@@ -1,17 +1,17 @@
 /*******************************************************************************
  * Idra - Open Data Federation Platform
  * Copyright (C) 2021 Engineering Ingegneria Informatica S.p.A.
- *  
+ * <p> 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * at your option) any later version.
- *  
+ * <p> 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
- *   
+ * <p>
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see http://www.gnu.org/licenses/.
  ******************************************************************************/
@@ -25,7 +25,7 @@ import it.eng.idra.beans.dcat.DctStandard;
 import it.eng.idra.beans.dcat.SkosConceptSubject;
 import it.eng.idra.beans.dcat.SkosConceptTheme;
 import it.eng.idra.beans.dcat.SkosPrefLabel;
-import it.eng.idra.beans.dcat.VCardOrganization;
+import it.eng.idra.beans.dcat.VcardOrganization;
 import it.eng.idra.beans.search.SearchResult;
 import java.sql.Timestamp;
 import java.text.ParseException;
@@ -495,7 +495,7 @@ public class CkanUtils {
     }
 
     JSONArray arContactPoint = new JSONArray();
-    for (VCardOrganization o : dataset.getContactPoint()) {
+    for (VcardOrganization o : dataset.getContactPoint()) {
       if (StringUtils.isNotBlank(o.getFn().getValue())
           || StringUtils.isNotBlank(o.getHasEmail().getValue())
           || StringUtils.isNotBlank(o.getHasTelephoneType().getValue())

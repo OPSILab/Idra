@@ -1,17 +1,17 @@
 /*******************************************************************************
  * Idra - Open Data Federation Platform
  * Copyright (C) 2021 Engineering Ingegneria Informatica S.p.A.
- *  
+ * <p> 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * at your option) any later version.
- *  
+ * <p> 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
- *   
+ * <p>
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see http://www.gnu.org/licenses/.
  ******************************************************************************/
@@ -222,7 +222,7 @@ public class EuroVocTranslator {
 
     String key;
     String value;
-    boolean foundAString = false;
+    boolean foundAsString = false;
     for (Entry<String, Object> e : searchParameters.entrySet()) {
       key = e.getKey();
 
@@ -247,7 +247,7 @@ public class EuroVocTranslator {
                                                                */).collect(Collectors.joining(","));
             if (StringUtils.isNotBlank(termEurovoc)) {
               eurovocTerms += termEurovoc + (it.hasNext() ? "," : "");
-              foundAString = true;
+              foundAsString = true;
             }
 
           }
@@ -261,7 +261,7 @@ public class EuroVocTranslator {
                                                                */).collect(Collectors.joining(","));
             if (StringUtils.isNotBlank(termEurovoc)) {
               eurovocTerms += termEurovoc + (it.hasNext() ? "," : "");
-              foundAString = true;
+              foundAsString = true;
             }
 
           }
@@ -274,7 +274,7 @@ public class EuroVocTranslator {
       }
     }
 
-    if (!foundAString) {
+    if (!foundAsString) {
       throw new EuroVocTranslationNotFoundException("Translation not found for provided input!");
     }
 

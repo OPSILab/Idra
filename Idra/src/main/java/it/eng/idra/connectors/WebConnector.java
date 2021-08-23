@@ -1,17 +1,17 @@
 /*******************************************************************************
  * Idra - Open Data Federation Platform
  * Copyright (C) 2021 Engineering Ingegneria Informatica S.p.A.
- *  
+ * <p> 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * at your option) any later version.
- *  
+ * <p> 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
- *   
+ * <p>
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see http://www.gnu.org/licenses/.
  ******************************************************************************/
@@ -30,7 +30,7 @@ import it.eng.idra.beans.dcat.FoafAgent;
 import it.eng.idra.beans.dcat.SkosConcept;
 import it.eng.idra.beans.dcat.SkosConceptTheme;
 import it.eng.idra.beans.dcat.SkosPrefLabel;
-import it.eng.idra.beans.dcat.VCardOrganization;
+import it.eng.idra.beans.dcat.VcardOrganization;
 import it.eng.idra.beans.exception.DatasetNotValidException;
 import it.eng.idra.beans.odms.OdmsCatalogue;
 import it.eng.idra.beans.odms.OdmsSynchronizationResult;
@@ -204,7 +204,7 @@ public class WebConnector implements IodmsConnector {
     FoafAgent publisher = null;
     FoafAgent rightsHolder = null;
     FoafAgent creator = null;
-    List<VCardOrganization> contactPointList = new ArrayList<VCardOrganization>();
+    List<VcardOrganization> contactPointList = new ArrayList<VcardOrganization>();
     DctPeriodOfTime temporalCoverage = null;
     DctLocation spatialCoverage = null;
     String geographicalIdentifier = null;
@@ -483,7 +483,7 @@ public class WebConnector implements IodmsConnector {
     // Contact Point
     String vcardUri = null;
     if (vcardUri != null || vcardFn != null || vcardHasEmail != null) {
-      contactPointList.add(new VCardOrganization(DCAT.contactPoint.getURI(), vcardUri, vcardFn,
+      contactPointList.add(new VcardOrganization(DCAT.contactPoint.getURI(), vcardUri, vcardFn,
           vcardHasEmail, vcardHasUrl, vcardHasTelephone, "", nodeId));
     }
 

@@ -1,17 +1,17 @@
 /*******************************************************************************
  * Idra - Open Data Federation Platform
  * Copyright (C) 2021 Engineering Ingegneria Informatica S.p.A.
- *  
+ * <p> 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * at your option) any later version.
- *  
+ * <p> 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
- *   
+ * <p>
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see http://www.gnu.org/licenses/.
  ******************************************************************************/
@@ -33,7 +33,7 @@ import it.eng.idra.beans.dcat.SkosConceptSubject;
 import it.eng.idra.beans.dcat.SkosConceptTheme;
 import it.eng.idra.beans.dcat.SkosPrefLabel;
 import it.eng.idra.beans.dcat.SpdxChecksum;
-import it.eng.idra.beans.dcat.VCardOrganization;
+import it.eng.idra.beans.dcat.VcardOrganization;
 import it.eng.idra.beans.odms.OdmsCatalogue;
 import it.eng.idra.utils.CommonUtil;
 import java.io.ByteArrayInputStream;
@@ -162,7 +162,7 @@ public class DcatApDeserializer implements IdcatApDeserialize {
     theme = deserializeConcept(nodeId, datasetResource, DCAT.theme, SkosConceptTheme.class);
     FoafAgent publisher = null;
     publisher = deserializeFoafAgent(nodeId, datasetResource.getProperty(DCTerms.publisher));
-    List<VCardOrganization> contactPointList = null;
+    List<VcardOrganization> contactPointList = null;
     contactPointList = deserializeContactPoint(nodeId, datasetResource);
 
     // Iterate over keyword properties
@@ -193,16 +193,16 @@ public class DcatApDeserializer implements IdcatApDeserialize {
 
     // Iterate over hasVersion properties
     List<String> hasVersion = new ArrayList<String>();
-    StmtIterator hasVIt = datasetResource.listProperties(DCTerms.hasVersion);
-    while (hasVIt.hasNext()) {
-      hasVersion.add(hasVIt.next().getString());
+    StmtIterator hasVit = datasetResource.listProperties(DCTerms.hasVersion);
+    while (hasVit.hasNext()) {
+      hasVersion.add(hasVit.next().getString());
     }
 
     // Iterate over isVersionOf properties
     List<String> isVersionOf = new ArrayList<String>();
-    StmtIterator isVIt = datasetResource.listProperties(DCTerms.isVersionOf);
-    while (isVIt.hasNext()) {
-      Statement isV = isVIt.next();
+    StmtIterator isVit = datasetResource.listProperties(DCTerms.isVersionOf);
+    while (isVit.hasNext()) {
+      Statement isV = isVit.next();
       try {
         isVersionOf.add(isV.getString());
       } catch (LiteralRequiredException e) {
@@ -610,9 +610,9 @@ public class DcatApDeserializer implements IdcatApDeserialize {
    * @param datasetResource the dataset resource
    * @return the list
    */
-  public List<VCardOrganization> deserializeContactPoint(String nodeId, Resource datasetResource) {
+  public List<VcardOrganization> deserializeContactPoint(String nodeId, Resource datasetResource) {
 
-    List<VCardOrganization> contactPointList = new ArrayList<VCardOrganization>();
+    List<VcardOrganization> contactPointList = new ArrayList<VcardOrganization>();
 
     // Iterate over contact points
     StmtIterator cit = datasetResource.listProperties(DCAT.contactPoint);
@@ -665,7 +665,7 @@ public class DcatApDeserializer implements IdcatApDeserialize {
           }
         }
 
-        contactPointList.add(new VCardOrganization(DCAT.contactPoint.getURI(), vcardUri, vcardFn,
+        contactPointList.add(new VcardOrganization(DCAT.contactPoint.getURI(), vcardUri, vcardFn,
             vcardHasEmail, vcardHasUrl, vcardHasTelephoneValue, vcardHasTelephoneType, nodeId));
       }
     }
