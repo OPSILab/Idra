@@ -85,9 +85,7 @@ public class FederationApiMockup {
   public Response getNativeDataset(@PathParam("id") String datasetId) {
 
     try {
-
       JSONObject json = new JSONObject();
-
       json.put("title", "title");
       json.put("description", "description");
       json.put("identifier", "identifier");
@@ -99,28 +97,23 @@ public class FederationApiMockup {
       json.put("landingPage", "baseUrl/datasets/identifier");
       json.put("accrualPeriodicity", "accrualPeriodicity");
       json.put("spatial", "spatial");
-
       json.put("temporal", "temporal");
       json.put("language", "language");
-      json.put("licenseTitle", "licenseTitle");
-      
+      json.put("licenseTitle", "licenseTitle");      
       JSONArray keywords = new JSONArray();// {"pollution","metro"};
       keywords.put("pollution");
       keywords.put("metro");
       json.put("keyword", keywords);
-      
       JSONObject publisher = new JSONObject();
       publisher.put("name", "publisherName");
       publisher.put("mbox", "publisherMbox");
       publisher.put("homepage", "publisherHomepage");
       publisher.put("type", "publisherType");
       json.put("publisher", publisher);
-
       JSONObject contacpPoint = new JSONObject();
       contacpPoint.put("fn", "contactPointFN");
       contacpPoint.put("hasEmail", "contactPointHasEmail");
       json.put("contactPoint", contacpPoint);
-
       JSONObject dist1 = new JSONObject();
       dist1.put("title", "distTitle");
       dist1.put("accessURL", "distAccessURL");
@@ -131,11 +124,9 @@ public class FederationApiMockup {
       dist1.put("issued", "2015-10-12T12:03:14Z");
       dist1.put("modified", "2015-10-12T12:03:14Z");
       dist1.put("byteSize", "1024");
-
       JSONArray distributions = new JSONArray();
       distributions.put(dist1);
       json.put("distribution", distributions);
-
       System.out.println(json.toString());
       return Response.status(Response.Status.OK).entity(json.toString()).build();
     } catch (JSONException e) {
