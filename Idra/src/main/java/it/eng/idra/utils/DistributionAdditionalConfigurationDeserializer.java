@@ -53,7 +53,9 @@ public class DistributionAdditionalConfigurationDeserializer
       String orionQuery = j.optString("orionQuery", "");
       String fiwareService = j.optString("fiwareService", "");
       String fiwareServicePath = j.optString("fiwareServicePath", "");
-      return new OrionDistributionConfig(orionQuery, fiwareService, fiwareServicePath, nodeId);
+      String linkHeader = j.optString("linkHeader", "");
+      return new OrionDistributionConfig(orionQuery, fiwareService, 
+          fiwareServicePath, linkHeader, nodeId);
     } else if (j.has("sparqlQuery")) {
       String sparqlQuery = j.optString("sparqlQuery", "");
       String formats = j.optString("formats", "");
@@ -81,6 +83,7 @@ public class DistributionAdditionalConfigurationDeserializer
       jsonObject.addProperty("query", c.getQuery());
       jsonObject.addProperty("fiwareService", c.getFiwareService());
       jsonObject.addProperty("fiwareServicePath", c.getFiwareServicePath());
+      jsonObject.addProperty("linkHeader", c.getLinkHeader());
     } else if (arg0.getType().toLowerCase().equals("sparql")) {
       SparqlDistributionConfig c = (SparqlDistributionConfig) arg0;
       jsonObject.addProperty("query", c.getQuery());

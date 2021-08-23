@@ -48,13 +48,15 @@ public class OrionDistributionConfig extends DistributionAdditionalConfiguration
    * @param query             the query
    * @param fiwareService     the fiware service
    * @param fiwareServicePath the fiware service path
+   * @param linkHeader        the link header
    * @param nodeId            the node ID
    */
   public OrionDistributionConfig(String query, String fiwareService, String fiwareServicePath,
-      String nodeId) {
+      String linkHeader, String nodeId) {
     super();
     this.fiwareService = fiwareService;
     this.fiwareServicePath = fiwareServicePath;
+    this.linkHeader = linkHeader;
     this.setNodeId(nodeId);
     this.setType("ORION");
     this.setQuery(query);

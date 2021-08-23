@@ -785,7 +785,12 @@ angular.module("IdraPlatform").controller('CatalogueCtrl',['$scope','$http','con
 					return $scope.node.dumpString;
 
 			},
-			type:function(){return $scope.node.nodeType;}
+			type:function(){
+				if($scope.node.nodeType.toLowerCase()=='orion' && $scope.node.additionalConfig.ngsild){
+					return "ORION-LD";
+				}
+				return $scope.node.nodeType;
+				}
 		}
 	});
 

@@ -251,7 +251,7 @@
 	<button class="btn btn-xs btn-file"
 		style="background-color: #ebebeb; margin: 0px 0px 0px 0px;"> <i
 		class="mdi-file-folder-open">
-	<input ng-if="nodeType=='ORION' || nodeType=='SPARQL' || nodeType=='WEB'" type="file" name="file"
+	<input ng-if="nodeType=='ORION-LD' || nodeType=='ORION' || nodeType=='SPARQL' || nodeType=='WEB'" type="file" name="file"
 			onchange="angular.element(this).scope().fileUploadJSON(this)"
 			accept=".json">
 	<input ng-if="nodeType=='DCATDUMP'" type="file" name="file"
@@ -281,7 +281,7 @@
 	</button><md-tooltip>Redo</md-tooltip>
 	</span>
 	
-	<button ng-if="nodeType=='ORION' || nodeType=='SPARQL'" ng-click="addNewDataset(false)" class="btn btn-xs btn-file"
+	<button ng-if="nodeType=='ORION-LD' || nodeType=='ORION' || nodeType=='SPARQL'" ng-click="addNewDataset(false)" class="btn btn-xs btn-file"
 		style="background-color: #ebebeb; margin: 0px 0px 0px 0px;"> <i
 		class="mdi-content-add"></i>
 	<md-tooltip>{{'addEmptyDataset' | translate}}</md-tooltip></button>

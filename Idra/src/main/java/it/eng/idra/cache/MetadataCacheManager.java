@@ -1827,7 +1827,8 @@ public class MetadataCacheManager {
       String url = "";
       OrionDistributionConfig distroConf = (OrionDistributionConfig) distribution
           .getDistributionAdditionalConfig();
-      if (!nodeConf.isAuthenticated() && StringUtils.isBlank(distroConf.getFiwareService())
+      if (!nodeConf.isNgsild() && !nodeConf.isAuthenticated() 
+          && StringUtils.isBlank(distroConf.getFiwareService())
           && (StringUtils.isBlank(distroConf.getFiwareServicePath())
               || distroConf.getFiwareServicePath().equals("/"))) {
         url = (!node.getHost().endsWith("/") ? node.getHost()

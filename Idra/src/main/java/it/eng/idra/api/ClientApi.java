@@ -1440,6 +1440,13 @@ public class ClientApi {
         if (StringUtils.isNotBlank(distributionConfig.getFiwareServicePath())) {
           builder = builder.header("Fiware-ServicePath", distributionConfig.getFiwareServicePath());
         }
+        
+        if (catalogueConfig.isNgsild()) {
+          if (StringUtils.isNotBlank(distributionConfig.getLinkHeader())) {
+            //builder = builder.header("Link", distributionConfig.getLinkHeader());
+            builder = builder.header("Link", "<https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld>; rel=\"http://www.w3.org/ns/json-ld#context\"; type=\"application/ld+json\"");
+          }
+        }
 
         if (catalogueConfig.isAuthenticated()) {
           builder = builder.header("X-Auth-Token", catalogueConfig.getAuthToken());
