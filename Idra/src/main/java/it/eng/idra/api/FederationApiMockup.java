@@ -99,8 +99,8 @@ public class FederationApiMockup {
       json.put("spatial", "spatial");
       json.put("temporal", "temporal");
       json.put("language", "language");
-      json.put("licenseTitle", "licenseTitle");      
-      JSONArray keywords = new JSONArray();// {"pollution","metro"};
+      json.put("licenseTitle", "licenseTitle");
+      JSONArray keywords = new JSONArray();
       keywords.put("pollution");
       keywords.put("metro");
       json.put("keyword", keywords);
