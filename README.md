@@ -10,6 +10,7 @@
 [![](https://img.shields.io/badge/tag-fiware-orange.svg?logo=stackoverflow)](http://stackoverflow.com/questions/tagged/fiware+idra+fiware-idra)
 [![CII Best Practices](https://bestpractices.coreinfrastructure.org/projects/4740/badge)](https://bestpractices.coreinfrastructure.org/projects/4740)
 <br>
+[![CI](https://github.com/OPSILab/Idra/actions/workflows/ci.yml/badge.svg?branch=master)](https://github.com/OPSILab/Idra/actions/workflows/ci.yml)
 [![Documentation badge](https://img.shields.io/readthedocs/idra.svg)](https://idra.readthedocs.io/en/latest/)
 ![Status](https://nexus.lab.fiware.org/repository/raw/public/badges/statuses/full.svg)
 
