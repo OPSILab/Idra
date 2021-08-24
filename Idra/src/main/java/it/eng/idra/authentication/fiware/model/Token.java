@@ -1,91 +1,194 @@
 /*******************************************************************************
  * Idra - Open Data Federation Platform
- *  Copyright (C) 2020 Engineering Ingegneria Informatica S.p.A.
- *  
+ * Copyright (C) 2021 Engineering Ingegneria Informatica S.p.A.
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * at your option) any later version.
- *  
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
- *  
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see http://www.gnu.org/licenses/.
  ******************************************************************************/
+
 package it.eng.idra.authentication.fiware.model;
 
+import com.google.gson.annotations.JsonAdapter;
+import com.google.gson.annotations.SerializedName;
+import it.eng.idra.utils.TokenGsonManager;
 import java.util.Set;
 
-import com.google.gson.annotations.JsonAdapter;
+// TODO: Auto-generated Javadoc
 
-import it.eng.idra.utils.TokenGSONManager;
-@JsonAdapter(TokenGSONManager.class)
+/**
+ * The Class Token.
+ */
+@JsonAdapter(TokenGsonManager.class)
 public class Token {
-	
-	private String access_token;
-	private Integer expires_in;
-	private String token_type;
-	private String state;
-	private Set<String> scope;
-	private String refresh_token;
-	
-	
-	public Token(String access_token, String token_type,
-			Integer expires_in, String refresh_token, Set<String> scope, String state) {
-		this.access_token = access_token;
-		this.token_type = token_type;
-		this.expires_in = expires_in;
-		this.refresh_token = refresh_token;
-		this.scope = scope;
-		this.state = state;
-	}
-	
-	public Token(String access_token) {
-		this.access_token = access_token;
-		this.token_type = null;
-		this.expires_in = null;
-		this.refresh_token = null;
-		this.scope = null;
-		this.state = null;
-	}
-	
-	public String getAccess_token() {
-		return access_token;
-	}
-	public void setAccess_token(String access_token) {
-		this.access_token = access_token;
-	}
-	public String getToken_type() {
-		return token_type;
-	}
-	public void setToken_type(String token_type) {
-		this.token_type = token_type;
-	}
-	public Integer getExpires_in() {
-		return expires_in;
-	}
-	public void setExpires_in(Integer expires_in) {
-		this.expires_in = expires_in;
-	}
-	public String getRefresh_token() {
-		return refresh_token;
-	}
-	public void setRefresh_token(String refresh_token) {
-		this.refresh_token = refresh_token;
-	}
-	public Set<String> getScope() {
-		return scope;
-	}
-	public void setScope(Set<String> scope) {
-		this.scope = scope;
-	}
-	public String getState() {
-		return state;
-	}
-	public void setState(String state) {
-		this.state = state;
-	}
+
+  /** The access token. */
+  @SerializedName(value = "access_token")
+  private String accessToken;
+
+  /** The expires in. */
+  @SerializedName(value = "expires_in")
+  private Integer expiresIn;
+
+  /** The token type. */
+  @SerializedName(value = "token_type")
+  private String tokenType;
+
+  /** The state. */
+  private String state;
+
+  /** The scope. */
+  private Set<String> scope;
+
+  /** The refresh token. */
+  @SerializedName(value = "refresh_token")
+  private String refreshToken;
+
+  /**
+   * Instantiates a new token.
+   *
+   * @param accessToken  the access token
+   * @param tokenType    the token type
+   * @param expiresIn    the expires in
+   * @param refreshToken the refresh token
+   * @param scope        the scope
+   * @param state        the state
+   */
+  public Token(String accessToken, String tokenType, Integer expiresIn, String refreshToken,
+      Set<String> scope, String state) {
+    this.accessToken = accessToken;
+    this.tokenType = tokenType;
+    this.expiresIn = expiresIn;
+    this.refreshToken = refreshToken;
+    this.scope = scope;
+    this.state = state;
+  }
+
+  /**
+   * Instantiates a new token.
+   *
+   * @param accessToken the access token
+   */
+  public Token(String accessToken) {
+    this.accessToken = accessToken;
+    this.tokenType = null;
+    this.expiresIn = null;
+    this.refreshToken = null;
+    this.scope = null;
+    this.state = null;
+  }
+
+  /**
+   * Gets the access token.
+   *
+   * @return the access token
+   */
+  public String getAccessToken() {
+    return accessToken;
+  }
+
+  /**
+   * Sets the access token.
+   *
+   * @param accessToken the new access token
+   */
+  public void setAccessToken(String accessToken) {
+    this.accessToken = accessToken;
+  }
+
+  /**
+   * Gets the token type.
+   *
+   * @return the token type
+   */
+  public String getTokenType() {
+    return tokenType;
+  }
+
+  /**
+   * Sets the token type.
+   *
+   * @param tokenType the new token type
+   */
+  public void setTokenType(String tokenType) {
+    this.tokenType = tokenType;
+  }
+
+  /**
+   * Gets the expires in.
+   *
+   * @return the expires in
+   */
+  public Integer getExpiresIn() {
+    return expiresIn;
+  }
+
+  /**
+   * Sets the expires in.
+   *
+   * @param expiresIn the new expires in
+   */
+  public void setExpiresIn(Integer expiresIn) {
+    this.expiresIn = expiresIn;
+  }
+
+  /**
+   * Gets the refresh token.
+   *
+   * @return the refresh token
+   */
+  public String getRefreshToken() {
+    return refreshToken;
+  }
+
+  /**
+   * Sets the refresh token.
+   *
+   * @param refreshToken the new refresh token
+   */
+  public void setRefreshToken(String refreshToken) {
+    this.refreshToken = refreshToken;
+  }
+
+  /**
+   * Gets the scope.
+   *
+   * @return the scope
+   */
+  public Set<String> getScope() {
+    return scope;
+  }
+
+  /**
+   * Sets the scope.
+   *
+   * @param scope the new scope
+   */
+  public void setScope(Set<String> scope) {
+    this.scope = scope;
+  }
+
+  /**
+   * Gets the state.
+   *
+   * @return the state
+   */
+  public String getState() {
+    return state;
+  }
+
+  /**
+   * Sets the state.
+   *
+   * @param state the new state
+   */
+  public void setState(String state) {
+    this.state = state;
+  }
 }

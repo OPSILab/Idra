@@ -1,22 +1,27 @@
 /*******************************************************************************
  * Idra - Open Data Federation Platform
- *  Copyright (C) 2020 Engineering Ingegneria Informatica S.p.A.
- *  
+ * Copyright (C) 2021 Engineering Ingegneria Informatica S.p.A.
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * at your option) any later version.
- *  
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
- *  
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see http://www.gnu.org/licenses/.
  ******************************************************************************/
+
 package it.eng.idra.authentication;
 
+import it.eng.idra.authentication.basic.LoggedUser;
+import it.eng.idra.beans.User;
+import it.eng.idra.beans.exception.InvalidPasswordException;
+import it.eng.idra.management.FederationCore;
+import it.eng.idra.management.PersistenceManager;
+import it.eng.idra.utils.CommonUtil;
+import it.eng.idra.utils.GsonUtil;
 import java.math.BigInteger;
 import java.nio.charset.Charset;
 import java.security.NoSuchAlgorithmException;
@@ -28,157 +33,219 @@ import java.util.List;
 import java.util.Random;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.Response;
-
 import org.apache.commons.io.IOUtils;
 import org.apache.logging.log4j.Logger;
 
-import it.eng.idra.authentication.basic.LoggedUser;
-import it.eng.idra.beans.User;
-import it.eng.idra.beans.exception.InvalidPasswordException;
-import it.eng.idra.management.FederationCore;
-import it.eng.idra.management.PersistenceManager;
-import it.eng.idra.utils.CommonUtil;
-import it.eng.idra.utils.GsonUtil;
-
+// TODO: Auto-generated Javadoc
+/**
+ * The Class BasicAuthenticationManager.
+ */
 public class BasicAuthenticationManager extends AuthenticationManager {
 
-	private static BasicAuthenticationManager instance;
-	private static List<LoggedUser> loggedUsers = new ArrayList<LoggedUser>();
-	private static Logger logger = FederationCore.getLogger();
+  /** The instance. */
+  private static BasicAuthenticationManager instance;
 
-	private BasicAuthenticationManager() {
-	}
+  /** The logged users. */
+  private static List<LoggedUser> loggedUsers = new ArrayList<LoggedUser>();
 
-	public static BasicAuthenticationManager getInstance() {
-		if (instance == null)
-			instance = new BasicAuthenticationManager();
-		return instance;
-	}
+  /** The logger. */
+  private static Logger logger = FederationCore.getLogger();
 
-	@Override
-	public Object login(String username, String password, String code)
-			throws SQLException, NullPointerException, NoSuchAlgorithmException {
+  /**
+   * Instantiates a new basic authentication manager.
+   */
+  private BasicAuthenticationManager() {
+  }
 
-		PersistenceManager manageBeansJpa = new PersistenceManager();
-		try {
-			User existingUser = manageBeansJpa.getUser(username);
+  /**
+   * Gets the single instance of BasicAuthenticationManager.
+   *
+   * @return single instance of BasicAuthenticationManager
+   */
+  public static BasicAuthenticationManager getInstance() {
+    if (instance == null) {
+      instance = new BasicAuthenticationManager();
+    }
+    return instance;
+  }
 
-			if (!existingUser.getPassword().equals(password)) {
+  /*
+   * (non-Javadoc)
+   * 
+   * @see it.eng.idra.authentication.AuthenticationManager#login(java.lang.String,
+   * java.lang.String, java.lang.String)
+   */
+  @Override
+  public Object login(String username, String password, String code)
+      throws SQLException, NullPointerException, NoSuchAlgorithmException {
 
-				logger.error("Username or password invalid");
-				throw new NullPointerException("Username or password invalid!");
+    PersistenceManager manageBeansJpa = new PersistenceManager();
+    try {
+      User existingUser = manageBeansJpa.getUser(username);
 
-			} else {
+      if (!existingUser.getPassword().equals(password)) {
 
-				String token = getToken(existingUser.getUsername(), null);
-				LoggedUser u = new LoggedUser(existingUser.getUsername(), token);
-				loggedUsers.add(u);
-				logger.info("Login success");
-				return token;
+        logger.error("Username or password invalid");
+        throw new NullPointerException("Username or password invalid!");
 
-			}
-		} finally {
-			manageBeansJpa.jpaClose();
-		}
+      } else {
 
-	}
+        String token = getToken(existingUser.getUsername(), null);
+        LoggedUser u = new LoggedUser(existingUser.getUsername(), token);
+        loggedUsers.add(u);
+        logger.info("Login success");
+        return token;
 
-	@Override
-	public Response logout(HttpServletRequest httpRequest) throws Exception {
-		
-		String input = IOUtils.toString(httpRequest.getInputStream(), Charset.defaultCharset());
-		LoggedUser user = GsonUtil.json2Obj(input, GsonUtil.loggedUserType);
+      }
+    } finally {
+      manageBeansJpa.jpaClose();
+    }
 
-		
-		int remove = -1;
-		for (int i = 0; i < loggedUsers.size(); i++) {
-			if (loggedUsers.get(i).getUsername().equals(user.getUsername())) {
-				remove = i;
-			}
-		}
-		if (remove >= 0) {
-			loggedUsers.remove(remove);
-		}
+  }
 
-		logger.info("Logout success");
-		return Response.status(Response.Status.OK).build();
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * it.eng.idra.authentication.AuthenticationManager#logout(javax.servlet.http.
+   * HttpServletRequest)
+   */
+  @Override
+  public Response logout(HttpServletRequest httpRequest) throws Exception {
 
-	}
+    String input = IOUtils.toString(httpRequest.getInputStream(), Charset.defaultCharset());
+    LoggedUser user = GsonUtil.json2Obj(input, GsonUtil.loggedUserType);
 
-	@Override
-	public String getToken(String username, String code) throws NoSuchAlgorithmException {
-		Random random = new SecureRandom();
-		String t = new BigInteger(130, random).toString(32);
-		return CommonUtil.encodePassword(username + t);
-	}
+    int remove = -1;
+    for (int i = 0; i < loggedUsers.size(); i++) {
+      if (loggedUsers.get(i).getUsername().equals(user.getUsername())) {
+        remove = i;
+      }
+    }
+    if (remove >= 0) {
+      loggedUsers.remove(remove);
+    }
 
-	@Override
-	public Boolean validateToken(Object token) throws Exception {
-		// Check if it was issued by the server and if it's not expired
-		// Throw an Exception if the token is invalid
+    logger.info("Logout success");
+    return Response.status(Response.Status.OK).build();
 
-		// int defaultValidationPeriod = Integer.parseInt(
-		// FederationCore.getSettings().get("token_validation") );
-		int defaultValidationPeriod = 3600000;
+  }
 
-		if (loggedUsers.size() == 0) {
-			return false;
-		}
+  /*
+   * (non-Javadoc)
+   * 
+   * @see it.eng.idra.authentication.
+   * AuthenticationManager#getToken(java.lang.String, java.lang.String)
+   */
+  @Override
+  public String getToken(String username, String code) throws NoSuchAlgorithmException {
+    Random random = new SecureRandom();
+    String t = new BigInteger(130, random).toString(32);
+    return CommonUtil.encodePassword(username + t);
+  }
 
-		for (int i = 0; i < loggedUsers.size(); i++) {
-			LoggedUser tmp = loggedUsers.get(i);
-			if (tmp.getToken().equals(token)) {
-				Date n = new Date();
-				if ((n.getTime() - tmp.getCreationDate().getTime()) > defaultValidationPeriod) {
-					loggedUsers.remove(i);
-					return false;
-				} else {
-					tmp.setCreationDate(n);
-					break;
-				}
-			} else if (i == loggedUsers.size() - 1 && !tmp.getToken().equals(token)) {
-				return false;
-			}
-		}
-		return true;
-	}
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * it.eng.idra.authentication.AuthenticationManager#validateToken(java.lang.
+   * Object)
+   */
+  @Override
+  public Boolean validateToken(Object token) throws Exception {
+    // Check if it was issued by the server and if it's not expired
+    // Throw an Exception if the token is invalid
 
-	public static List<LoggedUser> getLoggedUsers() {
-		return loggedUsers;
-	}
+    // int defaultValidationPeriod = Integer.parseInt(
+    // FederationCore.getSettings().get("token_validation") );
+    int defaultValidationPeriod = 3600000;
 
-	public static boolean validatePassword(String username, String password) throws SQLException {
+    if (loggedUsers.size() == 0) {
+      return false;
+    }
 
-		PersistenceManager manageBeansJpa = new PersistenceManager();
-		try {
-			User tmp = manageBeansJpa.getUser(username);
-			if (!tmp.getPassword().equals(password)) {
-				return false;
-			}
+    for (int i = 0; i < loggedUsers.size(); i++) {
+      LoggedUser tmp = loggedUsers.get(i);
+      if (tmp.getToken().equals(token)) {
+        Date n = new Date();
+        if ((n.getTime() - tmp.getCreationDate().getTime()) > defaultValidationPeriod) {
+          loggedUsers.remove(i);
+          return false;
+        } else {
+          tmp.setCreationDate(n);
+          break;
+        }
+      } else if (i == loggedUsers.size() - 1 && !tmp.getToken().equals(token)) {
+        return false;
+      }
+    }
+    return true;
+  }
 
-			return true;
-		} finally {
-			manageBeansJpa.jpaClose();
-		}
-	}
+  /**
+   * Gets the logged users.
+   *
+   * @return the logged users
+   */
+  public static List<LoggedUser> getLoggedUsers() {
+    return loggedUsers;
+  }
 
-	public static boolean updateUserPassword(String username, String newPassword)
-			throws SQLException, NoSuchAlgorithmException, InvalidPasswordException {
-		PersistenceManager manageBeansJpa = new PersistenceManager();
-		try {
-			User u = manageBeansJpa.getUser(username);
-			manageBeansJpa.updateUserPassword(u, newPassword);
-			return validatePassword(u.getUsername(), newPassword);
-		} finally {
-			manageBeansJpa.jpaClose();
-		}
-	}
+  /**
+   * Validate password.
+   *
+   * @param username the username
+   * @param password the password
+   * @return true, if successful
+   * @throws SQLException the SQL exception
+   */
+  public static boolean validatePassword(String username, String password) throws SQLException {
 
-	@Override
-	public Class<BasicAuthenticationManager> getFilterClass() throws ClassNotFoundException {
+    PersistenceManager manageBeansJpa = new PersistenceManager();
+    try {
+      User tmp = manageBeansJpa.getUser(username);
+      if (!tmp.getPassword().equals(password)) {
+        return false;
+      }
 
-		return BasicAuthenticationManager.class;
+      return true;
+    } finally {
+      manageBeansJpa.jpaClose();
+    }
+  }
 
-	}
+  /**
+   * Update user password.
+   *
+   * @param username    the username
+   * @param newPassword the new password
+   * @return true, if successful
+   * @throws SQLException             the SQL exception
+   * @throws NoSuchAlgorithmException the no such algorithm exception
+   * @throws InvalidPasswordException the invalid password exception
+   */
+  public static boolean updateUserPassword(String username, String newPassword)
+      throws SQLException, NoSuchAlgorithmException, InvalidPasswordException {
+    PersistenceManager manageBeansJpa = new PersistenceManager();
+    try {
+      User u = manageBeansJpa.getUser(username);
+      manageBeansJpa.updateUserPassword(u, newPassword);
+      return validatePassword(u.getUsername(), newPassword);
+    } finally {
+      manageBeansJpa.jpaClose();
+    }
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see it.eng.idra.authentication.AuthenticationManager#getFilterClass()
+   */
+  @Override
+  public Class<BasicAuthenticationManager> getFilterClass() throws ClassNotFoundException {
+
+    return BasicAuthenticationManager.class;
+
+  }
 
 }

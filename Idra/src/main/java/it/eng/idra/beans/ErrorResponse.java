@@ -1,86 +1,154 @@
 /*******************************************************************************
  * Idra - Open Data Federation Platform
- *  Copyright (C) 2020 Engineering Ingegneria Informatica S.p.A.
- *  
+ * Copyright (C) 2021 Engineering Ingegneria Informatica S.p.A.
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * at your option) any later version.
- *  
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
- *  
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see http://www.gnu.org/licenses/.
  ******************************************************************************/
+
 package it.eng.idra.beans;
 
 import it.eng.idra.utils.GsonUtil;
 import it.eng.idra.utils.GsonUtilException;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class ErrorResponse.
+ */
 public class ErrorResponse {
 
-	private String statusCode;
-	private String technicalMessage;
-	private String errorCode;
-	private String userMessage;
+  /** The status code. */
+  private String statusCode;
 
-	public ErrorResponse(String statusCode, String technicalMessage, String errorCode, String userMessage) {
-		super();
-		this.statusCode = statusCode;
-		this.technicalMessage = technicalMessage;
-		this.errorCode = errorCode;
-		this.userMessage = userMessage;
-	}
+  /** The technical message. */
+  private String technicalMessage;
 
-	public String getStatusCode() {
-		return statusCode;
-	}
+  /** The error code. */
+  private String errorCode;
 
-	public void setStatusCode(String statusCode) {
-		this.statusCode = statusCode;
-	}
+  /** The user message. */
+  private String userMessage;
 
-	public String getTechnicalMessage() {
-		return technicalMessage;
-	}
+  /**
+   * Instantiates a new error response.
+   *
+   * @param statusCode       the status code
+   * @param technicalMessage the technical message
+   * @param errorCode        the error code
+   * @param userMessage      the user message
+   */
+  public ErrorResponse(String statusCode, String technicalMessage, String errorCode,
+      String userMessage) {
+    super();
+    this.statusCode = statusCode;
+    this.technicalMessage = technicalMessage;
+    this.errorCode = errorCode;
+    this.userMessage = userMessage;
+  }
 
-	public void setTechnicalMessage(String technicalMessage) {
-		this.technicalMessage = technicalMessage;
-	}
+  /**
+   * Gets the status code.
+   *
+   * @return the status code
+   */
+  public String getStatusCode() {
+    return statusCode;
+  }
 
-	public String getErrorCode() {
-		return errorCode;
-	}
+  /**
+   * Sets the status code.
+   *
+   * @param statusCode the new status code
+   */
+  public void setStatusCode(String statusCode) {
+    this.statusCode = statusCode;
+  }
 
-	public void setErrorCode(String errorCode) {
-		this.errorCode = errorCode;
-	}
+  /**
+   * Gets the technical message.
+   *
+   * @return the technical message
+   */
+  public String getTechnicalMessage() {
+    return technicalMessage;
+  }
 
-	public String getUserMessage() {
-		return userMessage;
-	}
+  /**
+   * Sets the technical message.
+   *
+   * @param technicalMessage the new technical message
+   */
+  public void setTechnicalMessage(String technicalMessage) {
+    this.technicalMessage = technicalMessage;
+  }
 
-	public void setUserMessage(String userMessage) {
-		this.userMessage = userMessage;
-	}
+  /**
+   * Gets the error code.
+   *
+   * @return the error code
+   */
+  public String getErrorCode() {
+    return errorCode;
+  }
 
-	@Override
-	public String toString() {
-		return "\nErrorResponse [statusCode=" + statusCode + ", technicalMessage=" + technicalMessage + ", errorCode="
-				+ errorCode + "userMessage=" + userMessage + "]\n";
-	}
+  /**
+   * Sets the error code.
+   *
+   * @param errorCode the new error code
+   */
+  public void setErrorCode(String errorCode) {
+    this.errorCode = errorCode;
+  }
 
-	public String toJson() {
-		try {
-			return GsonUtil.obj2Json(this, ErrorResponse.class);
-		} catch (GsonUtilException e) {
-			e.printStackTrace();
-			return null;
-		}
+  /**
+   * Gets the user message.
+   *
+   * @return the user message
+   */
+  public String getUserMessage() {
+    return userMessage;
+  }
 
-	}
+  /**
+   * Sets the user message.
+   *
+   * @param userMessage the new user message
+   */
+  public void setUserMessage(String userMessage) {
+    this.userMessage = userMessage;
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see java.lang.Object#toString()
+   */
+  @Override
+  public String toString() {
+    return "\nErrorResponse [statusCode=" + statusCode + ", technicalMessage=" + technicalMessage
+        + ", errorCode=" + errorCode + "userMessage=" + userMessage + "]\n";
+  }
+
+  /**
+   * To json.
+   *
+   * @return the string
+   */
+  public String toJson() {
+    try {
+      return GsonUtil.obj2Json(this, ErrorResponse.class);
+    } catch (GsonUtilException e) {
+      e.printStackTrace();
+      return null;
+    }
+
+  }
 
 }

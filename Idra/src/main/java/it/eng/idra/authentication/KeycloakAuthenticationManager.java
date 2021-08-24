@@ -1,124 +1,191 @@
 /*******************************************************************************
  * Idra - Open Data Federation Platform
- *  Copyright (C) 2020 Engineering Ingegneria Informatica S.p.A.
- *  
+ * Copyright (C) 2021 Engineering Ingegneria Informatica S.p.A.
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * at your option) any later version.
- *  
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
- *  
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see http://www.gnu.org/licenses/.
  ******************************************************************************/
+
 package it.eng.idra.authentication;
 
-import java.net.URI;
-import java.util.Set;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
-import javax.ws.rs.core.Response;
-
 import it.eng.idra.authentication.filters.KeycloakAuthenticationFilter;
-import it.eng.idra.authentication.fiware.configuration.IDMProperty;
+import it.eng.idra.authentication.fiware.configuration.IdmProperty;
 import it.eng.idra.authentication.fiware.model.Token;
 import it.eng.idra.authentication.keycloak.connector.KeycloakConnectorImpl;
 import it.eng.idra.authentication.keycloak.model.KeycloakUser;
 import it.eng.idra.utils.PropertyManager;
+import java.net.URI;
+import java.util.Set;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+import javax.ws.rs.core.Response;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class KeycloakAuthenticationManager.
+ */
 public class KeycloakAuthenticationManager extends AuthenticationManager {
 
-	private static KeycloakAuthenticationManager instance;
-	private static KeycloakConnectorImpl connector;
+  /** The instance. */
+  private static KeycloakAuthenticationManager instance;
 
-	private static final String host = PropertyManager.getProperty(IDMProperty.IDM_HOST);
-	private static final String protocol = PropertyManager.getProperty(IDMProperty.IDM_PROTOCOL);
+  /** The connector. */
+  private static KeycloakConnectorImpl connector;
 
-	private static final String clientId = PropertyManager.getProperty(IDMProperty.IDM_CLIENT_ID);
-	private static final String clientSecret = PropertyManager.getProperty(IDMProperty.IDM_CLIENT_SECRET);
-	private static final String redirectUri = PropertyManager.getProperty(IDMProperty.IDM_REDIRECT_URI);
-	private static final String logoutCallback = PropertyManager.getProperty(IDMProperty.IDM_LOGOUT_CALLBACK);
+  /** The Constant host. */
+  private static final String host = PropertyManager.getProperty(IdmProperty.IDM_HOST);
 
-	private KeycloakAuthenticationManager() {
-		connector = new KeycloakConnectorImpl(protocol, host, -1, clientId, clientSecret, redirectUri);
-	}
+  /** The Constant protocol. */
+  private static final String protocol = PropertyManager.getProperty(IdmProperty.IDM_PROTOCOL);
 
-	public static KeycloakAuthenticationManager getInstance() {
+  /** The Constant clientId. */
+  private static final String clientId = PropertyManager.getProperty(IdmProperty.IDM_CLIENT_ID);
 
-		if (instance == null) {
-			try {
-				instance = new KeycloakAuthenticationManager();
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
-		return instance;
-	}
+  /** The Constant clientSecret. */
+  private static final String clientSecret = PropertyManager
+      .getProperty(IdmProperty.IDM_CLIENT_SECRET);
 
-	@Override
-	public Object login(String username, String password, String code) throws Exception {
-		return getToken(null, code);
-	}
+  /** The Constant redirectUri. */
+  private static final String redirectUri = PropertyManager
+      .getProperty(IdmProperty.IDM_REDIRECT_URI);
 
-	@Override
-	public Response logout(HttpServletRequest request) throws Exception {
+  /** The Constant logoutCallback. */
+  private static final String logoutCallback = PropertyManager
+      .getProperty(IdmProperty.IDM_LOGOUT_CALLBACK);
 
-		System.out.println("Logging out...");
+  /**
+   * Instantiates a new keycloak authentication manager.
+   */
+  private KeycloakAuthenticationManager() {
+    connector = new KeycloakConnectorImpl(protocol, host, -1, clientId, clientSecret, redirectUri);
+  }
 
-		HttpSession session = request.getSession();
-		session.removeAttribute("loggedin");
-		session.removeAttribute("refresh_token");
-		session.removeAttribute("username");
-		session.invalidate();
+  /**
+   * Gets the single instance of KeycloakAuthenticationManager.
+   *
+   * @return single instance of KeycloakAuthenticationManager
+   */
+  public static KeycloakAuthenticationManager getInstance() {
 
-		return Response.temporaryRedirect(URI.create(logoutCallback)).build();
+    if (instance == null) {
+      try {
+        instance = new KeycloakAuthenticationManager();
+      } catch (Exception e) {
+        e.printStackTrace();
+      }
+    }
+    return instance;
+  }
 
-	}
+  /*
+   * (non-Javadoc)
+   * 
+   * @see it.eng.idra.authentication.AuthenticationManager
+   * #login(java.lang.String, java.lang.String, java.lang.String)
+   */
+  @Override
+  public Object login(String username, String password, String code) throws Exception {
+    return getToken(null, code);
+  }
 
-	@Override
-	public Token getToken(String username, String code) throws Exception {
-		return connector.getToken(code);
-	}
+  /*
+   * (non-Javadoc)
+   * 
+   * @see it.eng.idra.authentication.AuthenticationManager
+   * #logout(javax.servlet.http.HttpServletRequest)
+   */
+  @Override
+  public Response logout(HttpServletRequest request) throws Exception {
 
-	@Override
-	public Boolean validateToken(Object tokenObj) throws Exception {
-		Token token = (Token) tokenObj;
+    System.out.println("Logging out...");
 
-		try {
-			validateAdminRole(connector.getUserInfo(token.getAccess_token()));
-			return true;
-		} catch (Exception e) {
-			return false;
-		}
+    HttpSession session = request.getSession();
+    session.removeAttribute("loggedin");
+    session.removeAttribute("refresh_token");
+    session.removeAttribute("username");
+    session.invalidate();
 
-	}
+    return Response.temporaryRedirect(URI.create(logoutCallback)).build();
 
-	public void validateAdminRole(KeycloakUser user) throws Exception {
+  }
 
-		Set<String> roles = user.getRoles();
-		if (roles != null && !roles.isEmpty()
-				&& roles.contains(PropertyManager.getProperty(IDMProperty.IDM_ADMIN_ROLE_NAME).toUpperCase())) {
-			// OK
-		} else {
-			throw new Exception("The User has no Admin role");
-		}
+  /*
+   * (non-Javadoc)
+   * 
+   * @see it.eng.idra.authentication.AuthenticationManager
+   * #getToken(java.lang.String, java.lang.String)
+   */
+  @Override
+  public Token getToken(String username, String code) throws Exception {
+    return connector.getToken(code);
+  }
 
-	}
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * it.eng.idra.authentication.AuthenticationManager#validateToken(java.lang.
+   * Object)
+   */
+  @Override
+  public Boolean validateToken(Object tokenObj) throws Exception {
+    Token token = (Token) tokenObj;
 
-	public KeycloakUser getUserInfo(String token) throws Exception {
-		return connector.getUserInfo(token);
-	}
+    try {
+      validateAdminRole(connector.getUserInfo(token.getAccessToken()));
+      return true;
+    } catch (Exception e) {
+      return false;
+    }
 
-	@Override
-	public Class<KeycloakAuthenticationFilter> getFilterClass() throws ClassNotFoundException {
+  }
 
-		return KeycloakAuthenticationFilter.class;
+  /**
+   * Validate admin role.
+   *
+   * @param user the user
+   * @throws Exception the exception
+   */
+  public void validateAdminRole(KeycloakUser user) throws Exception {
 
-	}
+    Set<String> roles = user.getRoles();
+    if (roles != null && !roles.isEmpty() && roles
+        .contains(PropertyManager.getProperty(IdmProperty.IDM_ADMIN_ROLE_NAME).toUpperCase())) {
+      // OK
+    } else {
+      throw new Exception("The User has no Admin role");
+    }
+
+  }
+
+  /**
+   * Gets the user info.
+   *
+   * @param token the token
+   * @return the user info
+   * @throws Exception the exception
+   */
+  public KeycloakUser getUserInfo(String token) throws Exception {
+    return connector.getUserInfo(token);
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see it.eng.idra.authentication.AuthenticationManager#getFilterClass()
+   */
+  @Override
+  public Class<KeycloakAuthenticationFilter> getFilterClass() throws ClassNotFoundException {
+
+    return KeycloakAuthenticationFilter.class;
+
+  }
 
 }

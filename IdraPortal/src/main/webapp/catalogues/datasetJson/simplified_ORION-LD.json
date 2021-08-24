@@ -1,0 +1,23 @@
+{
+	"title": "",
+	"description": "",
+	"theme": [],
+	"keywords": [],
+	"distributions": [{
+		"title": "",
+		"description": "",
+		"distributionAdditionalConfig": {
+			"query": "",
+			"fiwareService": "",
+			"fiwareServicePath": "",
+			"context":"https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld"
+		},
+		"mediaType": "",
+		"license": {
+			"uri": "",
+			"name": "",
+			"type": "",
+			"versionInfo": ""
+		}
+	}]
+}

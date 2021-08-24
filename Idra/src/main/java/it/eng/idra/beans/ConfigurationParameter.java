@@ -1,20 +1,18 @@
 /*******************************************************************************
  * Idra - Open Data Federation Platform
- *  Copyright (C) 2020 Engineering Ingegneria Informatica S.p.A.
- *  
+ * Copyright (C) 2021 Engineering Ingegneria Informatica S.p.A.
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * at your option) any later version.
- *  
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
- *  
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see http://www.gnu.org/licenses/.
  ******************************************************************************/
+
 package it.eng.idra.beans;
 
 import javax.persistence.Column;
@@ -24,53 +22,98 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class ConfigurationParameter.
+ */
 @Entity
 @Table(name = "configuration")
 public class ConfigurationParameter {
 
-	@Id
-	@Column(name = "id")
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private int id;
+  /** The id. */
+  @Id
+  @Column(name = "id")
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private int id;
 
-	@Column(name = "parameterName", unique = false)
-	private String parameterName;
+  /** The parameter name. */
+  @Column(name = "parameterName", unique = false)
+  private String parameterName;
 
-	@Column(name = "parameterValue", unique = false)
-	private String parameterValue;
+  /** The parameter value. */
+  @Column(name = "parameterValue", unique = false)
+  private String parameterValue;
 
-	public ConfigurationParameter() {
+  /**
+   * Instantiates a new configuration parameter.
+   */
+  public ConfigurationParameter() {
 
-	}
+  }
 
-	public int getId() {
-		return id;
-	}
+  /**
+   * Gets the id.
+   *
+   * @return the id
+   */
+  public int getId() {
+    return id;
+  }
 
-	public void setId(int id) {
-		this.id = id;
-	}
+  /**
+   * Sets the id.
+   *
+   * @param id the new id
+   */
+  public void setId(int id) {
+    this.id = id;
+  }
 
-	public String getParameterName() {
-		return parameterName;
-	}
+  /**
+   * Gets the parameter name.
+   *
+   * @return the parameter name
+   */
+  public String getParameterName() {
+    return parameterName;
+  }
 
-	public void setParameterName(String parameterName) {
-		this.parameterName = parameterName;
-	}
+  /**
+   * Sets the parameter name.
+   *
+   * @param parameterName the new parameter name
+   */
+  public void setParameterName(String parameterName) {
+    this.parameterName = parameterName;
+  }
 
-	public String getParameterValue() {
-		return parameterValue;
-	}
+  /**
+   * Gets the parameter value.
+   *
+   * @return the parameter value
+   */
+  public String getParameterValue() {
+    return parameterValue;
+  }
 
-	public void setParameterValue(String parameterValue) {
-		this.parameterValue = parameterValue;
-	}
+  /**
+   * Sets the parameter value.
+   *
+   * @param parameterValue the new parameter value
+   */
+  public void setParameterValue(String parameterValue) {
+    this.parameterValue = parameterValue;
+  }
 
-	@Override
-	public String toString() {
-		return "\nConfigurationParameter [id=" + id + ", parameterName=" + parameterName + ", parameterValue="
-				+ parameterValue + "]";
-	}
+  /*
+   * (non-Javadoc)
+   * 
+   * @see java.lang.Object#toString()
+   */
+  @Override
+  public String toString() {
+    return "\nConfigurationParameter [id=" + id + ", parameterName=" + parameterName
+        + ", parameterValue=" + parameterValue + "]";
+  }
 
 }
