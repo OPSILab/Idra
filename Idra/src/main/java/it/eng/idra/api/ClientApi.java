@@ -1442,9 +1442,9 @@ public class ClientApi {
         }
         
         if (catalogueConfig.isNgsild()) {
-          if (StringUtils.isNotBlank(distributionConfig.getLinkHeader())) {
-            //builder = builder.header("Link", distributionConfig.getLinkHeader());
-            builder = builder.header("Link", "<https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld>; rel=\"http://www.w3.org/ns/json-ld#context\"; type=\"application/ld+json\"");
+          if (StringUtils.isNotBlank(distributionConfig.getContext())) {
+            builder = builder.header("Link", "<" + distributionConfig.getContext() + ">; "
+                + "rel=\"http://www.w3.org/ns/json-ld#context\"; type=\"application/ld+json\"");
           }
         }
 

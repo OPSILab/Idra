@@ -33,7 +33,7 @@ public class OrionDistributionConfig extends DistributionAdditionalConfiguration
   private String fiwareServicePath;
 
   /** The link header. */
-  private String linkHeader;
+  private String context;
 
   /**
    * Instantiates a new orion distribution config.
@@ -48,15 +48,15 @@ public class OrionDistributionConfig extends DistributionAdditionalConfiguration
    * @param query             the query
    * @param fiwareService     the fiware service
    * @param fiwareServicePath the fiware service path
-   * @param linkHeader        the link header
+   * @param context        the context
    * @param nodeId            the node ID
    */
   public OrionDistributionConfig(String query, String fiwareService, String fiwareServicePath,
-      String linkHeader, String nodeId) {
+      String context, String nodeId) {
     super();
     this.fiwareService = fiwareService;
     this.fiwareServicePath = fiwareServicePath;
-    this.linkHeader = linkHeader;
+    this.context = context;
     this.setNodeId(nodeId);
     this.setType("ORION");
     this.setQuery(query);
@@ -99,20 +99,20 @@ public class OrionDistributionConfig extends DistributionAdditionalConfiguration
   }
 
   /**
-   * Gets the link header.
+   * Gets the context.
    *
-   * @return the link header
+   * @return the context
    */
-  public String getLinkHeader() {
-    return linkHeader;
+  public String getContext() {
+    return context;
   }
 
   /**
-   * Sets the link header.
+   * Sets the context.
    *
-   * @param linkHeader the new link header
+   * @param context the new context
    */
-  public void setLinkHeader(String linkHeader) {
-    this.linkHeader = linkHeader;
+  public void setContext(String context) {
+    this.context = context;
   }
 }

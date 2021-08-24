@@ -405,7 +405,7 @@ public class OrionConnector implements IodmsConnector {
             OrionDistributionConfig conf = new OrionDistributionConfig();
             conf.setFiwareService(o.optString("fiwareService", null));
             conf.setFiwareServicePath(o.optString("fiwareServicePath", null));
-            conf.setLinkHeader(o.optString("linkHeader", null));
+            conf.setContext(o.optString("context", null));
             conf.setQuery(o.getString("query"));
             conf.setNodeId(nodeId);
             // TODO: add validation for query
