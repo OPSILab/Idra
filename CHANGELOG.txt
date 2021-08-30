@@ -1,3 +1,9 @@
+v2.3.0
+- New Feature: Added multi-remote catalogue management. #77
+- Fix: Pass Link to the header of the request to a Orion-LD Catalogue #93
+- Fix: Refactored and cleaned code for Checkstyle
+- Updated documentation
+
 v2.2.0
 - New Feature: Keycloak support
 - New Feature: Dynamic theme colors and logo
