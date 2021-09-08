@@ -15,7 +15,9 @@
 
 package it.eng.idra.scheduler;
 
+import it.eng.idra.beans.IdraProperty;
 import java.io.IOException;
+import java.util.Optional;
 import java.util.Properties;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -50,6 +52,21 @@ public class CustomQuartzInitializer extends QuartzInitializerListener {
       logger.debug("Overriding Quartz property " + e.getKey() + ": " + e.getValue());
       props.setProperty(e.getKey(), e.getValue());
     });
+    
+    if (Optional.ofNullable(System.getenv(IdraProperty.DB_USERNAME.toString())).isPresent()) {
+      props.setProperty("org.quartz.dataSource.myDS.user",
+          System.getenv(IdraProperty.DB_USERNAME.toString()));
+    }
+
+    if (Optional.ofNullable(System.getenv(IdraProperty.DB_PASSWORD.toString())).isPresent()) {
+      props.setProperty("org.quartz.dataSource.myDS.password",
+          System.getenv(IdraProperty.DB_PASSWORD.toString()));
+    }
+
+    if (Optional.ofNullable(System.getenv(IdraProperty.DB_HOST.toString())).isPresent()) {
+      props.setProperty("org.quartz.dataSource.myDS.URL",
+          System.getenv(IdraProperty.DB_HOST.toString()));
+    }
 
     return props;
   }
