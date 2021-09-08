@@ -28,8 +28,10 @@ services :
             networks:
                 idra_main:
             environment:
-                - MYSQL_ROOT_PASSWORD=root
+                - MYSQL_ROOT_PASSWORD_FILE=/run/secrets/my_secret_data
                 - MYSQL_DATABASE=idra_db
+            secrets:
+                - my_secret_data 
 
             command: --default-authentication-plugin=mysql_native_password --lower_case_table_names=1
     rdf4j:
@@ -51,7 +53,7 @@ services :
             networks:
                 idra_main:
     idra:
-            image: idraopendata/idra:v2.1.1
+            image: idraopendata/idra:latest
             ports:
                 - 8080:8080
             depends_on:
@@ -66,8 +68,6 @@ services :
                 - idra.db.password_FILE=/run/secrets/my_secret_data
                 - idra.db.name=idra_db
                 - org.quartz.dataSource.myDS.URL=jdbc:mysql://db:3306/idra_db?serverTimezone=UTC&useLegacyDatetimeCode=false&useEncoding=true&characterEncoding=UTF-8&useSSL=false
-                - org.quartz.dataSource.myDS.user_FILE=/run/secrets/my_secret_data
-                - org.quartz.dataSource.myDS.password_FILE=/run/secrets/my_secret_data
                 - idra.cache.loadfromdb=true
                 - idra.synch.onstart=false
                 - idra.odms.dump.file.path=/opt/idra/dump/
@@ -105,4 +105,4 @@ networks:
           
 secrets:
   my_secret_data:
-    file: ../secrets.txt
+    file: ./secrets.txt

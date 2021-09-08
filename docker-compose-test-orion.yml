@@ -28,8 +28,10 @@ services :
             networks:
                 - idra_main
             environment:
-                - MYSQL_ROOT_PASSWORD=root
+                - MYSQL_ROOT_PASSWORD_FILE=/run/secrets/my_secret_data
                 - MYSQL_DATABASE=idra_db
+            secrets:
+                - my_secret_data                
                 
             command: --default-authentication-plugin=mysql_native_password --lower_case_table_names=1
 
@@ -45,12 +47,10 @@ services :
             environment:
                 - idra.db.host=jdbc:mysql://db:3306/idra_db?serverTimezone=UTC&useLegacyDatetimeCode=false&useEncoding=true&characterEncoding=UTF-8&useSSL\=false
                 - idra.db.host.min=jdbc:mysql://db:3306
-                - idra.db.user=root
-                - idra.db.password=root
+                - idra.db.user_FILE=/run/secrets/my_secret_data
+                - idra.db.password_FILE=/run/secrets/my_secret_data
                 - idra.db.name=idra_db
                 - org.quartz.dataSource.myDS.URL=jdbc:mysql://db:3306/idra_db?serverTimezone=UTC&useLegacyDatetimeCode=false&useEncoding=true&characterEncoding=UTF-8&useSSL=false
-                - org.quartz.dataSource.myDS.user=root
-                - org.quartz.dataSource.myDS.password=root
                 - idra.cache.loadfromdb=true
                 - idra.synch.onstart=false
                 - idra.odms.dump.file.path=/opt/idra/dump/
@@ -61,6 +61,8 @@ services :
                 - idra.authentication.method=BASIC
                 - idm.admin.role.name=Admin
                 - JAVA_OPTS=-Xms1024m -Xmx3g -XX:PermSize=1024m -XX:MaxPermSize=2048m
+            secrets:
+                - my_secret_data                
             volumes:
                 - idra-data:/opt/idra/dump
             networks:
@@ -90,3 +92,7 @@ volumes:
 networks:
     idra_main:
           driver: bridge
+          
+secrets:
+  my_secret_data:
+    file: ./docker/secrets.txt          
