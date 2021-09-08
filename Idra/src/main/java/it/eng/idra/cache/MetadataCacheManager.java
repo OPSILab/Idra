@@ -1612,7 +1612,15 @@ public class MetadataCacheManager {
 
           // cachePersistence.jpaClear();
           server.rollback();
-          // cachePersistence.jpaRollbackTransaction();
+          //Rob 03/09/2021: delete documents autocommitted by SOLR        
+          String idsToBeRolledBack = currentDatasets.stream().map(x -> x.getId())
+              .collect(Collectors.joining("\" OR \"", "(\"", "\")"));
+          logger.info("id:" + idsToBeRolledBack + " AND nodeID:"
+              + node.getId());
+          server.deleteByQuery("id:" + idsToBeRolledBack + " AND nodeID:"
+              + node.getId());
+          server.commit();
+          
 
           i = 0;
           for (DcatDataset dataset : currentDatasets) {
