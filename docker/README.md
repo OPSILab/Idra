@@ -54,8 +54,10 @@ services :
             networks:
                 idra_main:
             environment:
-                - MYSQL_ROOT_PASSWORD=root
+                - MYSQL_ROOT_PASSWORD_FILE=/run/secrets/my_secret_data
                 - MYSQL_DATABASE=idra_db
+            secrets:
+                - my_secret_data 
 
             command: --default-authentication-plugin=mysql_native_password --lower_case_table_names=1
     rdf4j:
@@ -77,7 +79,7 @@ services :
             networks:
                 idra_main:
     idra:
-            image: idraopendata/idra:v2.1.1
+            image: idraopendata/idra:latest
             ports:
                 - 8080:8080
             depends_on:
@@ -92,16 +94,14 @@ services :
                 - idra.db.password_FILE=/run/secrets/my_secret_data
                 - idra.db.name=idra_db
                 - org.quartz.dataSource.myDS.URL=jdbc:mysql://db:3306/idra_db?serverTimezone=UTC&useLegacyDatetimeCode=false&useEncoding=true&characterEncoding=UTF-8&useSSL=false
-                - org.quartz.dataSource.myDS.user_FILE=/run/secrets/my_secret_data
-                - org.quartz.dataSource.myDS.password_FILE=/run/secrets/my_secret_data
                 - idra.cache.loadfromdb=true
                 - idra.synch.onstart=false
                 - idra.odms.dump.file.path=/opt/idra/dump/
                 - idra.dump.file.path=/opt/idra/dump/
                 - idra.lod.enable=true
                 - idra.lod.repo.name=Idra
-                - idra.lod.server.uri=http://rdf4j:8080/rdf4j-server/repositories/
-                - idra.lod.server.uri.query=http://rdf4j:8080/rdf4j-workbench/repositories/Idra/query
+                - idra.lod.server.uri=http://rdf4j:8081/rdf4j-server/repositories/
+                - idra.lod.server.uri.query=http://rdf4j:8081/rdf4j-workbench/repositories/Idra/query
                 - idra.orion.orionDumpFilePath=/opt/idra/dump/
                 - idra.orion.orionInternalAPI=http://localhost:8080/Idra/api/v1/client/executeOrionQuery
                 - idra.authentication.method=BASIC
@@ -127,11 +127,11 @@ services :
 
 networks:
     idra_main:
-          driver: true
+          driver: bridge
           
 secrets:
   my_secret_data:
-    file: ../secrets.txt
+    file: ./secrets.txt
 ```
 
 ## Configuration with environment variables
@@ -145,8 +145,6 @@ environment variables such as those shown below:
 -   `idra.db.password` - Password of the MySQL server installation
 -   `idra.db.name` - Name of the reference database for Idra
 -   `org.quartz.dataSource.myDS.URL` - URL of the actual MySQL server installation
--   `org.quartz.dataSource.myDS.user` - Username of the actual MySQL server installation
--   `org.quartz.dataSource.myDS.password` - Password of the actual MySQL server installation
 -   `idra.cache.loadfromdb` - This is used to restore SOLR cache from the database
 -   `idra.synch.onstart` - This forces the synchronization of the catalogues on server start up 
 -   `idra.odms.dump.file.path` - Folder path where to save the DCAT-AP dump files (The path MUST end with \ or /)
@@ -231,7 +229,6 @@ the container. In particular, this can be used to load passwords from Docker sec
 
 Currently, this `_FILE` suffix is supported for:
 
+-   `MYSQL_ROOT_PASSWORD`
 -   `idra.db.user`
 -   `idra.db.password`
--   `org.quartz.dataSource.myDS.user`
--   `org.quartz.dataSource.myDS.password`
