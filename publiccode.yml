@@ -73,6 +73,15 @@ description:
       Idra is a web application that federates existing Open Data Management
       Systems based on different technologies providing a unique access point
       and API
+    screenshots:
+       - >-
+         https://raw.githubusercontent.com/OPSILab/Idra/master/docs/screenshots/homepage_IT.png
+       - >-
+         https://raw.githubusercontent.com/OPSILab/Idra/master/docs/screenshots/Dataset_IT.png
+       - >-
+         https://raw.githubusercontent.com/OPSILab/Idra/master/docs/screenshots/Datalet_IT.png
+       - >-
+         https://raw.githubusercontent.com/OPSILab/Idra/master/docs/screenshots/administrator.png
     longDescription: >
       Idra is a web application that federates existing Open Data Management
       Systems (ODMS) based on different technologies providing a unique access
