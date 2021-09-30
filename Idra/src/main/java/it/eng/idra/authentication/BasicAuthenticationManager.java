@@ -16,6 +16,7 @@
 package it.eng.idra.authentication;
 
 import it.eng.idra.authentication.basic.LoggedUser;
+import it.eng.idra.authentication.filters.BasicAuthenticationFilter;
 import it.eng.idra.beans.User;
 import it.eng.idra.beans.exception.InvalidPasswordException;
 import it.eng.idra.management.FederationCore;
@@ -242,9 +243,9 @@ public class BasicAuthenticationManager extends AuthenticationManager {
    * @see it.eng.idra.authentication.AuthenticationManager#getFilterClass()
    */
   @Override
-  public Class<BasicAuthenticationManager> getFilterClass() throws ClassNotFoundException {
+  public Class<BasicAuthenticationFilter> getFilterClass() throws ClassNotFoundException {
 
-    return BasicAuthenticationManager.class;
+    return BasicAuthenticationFilter.class;
 
   }
 
