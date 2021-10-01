@@ -48,7 +48,7 @@ describe('IDRA ', function() {
         request(`${idraBaseUrl}`)
         .post('/Idra/api/v1/administration/catalogues')
         .set('Content-Type','multipart/form-data;')
-        .set('Authorization', 'Bearer'+adminToken)
+        .set('Authorization', 'Bearer '+adminToken)
         .field("node",JSON.stringify(orion_catalogue))
         .expect(200)
         .end(function(err,res){
@@ -61,7 +61,7 @@ describe('IDRA ', function() {
         
         request(`${idraBaseUrl}`)
         .get('/Idra/api/v1/administration/catalogues?withImage=false')
-        .set('Authorization', 'Bearer'+adminToken)
+        .set('Authorization', 'Bearer '+adminToken)
         .expect(200)
         .end(function(err,res){
             if(err) done(err);
@@ -77,7 +77,7 @@ describe('IDRA ', function() {
         
         request(`${idraBaseUrl}`)
         .get(`/Idra/api/v1/administration/catalogues/${orionCatalogueID}?withImage=false`)
-        .set('Authorization', 'Bearer'+adminToken)
+        .set('Authorization', 'Bearer '+adminToken)
         .expect(200)
         .end(function(err,res){
             if(err) done(err);
@@ -140,7 +140,7 @@ describe('IDRA ', function() {
         
         request(`${idraBaseUrl}`)
         .delete(`/Idra/api/v1/administration/catalogues/${orionCatalogueID}`)
-        .set('Authorization', 'Bearer'+adminToken)
+        .set('Authorization', 'Bearer '+adminToken)
         .expect(200)
         .end(function(err,res){
             if(err) done(err);
