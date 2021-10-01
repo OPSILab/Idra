@@ -339,9 +339,7 @@ angular.module('IdraPlatform').controller('RemoteModalInstanceCtrl',["$scope","$
 		return true;
 	}
 
-	$scope.addRemCat=function(){
-				$scope.isBasic = true;
-				$scope.isOauth = false;
+	$scope.addRemCat=function(){	
 		//if($scope.checkValue || $scope.checkValueIDM){
 			if($scope.isBasic || $scope.isOauth){
 					console.log("Aggiunta catalogo CON CREDENZIALI IDRA o IDM");
