@@ -410,8 +410,13 @@ public class SparqlConnector implements IodmsConnector {
     } else {
       query = c.getQuery();
     }
-
-    String url = node.getHost() + "?" + query;
+    
+    String url = "";
+    if (query.contains("query=")) {
+      url = node.getHost() + "?" + query;
+    } else {
+      url = node.getHost() + "?query=" + query;
+    }
 
     distro.setAccessUrl(url);
     distro.setDownloadUrl(url);
