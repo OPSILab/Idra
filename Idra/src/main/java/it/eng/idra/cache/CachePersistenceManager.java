@@ -317,7 +317,7 @@ public class CachePersistenceManager {
     nodes.addAll(filterMap.keySet());
     HashMap<String, String> filters = filterMap.get(nodes.get(0));
 
-    String query = "SELECT d FROM DcatDataset d where d.nodeID in (:nodes) and  ( regexp(d.title,'"
+    String query = "SELECT d FROM DcatDataset d where d.nodeId in (:nodes) and  ( regexp(d.title,'"
         + filters.get("regex") + "') = true " + "or regexp(d.description,'" + filters.get("regex")
         + "') = true ) ";
 
@@ -362,7 +362,7 @@ public class CachePersistenceManager {
     HashMap<String, String> filters = filterMap.get(nodes.get(0));
 
     String query = "SELECT d FROM DcatDataset d join DctLocation l on d.spatialCoverage=l.id"
-        + " where d.nodeID in (:nodes) and l.geometry is not '' "
+        + " where d.nodeId in (:nodes) and l.geometry is not '' "
         + "and ST_Intersects(ST_GeomFromGeoJSON('" + filters.get("geographic_area")
         + "'),ST_GeomFromGeoJSON(l.geometry))=true ";
 
@@ -417,7 +417,7 @@ public class CachePersistenceManager {
     nodes.addAll(filterMap.keySet());
     HashMap<String, String> filters = filterMap.get(nodes.get(0));
 
-    String query = "SELECT d FROM DcatDataset d where d.nodeID in (:nodes) and  ( regexp(d.title,'"
+    String query = "SELECT d FROM DcatDataset d where d.nodeId in (:nodes) and  ( regexp(d.title,'"
         + filters.get("regex") + "') = true " + "or regexp(d.description,'" + filters.get("regex")
         + "') = true ) ";
 
@@ -465,7 +465,7 @@ public class CachePersistenceManager {
     // "'),ST_GeomFromGeoJSON(d.spatialCoverage))=true ";
 
     String query = "SELECT d FROM DcatDataset d join DctLocation l on d.spatialCoverage=l.id "
-        + "where d.nodeID in (:nodes) and l.geometry is not '' "
+        + "where d.nodeId in (:nodes) and l.geometry is not '' "
         + "and ST_Intersects(ST_GeomFromGeoJSON('" + filters.get("geographic_area")
         + "'),ST_GeomFromGeoJSON(l.geometry))=true ";
 
@@ -512,7 +512,7 @@ public class CachePersistenceManager {
    */
   public List<DcatDataset> jpaGetDatasetsByOdmsNode(int nodeId) {
     TypedQuery<DcatDataset> q = em
-        .createQuery("SELECT d FROM DcatDataset d where d.nodeID = " + nodeId, DcatDataset.class);
+        .createQuery("SELECT d FROM DcatDataset d where d.nodeId = " + nodeId, DcatDataset.class);
     return q.getResultList();
   }
 
@@ -651,7 +651,7 @@ public class CachePersistenceManager {
    */
   public List<Datalet> jpaGetDataletByDistributionId(String distributionId) {
     TypedQuery<Datalet> q = em.createQuery(
-        "SELECT d FROM Datalet d where d.distributionID='" + distributionId + "'", Datalet.class);
+        "SELECT d FROM Datalet d where d.distributionId='" + distributionId + "'", Datalet.class);
     return q.getResultList();
   }
 
@@ -665,8 +665,8 @@ public class CachePersistenceManager {
    */
   public List<Datalet> jpaGetDataletByTripleId(String nodeId, String datasetId,
       String distributionId) {
-    TypedQuery<Datalet> q = em.createQuery("SELECT d FROM Datalet d where d.nodeID='" + nodeId
-        + "' and d.distributionID='" + distributionId + "' and d.datasetID='" + datasetId + "'",
+    TypedQuery<Datalet> q = em.createQuery("SELECT d FROM Datalet d where d.nodeId='" + nodeId
+        + "' and d.distributionId='" + distributionId + "' and d.datasetId='" + datasetId + "'",
         Datalet.class);
     return q.getResultList();
   }
@@ -683,8 +683,8 @@ public class CachePersistenceManager {
   public Datalet jpaGetDataletByIds(String nodeId, String datasetId, String distributionId,
       String dataletId) {
     TypedQuery<Datalet> q = em.createQuery(
-        "SELECT d FROM Datalet d where d.nodeID='" + nodeId + "' and d.distributionID='"
-            + distributionId + "' and d.datasetID='" + datasetId + "' and d.id='" + dataletId + "'",
+        "SELECT d FROM Datalet d where d.nodeId='" + nodeId + "' and d.distributionId='"
+            + distributionId + "' and d.datasetId='" + datasetId + "' and d.id='" + dataletId + "'",
         Datalet.class);
     if (q.getResultList().isEmpty()) {
       return null;
@@ -711,7 +711,8 @@ public class CachePersistenceManager {
    */
   public void jpaDeleteDataletByDstributionId(String distributionId) {
     em.getTransaction().begin();
-    em.createQuery("DELETE FROM Datalet where distributionID = " + distributionId).executeUpdate();
+    em.createQuery("DELETE FROM Datalet where distributionId = '" + distributionId + "'")
+        .executeUpdate();
     em.getTransaction().commit();
   }
 

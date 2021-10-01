@@ -146,7 +146,7 @@ public class SparqlConnector implements IodmsConnector {
     DctPeriodOfTime temporalCoverage = null;
     DctLocation spatialCoverage = null;
     List<SkosConceptTheme> themeList = new ArrayList<SkosConceptTheme>();
-    List<SkosConceptSubject> subjectList = null;
+    List<SkosConceptSubject> subjectList = new ArrayList<SkosConceptSubject>();
     List<String> keywords = new ArrayList<String>();
     List<String> documentation = new ArrayList<String>();
     List<String> hasVersion = new ArrayList<String>();
@@ -251,7 +251,7 @@ public class SparqlConnector implements IodmsConnector {
           conformsTo
               .add(new DctStandard(DCTerms.conformsTo.getURI(), tmp.optString("identifier", null),
                   tmp.optString("title", null), tmp.optString("description", null),
-                  GsonUtil.json2Obj(j.getJSONArray("referenceDocumentation").toString(),
+                  GsonUtil.json2Obj(tmp.optJSONArray("referenceDocumentation").toString(),
                       GsonUtil.stringListType),
                   nodeId));
         }
