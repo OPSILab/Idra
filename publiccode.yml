@@ -37,6 +37,15 @@ description:
       Idra federa open data provenienti da portali basati su tecnologie
       eterogenee armonizzando i metadati e rendendoli disponibili attraverso API
       aperte
+    screenshots:
+       - >-
+         https://raw.githubusercontent.com/OPSILab/Idra/master/docs/screenshots/homepage_IT.png
+       - >-
+         https://raw.githubusercontent.com/OPSILab/Idra/master/docs/screenshots/Dataset_IT.png
+       - >-
+         https://raw.githubusercontent.com/OPSILab/Idra/master/docs/screenshots/Datalet_IT.png
+       - >-
+         https://raw.githubusercontent.com/OPSILab/Idra/master/docs/screenshots/administrator.png
     longDescription: >
       Idra è un'applicazione web capace di federare portali Open Data, basati su
       tecnologie eterogenee, fornendo un unico punto di accesso per la ricerca e
