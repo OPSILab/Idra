@@ -1,3 +1,7 @@
+v2.3.1
+- Fix: management of the docker-compose environment variable MYSQL_ROOT_PASSWORD with docker secrets, deletion of two environment variables and related documentation update.
+- Fix: Solr autocommit on rollback
+
 v2.3.0
 - New Feature: Added multi-remote catalogue management. #77
 - Fix: Pass Link to the header of the request to a Orion-LD Catalogue #93
