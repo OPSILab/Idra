@@ -297,7 +297,7 @@ public class PersistenceManager {
    */
   public List<OdmsCatalogueMessage> jpaGetOdmsMessagesByNode(int nodeId) {
     TypedQuery<OdmsCatalogueMessage> q = em.createQuery(
-        "SELECT d FROM OdmsCatalogueMessage d where d.nodeID=" + nodeId + " order by d.date desc",
+        "SELECT d FROM OdmsCatalogueMessage d where d.nodeId=" + nodeId + " order by d.date desc",
         OdmsCatalogueMessage.class);
     return q.getResultList();
   }
@@ -311,7 +311,7 @@ public class PersistenceManager {
    */
   public OdmsCatalogueMessage jpaGetOdmsMessage(int id, int nodeId) {
     TypedQuery<OdmsCatalogueMessage> q = em.createQuery(
-        "SELECT d FROM OdmsCatalogueMessage d where d.nodeID=" + nodeId + "and d.id=" + id,
+        "SELECT d FROM OdmsCatalogueMessage d where d.nodeId=" + nodeId + "and d.id=" + id,
         OdmsCatalogueMessage.class);
     return q.getSingleResult();
   }
