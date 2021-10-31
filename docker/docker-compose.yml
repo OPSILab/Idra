@@ -69,7 +69,6 @@ services :
                 #- idra.db.user=root
                 #- idra.db.password=root
                 - idra.db.name=idra_db
-                #- org.quartz.dataSource.myDS.URL=jdbc:mysql://db:3306/idra_db?serverTimezone=UTC&useLegacyDatetimeCode=false&useEncoding=true&characterEncoding=UTF-8&useSSL=false
                 - idra.cache.loadfromdb=true
                 - idra.synch.onstart=false
                 - idra.odms.dump.file.path=/opt/idra/dump/
