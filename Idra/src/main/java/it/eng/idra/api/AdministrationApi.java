@@ -58,6 +58,8 @@ import it.eng.idra.utils.CommonUtil;
 import it.eng.idra.utils.GsonUtil;
 import it.eng.idra.utils.GsonUtilException;
 import it.eng.idra.utils.PropertyManager;
+import it.eng.idra.utils.restclient.RestClient;
+import it.eng.idra.utils.restclient.RestClientImpl;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -71,6 +73,7 @@ import java.util.ArrayList;
 import java.util.Base64;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.ws.rs.Consumes;
@@ -100,6 +103,7 @@ import javax.ws.rs.core.Response.StatusType;
 import javax.ws.rs.core.StreamingOutput;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.http.HttpResponse;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
@@ -119,7 +123,9 @@ public class AdministrationApi {
 
   /** The client. */
   private static Client client;
-
+  
+  private static String urlOrionmanager = 
+      PropertyManager.getProperty(IdraProperty.ORION_MANAGER_URL);
   /**
    * getVersion.
    *
@@ -648,9 +654,63 @@ public class AdministrationApi {
       node = FederationCore.getOdmsCatalogue(Integer.parseInt(nodeId));
       logger.info("Deleting ODMS catalogue with host: " + node.getHost() + " and id " + nodeId
           + " - START");
+      // ---------------- ELIMINAZIONE del catalogo anche nel COntext Broker ----------
+      // CHIAMATA al COMPONENTE BROKER MANAGER PER ELIMINARE IL CATALOGO IN ORION
+      HashMap<String, String> conf = FederationCore.getSettings();
+      if (!conf.get("orionUrl").equals("")) {
+        Map<String, String> headers = new HashMap<String, String>();
+        headers.put("Content-Type", "application/json");
+        RestClient client = new RestClientImpl();
+        
+        String api = urlOrionmanager + "deleteCatalogue";
+        String data = "{ \"catalogueId\": \"" + node.getId() + "\", \"contextBrokerUrl\": \"" 
+            + conf.get("orionUrl") + "\"  }";
+        logger.info("Context Broker abilitato, deleting NODEID: "  + data);
+        
+        HttpResponse response = client.sendPostRequest(api, data,
+            MediaType.APPLICATION_JSON_TYPE, headers); 
+        int status = client.getStatus(response);
+        if (status != 200 && status != 207 && status != 204 && status != -1 
+            && status != 201 && status != 301) {
+          throw new Exception("------------ STATUS POST DELETE "
+              + "CATALOGUE ID - BROKER MANAGER: " + status);
+        }        
+      } 
+      
+      else {
+        logger.info("Context Broker NON abilitato, \n");
+      }  
+      
+      
       FederationCore.unregisterOdmsCatalogue(node);
       logger.info(
           "Deleting ODMS node with id: " + node.getHost() + " and id " + nodeId + " - COMPLETE");
+      
+      // SE è UN ORIONDCATAP, CANCELLO LA SUBSCRIPTION COLLEGATA, se presente
+      if (node.getNodeType().equals(OdmsCatalogueType.ORIONDCATAP)) {
+        Map<String, String> headers = new HashMap<String, String>();
+        headers.put("Content-Type", "application/json");
+        RestClient client = new RestClientImpl();
+ 
+        HttpResponse response = client.sendGetRequest(node.getHost() 
+            + "/ngsi-ld/v1/subscriptions/urn:ngsi-ld:Subscription:" + node.getApiKey(), headers);
+        int status = client.getStatus(response);
+        if (status == 200) {
+          logger.info("\nIL CATALOGO ORIONDCATAP aveva una SUBSCRIPTION COLLEGATA, eliminazione "
+              + "della subscription");
+          response = client.sendDeleteRequest(node.getHost() 
+              + "/ngsi-ld/v1/subscriptions/urn:ngsi-ld:Subscription:" + node.getApiKey(), headers); 
+          
+          status = client.getStatus(response);
+          if (status != 200 && status != 207 && status != 204 && status != -1 
+              && status != 201 && status != 301) {
+            throw new Exception("------------ STATUS POST DELETE "
+                + "SUBSCRIPTION: " + status);
+          }
+        }
+
+
+      }
       return Response.status(Response.Status.OK).build();
 
     } catch (NumberFormatException e) {
@@ -682,6 +742,8 @@ public class AdministrationApi {
     try {
       logger.info("Forcing the synchronization for node " + nodeId);
       FederationCore.startOdmsCatalogueSynch(nodeIdentifier);
+      
+      logger.info("Fine funzione sync");
       return Response.status(Response.Status.OK).build();
 
     } catch (OdmsCatalogueNotFoundException e) {

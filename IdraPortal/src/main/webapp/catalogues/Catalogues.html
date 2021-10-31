@@ -48,14 +48,15 @@
 			<thead>
 				<tr>
 					<th st-sort="isActive" style="width: 1%">{{'activeCatalogue' | translate}}</th>
-					<th st-sort="name" st-sort-default="true" style="width: 22%">{{'name' | translate}}</th>
+					<th st-sort="name" st-sort-default="true" style="width: 17%">{{'name' | translate}}</th>
 					<th st-sort="country" style="width: 7%">{{'country' | translate}}</th>
 					<th st-sort="nodeType" style="width: 8%">{{'type' | translate}}</th>
 					<th st-sort="federationLevel" style="width: 5%">{{'level' | translate}}</th>
 					<th st-sort="nodeState" style="width: 4%">{{'status' | translate}}</th>
+					<th st-sort="nodeState" style="width: 6%">{{'addedToCB' | translate}}</th>
 					<th st-sort="datasetCount" style="width: 8%">Datasets</th>
 					<th st-sort="updatePeriod" style="width: 10%">{{'updatePeriod' | translate}}</th>
-					<th st-sort="lastUpdate" style="width: 18%">{{'lastUpdate' | translate}}</th>
+					<th st-sort="lastUpdate" style="width: 17%">{{'lastUpdate' | translate}}</th>
 					<th style="width: 15%"><a href="javascript:void(0)"
 						class="btn-flat btn-raised" ng-click="addNode()"> <i
 							class="mdi-content-add-circle-outline" style="font-size: 30px"></i>
@@ -98,6 +99,11 @@
 							<option value="ONLINE">On Line</option>
 							<option value="OFFLINE">Off Line</option>
 					</select></th>
+					<th><select st-search="nodeState" class="form-control">
+							<option value=""></option>
+							<option value="ONLINE">On Line</option>
+							<option value="OFFLINE">Off Line</option>
+					</select></th>
 					<th></th>
 					<th></th>
 					<th></th>
@@ -111,7 +117,7 @@
 					<td><switch id="active" name="active" ng-model="node.isActive"
 							ng-change="changed(node)" disabled="node.synchLock!='NONE'"
 							class="small"></switch></td>
-					<td><a href="{{node.homepage}}" target="_blank">{{node.name | limitTo:40}}{{node.name.length > 40 ? '...'
+					<td><a ng-href={{homepageLink}} ng-click=setHomepageLink(node) target="_blank">{{node.name | limitTo:40}}{{node.name.length > 40 ? '...'
 						: ''}} </a><md-tooltip ng-show="node.name.length > 40">{{node.name}}</md-tooltip>
 					</td>
 					<!-- 								<td> -->
@@ -135,7 +141,30 @@
 					</span> <span ng-show="node.synchLock!='NONE'"> <img
 							alt="Synchronizing" title="Synchronizing"
 							src="images/spinner_synchro.gif" style="width: 30px;"> <md-tooltip>{{'synchronizing' | translate}}</md-tooltip>
-					</span></td>
+					</span>
+
+					</td>
+					<!-- AGGIUNTI PER il Context Broker 
+					&& (node.synchLockOrion!='NONE') && node.synchLockOrion!='PERIODIC' 
+					node.nodeState == 'ONLINE' && acceptrequest && orionfederationDone && node.synchLockOrion!='PERIODIC' 
+					isFederatedInOrion-->
+					<td><span
+						ng-show="node.isFederatedInOrion==true && node.synchLockOrion != 'PERIODIC'">
+							<i class="glyphicon glyphicon-ok text-success" aria-hidden="true"></i>
+							<md-tooltip>{{node.nodeState}}</md-tooltip>
+					</span> 
+					<!-- && node.synchLockOrion=='NONE' && acceptrequest -->
+					<span
+						ng-show="node.nodeState == 'OFFLINE' || (node.isFederatedInOrion==false && node.synchLockOrion != 'PERIODIC')">
+							<i class="glyphicon glyphicon-exclamation-sign text-danger"
+							aria-hidden="true"></i> <md-tooltip>{{node.nodeState}}</md-tooltip>
+					</span> <span ng-show="node.synchLockOrion=='PERIODIC'"> <img
+							alt="Synchronizing" title="Synchronizing"
+							src="images/spinner_synchro.gif" style="width: 30px;"> <md-tooltip>{{'synchronizing' | translate}}</md-tooltip>
+					</span>
+					</td>
+					
+					<!--  -->
 					<td><span
 						ng-show="node.isActive || (!node.isActive && node.datasetCount!=0)">{{node.datasetCount}}</span>
 						<span ng-show="!node.isActive && node.datasetCount==0">n/a</span></td>
@@ -145,21 +174,31 @@
 						<div class="buttons">
 							<a href="javascript:void(0)" class="btn-flat "
 								ng-click="synchroNode(node)"
-								a-disabled="node.synchLock!='NONE' || node.federationLevel=='LEVEL_0' || node.federationLevel=='LEVEL_1' || node.federationLevel=='LEVEL_4' || node.isActive==false "><i
+								a-disabled="node.synchLock!='NONE' || node.federationLevel=='LEVEL_0' || node.federationLevel=='LEVEL_1' || (node.federationLevel=='LEVEL_4' && node.nodeType!='ORIONDCATAP') || node.isActive==false "><i
 								class="mdi-action-autorenew"></i> <md-tooltip>
 								{{'synchronize' | translate}}</md-tooltip></a> 
+								<!-- a-disabled="orionDisabled()" -->
+								
+								<!-- 
+								<input type="checkbox"
+								ng-disabled="node.isActive==false || orionDisabled()"
+								class="btn-flat "
+								ng-model="checkBoxValue"
+								ng-change="stateChanged(checkBoxValue);startFederationInOrion(node)"
+								style="left: 2em;top: -2;width: 1.7em;height: 1.7em;"> <md-tooltip>
+								{{'orionFederation' | translate}}</md-tooltip>  -->
 								
 <!-- 								<a href="javascript:void(0)" class="btn-flat " -->
 <!-- 								ng-click="updateNode(node)" a-disabled="node.synchLock!='NONE'"><i -->
 <!-- 								class="mdi-content-create"></i> <md-tooltip> {{'edit' | translate}}</md-tooltip></a> -->
-								
+							
 								<a ng-href="#/catalogue/{{node.id}}" class="btn-flat "
 								a-disabled="node.synchLock!='NONE'"><i
 								class="mdi-content-create"></i> <md-tooltip> {{'edit' | translate}}</md-tooltip></a>
 								
 							<a href="javascript:void(0)" class="btn-flat "
 								ng-click="deleteNode(node)" a-disabled="node.synchLock!='NONE'"><i
-								class="mdi-content-clear"></i> <md-tooltip> {{'delete' | translate}}</md-tooltip></a>
+								class="mdi-content-clear"></i> <md-tooltip> {{'delete' | translate}}</md-tooltip></a>							
 							<a href="javascript:void(0)" class="btn-flat "
 								ng-click="downloadDump(node)"
 								a-disabled="node.synchLock!='NONE' || node.isActive==false"><i

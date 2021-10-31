@@ -105,13 +105,23 @@
 						ng-options="option.value as (option.text | translate ) for option in activeMode">
 					</select>
 				</div>
-				<div class="col-md-3 form-group">
+				<div class="col-md-3 form-group"
+				ng-show="node.nodeType == '' || node.nodeType != 'ORIONDCATAP'">
 					<label for="refreshPeriod">{{'refresh' | translate}}:</label> <select
 						class="form-control" ng-model="node.refreshPeriod"
 						class="form-control"
 						ng-options="option.value as (option.text | translate) for option in updatePeriods">
 					</select>
 				</div>
+			   <div class="col-md-3 form-group"
+				ng-show="node.nodeType == 'ORIONDCATAP'">
+					<label for="refreshPeriod">{{CBAutoUpdate}}:</label> <select
+						class="form-control" ng-model="node.autoUpdate"
+						class="form-control"
+						ng-options="option.value as (option.text | translate) for option in updatePeriodsORIONDCAT">
+					</select>
+				</div>
+				
 				
 				<div class="col-md-12 form-group "
 				ng-show="node.nodeType == 'WEB' || node.nodeType == 'DCATDUMP' || node.nodeType == 'ORION' || node.nodeType == 'SPARQL'">
