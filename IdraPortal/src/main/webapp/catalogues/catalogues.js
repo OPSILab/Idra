@@ -382,59 +382,6 @@ angular.module("IdraPlatform").controller('CataloguesController',["$scope","$htt
 		console.log("Event: "+ $event);
 		console.log("Accept request: "+ $scope.acceptrequest);
     }
-
-
-		
-	$scope.isChanged = function () {
-		console.log("\n IS SHOWN!!!");
-		}
-
-	$scope.startFederationInOrion2 = function (node) {
-		console.log("Start federation in Orion for node: "+ node.id.toString());
-					node.synchLockOrion = 'PERIODIC';
-					ODMSNodesAPI.activateNodeInOrion(node.id).then(function(value){
-							//$rootScope.getNodes();
-					},function(value){
-						console.log("Error in the federation in Orion");
-					})
-					$scope.orionfederationDone = true;
-					console.log("Federazione in Orion fatta: " + $scope.orionfederationDone);
-
-    }
-
-	$scope.startFederationInOrion = function (node) {
-		console.log("Start federation for node: "+ node.id.toString());
-				// ------ AGGIUNTA OPZIONALE FEDERAZIONE IN ORION
-				 console.log("Valore di accepted request: " + $scope.acceptrequest);
-				 if($scope.acceptrequest){
-					node.synchLockOrion = 'PERIODIC';
-					console.log("FINE FEDERAZIONE IN IDRA, INIZIO FEDERAZIONE IN ORION");
-					ODMSNodesAPI.activateNodeInOrion(node.id).then(function(value){
-							//$rootScope.getNodes();
-					},function(value){
-						console.log("Error in the federation in Orion");
-					})
-					$scope.orionfederationDone = true;
-					console.log("Federazione in Orion fatta: " + $scope.orionfederationDone);
-		
-			 }
-		else {
-			if($scope.orionfederationDone){
-				// da fare PRIMA della cancellazione in IDRA
-				console.log("NELL ELSE DI ORION: hai federato il cat in Orion e ora lo vuoi eliminare");
-					node.synchLockOrion = 'PERIODIC';
-					console.log("INIZIO CANCELLAZIONE IN ORION");
-					ODMSNodesAPI.deactivateNodeInOrion(node.id).then(function(value){
-							//$rootScope.getNodes();
-					},function(value){
-						console.log("Error in the removing in Orion");
-					})
-					$scope.orionfederationDone = false;
-					console.log("Fine eliminazione in Orion: " + $scope.orionfederationDone);
-				
-			}
-		}
-    }
 	
 	$scope.homepageLink="";
 	$scope.setHomepageLink = function(node) {
@@ -449,9 +396,9 @@ angular.module("IdraPlatform").controller('CataloguesController',["$scope","$htt
 	}
 
 		
-	$scope.orionDisabled = function() {
-		return (config.ORION_DISABLED=='true')?true:false;
-	}
+	//$scope.orionDisabled = function() {
+	//	return (config.ORION_DISABLED=='true')?true:false;
+	//}
 	
 
 	
@@ -465,53 +412,6 @@ angular.module("IdraPlatform").controller('CataloguesController',["$scope","$htt
 			return false;
 		}
 	}
-	
-		$scope.isShown = function (node) {
-		if(node.nodeState == 'ONLINE' && node.synchLock=='NONE' && ($scope.orionfederationDone==false) && ($scope.acceptrequest==false)){
-				 console.log("\nFEDERAZIONE IN IDRA FINITA, CONTROLLO IL CB'");
-				//$scope.show = node.id;
-				node.synchLockOrion = 'PERIODIC';
-				
-				ODMSNodesAPI.checkNodeInOrion($scope.show).then(function(value){
-					$scope.orionfederationDone = true;
-					$scope.acceptrequest = true;
-					console.log("Federazione in Orion fatta: " + $scope.orionfederationDone);
-				},function(value){
-				console.log("Error in the federation in Orion");
-				})
-				
-				return true;
-			}
-		else if(node.nodeState == 'ONLINE' && node.synchLock=='NONE' && $scope.orionfederationDone && $scope.acceptrequest) {
-			node.synchLockOrion = 'NONE';
-			return true;
-		}
-		else
-			return false;
-	}
-	
-	
-	$scope.$watch('show', function(newValue, oldValue) {
-        if (newValue !== oldValue) {
-            console.log("\nChanged: " + $scope.show.toString());
-				
-			
-				console.log("\n --- Controllo se il nodo è federato in Orion, con id:"+ $scope.show.toString());
-				//$scope.show.synchLockOrion = 'PERIODIC';
-				ODMSNodesAPI.checkNodeInOrion($scope.show).then(function(value){
-					$scope.orionfederationDone = true;
-					$scope.acceptrequest = true;
-					console.log("Federazione in Orion fatta: " + $scope.orionfederationDone);
-					console.log("\n --- FINE Federazione in Orion");
-			},function(value){
-			console.log("Error in the federation in Orion");
-			})
-
-
-
-        }
-    });
-
 
 	$scope.call = function(node) {
 

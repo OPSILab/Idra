@@ -115,7 +115,7 @@
 				</div>
 			   <div class="col-md-3 form-group"
 				ng-show="node.nodeType == 'ORIONDCATAP'">
-					<label for="refreshPeriod">{{CBAutoUpdate}}:</label> <select
+					<label for="refreshPeriod">{{'CBAutoUpdate' | translate}}:</label> <select
 						class="form-control" ng-model="node.autoUpdate"
 						class="form-control"
 						ng-options="option.value as (option.text | translate) for option in updatePeriodsORIONDCAT">

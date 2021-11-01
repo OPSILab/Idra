@@ -181,6 +181,9 @@ angular.module("IdraPlatform").controller('CatalogueCtrl',['$scope','$http','con
 	$scope.grades=config.FEDERATION_LEVEL.split(',');
 	$scope.updatePeriods=[{text:'-',value:'0'},{text:'1 hour',value:'3600'},{text:'1 day',value:'86400'},{text:'1 week',value:'604800'}];
 
+	$scope.updatePeriodsORIONDCAT=[{text:'Yes',value:'1'},{text:'No',value:'0'}];
+
+	
 	$scope.dcatProfiles = [{text:'DCATAP',value:'DCATAP'},{text:'DCATAP_IT',value:'DCATAP_IT'}];
 	$scope.ODMSCategories = [{text:'Municipality',value:'Municipality'},{text:'Province',value:'Province'},{text:'Private Institution',value:'Private Institution'},{text:'Public Body',value:'Public Body'},{text:'Region',value:'Region'}];
 	$scope.activeMode = [{text:'Yes',value:true},{text:'No',value:false}];
@@ -497,6 +500,7 @@ angular.module("IdraPlatform").controller('CatalogueCtrl',['$scope','$http','con
 			else if(node1.locationDescription != node2.locationDescription) return false;
 			else if(node1.category != node2.category) return false;
 			else if(node1.country != node2.country) return false;
+			else if(node1.autoUpdate != node2.autoUpdate) return false;
 			else if( (node1.nodeType == node2.nodeType && node1.nodeType == "DCATDUMP") && node1.dumpURL != node2.dumpURL) return false;
 			else if( (node1.nodeType == node2.nodeType && node1.nodeType == "DCATDUMP") && node1.dcatProfile != node2.dcatProfile) return false;
 			else if( (node1.nodeType == node2.nodeType && node1.nodeType == "DCATDUMP") && node1.dumpString != node2.dumpString) return false;
@@ -633,6 +637,9 @@ angular.module("IdraPlatform").controller('CatalogueCtrl',['$scope','$http','con
 			case 'ORION':
 				node.federationLevel='LEVEL_4';
 				break;
+			case 'ORIONDCATAP':
+				node.federationLevel='LEVEL_4';
+				break;
 			case 'SPARQL':
 				node.federationLevel='LEVEL_4';
 				break;
@@ -645,11 +652,17 @@ angular.module("IdraPlatform").controller('CatalogueCtrl',['$scope','$http','con
 			}
 
 			if(node.refreshPeriod==''){
-				if((node.federationLevel=='LEVEL_3' || node.federationLevel=='LEVEL_2')){
+				//if(((node.federationLevel=='LEVEL_3' && node.nodeType!='ORIONDCATAP') || node.federationLevel=='LEVEL_2')){
+				if((node.federationLevel=='LEVEL_3'  || node.federationLevel=='LEVEL_2')){
 					node.refreshPeriod=$scope.refreshPeriod;
 				}else{
 					node.refreshPeriod="0";
 				}
+				
+				//if(node.nodeType=='ORIONDCATAP'){
+				//	node.refreshPeriod='604800';
+				//	console.log("\n\n Settato valore refreshPeriod per ORIONDCAT catalogue, in single-catalogue");
+				//}
 			}
 			
 			if(node.nodeType == 'WEB'){
