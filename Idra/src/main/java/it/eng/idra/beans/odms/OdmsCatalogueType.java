@@ -34,6 +34,8 @@ public enum OdmsCatalogueType {
   JUNAR,
   /** The orion. */
   ORION,
+  /** The Context Broker DCAT-AP. */
+  ORIONDCATAP,
   /** The opendatasoft. */
   OPENDATASOFT,
   /** The sparql. */

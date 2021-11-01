@@ -36,21 +36,29 @@ import it.eng.idra.cache.LodCacheManager;
 import it.eng.idra.cache.MetadataCacheManager;
 import it.eng.idra.dcat.dump.DcatApDumpManager;
 import it.eng.idra.dcat.dump.DcatApSerializer;
+import it.eng.idra.management.FederationCore;
 import it.eng.idra.management.OdmsManager;
 import it.eng.idra.management.StatisticsManager;
 import it.eng.idra.utils.CommonUtil;
 import it.eng.idra.utils.PropertyManager;
+import it.eng.idra.utils.restclient.RestClient;
+import it.eng.idra.utils.restclient.RestClientImpl;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.sql.SQLException;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import javax.persistence.EntityExistsException;
+import javax.ws.rs.core.MediaType;
 import org.apache.commons.lang.StringUtils;
+import org.apache.http.HttpResponse;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.solr.client.solrj.SolrServerException;
@@ -73,6 +81,10 @@ public class OdmsSynchJob implements InterruptableJob {
 
   /** The logger. */
   private static Logger logger = LogManager.getLogger(OdmsSynchJob.class);
+  
+  /** The Context Broker Manager URL. */
+  private static String urlOrionmanager = 
+      PropertyManager.getProperty(IdraProperty.ORION_MANAGER_URL);
 
   /** The enable rdf. */
   private static Boolean enableRdf = Boolean
@@ -381,12 +393,22 @@ public class OdmsSynchJob implements InterruptableJob {
               DcatApWriteType.FILE);
 
           // Write Catalogue's DCAT Dump into RDF4J
-          DcatApDumpManager.sendDumpToRepository(node);
+          DcatApDumpManager.sendDumpToRepository(node);      
 
         } catch (Exception e1) {
           e1.printStackTrace();
           logger.error("Error: " + e1.getMessage() + " in creation of the dump file for node "
               + node.getId());
+        }
+        // ------------ AGGIUNTA DEL CATALOGO nel Context Broker -----
+        // ----- CHIAMATA DEL COMPONENTE BROKER MANAGER PER AGGIUNGERE IL CATALOGO NEL CB
+        try {
+          addCatalogueInCb(node);
+        } catch (Exception e) {
+          // TODO Auto-generated catch block
+          e.printStackTrace();
+          logger.error("Error: " + e.getMessage() + " in creation of the Catalogue node "
+              + node.getId() + " in the Context Broker");
         }
 
       }
@@ -395,6 +417,45 @@ public class OdmsSynchJob implements InterruptableJob {
       return false;
     }
 
+  }
+  
+  /**
+   * Adding the node in the CB.
+   *
+   * @param node    the node
+   * @throws Exception exception
+   */
+  private static void addCatalogueInCb(OdmsCatalogue node) throws Exception {
+    HashMap<String, String> conf = FederationCore.getSettings();
+    if (!conf.get("orionUrl").equals("")) {
+      logger.info(" -- Context Broker URL: " + conf.get("orionUrl"));
+    
+      System.out.println("\n --- INIZIO FEDERAZIONE IN ORION ---");
+      node.setSynchLockOrion(OdmsSynchLock.PERIODIC);
+      Map<String, String> headers = new HashMap<String, String>();
+      headers.put("Content-Type", "application/json");
+      RestClient client = new RestClientImpl();
+      
+      String api = urlOrionmanager + "startProcess";
+      String data = "{ \"catalogueId\": \"" + node.getId() + "\", \"contextBrokerUrl\": \"" 
+          + conf.get("orionUrl") + "\"  }";
+      logger.info(" -- Adding in CB NODEID: "  + data);
+      
+      HttpResponse response = client.sendPostRequest(api, data,
+          MediaType.APPLICATION_JSON_TYPE, headers); 
+      int status = client.getStatus(response);
+      
+      if (status != 200 && status != 207 && status != 204 && status != -1 
+          && status != 201 && status != 301) {
+        throw new Exception(" -- STATUS POST CATALOGUE ID - ORION MANAGER: " + status);
+      
+      } else {
+        node.setFederatedInOrion(true);
+        node.setSynchLockOrion(OdmsSynchLock.NONE);
+      }
+    } else {
+      logger.info(" -- Context Broker NON abilitato\n");
+    }  
   }
 
   /**
@@ -452,7 +513,7 @@ public class OdmsSynchJob implements InterruptableJob {
    * @param dataset the dataset
    * @return the int
    */
-  static int addDataset(OdmsCatalogue node, DcatDataset dataset) {
+  public static int addDataset(OdmsCatalogue node, DcatDataset dataset) {
     int addedRdf = 0;
 
     logger.info("\n--- Creating dataset ---" + dataset.getId() + " " + dataset.getTitle().getValue()
@@ -515,7 +576,7 @@ public class OdmsSynchJob implements InterruptableJob {
    * @param dataset the dataset
    * @return the int
    */
-  static int updateDataset(OdmsCatalogue node, DcatDataset dataset) {
+  public static int updateDataset(OdmsCatalogue node, DcatDataset dataset) {
     int updatedRdf = 0;
     try {
       MetadataCacheManager.updateDataset(node.getId(), dataset);

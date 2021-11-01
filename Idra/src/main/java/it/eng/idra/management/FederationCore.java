@@ -159,9 +159,11 @@ public class FederationCore {
     PersistenceManager manageBeansJpa = new PersistenceManager();
     try {
       List<ConfigurationParameter> configUsed = manageBeansJpa.getConfigurationList();
-
+      
       for (ConfigurationParameter param : configUsed) {
-        param.setParameterValue(settingsTmp.get(param.getParameterName()));
+        if (settingsTmp.containsKey(param.getParameterName())) { // controllo aggiunto
+          param.setParameterValue(settingsTmp.get(param.getParameterName()));
+        }
       }
 
       if (manageBeansJpa.updateConfigurationList(configUsed)) {

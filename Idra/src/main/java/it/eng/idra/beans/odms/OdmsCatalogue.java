@@ -228,14 +228,30 @@ public class OdmsCatalogue {
   /** The dcat format. */
   @Transient
   private DcatApFormat dcatFormat;
+  
+  /** The is Federated In the Context Broker. */
+  @Transient
+  private Boolean isFederatedInOrion;
+  
+  /** The synch lock for the Context Broker. */
+  @Transient
+  private OdmsSynchLock synchLockOrion;
+  
+  /** The autoUpdate value for the Context Broker. */
+  @Transient
+  private int autoUpdate;
+  
 
   /**
    * Instantiates a new odms catalogue.
    */
   public OdmsCatalogue() {
     this.setSynchLock(OdmsSynchLock.NONE);
+    this.setSynchLockOrion(OdmsSynchLock.NONE);
+    this.setAutoUpdate(1);
     this.location = "";
     this.locationDescription = "";
+    this.isFederatedInOrion = false;
   }
 
   /**
@@ -279,10 +295,13 @@ public class OdmsCatalogue {
     this.setDescription(description);
     this.setImage(new OdmsCatalogueImage(image));
     this.setSynchLock(OdmsSynchLock.NONE);
+    this.setSynchLockOrion(OdmsSynchLock.NONE);
+    this.setAutoUpdate(1);
     this.setRdfCount(rdfCount);
     this.setDatasetStart(0);
     this.setLocation(location);
     this.setLocationDescription(locationDescription);
+    this.setFederatedInOrion(false);
   }
 
   /**
@@ -328,10 +347,13 @@ public class OdmsCatalogue {
     this.setDescription(description);
     this.setImage(new OdmsCatalogueImage(image));
     this.setSynchLock(OdmsSynchLock.NONE);
+    this.setSynchLockOrion(OdmsSynchLock.NONE);
+    this.setAutoUpdate(1);
     this.setRdfCount(rdfCount);
     this.setDatasetStart(0);
     this.setLocation(location);
     this.setLocationDescription(locationDescription);
+    this.setFederatedInOrion(false);
   }
 
   /**
@@ -377,10 +399,13 @@ public class OdmsCatalogue {
     this.setDescription(description);
     this.setImage(new OdmsCatalogueImage(image));
     this.setSynchLock(OdmsSynchLock.NONE);
+    this.setSynchLockOrion(OdmsSynchLock.NONE);
+    this.setAutoUpdate(1);
     this.setRdfCount(rdfCount);
     this.setDatasetStart(startDataset);
     this.setLocation(location);
     this.setLocationDescription(locationDescription);
+    this.setFederatedInOrion(false);
   }
 
   /**
@@ -707,7 +732,7 @@ public class OdmsCatalogue {
   public Boolean isActive() {
     return isActive;
   }
-
+  
   /**
    * Sets the active.
    *
@@ -715,6 +740,24 @@ public class OdmsCatalogue {
    */
   public void setActive(Boolean isActive) {
     this.isActive = isActive;
+  }
+  
+  /**
+   * Checks if is active.
+   *
+   * @return the boolean
+   */
+  public Boolean isFederatedInOrion() {
+    return isFederatedInOrion;
+  }
+
+  /**
+   * Sets the active.
+   *
+   * @param isFederatedInOrion the new value
+   */
+  public void setFederatedInOrion(Boolean isFederatedInOrion) {
+    this.isFederatedInOrion = isFederatedInOrion;
   }
 
   /*
@@ -813,6 +856,42 @@ public class OdmsCatalogue {
    */
   public void setSynchLock(OdmsSynchLock synchLock) {
     this.synchLock = synchLock;
+  }
+  
+  /**
+   * Gets the synch lock Orion.
+   *
+   * @return the synch lock Orion
+   */
+  public OdmsSynchLock getSynchLockOrion() {
+    return synchLockOrion;
+  }
+
+  /**
+   * Sets the autoUpdate for Orion.
+   *
+   * @param autoUpdate the new autoUpdate for Orion
+   */
+  public void setAutoUpdate(int autoUpdate) {
+    this.autoUpdate = autoUpdate;
+  }
+  
+  /**
+   * Gets the autoUpdate for Orion.
+   *
+   * @return the autoUpdate for Orion
+   */
+  public int getAutoUpdate() {
+    return autoUpdate;
+  }
+
+  /**
+   * Sets the synch lock Orion.
+   *
+   * @param synchLockOrion the new synch lock Orion
+   */
+  public void setSynchLockOrion(OdmsSynchLock synchLockOrion) {
+    this.synchLockOrion = synchLockOrion;
   }
 
   /**

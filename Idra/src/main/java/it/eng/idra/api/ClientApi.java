@@ -15,6 +15,7 @@
 
 package it.eng.idra.api;
 
+import it.eng.idra.beans.DataEntity;
 import it.eng.idra.beans.Datalet;
 import it.eng.idra.beans.ErrorResponse;
 import it.eng.idra.beans.EuroVocLanguage;
@@ -26,6 +27,12 @@ import it.eng.idra.beans.dcat.DcatApProfile;
 import it.eng.idra.beans.dcat.DcatApWriteType;
 import it.eng.idra.beans.dcat.DcatDataset;
 import it.eng.idra.beans.dcat.DcatDistribution;
+import it.eng.idra.beans.dcat.DcatProperty;
+import it.eng.idra.beans.dcat.DctStandard;
+import it.eng.idra.beans.dcat.FoafAgent;
+import it.eng.idra.beans.dcat.SkosConceptTheme;
+import it.eng.idra.beans.dcat.SkosPrefLabel;
+import it.eng.idra.beans.dcat.VcardOrganization;
 import it.eng.idra.beans.exception.DatasetNotFoundException;
 import it.eng.idra.beans.exception.DistributionNotFoundException;
 import it.eng.idra.beans.exception.EuroVocTranslationNotFoundException;
@@ -47,13 +54,17 @@ import it.eng.idra.cache.MetadataCacheManager;
 import it.eng.idra.dcat.dump.DcatApSerializer;
 import it.eng.idra.management.FederationCore;
 import it.eng.idra.management.StatisticsManager;
+import it.eng.idra.scheduler.job.OdmsSynchJob;
 import it.eng.idra.search.FederatedSearch;
 import it.eng.idra.search.SparqlFederatedSearch;
 import it.eng.idra.utils.CommonUtil;
 import it.eng.idra.utils.GsonUtil;
 import it.eng.idra.utils.GsonUtilException;
+import it.eng.idra.utils.OrionDcatDeserializer;
 import it.eng.idra.utils.PropertyManager;
 import it.eng.idra.utils.RedirectFilter;
+import it.eng.idra.utils.restclient.RestClient;
+import it.eng.idra.utils.restclient.RestClientImpl;
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -66,6 +77,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -93,7 +105,10 @@ import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.StreamingOutput;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.http.HttpResponse;
 import org.apache.jena.query.QueryParseException;
+import org.apache.jena.vocabulary.DCAT;
+import org.apache.jena.vocabulary.DCTerms;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.solr.client.solrj.SolrServerException;
@@ -101,6 +116,7 @@ import org.apache.tika.parser.txt.CharsetDetector;
 import org.glassfish.jersey.client.ClientProperties;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import it.eng.idra.beans.Notification;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -114,6 +130,258 @@ public class ClientApi {
 
   /** The client. */
   private static Client client;
+  
+  
+  /**
+   * receiveNotify.
+   *
+   * @param n parameter
+   * @return the response
+   * @throws Exception exception 
+   */
+  @POST
+  @Path("/notification/{nodeId}/{apiKey}/push")
+  @Consumes({ MediaType.APPLICATION_JSON })
+  @Produces("application/json")
+  public Response receiveNotify(@PathParam("nodeId") String nodeId, 
+      @PathParam("apiKey") String apiKey, 
+      final String n) throws Exception {
+    
+    OdmsCatalogue node = FederationCore.getOdmsCatalogue(Integer.parseInt(nodeId), false);
+    System.out.println("\n ---- Catalogo che riguarda la notifica con NodeID: " + nodeId);
+
+    if (node.getNodeType().equals(OdmsCatalogueType.ORIONDCATAP) 
+        && node.getApiKey().equals(apiKey)) {
+      
+      Notification notification = GsonUtil.json2Obj(n, GsonUtil.notifcation);
+      
+      DataEntity[] data = notification.getData();
+       
+      // Ogni campo di data è un Dataset che ha subìto una modifica e quindi va
+      // aggiornato in Idra
+      for (int i = 0; i < data.length; i++) {
+
+        String ngsiEntitytId = data[i].getId();
+        System.out.println("\nEntità modificata/Aggiunta nel CB: " + ngsiEntitytId);
+        System.out.println("Pronta per essere modificata/Aggiunta in Idra");
+        
+        // Chiamata sul CB per ottenere puntualmente l'intero Dataset
+        Map<String, String> headers = new HashMap<String, String>();
+        headers.put("Content-Type", "application/json");
+        RestClient client = new RestClientImpl();
+        
+        // CASO 1. La notifica riguarda la modifica/aggiunta di un Dataset
+        if (data[i].getType().equals("Dataset")) {
+
+          HttpResponse response = client.sendGetRequest(node.getHost() 
+              + "/ngsi-ld/v1/entities?type=Dataset&id=" + ngsiEntitytId, headers);
+          
+          int status = client.getStatus(response);
+          if (status != 200 && status != 207 && status != 204 && status != -1 
+              && status != 201 && status != 301) {
+            throw new Exception("------------ STATUS search Dataset in Orion"
+                + " after a notify: " + status);
+          }
+          String returnedJson = client.getHttpResponseBody(response); 
+          DcatDataset datasetToUpdateFromOrion = OrionDcatDeserializer
+              .getDatasetFromJson(returnedJson, node);
+
+          try {
+            DcatDataset datasetToUpdateInIdra = MetadataCacheManager.getDatasetByIdentifier(Integer
+                .parseInt(nodeId), ngsiEntitytId);
+            logger.info("Dataset is already present, update");
+            
+            System.out.println("DATASET RECUPERATO in Idra da aggiornare: " 
+                + datasetToUpdateInIdra.getTitle().getValue() + " con ID in Idra: " 
+                + datasetToUpdateInIdra.getId());    
+            
+            datasetToUpdateFromOrion.setId(datasetToUpdateInIdra.getId());
+
+            MetadataCacheManager.updateDataset(Integer.parseInt(nodeId), 
+                datasetToUpdateFromOrion);
+            
+            System.out.println("DATASET " + datasetToUpdateFromOrion.getTitle().getValue() 
+                + " aggiornato in Idra");
+
+          } catch (DatasetNotFoundException ex) {
+            logger.info(ex.getMessage() + "\n - Adding the new dataset -\n");
+
+            // Cambiata la visibilità del metodo a public
+            OdmsSynchJob.addDataset(node, datasetToUpdateFromOrion); 
+          }
+        }
+        
+        // CASO 2. La notifica riguarda la modifica/aggiunta di una Distribution
+        if (data[i].getType().equals("DistributionDCAT-AP")) {
+          
+          // Qui, nel caso di aggiunta di una NUOVA Distribution
+          // (non MODIFICA di una esistente), si presuppone che con una precedente 
+          // notifica si sia già aggiunto
+          // n'ngsi_id della nuova distribution nel Dataset relativo
+          
+          HttpResponse response = client.sendGetRequest(node.getHost() 
+              + "/ngsi-ld/v1/entities?type=DistributionDCAT-AP&id=" + ngsiEntitytId, headers);
+          
+          int status = client.getStatus(response);
+          if (status != 200 && status != 207 && status != 204 && status != -1 
+              && status != 201 && status != 301) {
+            throw new Exception("------------ STATUS search Distribution in Orion"
+                + " after a notify: " + status);
+          }
+          String returnedJson = client.getHttpResponseBody(response); 
+          JSONArray distribArray = new JSONArray(returnedJson);
+          
+          // OTTENGO LA DcatDistribution
+          DcatDistribution distributionFromCb = OrionDcatDeserializer
+              .distributionToDcat(distribArray.get(0), node);
+          
+          System.out.println("dis dal CB che è stata modif: " 
+              + distributionFromCb.getTitle().getValue());
+          
+          String datasetIdentif = "";
+          for (DcatDataset ds : MetadataCacheManager.getAllDatasetsByOdmsCatalogue(node.getId())) {
+            for (DcatDistribution d : ds.getDistributions()) {
+              if (d.getIdentifier().getValue().equals(ngsiEntitytId)) {
+                datasetIdentif = ds.getIdentifier().getValue();
+              }
+            }
+          }
+
+          DcatDataset datasetToUpdateInIdra = MetadataCacheManager
+              .getDatasetByIdentifier(node.getId(), datasetIdentif);
+          
+          System.out.println("Dataset a cui appartiene la distribution: " 
+              + datasetToUpdateInIdra.getTitle().getValue());
+          
+          List<DcatDistribution> distributions = datasetToUpdateInIdra.getDistributions();
+          List<DcatDistribution> distributionsToUpdate = new ArrayList<DcatDistribution>();
+
+          for (DcatDistribution dis : distributions) {
+            if (!(dis.getIdentifier().getValue().equals(ngsiEntitytId))) {
+              dis.setId(null);
+              distributionsToUpdate.add(dis);
+            }
+            if ((dis.getIdentifier().getValue().equals(ngsiEntitytId))) {
+              
+              System.out.println("Distribution modificata: " 
+                  + dis.getTitle().getValue() + " con: " 
+                  + distributionFromCb.getTitle().getValue());
+
+              distributionFromCb.setId(null);
+              distributionFromCb.setIdentifier(ngsiEntitytId);
+              
+              distributionsToUpdate.add(distributionFromCb);
+            }
+          }
+
+          List<String> doc = new ArrayList<String>();
+          for (DcatProperty prop : datasetToUpdateInIdra.getDocumentation()) {
+            doc.add(prop.getValue());
+          }
+          List<String> hasVersion = new ArrayList<String>();
+          for (DcatProperty prop : datasetToUpdateInIdra.getHasVersion()) {
+            hasVersion.add(prop.getValue());
+          }
+          List<String> isVersionOf = new ArrayList<String>();
+          for (DcatProperty prop : datasetToUpdateInIdra.getIsVersionOf()) {
+            isVersionOf.add(prop.getValue());
+          }
+          List<String> language = new ArrayList<String>();
+          for (DcatProperty prop : datasetToUpdateInIdra.getLanguage()) {
+            language.add(prop.getValue());
+          }
+          List<String> provenance = new ArrayList<String>();
+          for (DcatProperty prop : datasetToUpdateInIdra.getProvenance()) {
+            provenance.add(prop.getValue());
+          }
+          List<String> otherIdentifier = new ArrayList<String>();
+          for (DcatProperty prop : datasetToUpdateInIdra.getOtherIdentifier()) {
+            otherIdentifier.add(prop.getValue());
+          }
+          List<String> sample = new ArrayList<String>();
+          for (DcatProperty prop : datasetToUpdateInIdra.getSample()) {
+            sample.add(prop.getValue());
+          }
+          List<String> source = new ArrayList<String>();
+          for (DcatProperty prop : datasetToUpdateInIdra.getSource()) {
+            source.add(prop.getValue());
+          }
+          List<String> versionNotes = new ArrayList<String>();
+          for (DcatProperty prop : datasetToUpdateInIdra.getVersionNotes()) {
+            versionNotes.add(prop.getValue());
+          }
+          
+          List<VcardOrganization> contactPointList = new ArrayList<VcardOrganization>();
+          List<VcardOrganization> contactPointListOld = datasetToUpdateInIdra.getContactPoint();
+          for (int k = 0; k < contactPointListOld.size(); k++) {
+            contactPointList.add(
+                new VcardOrganization(DCAT.contactPoint.getURI(), 
+                    null, "", contactPointListOld.get(k).getHasEmail().getValue(),
+                    "", "", "", String.valueOf(node.getId())));
+          }
+
+          List<SkosConceptTheme> themeList =  new ArrayList<SkosConceptTheme>();
+          List<SkosConceptTheme> themeListOld = datasetToUpdateInIdra.getTheme();
+          List<String> themes = new ArrayList<String>();
+          for (int k = 0; k < themeListOld.size(); k++) {
+            for (SkosPrefLabel lab : themeListOld.get(k).getPrefLabel()) {
+              themes.add(lab.getValue());
+            }
+          }
+          themeList.addAll(OrionDcatDeserializer.extractConceptList(DCAT.theme.getURI(), 
+              themes, SkosConceptTheme.class, node));
+
+          List<String> keywords = datasetToUpdateInIdra.getKeywords();
+
+          List<DctStandard> conformsTo = datasetToUpdateInIdra.getConformsTo();
+          FoafAgent publisherOld = datasetToUpdateInIdra.getPublisher();
+          FoafAgent publisher = new FoafAgent(DCTerms.publisher.getURI(), "",
+              publisherOld.getName().getValue(), "", "", null,
+              "", String.valueOf(node.getId()));
+          FoafAgent creatorOld = datasetToUpdateInIdra.getCreator();
+          FoafAgent creator = new FoafAgent(DCTerms.creator.getURI(), "",
+              creatorOld.getName().getValue(), "", "", null,
+              "", String.valueOf(node.getId()));
+          
+          DcatDataset datasetUpdated = new DcatDataset(String.valueOf(node.getId()), 
+              datasetToUpdateInIdra.getIdentifier().getValue(), 
+              datasetToUpdateInIdra.getTitle().getValue(), 
+              datasetToUpdateInIdra.getDescription().getValue(), 
+              distributionsToUpdate, themeList, publisher, 
+              contactPointList, keywords, 
+              datasetToUpdateInIdra.getAccessRights().getValue(), conformsTo, 
+              doc, datasetToUpdateInIdra.getFrequency().getValue(),
+              hasVersion, isVersionOf, 
+              datasetToUpdateInIdra.getLandingPage().getValue(), language, 
+              provenance, datasetToUpdateInIdra.getReleaseDate().getValue(), 
+              datasetToUpdateInIdra.getUpdateDate().getValue(), otherIdentifier, 
+              sample, source, 
+              datasetToUpdateInIdra.getSpatialCoverage(), 
+              datasetToUpdateInIdra.getTemporalCoverage(), 
+              datasetToUpdateInIdra.getType().getValue(), 
+              datasetToUpdateInIdra.getVersion().getValue(),
+              versionNotes, datasetToUpdateInIdra.getRightsHolder(), 
+              creator, datasetToUpdateInIdra.getSubject(), null);
+          
+          System.out.println("Dataset aggiornato, da Inserire in Idra: " + datasetUpdated
+              .getTitle().getValue());
+          
+          MetadataCacheManager.updateDataset(Integer.parseInt(nodeId), 
+              datasetUpdated);
+          
+          //OdmsSynchJob.updateDataset(node, datasetUpdated);
+          
+          System.out.println("DATASET dopo notifica su una DISTRIBUTION, "
+              + " aggiornato in Idra");
+          
+        } // fine distribution
+  
+      }
+    }
+   
+    return Response.status(Response.Status.OK).build();
+  }
+  
 
   /**
    * Search dataset.
