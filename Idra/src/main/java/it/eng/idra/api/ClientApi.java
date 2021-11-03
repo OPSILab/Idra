@@ -20,6 +20,7 @@ import it.eng.idra.beans.Datalet;
 import it.eng.idra.beans.ErrorResponse;
 import it.eng.idra.beans.EuroVocLanguage;
 import it.eng.idra.beans.IdraProperty;
+import it.eng.idra.beans.Notification;
 import it.eng.idra.beans.OrderBy;
 import it.eng.idra.beans.OrderType;
 import it.eng.idra.beans.dcat.DcatApFormat;
@@ -116,7 +117,6 @@ import org.apache.tika.parser.txt.CharsetDetector;
 import org.glassfish.jersey.client.ClientProperties;
 import org.json.JSONArray;
 import org.json.JSONObject;
-import it.eng.idra.beans.Notification;
 
 // TODO: Auto-generated Javadoc
 /**
