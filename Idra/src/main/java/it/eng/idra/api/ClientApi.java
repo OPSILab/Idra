@@ -214,11 +214,6 @@ public class ClientApi {
         // CASO 2. La notifica riguarda la modifica/aggiunta di una Distribution
         if (data[i].getType().equals("DistributionDCAT-AP")) {
           
-          // Qui, nel caso di aggiunta di una NUOVA Distribution
-          // (non MODIFICA di una esistente), si presuppone che con una precedente 
-          // notifica si sia già aggiunto
-          // n'ngsi_id della nuova distribution nel Dataset relativo
-          
           HttpResponse response = client.sendGetRequest(node.getHost() 
               + "/ngsi-ld/v1/entities?type=DistributionDCAT-AP&id=" + ngsiEntitytId, headers);
           
@@ -245,6 +240,19 @@ public class ClientApi {
                 datasetIdentif = ds.getIdentifier().getValue();
               }
             }
+          }
+          
+          // N.B. Se si AGGIUNGE nel CB una Distribution il cui id non è presente in nessun Dataset,
+          // non è possibile creare la relativa DcatDistribution in Idra.
+          // Appena nel CB verrà aggiunto/modificato un Dataset che nella sua lista di Distribution
+          // presenta l'id della nuova Distribution, allora la DcatDistribution 
+          // verrà creata in Idra.
+          // Bisogna quindi sempre creare prima la Distribution nel CB  e poi il
+          // Dataset che la contiene.
+          if (datasetIdentif == "") {
+            System.out.println("\n LA DISTRIBUTION CREATA NEL CB NON è PRESENTE IN NESSUN DATASET. "
+                + "Non viene creata in Idra. Uscita e fine funzione.");
+            return Response.status(Response.Status.OK).build();
           }
 
           DcatDataset datasetToUpdateInIdra = MetadataCacheManager
@@ -381,6 +389,39 @@ public class ClientApi {
    
     return Response.status(Response.Status.OK).build();
   }
+  
+  
+  /**
+   * receiveNotify2.
+   *
+   * @param input parameter
+   * @return the response
+   * @throws GsonUtilException exception
+   */
+  @POST
+  @Path("/notification/push")
+  @Consumes({ MediaType.APPLICATION_JSON })
+  @Produces("application/json")
+  // @Context HttpServletRequest httpRequest
+  // final String input
+  public Response receiveNotify2(final String input) throws GsonUtilException {
+    
+    String res = "\n\n ---- NOTIFICA RICEVUTA: " + input;
+    System.out.println(res);
+    
+    Notification notification = GsonUtil.json2Obj(input, GsonUtil.notifcation);
+      
+    DataEntity[] data = notification.getData();
+    
+    for (int i = 0; i < data.length; i++) {
+      System.out.println("\n\n Type Notif: " + data[i].getType());
+      
+
+    }
+    
+    return Response.status(Response.Status.OK).build();
+  }
+  
   
 
   /**

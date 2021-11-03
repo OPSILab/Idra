@@ -126,6 +126,7 @@ public class AdministrationApi {
   
   private static String urlOrionmanager = 
       PropertyManager.getProperty(IdraProperty.ORION_MANAGER_URL);
+  
   /**
    * getVersion.
    *
@@ -675,9 +676,7 @@ public class AdministrationApi {
           throw new Exception("------------ STATUS POST DELETE "
               + "CATALOGUE ID - BROKER MANAGER: " + status);
         }        
-      } 
-      
-      else {
+      } else {
         logger.info("Context Broker NON abilitato, \n");
       }  
       

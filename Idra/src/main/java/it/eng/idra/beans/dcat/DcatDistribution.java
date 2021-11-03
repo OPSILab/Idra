@@ -916,8 +916,8 @@ public class DcatDistribution implements Serializable {
    * @param checksum the new checksum
    */
   public void setChecksum(String checksum) {
-	  setChecksum(new SpdxChecksum("http://spdx.org/rdf/terms#checksum", "checksumAlgorithm_sha1",
-			  checksum, nodeId));
+    setChecksum(new SpdxChecksum("http://spdx.org/rdf/terms#checksum", "checksumAlgorithm_sha1",
+        checksum, nodeId));
   }
 
   /**
