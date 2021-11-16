@@ -106,7 +106,7 @@
 					</select>
 				</div>
 				<div class="col-md-3 form-group"
-				ng-show="node.nodeType == '' || node.nodeType != 'ORIONDCATAP'">
+				ng-show="node.nodeType == '' || node.nodeType != 'NGSILD_CB'">
 					<label for="refreshPeriod">{{'refresh' | translate}}:</label> <select
 						class="form-control" ng-model="node.refreshPeriod"
 						class="form-control"
@@ -114,11 +114,11 @@
 					</select>
 				</div>
 			   <div class="col-md-3 form-group"
-				ng-show="node.nodeType == 'ORIONDCATAP'">
-					<label for="refreshPeriod">{{'CBAutoUpdate' | translate}}:</label> <select
-						class="form-control" ng-model="node.autoUpdate"
+				ng-show="node.nodeType == 'NGSILD_CB'"> <!-- ng-model=node.autoUpdate -->
+					<label for="refreshPeriod">{{'refresh' | translate}}:</label> <select
+						class="form-control" ng-model="selected" ng-change="changedValue(selected, node)"
 						class="form-control"
-						ng-options="option.value as (option.text | translate) for option in updatePeriodsORIONDCAT">
+						ng-options="option.value as (option.text | translate) for option in updatePeriodsNGSILD_CB">
 					</select>
 				</div>
 				

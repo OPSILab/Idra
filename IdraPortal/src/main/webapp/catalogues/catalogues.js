@@ -385,7 +385,7 @@ angular.module("IdraPlatform").controller('CataloguesController',["$scope","$htt
 	
 	$scope.homepageLink="";
 	$scope.setHomepageLink = function(node) {
-		if(node.nodeType=='ORIONDCATAP'){
+		if(node.nodeType=='NGSILD_CB'){
 			$scope.homepageLink = node.host + "/ngsi-ld/v1/entities?type=Dataset";
 			console.log("LINK TO: " + $scope.homepageLink);
 			return $scope.homepageLink;

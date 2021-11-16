@@ -149,19 +149,20 @@
 					node.nodeState == 'ONLINE' && acceptrequest && orionfederationDone && node.synchLockOrion!='PERIODIC' 
 					isFederatedInOrion-->
 					<td><span
-						ng-show="node.isFederatedInOrion==true && node.synchLockOrion != 'PERIODIC'">
+						ng-show="node.isFederatedInCb==true && node.synchLockOrion != 'PERIODIC'">
 							<i class="glyphicon glyphicon-ok text-success" aria-hidden="true"></i>
 							<md-tooltip>{{node.nodeState}}</md-tooltip>
 					</span> 
 					<!-- && node.synchLockOrion=='NONE' && acceptrequest -->
 					<span
-						ng-show="node.nodeState == 'OFFLINE' || (node.isFederatedInOrion==false && node.synchLockOrion != 'PERIODIC')">
+						ng-show="node.nodeState == 'OFFLINE' || (node.isFederatedInCb==false && node.synchLockOrion != 'PERIODIC')">
 							<i class="glyphicon glyphicon-exclamation-sign text-danger"
 							aria-hidden="true"></i> <md-tooltip>{{node.nodeState}}</md-tooltip>
 					</span> <span ng-show="node.synchLockOrion=='PERIODIC'"> <img
 							alt="Synchronizing" title="Synchronizing"
 							src="images/spinner_synchro.gif" style="width: 30px;"> <md-tooltip>{{'synchronizing' | translate}}</md-tooltip>
 					</span>
+					<!-- <label>node.isFederatedInCb:{{node.isFederatedInCb}}</label> -->
 					</td>
 					
 					<!--  -->
@@ -174,7 +175,7 @@
 						<div class="buttons">
 							<a href="javascript:void(0)" class="btn-flat "
 								ng-click="synchroNode(node)"
-								a-disabled="node.synchLock!='NONE' || node.federationLevel=='LEVEL_0' || node.federationLevel=='LEVEL_1' || (node.federationLevel=='LEVEL_4' && node.nodeType!='ORIONDCATAP') || node.isActive==false "><i
+								a-disabled="node.synchLock!='NONE' || node.federationLevel=='LEVEL_0' || node.federationLevel=='LEVEL_1' || (node.federationLevel=='LEVEL_4' && node.nodeType!='NGSILD_CB') || node.isActive==false "><i
 								class="mdi-action-autorenew"></i> <md-tooltip>
 								{{'synchronize' | translate}}</md-tooltip></a> 
 								<!-- a-disabled="orionDisabled()" -->
