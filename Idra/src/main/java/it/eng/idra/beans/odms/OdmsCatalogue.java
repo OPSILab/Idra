@@ -230,8 +230,9 @@ public class OdmsCatalogue {
   private DcatApFormat dcatFormat;
   
   /** The is Federated In the Context Broker. */
-  @Transient
-  private Boolean isFederatedInOrion;
+  @Column(name = "isFederatedInCb", nullable = true)
+  @Expose
+  private Boolean isFederatedInCb;
   
   /** The synch lock for the Context Broker. */
   @Transient
@@ -251,7 +252,6 @@ public class OdmsCatalogue {
     this.setAutoUpdate(1);
     this.location = "";
     this.locationDescription = "";
-    this.isFederatedInOrion = false;
   }
 
   /**
@@ -301,7 +301,7 @@ public class OdmsCatalogue {
     this.setDatasetStart(0);
     this.setLocation(location);
     this.setLocationDescription(locationDescription);
-    this.setFederatedInOrion(false);
+    //this.setFederatedInOrion(false);
   }
 
   /**
@@ -353,7 +353,7 @@ public class OdmsCatalogue {
     this.setDatasetStart(0);
     this.setLocation(location);
     this.setLocationDescription(locationDescription);
-    this.setFederatedInOrion(false);
+    //this.setFederatedInOrion(false);
   }
 
   /**
@@ -405,7 +405,7 @@ public class OdmsCatalogue {
     this.setDatasetStart(startDataset);
     this.setLocation(location);
     this.setLocationDescription(locationDescription);
-    this.setFederatedInOrion(false);
+    //this.setFederatedInOrion(false);
   }
 
   /**
@@ -743,21 +743,21 @@ public class OdmsCatalogue {
   }
   
   /**
-   * Checks if is active.
+   * Checks if the node is federated in CB.
    *
    * @return the boolean
    */
-  public Boolean isFederatedInOrion() {
-    return isFederatedInOrion;
+  public Boolean isFederatedInCb() {
+    return isFederatedInCb;
   }
 
   /**
-   * Sets the active.
+   * Sets if the node is federated in CB.
    *
-   * @param isFederatedInOrion the new value
+   * @param isFederatedInCb the new value
    */
-  public void setFederatedInOrion(Boolean isFederatedInOrion) {
-    this.isFederatedInOrion = isFederatedInOrion;
+  public void setFederatedInCb(Boolean isFederatedInCb) {
+    this.isFederatedInCb = isFederatedInCb;
   }
 
   /*
