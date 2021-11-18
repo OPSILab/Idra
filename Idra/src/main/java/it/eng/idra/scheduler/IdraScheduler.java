@@ -10,7 +10,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see http://www.gnu.org/licenses/.
+ * along with this program.  If not, see https://urldefense.com/v3/__http://www.gnu.org/licenses/__;!!LQkDIss!F7puTj2rJRe_xKd4X7e-3X2qT-W7xyILRZI_zGaTALZ2jmjNt45ra7HSZh5HAeyRwIR42g$ .
  ******************************************************************************/
 
 package it.eng.idra.scheduler;
@@ -221,12 +221,17 @@ public class IdraScheduler {
     try {
       if (scheduler.checkExists(jobKey(jobName, "jobs"))) {
 
+        int refreshP = node.getRefreshPeriod();
+        if (node.getRefreshPeriod() == 0) {
+          refreshP = 60 * 60 * 24 * 365;
+        }
+        
         Trigger newTrigger = TriggerBuilder.newTrigger()
             .withIdentity(Integer.toString(node.getId()), "triggers")
             .startAt(
-                Date.from(node.getRegisterDate().toInstant().plusSeconds(node.getRefreshPeriod())))
+                Date.from(node.getRegisterDate().toInstant().plusSeconds(refreshP)))
             .withSchedule(
-                simpleSchedule().repeatForever().withIntervalInSeconds(node.getRefreshPeriod())
+                simpleSchedule().repeatForever().withIntervalInSeconds(refreshP)
                     .withMisfireHandlingInstructionNextWithExistingCount())
             .build();
 
@@ -337,16 +342,22 @@ public class IdraScheduler {
     // LEVEL_4 -> non deve sincronizzarsi
     if (!node.getFederationLevel().equals(OdmsCatalogueFederationLevel.LEVEL_4)) {
       try {
+        
+        int refreshP = node.getRefreshPeriod();
+        if (node.getRefreshPeriod() == 0) {
+          refreshP = 60 * 60 * 24 * 365;
+        }
+        
         JobDetail job = JobBuilder.newJob(OdmsSynchJob.class)
             .withIdentity(Integer.toString(node.getId()), "jobs")
             .usingJobData("nodeID", node.getId()).build();
 
-        Date d = Date.from(node.getRegisterDate().toInstant().plusSeconds(node.getRefreshPeriod()));
+        Date d = Date.from(node.getRegisterDate().toInstant().plusSeconds(refreshP));
 
         Trigger trigger = TriggerBuilder.newTrigger()
             .withIdentity(Integer.toString(node.getId()), "triggers").startAt(d)
             .withSchedule(
-                simpleSchedule().repeatForever().withIntervalInSeconds(node.getRefreshPeriod())
+                simpleSchedule().repeatForever().withIntervalInSeconds(refreshP)
                     .withMisfireHandlingInstructionNextWithExistingCount())
             .build();
 

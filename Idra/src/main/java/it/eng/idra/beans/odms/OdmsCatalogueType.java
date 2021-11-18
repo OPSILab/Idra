@@ -35,7 +35,7 @@ public enum OdmsCatalogueType {
   /** The orion. */
   ORION,
   /** The Context Broker DCAT-AP. */
-  ORIONDCATAP,
+  NGSILD_CB,
   /** The opendatasoft. */
   OPENDATASOFT,
   /** The sparql. */

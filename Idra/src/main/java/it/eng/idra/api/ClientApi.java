@@ -61,7 +61,7 @@ import it.eng.idra.search.SparqlFederatedSearch;
 import it.eng.idra.utils.CommonUtil;
 import it.eng.idra.utils.GsonUtil;
 import it.eng.idra.utils.GsonUtilException;
-import it.eng.idra.utils.OrionDcatDeserializer;
+import it.eng.idra.utils.NgsiLdCbDcatDeserializer;
 import it.eng.idra.utils.PropertyManager;
 import it.eng.idra.utils.RedirectFilter;
 import it.eng.idra.utils.restclient.RestClient;
@@ -131,11 +131,12 @@ public class ClientApi {
   /** The client. */
   private static Client client;
   
-  
   /**
-   * receiveNotify.
+   * Receives a Notify from the CB.
    *
-   * @param n parameter
+   * @param nodeId the id of the catalogue
+   * @param apiKey the apiKey of the catalogue
+   * @param n the notification
    * @return the response
    * @throws Exception exception 
    */
@@ -148,29 +149,29 @@ public class ClientApi {
       final String n) throws Exception {
     
     OdmsCatalogue node = FederationCore.getOdmsCatalogue(Integer.parseInt(nodeId), false);
-    System.out.println("\n ---- Catalogo che riguarda la notifica con NodeID: " + nodeId);
+    logger.info("Catalogue ID about the Notification from the CB: " + nodeId);
 
-    if (node.getNodeType().equals(OdmsCatalogueType.ORIONDCATAP) 
+    if (node.getNodeType().equals(OdmsCatalogueType.NGSILD_CB) 
         && node.getApiKey().equals(apiKey)) {
       
       Notification notification = GsonUtil.json2Obj(n, GsonUtil.notifcation);
       
       DataEntity[] data = notification.getData();
        
-      // Ogni campo di data è un Dataset che ha subìto una modifica e quindi va
-      // aggiornato in Idra
+      //Each date field is a dataset that has received a change 
+      //and therefore needs to be updated in Idra
       for (int i = 0; i < data.length; i++) {
 
         String ngsiEntitytId = data[i].getId();
-        System.out.println("\nEntità modificata/Aggiunta nel CB: " + ngsiEntitytId);
-        System.out.println("Pronta per essere modificata/Aggiunta in Idra");
+        logger.info("Updated/added entityID in the CB: " + ngsiEntitytId);
+        logger.info("Ready to be Updated/added in Idra");
         
-        // Chiamata sul CB per ottenere puntualmente l'intero Dataset
+        // Call to the CB to obtain the entire Dataset
         Map<String, String> headers = new HashMap<String, String>();
         headers.put("Content-Type", "application/json");
         RestClient client = new RestClientImpl();
         
-        // CASO 1. La notifica riguarda la modifica/aggiunta di un Dataset
+        // CASE 1. The notification concerns the modification/addition of a Dataset
         if (data[i].getType().equals("Dataset")) {
 
           HttpResponse response = client.sendGetRequest(node.getHost() 
@@ -183,35 +184,33 @@ public class ClientApi {
                 + " after a notify: " + status);
           }
           String returnedJson = client.getHttpResponseBody(response); 
-          DcatDataset datasetToUpdateFromOrion = OrionDcatDeserializer
+          DcatDataset datasetToUpdateFromOrion = NgsiLdCbDcatDeserializer
               .getDatasetFromJson(returnedJson, node);
 
           try {
             DcatDataset datasetToUpdateInIdra = MetadataCacheManager.getDatasetByIdentifier(Integer
                 .parseInt(nodeId), ngsiEntitytId);
-            logger.info("Dataset is already present, update");
-            
-            System.out.println("DATASET RECUPERATO in Idra da aggiornare: " 
-                + datasetToUpdateInIdra.getTitle().getValue() + " con ID in Idra: " 
-                + datasetToUpdateInIdra.getId());    
+            logger.info("Dataset already present with ID: " + datasetToUpdateInIdra.getId()
+                + ", to be updated");  
             
             datasetToUpdateFromOrion.setId(datasetToUpdateInIdra.getId());
 
             MetadataCacheManager.updateDataset(Integer.parseInt(nodeId), 
                 datasetToUpdateFromOrion);
             
-            System.out.println("DATASET " + datasetToUpdateFromOrion.getTitle().getValue() 
-                + " aggiornato in Idra");
+            logger.info("Dataset " + datasetToUpdateFromOrion.getTitle().getValue() 
+                + " updated in Idra");
 
           } catch (DatasetNotFoundException ex) {
             logger.info(ex.getMessage() + "\n - Adding the new dataset -\n");
 
-            // Cambiata la visibilità del metodo a public
             OdmsSynchJob.addDataset(node, datasetToUpdateFromOrion); 
+            node.setDatasetCount(node.getDatasetCount() + 1);
+            
           }
         }
         
-        // CASO 2. La notifica riguarda la modifica/aggiunta di una Distribution
+        // CASE 2. The notification concerns the modification/addition of a Distribution
         if (data[i].getType().equals("DistributionDCAT-AP")) {
           
           HttpResponse response = client.sendGetRequest(node.getHost() 
@@ -220,17 +219,17 @@ public class ClientApi {
           int status = client.getStatus(response);
           if (status != 200 && status != 207 && status != 204 && status != -1 
               && status != 201 && status != 301) {
-            throw new Exception("------------ STATUS search Distribution in Orion"
+            throw new Exception("STATUS search Distribution in Orion"
                 + " after a notify: " + status);
           }
           String returnedJson = client.getHttpResponseBody(response); 
           JSONArray distribArray = new JSONArray(returnedJson);
           
-          // OTTENGO LA DcatDistribution
-          DcatDistribution distributionFromCb = OrionDcatDeserializer
+          // Getting the DcatDistribution
+          DcatDistribution distributionFromCb = NgsiLdCbDcatDeserializer
               .distributionToDcat(distribArray.get(0), node);
           
-          System.out.println("dis dal CB che è stata modif: " 
+          logger.info("Distribution which has been modified in the CB: " 
               + distributionFromCb.getTitle().getValue());
           
           String datasetIdentif = "";
@@ -241,24 +240,24 @@ public class ClientApi {
               }
             }
           }
-          
-          // N.B. Se si AGGIUNGE nel CB una Distribution il cui id non è presente in nessun Dataset,
-          // non è possibile creare la relativa DcatDistribution in Idra.
-          // Appena nel CB verrà aggiunto/modificato un Dataset che nella sua lista di Distribution
-          // presenta l'id della nuova Distribution, allora la DcatDistribution 
-          // verrà creata in Idra.
-          // Bisogna quindi sempre creare prima la Distribution nel CB  e poi il
-          // Dataset che la contiene.
+                    
+          // N.B. If you ADD in the CB a Distribution whose id is not present in any Dataset,
+          // it is not possible to create its DcatDistribution in Idra.
+          // As soon as a Dataset will be added/modified in the CB which in its Distribution list
+          // presents the Id of the new Distribution, then the DcatDistribution
+          // will be created in Idra.
+          // You must therefore always create the Distribution in the CB first and then the
+          // Dataset that contains it.
           if (datasetIdentif == "") {
-            System.out.println("\n LA DISTRIBUTION CREATA NEL CB NON è PRESENTE IN NESSUN DATASET. "
-                + "Non viene creata in Idra. Uscita e fine funzione.");
+            logger.info("The Distribution added in the CB is not present in any Dataset in Idra. "
+                + "Exit.");
             return Response.status(Response.Status.OK).build();
           }
 
           DcatDataset datasetToUpdateInIdra = MetadataCacheManager
               .getDatasetByIdentifier(node.getId(), datasetIdentif);
           
-          System.out.println("Dataset a cui appartiene la distribution: " 
+          logger.info("Dataset to which the distribution belongs: " 
               + datasetToUpdateInIdra.getTitle().getValue());
           
           List<DcatDistribution> distributions = datasetToUpdateInIdra.getDistributions();
@@ -271,13 +270,12 @@ public class ClientApi {
             }
             if ((dis.getIdentifier().getValue().equals(ngsiEntitytId))) {
               
-              System.out.println("Distribution modificata: " 
-                  + dis.getTitle().getValue() + " con: " 
+              logger.info("Modified Distribution: " 
+                  + dis.getTitle().getValue() + " with: " 
                   + distributionFromCb.getTitle().getValue());
 
               distributionFromCb.setId(null);
               distributionFromCb.setIdentifier(ngsiEntitytId);
-              
               distributionsToUpdate.add(distributionFromCb);
             }
           }
@@ -336,7 +334,7 @@ public class ClientApi {
               themes.add(lab.getValue());
             }
           }
-          themeList.addAll(OrionDcatDeserializer.extractConceptList(DCAT.theme.getURI(), 
+          themeList.addAll(NgsiLdCbDcatDeserializer.extractConceptList(DCAT.theme.getURI(), 
               themes, SkosConceptTheme.class, node));
 
           List<String> keywords = datasetToUpdateInIdra.getKeywords();
@@ -371,7 +369,7 @@ public class ClientApi {
               versionNotes, datasetToUpdateInIdra.getRightsHolder(), 
               creator, datasetToUpdateInIdra.getSubject(), null);
           
-          System.out.println("Dataset aggiornato, da Inserire in Idra: " + datasetUpdated
+          logger.info("Updated Dataset, to be inserted in Idra: " + datasetUpdated
               .getTitle().getValue());
           
           MetadataCacheManager.updateDataset(Integer.parseInt(nodeId), 
@@ -379,50 +377,13 @@ public class ClientApi {
           
           //OdmsSynchJob.updateDataset(node, datasetUpdated);
           
-          System.out.println("DATASET dopo notifica su una DISTRIBUTION, "
-              + " aggiornato in Idra");
-          
-        } // fine distribution
-  
+          logger.info("Dataset after notification on a Distribution, "
+              + " updated in Idra");
+        } 
       }
     }
-   
     return Response.status(Response.Status.OK).build();
   }
-  
-  
-  /**
-   * receiveNotify2.
-   *
-   * @param input parameter
-   * @return the response
-   * @throws GsonUtilException exception
-   */
-  @POST
-  @Path("/notification/push")
-  @Consumes({ MediaType.APPLICATION_JSON })
-  @Produces("application/json")
-  // @Context HttpServletRequest httpRequest
-  // final String input
-  public Response receiveNotify2(final String input) throws GsonUtilException {
-    
-    String res = "\n\n ---- NOTIFICA RICEVUTA: " + input;
-    System.out.println(res);
-    
-    Notification notification = GsonUtil.json2Obj(input, GsonUtil.notifcation);
-      
-    DataEntity[] data = notification.getData();
-    
-    for (int i = 0; i < data.length; i++) {
-      System.out.println("\n\n Type Notif: " + data[i].getType());
-      
-
-    }
-    
-    return Response.status(Response.Status.OK).build();
-  }
-  
-  
 
   /**
    * Search dataset.

@@ -181,7 +181,8 @@ angular.module("IdraPlatform").controller('CatalogueCtrl',['$scope','$http','con
 	$scope.grades=config.FEDERATION_LEVEL.split(',');
 	$scope.updatePeriods=[{text:'-',value:'0'},{text:'1 hour',value:'3600'},{text:'1 day',value:'86400'},{text:'1 week',value:'604800'}];
 
-	$scope.updatePeriodsORIONDCAT=[{text:'Yes',value:'1'},{text:'No',value:'0'}];
+	//$scope.updatePeriodsNGSILD_CB=[{text:'Yes',value:'1'},{text:'No',value:'0'}];
+	$scope.updatePeriodsNGSILD_CB=[{text:'-',value:'0'},{text:'1 hour',value:'3600'},{text:'1 day',value:'86400'},{text:'1 week',value:'604800'},{text:'Auto-update',value:'1'}];
 
 	
 	$scope.dcatProfiles = [{text:'DCATAP',value:'DCATAP'},{text:'DCATAP_IT',value:'DCATAP_IT'}];
@@ -262,6 +263,17 @@ angular.module("IdraPlatform").controller('CatalogueCtrl',['$scope','$http','con
 //	};
 	
 	/*END*/
+
+   $scope.changedValue = function(selected, node){
+	if(selected != '1'){
+		node.refreshPeriod = selected;
+		node.autoUpdate = "0";
+	}
+	else{
+		node.autoUpdate = "1";
+		node.refreshPeriod = "0";
+	}
+	}
 	
 	$scope.toDataUrl = function(elem){
 		var reader = new FileReader();
@@ -637,8 +649,8 @@ angular.module("IdraPlatform").controller('CatalogueCtrl',['$scope','$http','con
 			case 'ORION':
 				node.federationLevel='LEVEL_4';
 				break;
-			case 'ORIONDCATAP':
-				node.federationLevel='LEVEL_4';
+			case 'NGSILD_CB':
+				node.federationLevel='LEVEL_2';
 				break;
 			case 'SPARQL':
 				node.federationLevel='LEVEL_4';
@@ -652,16 +664,14 @@ angular.module("IdraPlatform").controller('CatalogueCtrl',['$scope','$http','con
 			}
 
 			if(node.refreshPeriod==''){
-				//if(((node.federationLevel=='LEVEL_3' && node.nodeType!='ORIONDCATAP') || node.federationLevel=='LEVEL_2')){
-				if((node.federationLevel=='LEVEL_3'  || node.federationLevel=='LEVEL_2')){
+				if((node.federationLevel=='LEVEL_3' || node.federationLevel=='LEVEL_2')){
 					node.refreshPeriod=$scope.refreshPeriod;
 				}else{
 					node.refreshPeriod="0";
 				}
 				
-				//if(node.nodeType=='ORIONDCATAP'){
+				//if(node.nodeType=='NGSILD_CB'){
 				//	node.refreshPeriod='604800';
-				//	console.log("\n\n Settato valore refreshPeriod per ORIONDCAT catalogue, in single-catalogue");
 				//}
 			}
 			

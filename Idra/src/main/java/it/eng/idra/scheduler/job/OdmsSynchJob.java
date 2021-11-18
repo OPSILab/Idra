@@ -45,7 +45,6 @@ import it.eng.idra.utils.restclient.RestClient;
 import it.eng.idra.utils.restclient.RestClientImpl;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
-import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.sql.SQLException;
@@ -115,6 +114,7 @@ public class OdmsSynchJob implements InterruptableJob {
   @Override
   public void execute(JobExecutionContext context) throws JobExecutionException {
     // TODO Auto-generated method stub
+    logger.info("\nIn Execute");
     try {
       logger.info("Starting synch job for catalogue: "
           + context.getJobDetail().getJobDataMap().get("nodeID"));
@@ -246,7 +246,7 @@ public class OdmsSynchJob implements InterruptableJob {
       NoSuchMethodException, SecurityException, DatasetNotFoundException, RepositoryException,
       RDFParseException, OdmsCatalogueNotFoundException, OdmsCatalogueForbiddenException,
       OdmsManagerException {
-
+    logger.info("\nIn Sync");
     if (!node.isFederating()) {
       logger.info("Starting synchronization for node: " + node.getName() + " ID: " + node.getId());
 
@@ -354,6 +354,18 @@ public class OdmsSynchJob implements InterruptableJob {
           return false;
         }
       }
+
+      try {
+        logger.info("ADDING the Catalogue in the Context Broker calling the BROKER MANAGER "
+            + "component");
+        addCatalogueInCb(node);
+      } catch (Exception e) {
+        // TODO Auto-generated catch block
+        e.printStackTrace();
+        logger.error("Error: " + e.getMessage() + " in creation of the Catalogue node "
+            + node.getId() + " in the Context Broker");
+      }
+
       if (synchCompleted) {
 
         addedDatasets = synchroResult.getAddedDatasets().size();
@@ -400,17 +412,6 @@ public class OdmsSynchJob implements InterruptableJob {
           logger.error("Error: " + e1.getMessage() + " in creation of the dump file for node "
               + node.getId());
         }
-        // ------------ AGGIUNTA DEL CATALOGO nel Context Broker -----
-        // ----- CHIAMATA DEL COMPONENTE BROKER MANAGER PER AGGIUNGERE IL CATALOGO NEL CB
-        try {
-          addCatalogueInCb(node);
-        } catch (Exception e) {
-          // TODO Auto-generated catch block
-          e.printStackTrace();
-          logger.error("Error: " + e.getMessage() + " in creation of the Catalogue node "
-              + node.getId() + " in the Context Broker");
-        }
-
       }
       return true;
     } else {
@@ -430,7 +431,7 @@ public class OdmsSynchJob implements InterruptableJob {
     if (!conf.get("orionUrl").equals("")) {
       logger.info(" -- Context Broker URL: " + conf.get("orionUrl"));
     
-      System.out.println("\n --- INIZIO FEDERAZIONE IN ORION ---");
+      logger.info("Started CB Federation");
       node.setSynchLockOrion(OdmsSynchLock.PERIODIC);
       Map<String, String> headers = new HashMap<String, String>();
       headers.put("Content-Type", "application/json");
@@ -439,22 +440,28 @@ public class OdmsSynchJob implements InterruptableJob {
       String api = urlOrionmanager + "startProcess";
       String data = "{ \"catalogueId\": \"" + node.getId() + "\", \"contextBrokerUrl\": \"" 
           + conf.get("orionUrl") + "\"  }";
-      logger.info(" -- Adding in CB NODEID: "  + data);
+      logger.info("Sending configurations: "  + data);
       
       HttpResponse response = client.sendPostRequest(api, data,
           MediaType.APPLICATION_JSON_TYPE, headers); 
       int status = client.getStatus(response);
-      
+   
       if (status != 200 && status != 207 && status != 204 && status != -1 
           && status != 201 && status != 301) {
-        throw new Exception(" -- STATUS POST CATALOGUE ID - ORION MANAGER: " + status);
+        node.setFederatedInCb(false);
+        throw new Exception("STATUS POST Add catalogue in the BROKER MANAGER: " + status);
       
       } else {
-        node.setFederatedInOrion(true);
+        if (status == -1) {     // Case in which the Broker Manager is turned off
+          node.setFederatedInCb(false);
+        } else {
+          node.setFederatedInCb(true);
+        }
+        logger.info("Catalogue FEDERATED in the CB: " + node.isFederatedInCb());
         node.setSynchLockOrion(OdmsSynchLock.NONE);
       }
     } else {
-      logger.info(" -- Context Broker NON abilitato\n");
+      logger.info("Context Broker NOT enabled.");
     }  
   }
 
