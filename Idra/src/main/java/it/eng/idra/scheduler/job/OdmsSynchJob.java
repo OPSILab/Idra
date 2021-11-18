@@ -448,6 +448,7 @@ public class OdmsSynchJob implements InterruptableJob {
    
       if (status != 200 && status != 207 && status != 204 && status != -1 
           && status != 201 && status != 301) {
+        node.setFederatedInCb(false);
         throw new Exception("STATUS POST Add catalogue in the BROKER MANAGER: " + status);
       
       } else {

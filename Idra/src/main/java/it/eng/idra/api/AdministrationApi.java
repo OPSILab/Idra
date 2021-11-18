@@ -679,6 +679,8 @@ public class AdministrationApi {
         int status = client.getStatus(response);
         if (status != 200 && status != 207 && status != 204 && status != -1 
             && status != 201 && status != 301) {
+          // the deletion was not successful, still federated in the CB
+          node.setFederatedInCb(true);  
           throw new Exception("------------ STATUS POST DELETE "
               + "CATALOGUE ID - BROKER MANAGER: " + status);
         }        
