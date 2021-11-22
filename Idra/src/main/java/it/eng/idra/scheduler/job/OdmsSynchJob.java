@@ -63,6 +63,7 @@ import org.apache.logging.log4j.Logger;
 import org.apache.solr.client.solrj.SolrServerException;
 import org.eclipse.rdf4j.repository.RepositoryException;
 import org.eclipse.rdf4j.rio.RDFParseException;
+import org.json.JSONObject;
 import org.quartz.DisallowConcurrentExecution;
 import org.quartz.InterruptableJob;
 import org.quartz.JobExecutionContext;
@@ -444,22 +445,30 @@ public class OdmsSynchJob implements InterruptableJob {
       
       HttpResponse response = client.sendPostRequest(api, data,
           MediaType.APPLICATION_JSON_TYPE, headers); 
-      int status = client.getStatus(response);
-   
-      if (status != 200 && status != 207 && status != 204 && status != -1 
+
+      //int status = client.getStatus(response);
+      
+      String body = client.getHttpResponseBody(response);
+      JSONObject objResponse = new JSONObject(body);
+      int status = objResponse.getInt("status");
+      
+      if (status != 200 && status != 207 && status != 204 
           && status != 201 && status != 301) {
         node.setFederatedInCb(false);
-        throw new Exception("STATUS POST Add catalogue in the BROKER MANAGER: " + status);
-      
-      } else {
-        if (status == -1) {     // Case in which the Broker Manager is turned off
-          node.setFederatedInCb(false);
-        } else {
-          node.setFederatedInCb(true);
+        //        throw new Exception("STATUS POST Add catalogue in the BROKER MANAGER: "
+        //            + ", not federated: " + status);
+        if (status == 400) {
+          logger.info("STATUS POST Add in the CB, from BROKER MANAGER: " + status
+              + ". Bad Request.");
+        } else if (status == -1) {
+          logger.info("STATUS POST Add in the CB, from BROKER MANAGER: " + status
+              + ". The NGSI-LD Broker Manager is not running.");
         }
-        logger.info("Catalogue FEDERATED in the CB: " + node.isFederatedInCb());
-        node.setSynchLockOrion(OdmsSynchLock.NONE);
+      } else {
+        node.setFederatedInCb(true);
       }
+      node.setSynchLockOrion(OdmsSynchLock.NONE);
+      logger.info("Catalogue FEDERATED in the CB: " + node.isFederatedInCb());
     } else {
       logger.info("Context Broker NOT enabled.");
     }  
