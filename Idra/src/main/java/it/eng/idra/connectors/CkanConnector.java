@@ -15,6 +15,7 @@
 
 package it.eng.idra.connectors;
 
+import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -64,6 +65,8 @@ import org.ckan.Dataset;
 import org.ckan.Extra;
 import org.ckan.Resource;
 import org.ckan.Tag;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -311,6 +314,8 @@ public class CkanConnector implements IodmsConnector {
     List<String> relatedResource = new ArrayList<String>();
 
     List<DcatDistribution> distributionList = new ArrayList<DcatDistribution>();
+    
+    HashMap<String, String> dcatThemes = dcatThemesMap();
 
     otherIdentifier.add(d.getName());
 
@@ -319,12 +324,42 @@ public class CkanConnector implements IodmsConnector {
 
         switch (e.getKey().toLowerCase()) {
           case "alternate_identifier":
-            otherIdentifier.addAll(extractValueList(e.getValue()));
+            if (checkIfJsonArray(e.getValue())) {
+              logger.info("OTHER IDENTIFIER: " + e.getValue() + " IS A JSON ARRAY");
+              List<String> ids = new ArrayList<String>();
+              JSONArray array = new JSONArray(e.getValue());
+              for (int i = 0; i < array.length(); i++) {
+                String identif = array.getJSONObject(i).getString("identifier");
+                if (!identif.equals("N/A") && !ids.contains(identif)) {
+                  ids.add(identif);
+                }
+              }
+              otherIdentifier.addAll(ids);
+            } else {
+              otherIdentifier.addAll(extractValueList(e.getValue()));
+            }
             break;
           case "theme":
-            themeList
-                .addAll(extractConceptList(DCAT.theme.getURI(),
-                    extractValueList(e.getValue()), SkosConceptTheme.class));
+            if (checkIfJsonArray(e.getValue())) {
+              logger.info("THEME: " + e.getValue() + " IS A JSON ARRAY");
+              List<String> themes = new ArrayList<String>();
+              JSONArray array = new JSONArray(e.getValue());
+              for (int i = 0; i < array.length(); i++) {
+                String themeCode = array.getJSONObject(i).getString("theme");
+                if (dcatThemes.containsKey(themeCode)) {
+                  themes.add(dcatThemes.get(themeCode));
+                } else {
+                  themes.add(themeCode);
+                }
+              }
+              themeList
+                  .addAll(extractConceptList(DCAT.theme.getURI(),
+                      themes, SkosConceptTheme.class));
+            } else {
+              themeList
+                  .addAll(extractConceptList(DCAT.theme.getURI(),
+                      extractValueList(e.getValue()), SkosConceptTheme.class));
+            }
             break;
           case "access_rights":
             accessRights = e.getValue();
@@ -717,8 +752,16 @@ public class CkanConnector implements IodmsConnector {
     String byteSize = null;
     byteSize = String.valueOf(r.getSize());
     SpdxChecksum checksum = null;
+    
+    String checksumValue = r.getHash();
+    if (checkIfJsonObject(checksumValue)) {
+      logger.info("CHECKSUM " + checksumValue + " IS A JSON OBJ");
+      JSONObject obj = new JSONObject(checksumValue);
+      checksumValue = obj.getString("content");
+    }
+    
     checksum = new SpdxChecksum("http://spdx.org/rdf/terms#checksum", "checksumAlgorithm_sha1",
-        r.getHash(), nodeId);
+        checksumValue, nodeId);
     // documentation = r.get ?
     // language = r.get ?
     // linkedSchemas = r.get ?
@@ -1346,6 +1389,50 @@ public class CkanConnector implements IodmsConnector {
       logger.debug("Spatial string is not a valid GeoJson: " + e.getMessage());
       return false;
     }
+  }
+  
+  /**
+   * Check if json array.
+   *
+   * @param input the input
+   * @return true, if successful
+   */
+  private static boolean checkIfJsonArray(String input) {
+
+    try {
+      JsonElement jelement = new JsonParser().parse(input);
+      JsonArray jarray = jelement.getAsJsonArray();
+      return true;
+    } catch (Exception e) {
+      logger.debug("Spatial string is not a valid GeoJson: " + e.getMessage());
+      return false;
+    }
+  }
+  
+
+  /**
+   * Gets a map of the dcat-ap data themes.
+   *
+   * @return the map
+   */
+  private static HashMap<String, String> dcatThemesMap() {
+    
+    HashMap<String, String> dcatThemes = new HashMap<String, String>();
+    dcatThemes.put("AGRI", "Agriculture, fisheries, forestry and food");
+    dcatThemes.put("ECON", "Economy and finance");
+    dcatThemes.put("EDUC", "Education, culture and sport");
+    dcatThemes.put("ENER", "Energy");
+    dcatThemes.put("ENVI", "Environment");
+    dcatThemes.put("GOVE", "Government and public sector");
+    dcatThemes.put("HEAL", "Health");
+    dcatThemes.put("INTR", "International issues");
+    dcatThemes.put("JUST", "Justice, legal system and public safety");
+    dcatThemes.put("REGI", "Regions and cities");
+    dcatThemes.put("SOCI", "Population and society");
+    dcatThemes.put("TECH", "Science and technology");
+    dcatThemes.put("TRAN", "Transport");
+    
+    return dcatThemes;
   }
 
   /**
