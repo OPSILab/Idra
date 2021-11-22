@@ -149,7 +149,7 @@
 					node.nodeState == 'ONLINE' && acceptrequest && orionfederationDone && node.synchLockOrion!='PERIODIC' 
 					isFederatedInOrion-->
 					<td><span
-						ng-show="node.isFederatedInCb==true && node.synchLockOrion != 'PERIODIC'">
+						ng-show="node.isFederatedInCb==true && node.synchLockOrion != 'PERIODIC' && node.nodeState == 'ONLINE'">
 							<i class="glyphicon glyphicon-ok text-success" aria-hidden="true"></i>
 							<md-tooltip>{{node.nodeState}}</md-tooltip>
 					</span> 

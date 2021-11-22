@@ -676,15 +676,38 @@ public class AdministrationApi {
         
         HttpResponse response = client.sendPostRequest(api, data,
             MediaType.APPLICATION_JSON_TYPE, headers); 
-        int status = client.getStatus(response);
-        if (status != 200 && status != 207 && status != 204 && status != -1 
-            && status != 201 && status != 301) {
-          // the deletion was not successful, still federated in the CB
-          node.setFederatedInCb(true);  
-          throw new Exception("------------ STATUS POST DELETE "
-              + "CATALOGUE ID - BROKER MANAGER: " + status);
-        }        
+        //        int status = client.getStatus(response);
+        
+        if (response == null) {
+          logger.info("STATUS POST Delete in the CB, from BROKER MANAGER: -1" 
+              + ". The NGSI-LD Broker Manager is not running.");
+        } else {
+          String body = client.getHttpResponseBody(response);
+          JSONObject objResponse = new JSONObject(body);
+          int status = objResponse.getInt("status");
+          
+          if (status != 200 && status != 207 && status != 204 
+              && status != 201 && status != 301) {
+            // the deletion was not successful, still federated in the CB
+            node.setFederatedInCb(true);  
+            if (status == 400) {
+              logger.info("STATUS POST Delete in the CB, from BROKER MANAGER: " + status
+                  + ". Bad Request. Deletion from the CB failed.");
+            } else {
+              logger.info("STATUS POST Delete in the CB, from BROKER MANAGER: " + status
+                  + ". Deletion from the CB failed.");
+            }
+            //          throw new Exception("------------ STATUS POST DELETE "
+            //              + "CATALOGUE ID - BROKER MANAGER: " + status);
+          } else {
+            node.setFederatedInCb(false); 
+            logger.info("Catalogue deleted from the CB.");
+          }  
+        }
+        
+       
       } else {
+        node.setFederatedInCb(false); 
         logger.info("Context Broker NOT enabled");
       }  
       
