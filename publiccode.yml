@@ -4,7 +4,7 @@
 
 publiccodeYmlVersion: '0.2'
 name: Idra
-releaseDate: '2021-09-08'
+releaseDate: '2021-10-01'
 url: 'https://github.com/OPSILab/Idra.git'
 developmentStatus: stable
 softwareType: standalone/web
@@ -37,6 +37,15 @@ description:
       Idra federa open data provenienti da portali basati su tecnologie
       eterogenee armonizzando i metadati e rendendoli disponibili attraverso API
       aperte
+    screenshots:
+       - >-
+         https://raw.githubusercontent.com/OPSILab/Idra/master/docs/screenshots/homepage_IT.png
+       - >-
+         https://raw.githubusercontent.com/OPSILab/Idra/master/docs/screenshots/Dataset_IT.png
+       - >-
+         https://raw.githubusercontent.com/OPSILab/Idra/master/docs/screenshots/Datalet_IT.png
+       - >-
+         https://raw.githubusercontent.com/OPSILab/Idra/master/docs/screenshots/administrator.png
     longDescription: >
       Idra è un'applicazione web capace di federare portali Open Data, basati su
       tecnologie eterogenee, fornendo un unico punto di accesso per la ricerca e
@@ -115,7 +124,7 @@ description:
         guidelines
       - Compliance with DCAT-AP and DCAT-AP_IT standards
 landingURL: 'https://github.com/OPSILab/Idra'
-softwareVersion: 2.3.1
+softwareVersion: 2.3.2
 intendedAudience:
   scope:
     - government
