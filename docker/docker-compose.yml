@@ -45,7 +45,7 @@ services :
             networks:
                 idra_main:
     deep:
-            image: idraopendata/deep:2.0.0
+            image: idraopendata/deep:2.2.6
             ports:
                 - 80:80
             volumes:

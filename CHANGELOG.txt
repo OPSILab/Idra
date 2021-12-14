@@ -1,3 +1,6 @@
+v2.3.3
+- Fix: Apache Log4j Security Vulnerabilities (https://logging.apache.org/log4j/2.x/security.html)
+
 v2.3.2
 - Fix: Problem with Basic authentication
 - Fix: Deletion of datalet after refactoring
