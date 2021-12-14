@@ -1,1 +1,1 @@
-Fix: management of the docker-compose environment variable MYSQL_ROOT_PASSWORD with docker secrets, deletion of two environment variables and related documentation update.
+
