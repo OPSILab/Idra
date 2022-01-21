@@ -88,6 +88,8 @@ public class OdmsManager {
           "it.eng.idra.connectors.DcatDumpConnector");
       ODMSConnectorsList.put(OdmsCatalogueType.DKAN, "it.eng.idra.connectors.DkanConnector");
       ODMSConnectorsList.put(OdmsCatalogueType.ORION, "it.eng.idra.connectors.OrionConnector");
+      ODMSConnectorsList.put(OdmsCatalogueType.NGSILD_CB, 
+          "it.eng.idra.connectors.NgsiLdCbDcatConnector");
       ODMSConnectorsList.put(OdmsCatalogueType.SPARQL, "it.eng.idra.connectors.SparqlConnector");
       ODMSConnectorsList.put(OdmsCatalogueType.SPOD, "it.eng.idra.connectors.SpodConnector");
       ODMSConnectorsList.put(OdmsCatalogueType.OPENDATASOFT,
@@ -453,7 +455,7 @@ public class OdmsManager {
               }
 
             }
-
+            
             updateNode = true;
           } else if (node.getNodeType().equals(OdmsCatalogueType.ORION)) {
 

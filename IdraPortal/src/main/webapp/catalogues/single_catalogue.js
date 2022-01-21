@@ -181,6 +181,10 @@ angular.module("IdraPlatform").controller('CatalogueCtrl',['$scope','$http','con
 	$scope.grades=config.FEDERATION_LEVEL.split(',');
 	$scope.updatePeriods=[{text:'-',value:'0'},{text:'1 hour',value:'3600'},{text:'1 day',value:'86400'},{text:'1 week',value:'604800'}];
 
+	//$scope.updatePeriodsNGSILD_CB=[{text:'Yes',value:'1'},{text:'No',value:'0'}];
+	$scope.updatePeriodsNGSILD_CB=[{text:'-',value:'0'},{text:'1 hour',value:'3600'},{text:'1 day',value:'86400'},{text:'1 week',value:'604800'},{text:'Auto-update',value:'1'}];
+
+	
 	$scope.dcatProfiles = [{text:'DCATAP',value:'DCATAP'},{text:'DCATAP_IT',value:'DCATAP_IT'}];
 	$scope.ODMSCategories = [{text:'Municipality',value:'Municipality'},{text:'Province',value:'Province'},{text:'Private Institution',value:'Private Institution'},{text:'Public Body',value:'Public Body'},{text:'Region',value:'Region'}];
 	$scope.activeMode = [{text:'Yes',value:true},{text:'No',value:false}];
@@ -259,6 +263,17 @@ angular.module("IdraPlatform").controller('CatalogueCtrl',['$scope','$http','con
 //	};
 	
 	/*END*/
+
+   $scope.changedValue = function(selected, node){
+	if(selected != '1'){
+		node.refreshPeriod = selected;
+		node.autoUpdate = "0";
+	}
+	else{
+		node.autoUpdate = "1";
+		node.refreshPeriod = "0";
+	}
+	}
 	
 	$scope.toDataUrl = function(elem){
 		var reader = new FileReader();
@@ -497,6 +512,7 @@ angular.module("IdraPlatform").controller('CatalogueCtrl',['$scope','$http','con
 			else if(node1.locationDescription != node2.locationDescription) return false;
 			else if(node1.category != node2.category) return false;
 			else if(node1.country != node2.country) return false;
+			else if(node1.autoUpdate != node2.autoUpdate) return false;
 			else if( (node1.nodeType == node2.nodeType && node1.nodeType == "DCATDUMP") && node1.dumpURL != node2.dumpURL) return false;
 			else if( (node1.nodeType == node2.nodeType && node1.nodeType == "DCATDUMP") && node1.dcatProfile != node2.dcatProfile) return false;
 			else if( (node1.nodeType == node2.nodeType && node1.nodeType == "DCATDUMP") && node1.dumpString != node2.dumpString) return false;
@@ -633,6 +649,9 @@ angular.module("IdraPlatform").controller('CatalogueCtrl',['$scope','$http','con
 			case 'ORION':
 				node.federationLevel='LEVEL_4';
 				break;
+			case 'NGSILD_CB':
+				node.federationLevel='LEVEL_2';
+				break;
 			case 'SPARQL':
 				node.federationLevel='LEVEL_4';
 				break;
@@ -650,6 +669,10 @@ angular.module("IdraPlatform").controller('CatalogueCtrl',['$scope','$http','con
 				}else{
 					node.refreshPeriod="0";
 				}
+				
+				//if(node.nodeType=='NGSILD_CB'){
+				//	node.refreshPeriod='604800';
+				//}
 			}
 			
 			if(node.nodeType == 'WEB'){

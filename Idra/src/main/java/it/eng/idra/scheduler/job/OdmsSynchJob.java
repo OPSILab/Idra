@@ -36,10 +36,13 @@ import it.eng.idra.cache.LodCacheManager;
 import it.eng.idra.cache.MetadataCacheManager;
 import it.eng.idra.dcat.dump.DcatApDumpManager;
 import it.eng.idra.dcat.dump.DcatApSerializer;
+import it.eng.idra.management.FederationCore;
 import it.eng.idra.management.OdmsManager;
 import it.eng.idra.management.StatisticsManager;
 import it.eng.idra.utils.CommonUtil;
 import it.eng.idra.utils.PropertyManager;
+import it.eng.idra.utils.restclient.RestClient;
+import it.eng.idra.utils.restclient.RestClientImpl;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.nio.file.Files;
@@ -48,14 +51,19 @@ import java.sql.SQLException;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import javax.persistence.EntityExistsException;
+import javax.ws.rs.core.MediaType;
 import org.apache.commons.lang.StringUtils;
+import org.apache.http.HttpResponse;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.solr.client.solrj.SolrServerException;
 import org.eclipse.rdf4j.repository.RepositoryException;
 import org.eclipse.rdf4j.rio.RDFParseException;
+import org.json.JSONObject;
 import org.quartz.DisallowConcurrentExecution;
 import org.quartz.InterruptableJob;
 import org.quartz.JobExecutionContext;
@@ -73,6 +81,10 @@ public class OdmsSynchJob implements InterruptableJob {
 
   /** The logger. */
   private static Logger logger = LogManager.getLogger(OdmsSynchJob.class);
+  
+  /** The Context Broker Manager URL. */
+  private static String urlOrionmanager = 
+      PropertyManager.getProperty(IdraProperty.ORION_MANAGER_URL);
 
   /** The enable rdf. */
   private static Boolean enableRdf = Boolean
@@ -103,6 +115,7 @@ public class OdmsSynchJob implements InterruptableJob {
   @Override
   public void execute(JobExecutionContext context) throws JobExecutionException {
     // TODO Auto-generated method stub
+    logger.info("\nIn Execute");
     try {
       logger.info("Starting synch job for catalogue: "
           + context.getJobDetail().getJobDataMap().get("nodeID"));
@@ -234,7 +247,7 @@ public class OdmsSynchJob implements InterruptableJob {
       NoSuchMethodException, SecurityException, DatasetNotFoundException, RepositoryException,
       RDFParseException, OdmsCatalogueNotFoundException, OdmsCatalogueForbiddenException,
       OdmsManagerException {
-
+    logger.info("\nIn Sync");
     if (!node.isFederating()) {
       logger.info("Starting synchronization for node: " + node.getName() + " ID: " + node.getId());
 
@@ -342,6 +355,18 @@ public class OdmsSynchJob implements InterruptableJob {
           return false;
         }
       }
+
+      try {
+        logger.info("ADDING the Catalogue in the Context Broker calling the BROKER MANAGER "
+            + "component");
+        addCatalogueInCb(node);
+      } catch (Exception e) {
+        // TODO Auto-generated catch block
+        e.printStackTrace();
+        logger.error("Error: " + e.getMessage() + " in creation of the Catalogue node "
+            + node.getId() + " in the Context Broker");
+      }
+
       if (synchCompleted) {
 
         addedDatasets = synchroResult.getAddedDatasets().size();
@@ -381,20 +406,72 @@ public class OdmsSynchJob implements InterruptableJob {
               DcatApWriteType.FILE);
 
           // Write Catalogue's DCAT Dump into RDF4J
-          DcatApDumpManager.sendDumpToRepository(node);
+          DcatApDumpManager.sendDumpToRepository(node);      
 
         } catch (Exception e1) {
           e1.printStackTrace();
           logger.error("Error: " + e1.getMessage() + " in creation of the dump file for node "
               + node.getId());
         }
-
       }
       return true;
     } else {
       return false;
     }
 
+  }
+  
+  /**
+   * Adding the node in the CB.
+   *
+   * @param node    the node
+   * @throws Exception exception
+   */
+  private static void addCatalogueInCb(OdmsCatalogue node) throws Exception {
+    HashMap<String, String> conf = FederationCore.getSettings();
+    if (!conf.get("orionUrl").equals("")) {
+      logger.info(" -- Context Broker URL: " + conf.get("orionUrl"));
+    
+      logger.info("Started CB Federation");
+      node.setSynchLockOrion(OdmsSynchLock.PERIODIC);
+      Map<String, String> headers = new HashMap<String, String>();
+      headers.put("Content-Type", "application/json");
+      RestClient client = new RestClientImpl();
+      
+      String api = urlOrionmanager + "startProcess";
+      String data = "{ \"catalogueId\": \"" + node.getId() + "\", \"contextBrokerUrl\": \"" 
+          + conf.get("orionUrl") + "\"  }";
+      logger.info("Sending configurations: "  + data);
+      
+      HttpResponse response = client.sendPostRequest(api, data,
+          MediaType.APPLICATION_JSON_TYPE, headers); 
+
+      //int status = client.getStatus(response);
+      
+      String body = client.getHttpResponseBody(response);
+      JSONObject objResponse = new JSONObject(body);
+      int status = objResponse.getInt("status");
+      
+      if (status != 200 && status != 207 && status != 204 
+          && status != 201 && status != 301) {
+        node.setFederatedInCb(false);
+        //        throw new Exception("STATUS POST Add catalogue in the BROKER MANAGER: "
+        //            + ", not federated: " + status);
+        if (status == 400) {
+          logger.info("STATUS POST Add in the CB, from BROKER MANAGER: " + status
+              + ". Bad Request.");
+        } else if (status == -1) {
+          logger.info("STATUS POST Add in the CB, from BROKER MANAGER: " + status
+              + ". The NGSI-LD Broker Manager is not running.");
+        }
+      } else {
+        node.setFederatedInCb(true);
+      }
+      node.setSynchLockOrion(OdmsSynchLock.NONE);
+      logger.info("Catalogue FEDERATED in the CB: " + node.isFederatedInCb());
+    } else {
+      logger.info("Context Broker NOT enabled.");
+    }  
   }
 
   /**
@@ -452,7 +529,7 @@ public class OdmsSynchJob implements InterruptableJob {
    * @param dataset the dataset
    * @return the int
    */
-  static int addDataset(OdmsCatalogue node, DcatDataset dataset) {
+  public static int addDataset(OdmsCatalogue node, DcatDataset dataset) {
     int addedRdf = 0;
 
     logger.info("\n--- Creating dataset ---" + dataset.getId() + " " + dataset.getTitle().getValue()
@@ -515,7 +592,7 @@ public class OdmsSynchJob implements InterruptableJob {
    * @param dataset the dataset
    * @return the int
    */
-  static int updateDataset(OdmsCatalogue node, DcatDataset dataset) {
+  public static int updateDataset(OdmsCatalogue node, DcatDataset dataset) {
     int updatedRdf = 0;
     try {
       MetadataCacheManager.updateDataset(node.getId(), dataset);

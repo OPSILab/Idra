@@ -31,6 +31,7 @@ import it.eng.idra.beans.Datalet;
 import it.eng.idra.beans.ErrorResponse;
 import it.eng.idra.beans.Log;
 import it.eng.idra.beans.LogsRequest;
+import it.eng.idra.beans.Notification;
 import it.eng.idra.beans.PasswordChange;
 import it.eng.idra.beans.RdfPrefix;
 import it.eng.idra.beans.RemoteCatalogue;
@@ -130,6 +131,10 @@ public final class GsonUtil {
 
   /** The rem cat type. */
   public static Type remCatType = new TypeToken<RemoteCatalogue>() {
+  }.getType();
+  
+  /** The notification type. */
+  public static Type notifcation = new TypeToken<Notification>() {
   }.getType();
 
   /** The rem cat list type. */

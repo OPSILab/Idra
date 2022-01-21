@@ -58,6 +58,8 @@ import it.eng.idra.utils.CommonUtil;
 import it.eng.idra.utils.GsonUtil;
 import it.eng.idra.utils.GsonUtilException;
 import it.eng.idra.utils.PropertyManager;
+import it.eng.idra.utils.restclient.RestClient;
+import it.eng.idra.utils.restclient.RestClientImpl;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -71,6 +73,7 @@ import java.util.ArrayList;
 import java.util.Base64;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.ws.rs.Consumes;
@@ -100,6 +103,7 @@ import javax.ws.rs.core.Response.StatusType;
 import javax.ws.rs.core.StreamingOutput;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.http.HttpResponse;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
@@ -119,7 +123,10 @@ public class AdministrationApi {
 
   /** The client. */
   private static Client client;
-
+  
+  private static String urlOrionmanager = 
+      PropertyManager.getProperty(IdraProperty.ORION_MANAGER_URL);
+  
   /**
    * getVersion.
    *
@@ -270,6 +277,11 @@ public class AdministrationApi {
       if (node.isActive() == null) {
         node.setActive(false);
       }
+      
+      if (node.isFederatedInCb() == null) {
+        node.setFederatedInCb(false);
+      }
+      
 
       if (node.isActive()) {
         FederationCore.registerOdmsCatalogue(node);
@@ -648,9 +660,86 @@ public class AdministrationApi {
       node = FederationCore.getOdmsCatalogue(Integer.parseInt(nodeId));
       logger.info("Deleting ODMS catalogue with host: " + node.getHost() + " and id " + nodeId
           + " - START");
+
+      logger.info("Deletion of the Catalogue also in the CB. "
+          + "Calling the Broker Manager component.");
+      HashMap<String, String> conf = FederationCore.getSettings();
+      if (!conf.get("orionUrl").equals("")) {
+        Map<String, String> headers = new HashMap<String, String>();
+        headers.put("Content-Type", "application/json");
+        RestClient client = new RestClientImpl();
+        
+        String api = urlOrionmanager + "deleteCatalogue";
+        String data = "{ \"catalogueId\": \"" + node.getId() + "\", \"contextBrokerUrl\": \"" 
+            + conf.get("orionUrl") + "\"  }";
+        logger.info("Context Broker enabled, deleting NODEID: "  + data);
+        
+        HttpResponse response = client.sendPostRequest(api, data,
+            MediaType.APPLICATION_JSON_TYPE, headers); 
+        //        int status = client.getStatus(response);
+        
+        if (response == null) {
+          logger.info("STATUS POST Delete in the CB, from BROKER MANAGER: -1" 
+              + ". The NGSI-LD Broker Manager is not running.");
+        } else {
+          String body = client.getHttpResponseBody(response);
+          JSONObject objResponse = new JSONObject(body);
+          int status = objResponse.getInt("status");
+          
+          if (status != 200 && status != 207 && status != 204 
+              && status != 201 && status != 301) {
+            // the deletion was not successful, still federated in the CB
+            node.setFederatedInCb(true);  
+            if (status == 400) {
+              logger.info("STATUS POST Delete in the CB, from BROKER MANAGER: " + status
+                  + ". Bad Request. Deletion from the CB failed.");
+            } else {
+              logger.info("STATUS POST Delete in the CB, from BROKER MANAGER: " + status
+                  + ". Deletion from the CB failed.");
+            }
+            //          throw new Exception("------------ STATUS POST DELETE "
+            //              + "CATALOGUE ID - BROKER MANAGER: " + status);
+          } else {
+            node.setFederatedInCb(false); 
+            logger.info("Catalogue deleted from the CB.");
+          }  
+        }
+        
+       
+      } else {
+        node.setFederatedInCb(false); 
+        logger.info("Context Broker NOT enabled");
+      }  
+      
+      
       FederationCore.unregisterOdmsCatalogue(node);
       logger.info(
           "Deleting ODMS node with id: " + node.getHost() + " and id " + nodeId + " - COMPLETE");
+      
+      if (node.getNodeType().equals(OdmsCatalogueType.NGSILD_CB)) {
+        logger.info("Deletion of the Subscription of the Catalogue, if present");
+        Map<String, String> headers = new HashMap<String, String>();
+        headers.put("Content-Type", "application/json");
+        RestClient client = new RestClientImpl();
+ 
+        HttpResponse response = client.sendGetRequest(node.getHost() 
+            + "/ngsi-ld/v1/subscriptions/urn:ngsi-ld:Subscription:" + node.getId(), headers);
+        int status = client.getStatus(response);
+        if (status == 200) {
+          logger.info("The NGSI_LD Catalogue had a Subscription, deleting");
+          response = client.sendDeleteRequest(node.getHost() 
+              + "/ngsi-ld/v1/subscriptions/urn:ngsi-ld:Subscription:" + node.getId(), headers); 
+         
+          status = client.getStatus(response);
+          if (status != 200 && status != 207 && status != 204 && status != -1 
+              && status != 201 && status != 301) {
+            throw new Exception("------------ STATUS POST DELETE "
+                + "SUBSCRIPTION: " + status);
+          }
+        }
+
+
+      }
       return Response.status(Response.Status.OK).build();
 
     } catch (NumberFormatException e) {
@@ -682,6 +771,8 @@ public class AdministrationApi {
     try {
       logger.info("Forcing the synchronization for node " + nodeId);
       FederationCore.startOdmsCatalogueSynch(nodeIdentifier);
+      
+      logger.info("Fine funzione sync");
       return Response.status(Response.Status.OK).build();
 
     } catch (OdmsCatalogueNotFoundException e) {

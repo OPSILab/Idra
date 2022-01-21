@@ -121,6 +121,9 @@ public enum IdraProperty {
 
   /** The orion internal api. */
   ORION_INTERNAL_API("idra.orion.orionInternalAPI"),
+  
+  /** The context broker manager url. */
+  ORION_MANAGER_URL("idra.orion.manager.url"),
 
   /** The idra catalogue basepath. */
   IDRA_CATALOGUE_BASEPATH("idra.catalogue.basepath"),
