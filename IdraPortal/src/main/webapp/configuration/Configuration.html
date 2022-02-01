@@ -40,11 +40,14 @@
 
 		<li ng-class="{active: main.active.tab == 'remCataloguesManagement'}"><a
 			ng-click="main.active.tab = 'remCataloguesManagement'">{{'remoteCatalogues' | translate}}</a></li>
+			
+		<li ng-class="{active: main.active.tab == 'orionManagerManagement'}"><a
+			ng-click="main.active.tab = 'orionManagerManagement'">Context Broker</a></li>
 				
 	</ul>
 
 	<div class="tab-content">
-		<div class="col-md-10" ng-switch="main.active.tab">
+		<div class="col-md-10" ng-switch="main.active.tab">	
 			<div ng-switch-when="defaultConfiguration">
 				<div class="col-md-6" ng-controller="ConfigurationCtrl">
 					<form class="form" ng-submit="updateConfiguration()" novalidate>
@@ -367,6 +370,53 @@
 </script>
 
 		</div>
+		
+		<div ng-switch-when="orionManagerManagement">
+				<div class="col-md-6" ng-controller="OrionManagerCtrl">
+					
+					<form class="form" ng-submit="updateOrionUrl()" novalidate>
+						<fieldset>
+							
+							<div class="row form-inline">
+								<label for="refresh" class="control-label">{{'CBFederationEnable' | translate}}:</label> <input type="checkbox" class="form-control"
+									ng-model="orionEnabled"> <!-- checkContentLength -->
+									
+							</div>
+							
+							<div class="row form-inline" ng-show="showUrl">
+								<label for="refresh" class="control-label">
+									{{'CBEnabledUrl' | translate}}:</label><label for="refresh" class="control-label"><i><b>{{orionUrlInConf}}</b></i></label>
+							</div>
+							
+							</br>
+							
+							<div class="row form-inline" ng-show="showUrl">
+								<label for="refresh" class="control-label">
+									{{'CBChangeUrl' | translate}}: </label><input type="text" class="form-control" name="orionUrl"
+									placeholder="Base URL" ng-model='orionUrl' > 	
+							</div>
+							
+							<div class="row form-inline" ng-show="orionEnabled && showUrl==false">
+								<label for="refresh" class="control-label">
+									{{'CBUrl' | translate}}: </label><input type="text" class="form-control" name="orionUrl"
+								placeholder="Base URL" ng-model='orionUrl' > 
+									
+							</div>
+							
+							<div class="pull-right form-inline">
+								<button type="submit"
+									class="btn btn-primary pull-right"
+									ng-disabled="(orionUrl == '' && orionEnabled==true) || orionEnabled==false">{{'update' | translate}}</button>
+							</div>
+							
+						</fieldset>
+					</form>
+					
+				</div>
+			</div>
+
+		
+		
 	</div>
 
 </div>

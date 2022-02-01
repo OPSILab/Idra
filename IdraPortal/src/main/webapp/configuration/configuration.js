@@ -611,6 +611,8 @@ angular.module("IdraPlatform").controller('UpdatePasswordCtrl',['$scope','config
 	$scope.newPassword="";
 	$scope.newPasswordConfirm="";
 	
+	$scope.orionUrl="";
+	
 	var username = $rootScope.loggedUsername;
 	console.log(username);
 	
@@ -656,6 +658,50 @@ angular.module("IdraPlatform").controller('UpdatePasswordCtrl',['$scope','config
 		
 	};
 	
+	
+		$scope.updateOrionUrl = function(){
+		
+		var req = {
+				method: 'PUT',
+				url: config.ADMIN_SERVICES_BASE_URL + config.UPDATE_PASSWORD_SERVICE,
+				headers: {
+					'Content-Type': 'application/json',
+					'Authorization': "Bearer "+$rootScope.token
+				},
+				data:{
+					oldPassword: md5.createHash($scope.oldPassword),
+					newPassword: $scope.newPassword,
+					newPasswordConfirm: $scope.newPasswordConfirm,
+					username:username
+				}
+		};
+		
+		$rootScope.startSpin();
+		$http(req).then(function(value){
+			
+			console.log(value);
+			$rootScope.showAlert('success',value.data.message);
+			$rootScope.stopSpin();
+			
+		}, function(value){
+
+			if(value.status==401){
+				$rootScope.token=undefined;
+			}
+			
+			var message=value.data.userMessage;
+			if(message==undefined || message==""){
+				message=value.data.message;
+			}
+			
+			$rootScope.stopSpin();
+			$rootScope.showAlert('danger',message);
+			
+		}); 		
+		
+	};
+	
+	
 
 }]);
 
@@ -675,6 +721,10 @@ angular.module("IdraPlatform").controller('ConfigurationCtrl',['$scope','config'
 	$scope.checkContentLength="";
 	$scope.rdfMaxDimension="";
 	$scope.checkRdfDimension="";
+	
+	$rootScope.orionUrlInConf='';
+	$rootScope.orionEnabled=false;
+	$rootScope.showUrl=false;
 
 	$rootScope.startSpin();
 	$http(req).then(function(value){
@@ -685,6 +735,11 @@ angular.module("IdraPlatform").controller('ConfigurationCtrl',['$scope','config'
 		$scope.rdfMaxDimension=parseInt(value.data.rdf_max_dimension);
 		$scope.checkContentLength= (value.data.rdf_undefined_content_length === 'true');
 		$scope.checkRdfDimension= (value.data.rdf_undefined_dimension === 'true');
+		$rootScope.orionUrlInConf = value.data.orionUrl;
+		if($rootScope.orionUrlInConf=='')
+			$rootScope.orionEnabled=false;
+		else
+			$rootScope.orionEnabled=true;
 		
 	}, function(value){
 
@@ -855,5 +910,139 @@ angular.module('IdraPlatform').controller('PrefixModalInstanceCtrl',["$scope","$
 
 
 
+
+}]);
+
+angular.module("IdraPlatform").controller('OrionManagerCtrl',['$scope','config','$rootScope','$http',function($scope,config,$rootScope,$http){
+	
+		function validateUrl(url){
+			var reg = /^(http|https):\/\/[^ "]+$/;
+			if(reg.test(url) && (url.slice(-1) != '/')){
+				return true;
+			}else{
+				return false;
+			}
+		}
+		
+		$scope.$watch('orionEnabled', function(newValue, oldValue) {
+        if (newValue !== oldValue) {
+            
+			if(newValue==false){
+				$rootScope.showUrl = false;
+				$rootScope.orionEnabled=false;
+
+				var req = {
+						method: 'POST',
+						url: config.ADMIN_SERVICES_BASE_URL+config.CONFIGURATION_SERVICE,
+						headers: {
+							'Content-Type': 'application/json',
+							'Authorization': "Bearer "+$rootScope.token
+						},
+						data:{
+							orionUrl: ""
+						}
+				};
+		
+				$rootScope.startSpin();
+				$http(req).then(function(value){
+		
+					$rootScope.stopSpin();
+					$rootScope.showAlert('success',"Context Broker successfully disabled!");
+				}, function(value){
+		
+					if(value.status==401){
+						$rootScope.token=undefined;
+					}
+		
+					$rootScope.stopSpin();
+					$rootScope.showAlert('danger',value.data.userMessage);
+				});
+			}
+			
+			
+		    if(($rootScope.orionUrlInConf=='') && ($rootScope.orionEnabled==true))
+				$rootScope.showUrl = false;
+	
+			if(($rootScope.orionUrlInConf!='') && ($rootScope.orionEnabled==true))
+				$rootScope.showUrl = true;
+
+        }
+    });
+
+	if(($rootScope.orionUrlInConf=='') && ($rootScope.orionEnabled==true))
+		$rootScope.showUrl = false;
+	
+	if(($rootScope.orionUrlInConf!='') && ($rootScope.orionEnabled==true))
+		$rootScope.showUrl = true;
+
+
+	$scope.orionUrl="";
+
+
+	$scope.updateOrionUrl = function(){
+		if(validateUrl($scope.orionUrl.toString())){
+	
+			var req = {
+					method: 'POST',
+					url: config.ADMIN_SERVICES_BASE_URL+config.CONFIGURATION_SERVICE,
+					headers: {
+						'Content-Type': 'application/json',
+						'Authorization': "Bearer "+$rootScope.token
+					},
+					data:{
+						orionUrl: $scope.orionUrl.toString()
+					}
+			};
+	
+			$rootScope.startSpin();
+			$http(req).then(function(value){
+	
+				$rootScope.stopSpin();
+				$rootScope.showAlert('success',"Context Broker Configurations successfully updated!");
+				
+				var req = {
+				method: 'GET',
+				url: config.ADMIN_SERVICES_BASE_URL+config.CONFIGURATION_SERVICE,
+				headers: {
+					'Content-Type': 'application/json'
+				}
+				};
+				//$rootScope.orionUrlInConf='';
+			
+				$rootScope.startSpin();
+				$http(req).then(function(value){
+			
+					$rootScope.stopSpin();		
+					$rootScope.orionUrlInConf = value.data.orionUrl;
+					$rootScope.showUrl=true;
+					
+					//if($rootScope.orionUrlInConf=='')
+					//	$rootScope.orionEnabled=false;
+					//else
+					//	$rootScope.orionEnabled=true;
+					
+				}, function(value){
+			
+					$rootScope.stopSpin();
+					$rootScope.showAlert('danger',"Error in receiving configurations");
+				});
+				
+	
+			}, function(value){
+	
+				if(value.status==401){
+					$rootScope.token=undefined;
+				}
+	
+				$rootScope.stopSpin();
+				$rootScope.showAlert('danger',"Error in updating configurations");
+			});
+	
+		} else {
+			$rootScope.showAlert('danger',"Invalid URL!");
+		}
+		
+		}
+	
 
 }]);

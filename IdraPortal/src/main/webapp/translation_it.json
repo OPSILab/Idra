@@ -270,6 +270,7 @@
 	"portalCredentials": "Oauth2",
 	"deleteCredentials": "Elimina Credenziali",
 	"portalURL": "URL Portale",
+	"addedToCB": "Aggiunto nel CB",
 	
 	"registered":"Registrato",
 	"views" :"Accessi",
@@ -288,6 +289,12 @@
 	"synchronize":"Sincronizza",
 	"delete":"Elimina",
 	"downloadDump":"Scarica il dump",
+	"orionFederation":"Federa nel CB",
+	"CBFederationEnable": "Abilita federazione in un Context Broker",
+	"CBEnabledUrl": "Context Broker abilitato con URL",
+	"CBChangeUrl": "Modifica l'URL",
+	"CBUrl": "URL del Context Broker",
+	"CBAutoUpdate": "Aggiornamento automatico",
 	
 	"deleteCatalogueTitle":"Cancellare il Catalogo",
 	"deleteCatalogueMessage":"Cancellando questo catalogo, cancellerai anche tutte le risorse collegate.",

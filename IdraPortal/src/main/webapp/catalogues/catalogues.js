@@ -33,6 +33,12 @@ angular.module("IdraPlatform").controller('CataloguesController',["$scope","$htt
 	$scope.disableImport = false;
 	$scope.allRemCatalogues = 0;	
 	$scope.displayedCollectionImport = [];
+
+	 $scope.checkBoxValue = false;
+	 $scope.acceptrequest = false;
+	 $scope.orionfederationDone = false; 
+
+	$scope.show = 0; 
 	
 	var getTranlsatedValueDialogs = function(){
 			$translate('deleteCatalogueTitle')
@@ -327,6 +333,25 @@ angular.module("IdraPlatform").controller('CataloguesController',["$scope","$htt
 		
 			var index = $scope.nodes.indexOf(node);
 			$scope.nodes[index].synchLock = "PERIODIC";
+			$scope.nodes[index].synchLockOrion = "PERIODIC";
+
+
+			// CANCELLAZIONE IN ORION, prima di cancellare in idra
+			if($scope.orionfederationDone && $scope.acceptrequest){
+				// da fare PRIMA della cancellazione in IDRA
+				console.log("hai federato il cat in Orion e ora lo vuoi eliminare");
+					console.log("INIZIO CANCELLAZIONE IN ORION");
+					ODMSNodesAPI.deactivateNodeInOrion(node.id).then(function(value){
+							//$rootScope.getNodes();
+					},function(value){
+						console.log("Error in the removing in Orion");
+					})
+					$scope.orionfederationDone = false;
+					console.log("Fine eliminazione in Orion quindi lo stato della federazione è:  " + $scope.orionfederationDone);
+			}
+		
+
+
 
 			ODMSNodesAPI.deleteODMSNode(node.id).then(function(value){
 				console.log("Success");
@@ -347,9 +372,52 @@ angular.module("IdraPlatform").controller('CataloguesController',["$scope","$htt
 
 	};
 
-	$scope.updateNode = function(node) {
+	
+	 $scope.stateChanged = function ($event) {
+        if($event){ 
+          $scope.acceptrequest = true;
+       }
+       else
+          $scope.acceptrequest = false;
+		console.log("Event: "+ $event);
+		console.log("Accept request: "+ $scope.acceptrequest);
+    }
+	
+	$scope.homepageLink="";
+	$scope.setHomepageLink = function(node) {
+		if(node.nodeType=='NGSILD_CB'){
+			$scope.homepageLink = node.host + "/ngsi-ld/v1/entities?type=Dataset";
+			console.log("LINK TO: " + $scope.homepageLink);
+			return $scope.homepageLink;
+		} else{
+			$scope.homepageLink = node.homepage;
+			return $scope.homepageLink;
+		}
+	}
 
 		
+	//$scope.orionDisabled = function() {
+	//	return (config.ORION_DISABLED=='true')?true:false;
+	//}
+	
+
+	
+	$scope.showCheck= function(node) {
+		if(node.nodeState == 'ONLINE' && node.synchLock=='NONE'){
+			$scope.show = true;
+			return true;
+			}
+		else{
+			$scope.show = false;
+			return false;
+		}
+	}
+
+	$scope.call = function(node) {
+
+	}
+	
+	$scope.updateNode = function(node) {
 		// Call the getODMSNode API in order to retrieve also the image
 		var getODMSNodeReq = {
 				method: 'GET',

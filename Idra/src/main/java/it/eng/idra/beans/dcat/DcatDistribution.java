@@ -170,6 +170,9 @@ public class DcatDistribution implements Serializable {
 
   /** The distribution additional config. */
   private DistributionAdditionalConfiguration distributionAdditionalConfig;
+  
+  /** The identifier. */
+  private DcatProperty identifier;
 
   /**
    * Instantiates a new dcat distribution.
@@ -313,6 +316,35 @@ public class DcatDistribution implements Serializable {
    */
   public void setNodeId(String nodeId) {
     this.nodeId = nodeId;
+  }
+  
+  /**
+   * Gets the identifier.
+   *
+   * @return the identifier
+   */
+  @Embedded
+  @AttributeOverrides({ @AttributeOverride(name = "value", column = @Column(name = "identifier")) })
+  public DcatProperty getIdentifier() {
+    return identifier;
+  }
+
+  /**
+   * Sets the identifier.
+   *
+   * @param dcatIdentifier the new identifier
+   */
+  public void setIdentifier(DcatProperty dcatIdentifier) {
+    this.identifier = dcatIdentifier;
+  }
+  
+  /**
+   * Sets the identifier.
+   *
+   * @param dcatIdentifier the new identifier
+   */
+  public void setIdentifier(String dcatIdentifier) {
+    setIdentifier(new DcatProperty(DCTerms.identifier, RDFS.Literal, dcatIdentifier));
   }
 
   /**
@@ -1080,6 +1112,14 @@ public class DcatDistribution implements Serializable {
     if (title != null) {
       doc.addField("title", title.getValue());
     }
+    
+
+    
+    if (identifier != null) {
+      doc.addField("identifier", identifier.getValue());
+    }
+    
+    
 
     if (status != null) {
       try {
@@ -1205,6 +1245,10 @@ public class DcatDistribution implements Serializable {
         doc.getFieldValue("title").toString(), (Boolean) doc.getFieldValue("hasDatalets"));
     // datalets);
     distr.setStoredRdf((Boolean) doc.getFieldValue("storedRDF"));
+    
+    if (doc.getFieldValue("identifier") != null) {
+      distr.setIdentifier((String) doc.getFieldValue("identifier").toString());
+    }
     return distr;
   }
 

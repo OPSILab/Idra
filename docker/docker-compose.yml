@@ -66,6 +66,8 @@ services :
                 - idra.db.host.min=jdbc:mysql://db:3306
                 - idra.db.user_FILE=/run/secrets/my_secret_data
                 - idra.db.password_FILE=/run/secrets/my_secret_data
+                #- idra.db.user=root
+                #- idra.db.password=root
                 - idra.db.name=idra_db
                 - idra.cache.loadfromdb=true
                 - idra.synch.onstart=false
