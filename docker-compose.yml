@@ -79,6 +79,7 @@ services :
                 - idm.redirecturi=http://IDRA_HOST/Idra/api/v1/administration/login
                 - idm.logout.callback=http://IDRA_HOST/IdraPortal
                 - idm.admin.role.name=Admin
+                - idra.server.baseurl=<IDRA_PROTOCOL>://<IDRA_HOST>
                 - JAVA_OPTS=-Xms1024m -Xmx3g -XX:PermSize=1024m -XX:MaxPermSize=2048m
             secrets:
                 - my_secret_data             

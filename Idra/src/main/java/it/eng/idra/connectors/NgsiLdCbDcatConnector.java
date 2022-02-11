@@ -18,6 +18,8 @@ package it.eng.idra.connectors;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
 import com.google.common.collect.Sets.SetView;
+
+import it.eng.idra.beans.IdraProperty;
 import it.eng.idra.beans.dcat.DcatDataset;
 import it.eng.idra.beans.dcat.DcatDistribution;
 import it.eng.idra.beans.dcat.DctLicenseDocument;
@@ -34,6 +36,7 @@ import it.eng.idra.beans.odms.OdmsCatalogue;
 import it.eng.idra.beans.odms.OdmsSynchronizationResult;
 import it.eng.idra.utils.CommonUtil;
 import it.eng.idra.utils.GsonUtil;
+import it.eng.idra.utils.PropertyManager;
 import it.eng.idra.utils.restclient.RestClient;
 import it.eng.idra.utils.restclient.RestClientImpl;
 import java.lang.reflect.InvocationTargetException;
@@ -62,6 +65,10 @@ import org.json.JSONObject;
  */
 public class NgsiLdCbDcatConnector implements IodmsConnector {
 
+  /** The subscription base callback url. */
+  private static String subscriptionBaseUrl = 
+       PropertyManager.getProperty(IdraProperty.IDRA_SERVER_BASEURL);
+  
   /** The node id. */
   private String nodeId;
   
@@ -589,7 +596,10 @@ public class NgsiLdCbDcatConnector implements IodmsConnector {
     if (status != 200) {
       logger.info("Subscription NOT present, creation");
       
-      String endpoint = "http://host.docker.internal:8080/Idra/api/v1/client" + "/notification/" + node.getId() + "/" + node.getApiKey() + "/push";
+      String endpoint = (subscriptionBaseUrl.endsWith("/")
+          ? subscriptionBaseUrl : subscriptionBaseUrl + "/")
+          + "Idra/api/v1/client" + "/notification/" + node.getId() 
+          + "/" + node.getApiKey() + "/push";
       
       String req = "{"
           + "\"description\": \"Notify me on the creation or modification of a Dataset\","

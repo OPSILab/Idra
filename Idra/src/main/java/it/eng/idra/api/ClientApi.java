@@ -1282,7 +1282,10 @@ public class ClientApi {
       }
 
       // TODO: enable pagination
-
+      int count = nodes.size();
+      JSONObject result = new JSONObject();
+      result.put("count", count);
+      
       int row = CommonUtil.ROWSDEFAULT;
       int off = CommonUtil.OFFSETDEFAULT;
 
@@ -1308,10 +1311,8 @@ public class ClientApi {
         }
         nodes = nodes.subList(off, row);
       }
-      int count = nodes.size();
+     
       JSONArray array = new JSONArray(GsonUtil.obj2JsonWithExclude(nodes, GsonUtil.nodeListType));
-      JSONObject result = new JSONObject();
-      result.put("count", count);
       result.put("catalogues", array);
       System.gc();
       return Response.status(Response.Status.OK).entity(result.toString()).build();

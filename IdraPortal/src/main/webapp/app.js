@@ -319,7 +319,7 @@
 					loginType=config["idra.authentication.method"];
 					
 					if (loginType === "FIWARE" || loginType === "KEYCLOAK"){
-						$cookies.put('destinationUrl', $window.location.hash,{"path":"/"});
+						$cookies.put('destinationUrl', $window.location.hash,{"path":"/","secure":true});
 						$('#loginform').submit();
 					}else{
 						$window.location.assign('#/login');
@@ -563,8 +563,8 @@
 				$rootScope.stopSpin();
 				$rootScope.token=value.data;
 				$rootScope.loggedUsername = $scope.username;
-				$cookies.put('loggedin', value.data,{"path":"/"});
-				$cookies.put('username', $scope.username,{"path":"/"});
+				$cookies.put('loggedin', value.data,{"path":"/","secure":true});
+				$cookies.put('username', $scope.username,{"path":"/","secure":true});
 
 				$window.location.assign('#/metadata');
 			}, function(value){

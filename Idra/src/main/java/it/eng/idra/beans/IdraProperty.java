@@ -158,7 +158,9 @@ public enum IdraProperty {
   /** The preview timeout. */
   PREVIEW_TIMEOUT("idra.preview.timeout"),
   /** The preview max size. */
-  PREVIEW_MAX_SIZE("idra.preview.fileSize");
+  PREVIEW_MAX_SIZE("idra.preview.fileSize"),
+  /** The server base url. */
+  IDRA_SERVER_BASEURL("idra.server.baseurl");
 
   /** The text. */
   private final String text;

@@ -88,6 +88,7 @@ services :
                 - idm.client.secret=
                 - idm.redirecturi=http://IDRA_HOST/Idra/api/v1/administration/login
                 - idm.logout.callback=http://IDRA_HOST/IdraPortal
+                - idra.server.baseurl=<IDRA_PROTOCOL>://<IDRA_HOST>
                 - idm.admin.role.name=Admin
                 - DATALET_ENABLED=true
                 - DATALET_URL=http://localhost:80/deep/deep-components/demo.html
