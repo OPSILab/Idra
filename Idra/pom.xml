@@ -20,7 +20,6 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>rspa</groupId>
 	<artifactId>Idra_Maven</artifactId>
-	<packaging>war</packaging>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>Idra_Maven Maven Webapp</name>
 	<url>http://maven.apache.org</url>
@@ -354,7 +353,7 @@
 		<dependency>
 			<groupId>org.apache.solr</groupId>
 			<artifactId>solr-core</artifactId>
-			<version>6.6.0</version>
+			<version>8.11.1</version>
 
 		</dependency>
 		<!-- https://mvnrepository.com/artifact/org.apache.solr/solr-solrj -->
@@ -653,7 +652,7 @@
 			</plugin>
 			<plugin>
 				<artifactId>maven-war-plugin</artifactId>
-				<version>2.6</version>
+				<version>3.3.1</version>
 				<configuration>
 
 					<failOnMissingWebXml>false</failOnMissingWebXml>
