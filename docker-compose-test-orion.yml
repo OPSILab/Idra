@@ -21,7 +21,7 @@ services :
             image: mysql:5.7
             restart: always
             ports:
-                - 3306:3306
+                - 3310:3306
             volumes:
                 - mysql-data:/var/lib/mysql
                 - ./idra_db.sql:/docker-entrypoint-initdb.d/idra_db.sql
@@ -44,7 +44,7 @@ services :
                 - db
             command: ["./wait-for-it.sh", "db:3306", "--timeout=0", "--", "catalina.sh", "run"]
             environment:
-                - idra.db.host=jdbc:mysql://db:3306/idra_db?serverTimezone=UTC&useLegacyDatetimeCode=false&useEncoding=true&characterEncoding=UTF-8&useSSL\=false
+                - idra.db.host=jdbc:mysql://db:3306/idra_db?serverTimezone=UTC&useLegacyDatetimeCode=false&useEncoding=true&characterEncoding=UTF-8&useSSL=false
                 - idra.db.host.min=jdbc:mysql://db:3306
                 - idra.db.user_FILE=/run/secrets/my_secret_data
                 - idra.db.password_FILE=/run/secrets/my_secret_data
