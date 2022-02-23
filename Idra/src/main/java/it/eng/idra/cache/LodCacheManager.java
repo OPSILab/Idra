@@ -104,8 +104,8 @@ public class LodCacheManager {
   private static Repository getRepository(String repoUrl) throws RepositoryException {
     if (repo == null) {
       repo = new HTTPRepository(repoUrl);
-
-      repo.initialize();
+      
+      repo.init();
     }
     return repo;
   }
