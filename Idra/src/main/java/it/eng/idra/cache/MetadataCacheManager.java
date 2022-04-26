@@ -34,6 +34,7 @@ import it.eng.idra.search.EuroVocTranslator;
 import it.eng.idra.utils.PropertyManager;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import java.nio.file.Paths;
 import java.time.Duration;
 import java.time.LocalTime;
 import java.util.ArrayList;
@@ -1396,10 +1397,8 @@ public class MetadataCacheManager {
 
     // *************** Initializes SOLR Embedded Server
     // ***********************/
-    logger.info("SOLR SERVER - init - start");
-    CoreContainer container = new CoreContainer(configPath);
-    container.load();
-    server = new EmbeddedSolrServer(container, "core");
+    logger.info("SOLR SERVER - init - start");    
+    server = new EmbeddedSolrServer(CoreContainer.createAndLoad(Paths.get(configPath)), "core");
 
     logger.info("SOLR SERVER - init - end");
 
