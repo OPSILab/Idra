@@ -39,6 +39,7 @@ RUN         apk update && \
 RUN 		apk add --update nodejs nodejs-npm
 
 #Install Bower
+RUN npm config set unsafe-perm true
 RUN			npm install -g bower
 
 ### Clone the official Idra GitHub repository ###

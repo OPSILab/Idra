@@ -54,7 +54,7 @@ services :
             command: ["./wait-for-it.sh", "db:3306", "--timeout=0", "--", "catalina.sh", "run"]
             
             environment:
-                - idra.db.host=jdbc:mysql://db:3306/idra_db?serverTimezone=UTC&useLegacyDatetimeCode=false&useEncoding=true&characterEncoding=UTF-8&useSSL\=false
+                - idra.db.host=jdbc:mysql://db:3306/idra_db?serverTimezone=UTC&useLegacyDatetimeCode=false&useEncoding=true&characterEncoding=UTF-8&useSSL=false
                 - idra.db.host.min=jdbc:mysql://db:3306
                 - idra.db.user_FILE=/run/secrets/my_secret_data
                 - idra.db.password_FILE=/run/secrets/my_secret_data
@@ -79,6 +79,7 @@ services :
                 - idm.redirecturi=http://IDRA_HOST/Idra/api/v1/administration/login
                 - idm.logout.callback=http://IDRA_HOST/IdraPortal
                 - idm.admin.role.name=Admin
+                - idra.server.baseurl=<IDRA_PROTOCOL>://<IDRA_HOST>
                 - JAVA_OPTS=-Xms1024m -Xmx3g -XX:PermSize=1024m -XX:MaxPermSize=2048m
             secrets:
                 - my_secret_data             

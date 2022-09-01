@@ -34,7 +34,7 @@
 		"angular-material": "1.1.8",
 		"angular-aria": "1.5.11",
 		"angular-marked": "~1.x",
-		"angular-file-saver": "~1.x",
+		"angular-file-saver": "elquimeras/ng-file-saver#^1.1.4",
 		"flag-icon-css": "~1.x",
 		"ng-country-select": "x",
 		"angular-ui-switch": "x",

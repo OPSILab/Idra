@@ -1,3 +1,12 @@
+v3.0.1
+- Fix: Management of Keycloak's realm roles
+- Dependabot Fix: Bumped mysql-connector-java to version 8.0.28
+
+v3.0.0
+- New Feature: Native support of NGSI-LD Catalogues providing DCAT-AP Data models (https://github.com/smart-data-models/dataModel.DCAT-AP)
+- New Feature: Integration of the functionality to map the DCAT-AP metadata of the federated catalogues in a Context Broker
+- Fix: Updated several depencencies
+
 v2.3.3
 - Fix: Apache Log4j Security Vulnerabilities (https://logging.apache.org/log4j/2.x/security.html)
 

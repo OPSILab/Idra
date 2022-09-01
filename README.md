@@ -75,12 +75,12 @@ API Reference Documentation (**Apiary**):
 
 -   [`https://idraopendata.docs.apiary.io`](https://idraopendata.docs.apiary.io)
 
-## Idra Sandbox
+## Idra Demo
 
 A demo instance of Idra - Open Data Federation Platform is available at the
 following link:
 
--   [`https://idra-sandbox.eng.it`](https://idra-sandbox.eng.it)
+-   [`https://idra.eng.it`](https://idra.eng.it)
 
 ## Contribution
 
@@ -108,7 +108,7 @@ to provide feedback.
 Idra - Open Data Federation Platform is licensed under [Affero General Public License (GPL)
 version 3](./LICENSE).
 
-© 2019 Engineering Ingegneria Informatica S.p.A.
+© 2022 Engineering Ingegneria Informatica S.p.A.
 
 ### Are there any legal issues with AGPL 3.0? Is it safe for me to use?
 
