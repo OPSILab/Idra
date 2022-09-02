@@ -50,7 +50,7 @@ public class DbConnectionManager {
 
     config.setUsername(PropertyManager.getProperty(IdraProperty.DB_USERNAME));
     config.setPassword(PropertyManager.getProperty(IdraProperty.DB_PASSWORD));
-    config.setDataSourceClassName("com.mysql.jdbc.jdbc2.optional.MysqlDataSource");
+    config.setDataSourceClassName("com.mysql.cj.jdbc.MysqlDataSource");
     config.setIdleTimeout(30000);
     config.setMinimumIdle(5);
     config.setMaximumPoolSize(10);

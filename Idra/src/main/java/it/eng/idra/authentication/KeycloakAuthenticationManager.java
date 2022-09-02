@@ -22,10 +22,13 @@ import it.eng.idra.authentication.keycloak.connector.KeycloakConnectorImpl;
 import it.eng.idra.authentication.keycloak.model.KeycloakUser;
 import it.eng.idra.utils.PropertyManager;
 import java.net.URI;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.ws.rs.core.Response;
+import org.apache.commons.collections4.CollectionUtils;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -155,7 +158,18 @@ public class KeycloakAuthenticationManager extends AuthenticationManager {
    */
   public void validateAdminRole(KeycloakUser user) throws Exception {
 
-    Set<String> roles = user.getRoles();
+    List<String> roles = new ArrayList<String>();
+    
+    if (CollectionUtils.isNotEmpty(user.getRealmAccess().getRoles())) {
+      roles.addAll(user.getRealmAccess().getRoles().stream()
+          .map(x -> x.toUpperCase()).collect(Collectors.toList()));
+    }
+    
+    if (CollectionUtils.isNotEmpty(user.getRoles())) {
+      roles.addAll(user.getRoles().stream()
+          .map(x -> x.toUpperCase()).collect(Collectors.toList()));
+    }
+        
     if (roles != null && !roles.isEmpty() && roles
         .contains(PropertyManager.getProperty(IdmProperty.IDM_ADMIN_ROLE_NAME).toUpperCase())) {
       // OK

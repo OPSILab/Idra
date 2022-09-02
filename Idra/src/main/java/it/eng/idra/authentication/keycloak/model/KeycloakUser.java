@@ -33,6 +33,10 @@ public class KeycloakUser {
 
   /** The roles. */
   private Set<String> roles;
+  
+  /** Realm Roles. */
+  @SerializedName(value = "realm_access")
+  private RealmAccess realmAccess;
 
   /** The name. */
   private String name;
@@ -227,6 +231,25 @@ public class KeycloakUser {
   public void setEmail(String email) {
     this.email = email;
   }
+  
+  /**
+   * Gets the realmAccess.
+   *
+   * @return the realmAccess
+   */
+  public RealmAccess getRealmAccess() {
+    return realmAccess;
+  }
+
+  /**
+   * Sets the realmAccess.
+   *
+   * @param realmAccess the new RealmAccess
+   */
+  public void setRealmAccess(RealmAccess realmAccess) {
+    this.realmAccess = realmAccess;
+  }
+
 
   /*
    * (non-Javadoc)
@@ -240,4 +263,21 @@ public class KeycloakUser {
         + "given_name=" + givenName + ", family_name=" + familyName + ", email=" + email + "]";
   }
 
+  /**
+   * RealmAccess class.
+   *
+   */
+  public class RealmAccess {
+    private Set<String> roles;
+
+    public Set<String> getRoles() {
+      return roles;
+    }
+
+    public void setRoles(Set<String> roles) {
+      this.roles = roles;
+    }
+  }
+
+  
 }

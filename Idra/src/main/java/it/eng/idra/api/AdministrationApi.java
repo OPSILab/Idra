@@ -1349,11 +1349,11 @@ public class AdministrationApi {
           if (token != null && ((String) token).trim().length() > 0) {
             return Response.seeOther(URI.create(
                   PropertyManager.getProperty(IdraProperty.IDRA_CATALOGUE_BASEPATH)))
-                  .cookie(new NewCookie("loggedin", (String) token, "/", "", "comment", 100, false))
+                  .cookie(new NewCookie("loggedin", (String) token, "/", "", "comment", 100, true))
                   .cookie(new NewCookie("refresh_token", refreshToken,
-                      "/", "", "comment", 100, false))
+                      "/", "", "comment", 100, true))
                   .cookie(new NewCookie("username", info.getDisplayName(),
-                      "/", "", "comment", 100, false)).build();
+                      "/", "", "comment", 100, true)).build();
           } else {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
           }
@@ -1374,11 +1374,11 @@ public class AdministrationApi {
           if (token != null && ((String) token).trim().length() > 0) {
             return Response.seeOther(URI.create(
                   PropertyManager.getProperty(IdraProperty.IDRA_CATALOGUE_BASEPATH)))
-                  .cookie(new NewCookie("loggedin", (String) token, "/", "", "comment", 100, false))
+                  .cookie(new NewCookie("loggedin", (String) token, "/", "", "comment", 100, true))
                   .cookie(new NewCookie("refresh_token", refreshToken,
-                      "/", "", "comment", 100, false))
+                      "/", "", "comment", 100, true))
                   .cookie(new NewCookie("username", keycloakUser.getPreferredUsername(),
-                      "/", "", "comment", 100, false)).build();
+                      "/", "", "comment", 100, true)).build();
           } else {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
           }
@@ -1464,10 +1464,10 @@ public class AdministrationApi {
           if (token != null && ((String) token).trim().length() > 0) {
             return Response.seeOther(URI.create(
                 PropertyManager.getProperty(IdraProperty.IDRA_CATALOGUE_BASEPATH)))
-              .cookie(new NewCookie("loggedin", (String) token, "/", "", "comment", 100, false))
-              .cookie(new NewCookie("refresh_token", refreshToken, "/", "", "comment", 100, false))
+              .cookie(new NewCookie("loggedin", (String) token, "/", "", "comment", 100, true))
+              .cookie(new NewCookie("refresh_token", refreshToken, "/", "", "comment", 100, true))
               .cookie(new NewCookie("username", keycloakUser.getPreferredUsername(),
-                  "/", "", "comment", 100, false)).build();
+                  "/", "", "comment", 100, true)).build();
           } else {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
           }
