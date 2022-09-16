@@ -32,6 +32,32 @@ angular.module("IdraPlatform")
 		$modalInstance.dismiss('cancel');
 	};
 	
+}).controller('DocumentWoodsCtrl',function($scope,$modalInstance,title,data,format){
+	
+	$scope.title = title;
+
+	$scope.previewDocument = "URL of the selected resource published in Spread Sheet Space \n\n";
+	
+	$scope.urlDocument = data.toString();
+	
+	var getMode = function(type){
+		if(format.toLowerCase() == 'csv'){
+			return 'text';
+		}
+	} 
+	
+	$scope.aceLoaded = function(_editor) {
+		$scope.aceEditor=_editor;
+		$scope.aceSession = _editor.getSession();
+		$scope.aceSession.setMode("ace/mode/" + getMode(format));
+		$scope.aceEditor.setSession($scope.aceSession);
+		$scope.aceEditor.setReadOnly(true);
+	};
+	
+	$scope.cancel = function () {
+		$modalInstance.dismiss('cancel');
+	};
+	
 }).controller('DocumentPreviewCtrl',function($scope,$modalInstance,title,data,format){
 	
 	$scope.title = title;

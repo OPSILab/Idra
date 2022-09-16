@@ -656,6 +656,22 @@ div.m-app-loading p {
 </div>
 </script>
 
+<script type="text/ng-template" id="DocumentPreviewWoods.html">
+<div class="modal-header">
+	<button type="button" class="close" aria-hidden="true" ng-click="cancel()">x</button>
+    <h3 class="modal-title" md-truncate>{{'modalTitlePreview' | translate}}:&nbsp{{title}}</h3>
+</div>
+<div class="modal-body row">
+	<div style="height: 250px; color: #778aa8; text-align:center" ng-model="previewDocument">
+						<b>{{previewDocument}}</b>
+						<br>
+						<br>
+						<a target="_blank" href="{{urlDocument}}">{{urlDocument}}</a>
+	</div>
+
+</div>
+</script>
+
 <script type="text/ng-template" id="PDFPreview.html">
 <div class="modal-header">
 	<button type="button" class="close" aria-hidden="true" ng-click="cancel()">x</button>
