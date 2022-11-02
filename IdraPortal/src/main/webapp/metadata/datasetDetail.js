@@ -39,7 +39,7 @@ $scope.showWoods = function(dataset,distribution){
 						'Content-Type': 'application/json'
 					},
 					data:{
-					   'platformUrl':'https://interstat.eng.it/',
+					   'platformUrl':'https://idra-sandbox.eng.it/',
 					   'resourceId': distribution.id,
 					   'title':distribution.title,				
 					   'format':distribution.format.toLowerCase(),
@@ -53,7 +53,7 @@ $scope.showWoods = function(dataset,distribution){
 			  }
 		};
 		
-		distribution.lockPreview=true;
+		//distribution.lockPreview=true;
 
 		$http(reqCheckPreview).then(function(value){
 			console.log("DATA RETURNED BY WOODS:")
@@ -103,18 +103,27 @@ $scope.showWoods = function(dataset,distribution){
 
 
 	
-	 $scope.selectPlugin = function(selected,distribution){ 
+	 $scope.selectPlugin = function(selected,dataset,distribution){ 
 		console.log(selected)
 		if(selected!=null){
 		let data = selected;
 		console.log("plug-in selected: " + data.name + " and method: " + data.method);
 		
+	    if(data.name == "WOODS"){
+			console.log("selezionato WOODS" );
+			console.log("dataset:" + dataset.id);
+			console.log("distribution format:" + distribution.format);			
+			
+			$scope.showWoods(dataset,distribution);
+		}
+		
+		/*
 		switch(data.method) { 
 		   case "POST": { 
 			  console.log("dataset ID: " + $scope.dataset.id);
 			  console.log("distribution ID: " + distribution.id);
 		
-/*		
+		
 			  for(i=0; i<data.parameters.length; i++){
 				if(data.parameters[i].idraResourceType == "DATASET"){
 					let datasetField = data.parameters.idraParameter;
@@ -140,7 +149,7 @@ $scope.showWoods = function(dataset,distribution){
 							console.log("Plug-in api response: " + value.data);			
 							//$window.location.assign('#/metadata');
 			  });	
-*/
+
 
 
 		      break; 
@@ -182,6 +191,7 @@ $scope.showWoods = function(dataset,distribution){
 		      break; 
 		   } 
 		} 
+		*/
 
 	}	
     };

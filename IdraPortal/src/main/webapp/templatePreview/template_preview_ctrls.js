@@ -36,7 +36,7 @@ angular.module("IdraPlatform")
 	
 	$scope.title = title;
 
-	$scope.previewDocument = "URL of the selected resource published in Spread Sheet Space \n\n";
+	//$scope.previewDocument = "URL della risorsa selezionata pubblicata in Spread Sheet Space";
 	
 	$scope.urlDocument = data.toString();
 	
@@ -57,6 +57,24 @@ angular.module("IdraPlatform")
 	$scope.cancel = function () {
 		$modalInstance.dismiss('cancel');
 	};
+	
+	$scope.outFunc = function () { 
+  		var tooltip = document.getElementById("myTooltip");
+  		tooltip.innerHTML = "Copy to clipboard";
+	};
+	
+	$scope.myFunction = function () {
+	  var copyText = document.getElementById("myInput");
+	  console.log("ELEMENT: " + copyText.textContent)
+	  //copyText.select();
+	  //copyText.setSelectionRange(0, 99999);
+	  //navigator.clipboard.writeText(copyText.textContent);
+	  
+	  //var tooltip = document.getElementById("myTooltip");
+	  //tooltip.innerHTML = "Copied: " + copyText.value;
+	};
+	
+	
 	
 }).controller('DocumentPreviewCtrl',function($scope,$modalInstance,title,data,format){
 	
