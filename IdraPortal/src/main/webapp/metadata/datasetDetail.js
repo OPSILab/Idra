@@ -16,7 +16,187 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 angular.module("IdraPlatform").controller('DatasetDetailCtrl',['$scope','$rootScope','$http','config','$anchorScroll','$location','$modal','$sce','$window','dataletsAPI','dialogs','$routeParams','Papa','$translate',function($scope,$rootScope,$http,config,$anchorScroll,$location,$modal,$sce,$window,dataletsAPI,dialogs,$routeParams,Papa,$translate){
+		
+	/*
+    if($rootScope.idraPlugins!=undefined){
+		$scope.idraPlugins = $rootScope.idraPlugins;
+	}
 	
+	console.log("scope - idra enabled plugins:");
+	console.log($scope.idraPlugins);
+	*/
+	
+$scope.showWoods = function(dataset,distribution){
+		
+		console.log(distribution)
+		console.log(dataset)
+		
+		var reqCheckPreview = {
+				method: 'POST',
+					url: 'https://jarvis.spreadsheetspace.net/sss_opendata/publishOpenData',
+					dataType: 'json',
+					headers: {
+						'Content-Type': 'application/json'
+					},
+					data:{
+					   'platformUrl':'https://idra-sandbox.eng.it/',
+					   'resourceId': distribution.id,
+					   'title':distribution.title,				
+					   'format':distribution.format.toLowerCase(),
+					   'accessUrl':distribution.accessURL,
+					   'datasetId':dataset.id,
+					   'publisher':dataset.publisher,
+					   'resourceReleaseDate':distribution.releaseDate,
+					   'contacts':null,
+					   'landingPage':dataset.landingPage,
+					   'datasetDescription':dataset.description
+			  }
+		};
+		
+		//distribution.lockPreview=true;
+
+		$http(reqCheckPreview).then(function(value){
+			console.log("DATA RETURNED BY WOODS:")
+			var data = value.data.connectionUrl;
+			var format = "CSV";
+			console.log(data);
+						distribution.lockPreview=false;
+						var modalInstance = $modal.open({
+							animation: true,
+							templateUrl: 'DocumentPreviewWoods.html',
+							controller: 'DocumentWoodsCtrl',
+							size: 'lg',
+							resolve: {
+								title: function(){
+									return distribution.title;
+								},
+								data: function(){
+									return data;
+								},
+								format: function(){
+									return format;
+								}
+							}
+						});
+
+						modalInstance.result.then(function () {
+						},function () {
+						     
+						      delete value;
+					    });
+
+		}, function(value){
+			console.log("WOODS ERROR");
+			delete response;
+			distribution.lockPreview=false;
+			distribution.distributionPreviewOk=false;
+
+			var msg="Error: " + value.status + " - Problem with the request";
+			
+			
+			
+			dialogs.create('idra_error_dialog.html','IdraDialogErrorCTRL',{'header':"Unable to publish resource in Spread Sheet Space",
+				'msg':"<p md-truncate>"+msg+"</p>"},{key: false,back: 'static'});
+	
+		});	
+	};
+
+
+	
+	 $scope.selectPlugin = function(selected,dataset,distribution){ 
+		console.log(selected)
+		if(selected!=null){
+		let data = selected;
+		console.log("plug-in selected: " + data.name + " and method: " + data.method);
+		
+	    if(data.name == "WOODS"){
+			console.log("selezionato WOODS" );
+			console.log("dataset:" + dataset.id);
+			console.log("distribution format:" + distribution.format);			
+			
+			$scope.showWoods(dataset,distribution);
+		}
+		
+		/*
+		switch(data.method) { 
+		   case "POST": { 
+			  console.log("dataset ID: " + $scope.dataset.id);
+			  console.log("distribution ID: " + distribution.id);
+		
+		
+			  for(i=0; i<data.parameters.length; i++){
+				if(data.parameters[i].idraResourceType == "DATASET"){
+					let datasetField = data.parameters.idraParameter;
+					body.push("\'" + data.parameters.serviceParameter + "\':\' " + $scope.dataset.get(datasetField) + "  \'");
+				} else if(data.parameters[i].idraResourceType == "DISTRIBUTION"){
+					let distributionField = data.parameters.idraParameter;
+					body.push("\'" + data.parameters.serviceParameter + "\':\' " + $scope.dataset.get(distributionField) + "  \'");
+				}
+     		  }
+			  
+   			  var req = {
+					method: 'POST',
+					url: data.url,
+					dataType: 'json',
+					headers: {
+						'Content-Type': 'application/json'
+					},
+					data:{					
+						'':'',
+						'':''
+			  }};	
+			  $http(req).then(function(value){
+							console.log("Plug-in api response: " + value.data);			
+							//$window.location.assign('#/metadata');
+			  });	
+
+
+
+		      break; 
+		   } 
+		   case "PUT": { 
+		       var req = {
+					method: 'PUT',
+					url: data.url,
+					dataType: 'json',
+					headers: {
+						'Content-Type': 'application/json'
+					},
+					data:{					
+						'username':$scope.username,
+						'password':md5.createHash($scope.password)
+			  }};	
+			  $http(req).then(function(value){
+							console.log("Plug-in api response: " + value.data);			
+							//$window.location.assign('#/metadata');
+			  });	
+		      break; 
+		   } 
+		   case "GET": { 
+			var req = {
+				method: 'GET',
+				url: config.PLUGIN_MANAGER_URL,
+				headers: {
+					'Content-Type': 'application/json',
+				}
+			};
+
+			$http(req).then(function(value){
+				
+			}); 
+		      break; 
+		   } 
+		   default: { 
+		      //statements; 
+		      break; 
+		   } 
+		} 
+		*/
+
+	}	
+    };
+	
+			
 	var checkDistributionFormat = function(distribution){
 		
 		

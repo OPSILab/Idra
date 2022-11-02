@@ -32,6 +32,50 @@ angular.module("IdraPlatform")
 		$modalInstance.dismiss('cancel');
 	};
 	
+}).controller('DocumentWoodsCtrl',function($scope,$modalInstance,title,data,format){
+	
+	$scope.title = title;
+
+	//$scope.previewDocument = "URL della risorsa selezionata pubblicata in Spread Sheet Space";
+	
+	$scope.urlDocument = data.toString();
+	
+	var getMode = function(type){
+		if(format.toLowerCase() == 'csv'){
+			return 'text';
+		}
+	} 
+	
+	$scope.aceLoaded = function(_editor) {
+		$scope.aceEditor=_editor;
+		$scope.aceSession = _editor.getSession();
+		$scope.aceSession.setMode("ace/mode/" + getMode(format));
+		$scope.aceEditor.setSession($scope.aceSession);
+		$scope.aceEditor.setReadOnly(true);
+	};
+	
+	$scope.cancel = function () {
+		$modalInstance.dismiss('cancel');
+	};
+	
+	$scope.outFunc = function () { 
+  		var tooltip = document.getElementById("myTooltip");
+  		tooltip.innerHTML = "Copy to clipboard";
+	};
+	
+	$scope.myFunction = function () {
+	  var copyText = document.getElementById("myInput");
+	  console.log("ELEMENT: " + copyText.textContent)
+	  //copyText.select();
+	  //copyText.setSelectionRange(0, 99999);
+	  //navigator.clipboard.writeText(copyText.textContent);
+	  
+	  //var tooltip = document.getElementById("myTooltip");
+	  //tooltip.innerHTML = "Copied: " + copyText.value;
+	};
+	
+	
+	
 }).controller('DocumentPreviewCtrl',function($scope,$modalInstance,title,data,format){
 	
 	$scope.title = title;

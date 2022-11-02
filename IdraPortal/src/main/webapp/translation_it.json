@@ -389,5 +389,17 @@
 	"DIALOGS_NOTIFICATION": "Notifica",
 	"DIALOGS_NOTIFICATION_MSG": "Applicazione di notifica sconosciuta.",
 	"DIALOGS_CONFIRMATION": "Conferma",
-	"DIALOGS_CONFIRMATION_MSG": "Conferma richiesta."
+	"DIALOGS_CONFIRMATION_MSG": "Conferma richiesta.",
+	
+	"modalTitlePreviewWoods": "Woods: Collega il tuo Excel",
+	"titleWoods": "URL della risorsa selezionata pubblicata in Spread Sheet Space",
+	"resourceLabel": "Nome della risorsa:",
+	"woodsDescription1": "Attenzione: Prima di poter importare i contenuti di T-Space su Excel è necessario",
+	"registerLabel": "registrarsi",
+	"woodsDescription2": "Attenzione: Prima di poter importare i contenuti di T-Space su Excel è necessario",
+		"woodsDescription3": "Hai bisogno di aiuto?",
+	"hereLabel": "Clicca qui",
+	"woodsDescription4": "per consultare la guida di utilizzo!",
+	"woodsDescription5": "Vuoi pubblicare anche tu un contenuto su T-Space?",
+	"woodsDescriptio6": "per consultare la guida di pubblicazione!"
 }

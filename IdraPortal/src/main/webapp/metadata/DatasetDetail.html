@@ -139,7 +139,19 @@
 								style="width: 20px; vertical-align: unset;"> <md-tooltip>{{'distributionDetailGetFile'
 								| translate}}</md-tooltip>
 						</span> </a>
-						
+
+						<a href="javascript:void(0)"
+							ng-show="distribution.format=='CSV'"
+							ng-click="showWoods(dataset,distribution)"
+							class="btn-flat "><span
+							ng-show="!distribution.lockPreview">
+							<i><img src="images/sss_logo_32x32.png" style="width: 28px; vertical-align: unset;"></i>
+							<md-tooltip>Publish in Spread Sheet Space</md-tooltip> </span> <span ng-show="distribution.lockPreview"> <img
+								alt="download" title="download" src="images/spinner_synchro.gif"
+								style="width: 20px; vertical-align: unset;"> <md-tooltip>{{'distributionDetailGetFile'
+								| translate}}</md-tooltip>
+						</span> </a>
+												
 						<span> <a ng-show="distribution.dataletShowButtonEnabled"
 							href="javascript:void(0)" class="btn-flat "
 							a-disabled="!distribution.distributionDonwloadUrlOk"> <span
@@ -164,6 +176,17 @@
 							class="mdi-action-open-in-browser"></i> <md-tooltip>{{'distributionDetailShowDatalet'
 							| translate}}</md-tooltip>
 						</a> 
+	
+						<!--
+						<div>
+						<label class="control-label ng-binding">Plug-ins</label> 
+							<select name="plugins" class="form-control ng-pristine ng-valid ng-not-empty ng-touched" 
+							    ng-model="selected" ng-change="selectPlugin(selected,dataset,distribution)"
+								aria-invalid="false" style=""
+								ng-options="option.name for option in idraPlugins | filter:{ compatibleFormats: (distribution.format) }">
+							</select>
+						</div>
+						-->
 						
 						
 					</div>

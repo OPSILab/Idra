@@ -399,7 +399,20 @@
 	 "DIALOGS_NOTIFICATION": "Notification",
 	 "DIALOGS_NOTIFICATION_MSG": "Unknown application notification.",
 	 "DIALOGS_CONFIRMATION": "Confirmation",
-	 "DIALOGS_CONFIRMATION_MSG": "Confirmation required."
+	 "DIALOGS_CONFIRMATION_MSG": "Confirmation required.",
+
+	"modalTitlePreviewWoods": "Woods: Connect your Excel",
+	"titleWoods": "URL of selected resource published in Spread Sheet Space",
+	"resourceLabel": "Resource name:",
+	"woodsDescription1": "Please note: Before you can import T-Space content into Excel, you must first",
+	"registerLabel": "register",
+	"instalLabel": "and install",
+	"woodsDescription2": "the SpreadSheetSpace add-in",
+	"woodsDescription3": "Do you need help?",
+	"hereLabel": "Click here",
+	"woodsDescription4": "to consult the user guide!",
+	"woodsDescription5": "Do you also want to post content about T-Space?",
+	"woodsDescriptio6": "to consult the publication guide!"
 	 
  	
 }

@@ -656,6 +656,50 @@ div.m-app-loading p {
 </div>
 </script>
 
+<script type="text/ng-template" id="DocumentPreviewWoods.html">
+<div class="modal-header">
+	<button type="button" class="close" aria-hidden="true" ng-click="cancel()">x</button>
+
+	<!-- <h3 class="modal-title" md-truncate>{{'modalTitlePreviewWoods' | translate}} </h3> -->
+	<h3 class="modal-title" md-truncate>Woods: Connect your Excel </h3>
+</div>
+
+<div class="modal-body row">
+<div class="modal-body" style="padding-top: 2px"><h4>Resource name: <b>&nbsp{{title}}<b></h4></div>
+	<div style="height: 100px; color: #778aa8; text-align:center">
+						<b style="padding-bottom: 10px">URL of selected resource published in Spread Sheet Space</b>
+						<a target="_blank" href="{{urlDocument}}" ng-click="myFunction()" style="text-decoration: none"> 
+							<div class="modal-body" id="myInput"
+								style="border-style: ridge; border-radius: 25px; margin-right: 24px; margin-left: 24px; padding-top: 10px; padding-bottom: 10px">
+								{{urlDocument}}
+							</div>
+						 </a>
+
+	</div>
+	
+	<div class="modal-body"><h4>Please note: Before you can import T-Space content into Excel, you must first 
+		<a target="_blank" href="https://jarvis.spreadsheetspace.net/tspace/register">register</a> 
+		and install
+		<a target="_blank" href="https://jarvis.spreadsheetspace.net/tspace/downloadPage">the SpreadSheetSpace add-in</a>
+	</h4>
+	<br>
+	<h4>Do you need help?
+		<a target="_blank" href="https://jarvis.spreadsheetspace.net/tspace/importGuide">Click here</a> 
+		to consult the user guide!</h4>
+	<br>
+	<h4>Do you also want to post content about T-Space?
+		<a target="_blank" href="https://jarvis.spreadsheetspace.net/tspace/publishGuide">Click here</a>
+		to consult the publication guide!</h4>
+
+	</div>
+
+<div class="modal-header">
+	<button type="button" class="close" style="color: blue" ng-click="cancel()">OK</button>
+</div>
+</div>
+
+</script>
+
 <script type="text/ng-template" id="PDFPreview.html">
 <div class="modal-header">
 	<button type="button" class="close" aria-hidden="true" ng-click="cancel()">x</button>
