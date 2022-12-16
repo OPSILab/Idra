@@ -391,7 +391,8 @@
 	"hereLabel": "Click here",
 	"woodsDescription4": "to consult the user guide!",
 	"woodsDescription5": "Do you also want to post content about T-Space?",
-	"woodsDescriptio6": "to consult the publication guide!"
+	"woodsDescriptio6": "to consult the publication guide!",
+	"woodsTooltip" : "Publish in Spread Sheet Space"
 	 
  	
 }
