@@ -64,10 +64,12 @@ import org.json.JSONObject;
  */
 public class NgsiLdCbDcatConnector implements IodmsConnector {
 
+
   /** The subscription base callback url. */
   private static String subscriptionBaseUrl = 
        PropertyManager.getProperty(IdraProperty.IDRA_SERVER_BASEURL);
   
+
   /** The node id. */
   private String nodeId;
   
@@ -595,6 +597,7 @@ public class NgsiLdCbDcatConnector implements IodmsConnector {
     if (status != 200) {
       logger.info("Subscription NOT present, creation");
       
+
       String endpoint = (subscriptionBaseUrl.endsWith("/")
           ? subscriptionBaseUrl : subscriptionBaseUrl + "/")
           + "Idra/api/v1/client" + "/notification/" + node.getId() 

@@ -105,7 +105,7 @@ $scope.showWoods = function(dataset,distribution){
 					headers: {
 						'Content-Type': 'application/json'
 					},
-					
+
 					data:{
 					   'platformUrl': window.location.origin,
 					   'resourceId': distribution.id,
