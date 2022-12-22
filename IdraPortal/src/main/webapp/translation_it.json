@@ -401,5 +401,6 @@
 	"hereLabel": "Clicca qui",
 	"woodsDescription4": "per consultare la guida di utilizzo!",
 	"woodsDescription5": "Vuoi pubblicare anche tu un contenuto su T-Space?",
-	"woodsDescriptio6": "per consultare la guida di pubblicazione!"
+	"woodsDescriptio6": "per consultare la guida di pubblicazione!",
+	"woodsTooltip" : "Pubblica in Spread Sheet Space"
 }

@@ -376,6 +376,29 @@
 			
 		};
 		
+/*		
+		if($rootScope.idraPlugins==undefined){
+			$rootScope.idraPlugins = [];
+			var req = {
+				method: 'GET',
+				url: config.PLUGIN_MANAGER_URL,
+				headers: {
+					'Content-Type': 'application/json',
+				}
+			};
+
+			$http(req).then(function(value){
+				for(i=0; i<value.data.length; i++){
+					if(value.data[i].status == "enabled"){
+						$rootScope.idraPlugins.push(value.data[i]);
+					} 
+				}
+				console.log("Idra enabled Plug-ins:");
+				console.log($rootScope.idraPlugins);
+			});
+		}
+*/
+		
 		
 //		var first=true;
 		$rootScope.$on("$locationChangeStart",function(event, next, current){

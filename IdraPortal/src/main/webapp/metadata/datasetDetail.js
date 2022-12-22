@@ -28,8 +28,75 @@ angular.module("IdraPlatform").controller('DatasetDetailCtrl',['$scope','$rootSc
 	
 $scope.showWoods = function(dataset,distribution){
 		
+		console.log("DISTRIBUTION:")
 		console.log(distribution)
+		console.log("DATASET:")
 		console.log(dataset)
+		
+		console.log("DISTRIBUTION title:")
+		console.log(distribution.title)
+		console.log("DATASET title:")
+		console.log(dataset.title)
+		
+		console.log("PAGE URL:")
+		console.log(window.location.origin)
+		
+		//)if(document.URL.includes("IdraPortal")){
+		//	console.log(document.URL + " includes IdraPortal")
+		//}
+		
+		
+		var publisher = '';
+		if(dataset.publisher!=null){
+			if(dataset.publisher.name != null && dataset.publisher.name != ""){
+				publisher = dataset.publisher.name;
+			} else {
+				publisher = '';
+			}
+		}
+		
+		var title = '';
+		if(distribution.title != null && distribution.title!= ""){
+			title = distribution.title;
+		} else {
+				title = dataset.title;
+		}
+		
+		var releaseDate = '';
+		if(distribution.releaseDate != null && distribution.releaseDate!= ""){
+			releaseDate = distribution.releaseDate;
+		} else {
+				releaseDate = '';
+		}
+		
+		var landing_Page = '';
+		if(dataset.landingPage != null && dataset.landingPage != ""){
+			landing_Page = dataset.landingPage;
+		} else {
+				landing_Page = '';
+		}
+		
+		var description = '';
+		if(distribution.description != null && distribution.description != ""){
+			description = distribution.description;
+		} 
+		else if(dataset.description != null && dataset.description != ""){
+			description = dataset.description;
+		} else {
+				description = '';
+		}
+		
+		var contactPoint = '';
+		if(dataset.contactPoint != null && dataset.contactPoint.length > 0){
+			if(dataset.contactPoint[0].hasEmail != null && dataset.contactPoint[0].hasEmail != ""){
+				contactPoint = dataset.contactPoint[0].hasEmail;
+			} else {
+				contactPoint = '';
+			}
+		} else {
+				contactPoint = '';
+		}
+		console.log("DATASET CONTACT retrieved: " + contactPoint);
 		
 		var reqCheckPreview = {
 				method: 'POST',
@@ -38,8 +105,27 @@ $scope.showWoods = function(dataset,distribution){
 					headers: {
 						'Content-Type': 'application/json'
 					},
+
 					data:{
-					   'platformUrl':'https://idra-sandbox.eng.it/',
+					   'platformUrl': window.location.origin,
+					   'resourceId': distribution.id,
+					   'title': title,				
+					   'format': distribution.format.toLowerCase(),
+					   'accessUrl': distribution.accessURL,
+					   'datasetId': dataset.id,
+					   'publisher': publisher,
+					   'resourceReleaseDate': releaseDate,
+					   'contacts': contactPoint,
+					   'landingPage': landing_Page,
+					   'datasetDescription': description,
+					   'fiwareServiceCB': '',
+					   'fiwareServicePathCB': ''
+			  		}
+					
+					/*
+					// OLD
+					data:{
+					   'platformUrl':'https://idra.eng.it/',
 					   'resourceId': distribution.id,
 					   'title':distribution.title,				
 					   'format':distribution.format.toLowerCase(),
@@ -50,7 +136,8 @@ $scope.showWoods = function(dataset,distribution){
 					   'contacts':null,
 					   'landingPage':dataset.landingPage,
 					   'datasetDescription':dataset.description
-			  }
+			  		}
+					*/
 		};
 		
 		//distribution.lockPreview=true;
@@ -60,7 +147,7 @@ $scope.showWoods = function(dataset,distribution){
 			var data = value.data.connectionUrl;
 			var format = "CSV";
 			console.log(data);
-						distribution.lockPreview=false;
+						//distribution.lockPreview=false;
 						var modalInstance = $modal.open({
 							animation: true,
 							templateUrl: 'DocumentPreviewWoods.html',
@@ -68,7 +155,7 @@ $scope.showWoods = function(dataset,distribution){
 							size: 'lg',
 							resolve: {
 								title: function(){
-									return distribution.title;
+									return title;
 								},
 								data: function(){
 									return data;
@@ -86,14 +173,12 @@ $scope.showWoods = function(dataset,distribution){
 					    });
 
 		}, function(value){
-			console.log("WOODS ERROR");
+			console.log("ERROR from WOODS");
 			delete response;
-			distribution.lockPreview=false;
-			distribution.distributionPreviewOk=false;
+			//distribution.lockPreview=false;
+			//distribution.distributionPreviewOk=false;
 
 			var msg="Error: " + value.status + " - Problem with the request";
-			
-			
 			
 			dialogs.create('idra_error_dialog.html','IdraDialogErrorCTRL',{'header':"Unable to publish resource in Spread Sheet Space",
 				'msg':"<p md-truncate>"+msg+"</p>"},{key: false,back: 'static'});
