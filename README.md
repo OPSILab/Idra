@@ -80,7 +80,7 @@ API Reference Documentation (**Apiary**):
 A demo instance of Idra - Open Data Federation Platform is available at the
 following link:
 
--   [`https://idra.opsilab.it/`](https://idra.opsilab.it)
+-   [`https://idra.site/`](https://idra.site)
 
 ## Contribution
 
