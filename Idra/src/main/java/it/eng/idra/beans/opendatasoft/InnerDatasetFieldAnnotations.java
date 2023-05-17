@@ -24,15 +24,16 @@ import java.util.List;
 public class InnerDatasetFieldAnnotations {
 
   /** The facet. */
-  private List<String> facet;
+   private String facetsort;
+
 
   /**
    * Gets the facet.
    *
    * @return the facet
    */
-  public List<String> getFacet() {
-    return facet;
+  public String getFacet() {
+    return facetsort;
   }
 
   /**
@@ -40,8 +41,8 @@ public class InnerDatasetFieldAnnotations {
    *
    * @param facet the new facet
    */
-  public void setFacet(List<String> facet) {
-    this.facet = facet;
+  public void setFacet(String facet) {
+    this.facetsort = facet;
   }
 
 }

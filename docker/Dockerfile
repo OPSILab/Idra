@@ -47,6 +47,7 @@ RUN         apk update && \
 # Install NodeJS 		
 RUN 		apk add --update nodejs nodejs-npm
 
+RUN 		npm config set unsafe-perm true
 
 #Install Bower
 RUN			npm install -g bower
@@ -90,6 +91,7 @@ RUN cd Idra && git checkout docker
 RUN cd Idra/Idra && mvn package
 
 ### Build IdraPortal War package
+RUN bower cache clean --allow-root
 RUN cd Idra/IdraPortal/src/main/webapp && bower install --allow-root
 RUN cd /Idra/IdraPortal && mvn package
 
