@@ -1,5 +1,5 @@
 {
-	"registry": "https://registry.bower.io",
+	"registry": "https://bower.herokuapp.com",
 	"proxy" : "",
 	"https-proxy" : ""
 }
