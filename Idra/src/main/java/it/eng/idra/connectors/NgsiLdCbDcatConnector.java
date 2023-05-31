@@ -261,6 +261,7 @@ public class NgsiLdCbDcatConnector implements IodmsConnector {
 
     JSONObject titleObject = j.getJSONObject("title");
     title = titleObject.getString("value");
+    logger.info("title ok");
 
     identifier = j.optString("id", null);
     
@@ -268,19 +269,19 @@ public class NgsiLdCbDcatConnector implements IodmsConnector {
       JSONObject desObject = j.getJSONObject("description");
       description = desObject.getString("value");
     }
-    
+    logger.info("description ok");
     // landingPage
     String landingPage = "";
     JSONObject lanPageObject = j.getJSONObject("landingPage");
     landingPage = lanPageObject.getString("value");
-    
+    logger.info("landingPage ok");
     // frequency
     String frequency = "";
     if (j.has("frequency")) {
       JSONObject freqObject = j.getJSONObject("frequency");
       frequency = freqObject.getString("value");
     }
-
+    logger.info("frequency ok");
     JSONArray values = new JSONArray();
     
     // Themes
@@ -302,7 +303,7 @@ public class NgsiLdCbDcatConnector implements IodmsConnector {
             SkosConceptTheme.class));
       }
     }
-    
+    logger.info("theme ok");
     // Keywords
     if (j.has("keyword")) {
       JSONObject keyObject = j.getJSONObject("keyword");
@@ -316,7 +317,7 @@ public class NgsiLdCbDcatConnector implements IodmsConnector {
         keywords.add(keyObject.getString("value"));     
       }                                                
     }
-    
+    logger.info("keyword ok");
     //Languages
     List<String> language = new ArrayList<String>();
     if (j.has("language")) {
@@ -331,7 +332,7 @@ public class NgsiLdCbDcatConnector implements IodmsConnector {
         language.add(lanObject.getString("value"));      
       }
     }
-
+    logger.info("language ok");
     // Documentation
     if (j.has("documentation")) {    
       JSONObject docObject = j.getJSONObject("documentation");
@@ -345,7 +346,7 @@ public class NgsiLdCbDcatConnector implements IodmsConnector {
         documentation.add(docObject.getString("value"));      
       }
     }
-    
+    logger.info("documentation ok");
     // Provenance
     if (j.has("provenance")) {    
       JSONObject provObject = j.getJSONObject("provenance");
@@ -359,6 +360,7 @@ public class NgsiLdCbDcatConnector implements IodmsConnector {
         provenance.add(provObject.getString("value"));     
       }
     }
+    logger.info("provenance ok");
     // Other Identifiers
     if (j.has("otherIdentifier")) {    
       JSONObject othIdObject = j.getJSONObject("otherIdentifier");
@@ -372,12 +374,14 @@ public class NgsiLdCbDcatConnector implements IodmsConnector {
         otherIdentifier.add(othIdObject.getString("value"));     
       }
     }
+    logger.info("other ok");
     // Version
     String version = "";
     if (j.has("version")) {
       JSONObject verObject = j.getJSONObject("version");
       version = verObject.getString("value");
     }
+    logger.info("versione ok");
     // Version Notes
     if (j.has("versionNotes")) {    
       JSONObject verNotesObject = j.getJSONObject("versionNotes");
@@ -391,13 +395,14 @@ public class NgsiLdCbDcatConnector implements IodmsConnector {
         versionNotes.add(verNotesObject.getString("value"));     
       }
     }
+    logger.info("versionNote ok");
     // AccessRights
     String accessRights = "";
     if (j.has("accessRights")) {
       JSONObject accRightsObject = j.getJSONObject("accessRights");
       accessRights = accRightsObject.getString("value");
     }
-
+    logger.info("access ok");
     String type = null;
     type = j.optString("type", null);       // ?
     
@@ -409,6 +414,7 @@ public class NgsiLdCbDcatConnector implements IodmsConnector {
       String date = valueObj.getString("@value");    
       releaseDate = CommonUtil.fixBadUtcDate(date);
     }
+    logger.info("release ok");
     // Update Date 
     String updateDate = null;
     if (j.has("updateDate")) {
@@ -417,7 +423,7 @@ public class NgsiLdCbDcatConnector implements IodmsConnector {
       String date = valueObj.getString("@value");    
       updateDate = CommonUtil.fixBadUtcDate(date);
     }
-    
+    logger.info("update ok");
     List<VcardOrganization> contactPointList = new ArrayList<VcardOrganization>();  
     if (j.has("contactPoint")) {    
       JSONObject contObject = j.getJSONObject("contactPoint");
@@ -438,7 +444,7 @@ public class NgsiLdCbDcatConnector implements IodmsConnector {
                 "", "", "", nodeId));  
       }
     }
-
+    logger.info("contactpoint ok");
     FoafAgent publisher = null;
     FoafAgent creator = null;
     // Publisher
@@ -448,6 +454,7 @@ public class NgsiLdCbDcatConnector implements IodmsConnector {
           pub.getString("value"), "", "", null,
           "", String.valueOf(node.getId()));
     }
+    logger.info("publisher ok");
     // Creator
     if (j.has("creator")) {
       JSONObject creat = j.getJSONObject("creator");
@@ -455,7 +462,7 @@ public class NgsiLdCbDcatConnector implements IodmsConnector {
           creat.getString("value"), "", "", null,
           "", String.valueOf(node.getId()));
     }
-    
+    logger.info("creator ok");
     List<String> sample = new ArrayList<String>();
     List<String> source = new ArrayList<String>();
     List<String> hasVersion = new ArrayList<String>();
@@ -475,24 +482,29 @@ public class NgsiLdCbDcatConnector implements IodmsConnector {
     if (j.has("datasetDistribution")) {
       List<String> distributionsId = new ArrayList<String>();
       JSONObject distribObject = j.getJSONObject("datasetDistribution");
-
+      logger.info(distribObject.toString());
       if (distribObject.get("value") instanceof JSONArray) {
+    	  logger.info("distribution array");
         JSONArray distrib = distribObject.getJSONArray("value");
+        logger.info(distrib);
         for (int i = 0; i < distrib.length(); i++) {
+        	logger.info("nel for");
           distributionsId.add(distrib.getString(i));
         }
         
       } else {
         distributionsId.add(distribObject.getString("value"));
       }
-      
+      logger.info(distributionsId);
       for (int i = 0; i < distributionsId.size(); i++) {
+    	  logger.info(distributionsId);
         DcatDistribution distro = distributionToDcat(getJsonDistribution(distributionsId.get(i)), 
             node);
         distributionList.add(distro);
       }
       
     }
+    logger.info("datasetDistr ok");
     FoafAgent rightsHolder = null;
     //  spatialCoverage e conformsTo non sono previsti nello smart data model DCATAP/NGSILD   
     //  if (j.has("sample")) {
@@ -526,7 +538,7 @@ public class NgsiLdCbDcatConnector implements IodmsConnector {
     //      isVersionOf = GsonUtil.json2Obj(j.getJSONArray("isVersionOf").toString(),
     //          GsonUtil.stringListType);
     //    }
-    
+    logger.info("fine ok");
     return new DcatDataset(nodeId, identifier, title, description, distributionList, themeList,
         publisher, contactPointList, keywords, accessRights, conformsTo, documentation, frequency,
         hasVersion, isVersionOf, landingPage, language, provenance, releaseDate, updateDate,
@@ -568,7 +580,7 @@ public class NgsiLdCbDcatConnector implements IodmsConnector {
 
     response = client.sendGetRequest(url, headers);
     returnedJson = client.getHttpResponseBody(response);
-
+System.out.println(returnedJson);
     JSONArray jsonArray = new JSONArray(returnedJson);
     System.out.println("JSONDATASET: " + jsonArray);
     return jsonArray;
@@ -648,16 +660,21 @@ public class NgsiLdCbDcatConnector implements IodmsConnector {
     
     for (int i = 0; i < datasetsArray.length(); i++) {
       try {
-        JSONObject dataset = datasetsArray.getJSONObject(i);
-
+    	  logger.info(datasetsArray);
+    	  
+    	  JSONObject dataset = datasetsArray.getJSONObject(i);
+    	  logger.info(dataset);
         DcatDataset dcatDataset = datasetToDcat(dataset, node);
+       
         dcatDatasets.add(dcatDataset);
-        
+        logger.info("aggiunto indice" + i);
         datasetsNgsiId.add(dcatDataset.getIdentifier().getValue());
         
         dataset = null;
 
       } catch (Exception e) {
+    	  logger.info( e.getMessage() + " while deserializing "
+    	            + "Dataset for Orion DCAT - " + i + " - SKIPPED");
         logger.info("There was an error: " + e.getMessage() + " while deserializing "
             + "Dataset for Orion DCAT - " + i + " - SKIPPED");
       }
@@ -695,14 +712,24 @@ public class NgsiLdCbDcatConnector implements IodmsConnector {
     //urn:ngsi-ld:Dataset:items:330d6f03-9e95-4335-af06-9b8437f5e084
     // però l'entity salvata è di tipo 
     //urn:ngsi-ld:DistributionDCAT-AP:id:330d6f03-9e95-4335-af06-9b8437f5e084
-    String distribId = "urn:ngsi-ld:DistributionDCAT-AP:id:" + id.split(":")[4];
+    String[] idSplitted = id.split(":");
+    String distribId = "urn:ngsi-ld:DistributionDCAT-AP:id";
+    	for (int i = 4; i < idSplitted.length ; i++) {
+    		distribId = distribId + ":" + id.split(":")[i];
+    	}
+    	
+  
+    
 
     String url = node.getHost() + "/ngsi-ld/v1/entities?type=DistributionDCAT-AP&id=" + distribId;
+    logger.info(url);
+    
 
     HttpResponse response = client.sendGetRequest(url, headers);
     String returnedJson = client.getHttpResponseBody(response);
     
     JSONArray jsonArr = new JSONArray(returnedJson);
+    logger.info(jsonArr);
     JSONObject jsonObject = jsonArr.getJSONObject(0);
     return jsonObject;
   }
