@@ -261,7 +261,8 @@ public class DcatApSerializer {
     dataset.getKeywords().stream().filter(keyword -> StringUtils.isNotBlank(keyword))
         .forEach(keyword -> datasetResource.addLiteral(DCAT.keyword, keyword));
 
-    addDcatPropertyAsLiteral(dataset.getAccessRights(), datasetResource, model);
+    // addDcatPropertyAsLiteral(dataset.getAccessRights(), datasetResource, model);
+    addDcatPropertyAsResource(dataset.getAccessRights(), datasetResource, model, true);
 
     serializeDctStandard(dataset.getConformsTo(), datasetResource, model);
 
@@ -292,6 +293,14 @@ public class DcatApSerializer {
     }
 
     addDcatPropertyAsResource(dataset.getLandingPage(), datasetResource, model, false);
+
+//  datasetResource.addProperty(model.createProperty(dataset.getLandingPage().getUri()),
+//  model.createResource(dataset.getLandingPage().getRange())
+//      .addProperty(dataset.getLandingPage().getProperty(),
+//          dataset.getLandingPage().getRange()));
+
+//    Property p = model.createProperty(dataset.getLandingPage().getUri());
+//    dataset.getLandingPage().getProperty().addProperty(p, model.createResource(dataset.getLandingPage().getValue(), dataset.getLandingPage().getRange()));
 
     serializeLanguage(dataset.getLanguage(), model, datasetResource);
 
@@ -375,10 +384,10 @@ public class DcatApSerializer {
      * create it, either or both for dataset and catalog
      */
 
-    serializeFoafAgent(
-        new FoafAgent(DCTerms.publisher.getURI(), publisherResourceUri, node.getPublisherName(),
-            node.getPublisherEmail(), node.getPublisherUrl(), "", "", String.valueOf(node.getId())),
-        model, model.getResource(node.getHost()));
+//    serializeFoafAgent(
+//        new FoafAgent(DCTerms.publisher.getURI(), publisherResourceUri, node.getPublisherName(),
+//            node.getPublisherEmail(), node.getPublisherUrl(), "", "", String.valueOf(node.getId())),
+//        model, model.getResource(node.getHost()));
 
     FoafAgent datasetPublisher = dataset.getPublisher();
     if (datasetPublisher != null) {
@@ -528,7 +537,8 @@ public class DcatApSerializer {
 
           // Fix hasEmail value if needed
           String hasEmailValue = contactPoint.getHasEmail().getValue();
-          if (StringUtils.isNotBlank(hasEmailValue) && CommonUtil.checkIfIsEmail(hasEmailValue)) {
+          // && CommonUtil.checkIfIsEmail(hasEmailValue)
+          if (StringUtils.isNotBlank(hasEmailValue)) {
             if (!hasEmailValue.startsWith("mailto:")) {
               contactPoint.getHasEmail().setValue("mailto:" + hasEmailValue);
             }
@@ -663,14 +673,20 @@ public class DcatApSerializer {
 
     serializeDctStandard(distribution.getLinkedSchemas(), distResource, model);
 
-    addDcatPropertyAsLiteral(distribution.getMediaType(), distResource, model);
+    // addDcatPropertyAsLiteral(distribution.getMediaType(), distResource, model);
+    addDcatPropertyAsResource(distribution.getMediaType(), distResource, model, true);
 
     distResource.addProperty(distribution.getReleaseDate().getProperty(),
         distribution.getReleaseDate().getValue(), XSDDateType.XSDdateTime);
     distResource.addProperty(distribution.getUpdateDate().getProperty(),
         distribution.getUpdateDate().getValue(), XSDDateType.XSDdateTime);
 
-    addDcatPropertyAsLiteral(distribution.getRights(), distResource, model);
+    // addDcatPropertyAsLiteral(distribution.getRights(), distResource, model);
+     addDcatPropertyAsResource(distribution.getRights(), distResource, model,
+     true);
+
+//    Property p = model.createProperty(distribution.getRights().getUri());
+//    distResource.addProperty(p, model.createResource(distribution.getRights().getValue(), distribution.getRights().getRange()));
 
     serializeConcept(Arrays.asList(distribution.getStatus()), model, distResource);
 
@@ -767,7 +783,8 @@ public class DcatApSerializer {
 
     if (format != null && StringUtils.isNotBlank(format.getValue())) {
       format.setValue(FORMAT_BASE_URI + format.getValue());
-      addDcatPropertyAsResource(format, distResource, model, false);
+      // addDcatPropertyAsResource(format, distResource, model, false);
+      addDcatPropertyAsResource(format, distResource, model, true);
     }
   }
 
@@ -837,7 +854,8 @@ public class DcatApSerializer {
       } catch (ResourceRequiredException | IRIException | URISyntaxException e) {
 
         // Add anyway the property as string value
-
+        System.out.println("ERROR in addDcatPropertyAsResource for " + property.getProperty() + ": "
+            + e.getMessage());
         parentResource.addProperty(property.getProperty(),
             model.createLiteral(property.getValue()));
       }

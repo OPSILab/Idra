@@ -306,7 +306,7 @@ public class SparqlConnector implements IodmsConnector {
           GsonUtil.stringListType);
     }
     String accessRights = null;
-    accessRights = j.optString("accessRight", null);
+    accessRights = j.optString("accessRights", null);
     String landingPage = null;
     landingPage = j.optString("landingPage", null);
     String type = null;
@@ -329,11 +329,17 @@ public class SparqlConnector implements IodmsConnector {
           j.getJSONObject("spatialCoverage").optString("geographicalName", null),
           j.getJSONObject("spatialCoverage").optString("geometry", null), nodeId);
     }
-
-    String startDate = null;
-    String endDate = null;
-    if (StringUtils.isNotBlank(startDate) && StringUtils.isNotBlank(endDate)) {
-      temporalCoverage = new DctPeriodOfTime(DCTerms.temporal.getURI(), startDate, endDate, nodeId);
+    
+//    String startDate = null;
+//    String endDate = null;
+//    if (StringUtils.isNotBlank(startDate) && StringUtils.isNotBlank(endDate)) {
+//      temporalCoverage = new DctPeriodOfTime(DCTerms.temporal.getURI(), 
+//    startDate, endDate, nodeId);
+//    }
+    
+    if (j.has("startDate") && j.has("endDate")) {
+      temporalCoverage = new DctPeriodOfTime(DCTerms.temporal.getURI(), j.getString("startDate"), 
+          j.getString("endDate"), nodeId);
     }
 
     // Distribution
@@ -442,9 +448,9 @@ public class SparqlConnector implements IodmsConnector {
       distro.setMediaType(tmp.optString("mediaType"));
     }
 
-    if (isFormat) {
-      distro.setMediaType(format);
-    }
+//    if (isFormat) {
+//      distro.setMediaType(format);
+//    }
 
     if (tmp.has("releaseDate")) {
       distro.setReleaseDate(tmp.optString("releaseDate"));

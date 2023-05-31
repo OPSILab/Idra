@@ -52,6 +52,7 @@ import it.eng.idra.beans.search.SearchResult;
 import it.eng.idra.beans.search.SparqlSearchRequest;
 import it.eng.idra.cache.CachePersistenceManager;
 import it.eng.idra.cache.MetadataCacheManager;
+import it.eng.idra.dcat.dump.DcatApDumpManager;
 import it.eng.idra.dcat.dump.DcatApSerializer;
 import it.eng.idra.management.FederationCore;
 import it.eng.idra.management.StatisticsManager;
@@ -130,6 +131,66 @@ public class ClientApi {
 
   /** The client. */
   private static Client client;
+  
+  /**
+   * Gets the catalogue dcat ap dump.
+   *
+   * @param httpRequest    the http request
+   * @param forceDump      the force dump
+   * @param nodeIdentifier the node identifier
+   * @return the catalogue dcat ap dump
+   */
+  @GET
+  @Path("/dcat-ap/dump/{nodeID}")
+  @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+  public Response getCatalogueDcatApDump(@Context HttpServletRequest httpRequest,
+      @DefaultValue("false") @QueryParam("forceDump") Boolean forceDump,
+      @PathParam("nodeID") String nodeIdentifier) {
+
+    try {
+
+      return Response.ok(DcatApDumpManager.getDatasetDumpFromFile(nodeIdentifier, forceDump, false))
+          .build();
+
+    } catch (Exception e) {
+      return handleErrorResponse500(e);
+    }
+
+  }
+  
+  /**
+   * Download catalogue dcat ap dump.
+   *
+   * @param httpRequest    the http request
+   * @param nodeIdentifier the node identifier
+   * @param forceDump      the force dump
+   * @param returnZip      the return zip
+   * @return the response
+   */
+  @GET
+  @Path("/dcat-ap/dump/download/{nodeID}")
+  @Produces(MediaType.APPLICATION_OCTET_STREAM)
+  public Response downloadCatalogueDcatApDump(@Context HttpServletRequest httpRequest,
+      @PathParam("nodeID") String nodeIdentifier,
+      @DefaultValue("false") @QueryParam("forceDump") Boolean forceDump,
+      @DefaultValue("false") @QueryParam("zip") Boolean returnZip) {
+
+    try {
+
+      return Response
+          .ok(DcatApDumpManager.getDatasetDumpFromFile(nodeIdentifier, forceDump, returnZip),
+              MediaType.APPLICATION_OCTET_STREAM)
+          .header("content-disposition", "attachment; filename = "
+              + DcatApDumpManager.globalDumpFileName
+              + (StringUtils.isBlank(nodeIdentifier) ? "" : new String("_node_" + nodeIdentifier))
+              + (returnZip ? ".zip" : ""))
+          .build();
+
+    } catch (Exception e) {
+      return handleErrorResponse500(e);
+    }
+
+  }
   
   /**
    * Receives a Notify from the CB.

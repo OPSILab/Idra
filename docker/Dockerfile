@@ -86,7 +86,6 @@ RUN cd Idra && git checkout docker
 # echo $a$proxy_enable$b$proxy_host$c$proxy_port$d$proxy_username$e$proxy_password$f$proxy_enable$g$proxy_host$c$proxy_port$d$proxy_username$e$proxy_password$h | tee settings.xml && \		
 # mkdir /root/.m2 && cp settings.xml /root/.m2
 
-
 ### Build Idra War package
 RUN cd Idra/Idra && mvn package
 
