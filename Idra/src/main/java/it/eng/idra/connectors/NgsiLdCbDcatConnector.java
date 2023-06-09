@@ -153,55 +153,76 @@ public class NgsiLdCbDcatConnector implements IodmsConnector {
     distro.setNodeId(nodeId); 
 
     String title = null;
-    JSONObject titleObject = j.getJSONObject("title");
-    title = titleObject.getString("value");
-    distro.setTitle(title);
     
-    distro.setDescription("description");
+    if(j.has("title")) {
+    	 JSONObject titleObject = j.getJSONObject("title");
+    	    title = titleObject.getString("value");
+    	    distro.setTitle(title);
+    	    
+    }
+    logger.info("title ok");
+    String description = null;
+    if(j.has("description")) {
+    	 JSONObject titleObject = j.getJSONObject("description");
+ 	    description = titleObject.getString("value");
+ 	    distro.setDescription(description);
+    }
+   
     
     String accessUrl = null;
-    JSONObject accessObject = j.getJSONObject("accessUrl");
-    accessUrl = accessObject.getString("value");
-    distro.setAccessUrl(accessUrl);
+    if(j.has("accessUrl")) {
+    	   JSONObject accessObject = j.getJSONObject("accessUrl");
+    	    accessUrl = accessObject.getString("value");
+    	    distro.setAccessUrl(accessUrl);
+    }
+ 
+    logger.info("accessUrl ok");
     
     String downloadUrl = null;
-    JSONObject downloadObject = j.getJSONObject("downloadURL");
-    downloadUrl = downloadObject.getString("value");
-    distro.setDownloadUrl(downloadUrl);
+    if(j.has("downloadURL")) {
+    	JSONObject downloadObject = j.getJSONObject("downloadURL");
+        downloadUrl = downloadObject.getString("value");
+        distro.setDownloadUrl(downloadUrl);
+    }
     
+    logger.info("downloadUrl ok");
     if (j.has("format")) {
       JSONObject formatObject = j.getJSONObject("format");
       distro.setFormat(formatObject.getString("value"));
     }
+    logger.info("format ok");
     JSONObject attributeObject = new JSONObject();
     if (j.has("byteSize")) {
       attributeObject = j.getJSONObject("byteSize");
       distro.setByteSize(attributeObject.getString("value"));
     }
+    logger.info("byteSize ok");
     if (j.has("checksum")) {
       attributeObject = j.getJSONObject("checksum");
       distro.setChecksum(attributeObject.getString("value"));
     }
-  
+    logger.info("checksum ok");
     if (j.has("rights")) {
       attributeObject = j.getJSONObject("rights");
       distro.setRights(attributeObject.getString("value"));
     }
-    
+    logger.info("rights ok");
     if (j.has("mediaType")) {
       attributeObject = j.getJSONObject("mediaType");
       distro.setMediaType(attributeObject.getString("value"));
     }
+    logger.info("mediaType ok");
     if (j.has("description")) {
       attributeObject = j.getJSONObject("description");
       distro.setDescription(attributeObject.getString("value"));
     }
+    logger.info("description ok");
     if (j.has("license")) {
       attributeObject = j.getJSONObject("license");
       distro.setLicense(new DctLicenseDocument("", attributeObject.getString("value"),
           "", "", nodeId));
     }
-
+    logger.info("license ok");
     String releaseDate = null;
     if (j.has("releaseDate")) {
       JSONObject relDateObject = j.getJSONObject("releaseDate");
@@ -210,7 +231,7 @@ public class NgsiLdCbDcatConnector implements IodmsConnector {
       releaseDate = CommonUtil.fixBadUtcDate(date);
       distro.setReleaseDate(releaseDate);
     }
-     
+    logger.info("releaseDate ok");
     String updateDate = null;
     if (j.has("modifiedDate")) {
       JSONObject updDateObject = j.getJSONObject("modifiedDate");
@@ -218,7 +239,9 @@ public class NgsiLdCbDcatConnector implements IodmsConnector {
       String date = valueObj.getString("@value");    
       updateDate = CommonUtil.fixBadUtcDate(date);
       distro.setUpdateDate(updateDate);
+     
     }
+    logger.info("modifiedDate ok");
     //    if (j.has("status")) {
     //    logger.info("Distribution status skipped");
     //    }
@@ -259,6 +282,7 @@ public class NgsiLdCbDcatConnector implements IodmsConnector {
 
     List<DcatDistribution> distributionList = new ArrayList<DcatDistribution>();
 
+   
     JSONObject titleObject = j.getJSONObject("title");
     title = titleObject.getString("value");
     logger.info("title ok");
@@ -272,9 +296,12 @@ public class NgsiLdCbDcatConnector implements IodmsConnector {
     logger.info("description ok");
     // landingPage
     String landingPage = "";
-    JSONObject lanPageObject = j.getJSONObject("landingPage");
-    landingPage = lanPageObject.getString("value");
-    logger.info("landingPage ok");
+    if (j.has("landingPage")) {
+    	 JSONObject lanPageObject = j.getJSONObject("landingPage");
+    	    landingPage = lanPageObject.getString("value");
+    	    logger.info("landingPage ok");
+    }
+   
     // frequency
     String frequency = "";
     if (j.has("frequency")) {
