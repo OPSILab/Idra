@@ -142,7 +142,8 @@ public class ClientApi {
    */
   @GET
   @Path("/dcat-ap/dump/{nodeID}")
-  @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+//  @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+  @Produces({"application/rdf+xml" , MediaType.APPLICATION_JSON })
   public Response getCatalogueDcatApDump(@Context HttpServletRequest httpRequest,
       @DefaultValue("false") @QueryParam("forceDump") Boolean forceDump,
       @PathParam("nodeID") String nodeIdentifier) {
