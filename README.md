@@ -6,10 +6,12 @@
 
 [![](https://nexus.lab.fiware.org/repository/raw/public/badges/chapters/data-publication.svg)](https://www.fiware.org/developers/catalogue/)
 [![License badge](https://img.shields.io/github/license/OPSILab/Idra.svg)](https://opensource.org/licenses/AGPL-3.0)
-[![Docker Pulls](https://img.shields.io/docker/pulls/idraopendata/idra.svg)](https://hub.docker.com/r/idraopendata/idra/)
 [![](https://img.shields.io/badge/tag-fiware-orange.svg?logo=stackoverflow)](http://stackoverflow.com/questions/tagged/fiware+idra+fiware-idra)
 [![CII Best Practices](https://bestpractices.coreinfrastructure.org/projects/4740/badge)](https://bestpractices.coreinfrastructure.org/projects/4740)
-<br>
+<br/>
+[![Quay badge](https://img.shields.io/badge/quay.io-fiware%2Fidra-grey?logo=red%20hat&labelColor=EE0000)](https://quay.io/repository/fiware/idra)
+[![Docker badge](https://img.shields.io/badge/docker-idraopendata%2Fidra-blue?logo=docker)](https://registry.hub.docker.com/r/idraopendata/idra/)
+<br/>
 [![CI](https://github.com/OPSILab/Idra/actions/workflows/ci.yml/badge.svg?branch=master)](https://github.com/OPSILab/Idra/actions/workflows/ci.yml)
 [![Documentation badge](https://img.shields.io/readthedocs/idra.svg)](https://idra.readthedocs.io/en/latest/)
 ![Status](https://nexus.lab.fiware.org/repository/raw/public/badges/statuses/full.svg)
@@ -45,8 +47,8 @@ part of [FIWARE](https://www.fiware.org/). For more information check the FIWARE
 Catalogue entry for
 [Data Publication](https://github.com/Fiware/catalogue/tree/master/data-publication). The roadmap of this FIWARE GE is described [here](./roadmap.md)
 
-| :books: [Documentation](https://idra.rtfd.io/) | :mortar_board: [Academy](https://fiware-academy.readthedocs.io/en/latest/data-publication/idra/) |:whale: [Docker Hub](https://hub.docker.com/r/idraopendata/idra) | :dart: [Roadmap](./roadmap.md) |
-|---|---|---|---|
+| :books: [Documentation](https://idra.rtfd.io/) | :mortar_board: [Academy](https://fiware-academy.readthedocs.io/en/latest/data-publication/idra/) | <img style="height:1em" src="https://quay.io/static/img/quay_favicon.png"/> [quay.io](https://quay.io/repository/fiware/idra) | :whale: [Docker Hub](https://hub.docker.com/r/idraopendata/idra) | :dart: [Roadmap](./roadmap.md) |
+|---|---|---|---| --- |
 
 ## Content
 
