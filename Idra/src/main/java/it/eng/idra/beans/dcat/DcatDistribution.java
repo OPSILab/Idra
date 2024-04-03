@@ -16,6 +16,8 @@
 package it.eng.idra.beans.dcat;
 
 import com.google.gson.annotations.SerializedName;
+
+import it.eng.idra.api.ClientApi;
 import it.eng.idra.beans.DistributionAdditionalConfiguration;
 import it.eng.idra.cache.CacheContentType;
 import it.eng.idra.utils.CommonUtil;
@@ -49,6 +51,8 @@ import org.apache.jena.sparql.vocabulary.FOAF;
 import org.apache.jena.vocabulary.DCAT;
 import org.apache.jena.vocabulary.DCTerms;
 import org.apache.jena.vocabulary.RDFS;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.apache.solr.common.SolrDocument;
 import org.apache.solr.common.SolrInputDocument;
 import org.hibernate.annotations.GenericGenerator;
@@ -69,6 +73,7 @@ import org.json.JSONObject;
 @Table(name = "dcat_distribution")
 @Entity
 public class DcatDistribution implements Serializable {
+	  private static Logger logger = LogManager.getLogger(ClientApi.class);
 
   /** The Constant serialVersionUID. */
   private static final long serialVersionUID = 1L;
@@ -1032,9 +1037,17 @@ public class DcatDistribution implements Serializable {
       e.printStackTrace();
     }
 
-    doc.addField("accessURL", accessUrl.getValue());
-    doc.addField("description", description.getValue());
-    doc.addField("format", format.getValue());
+    if(accessUrl != null) {
+    	doc.addField("accessURL", accessUrl.getValue());
+    }
+    if(description != null) {
+    	 doc.addField("description", description.getValue());
+    }
+    
+    if(format != null) {
+    	 doc.addField("format", format.getValue());
+    }
+   
 
     // if (license != null)
     // doc.addChildDocument(license.toDoc(CacheContentType.licenseDocument));
@@ -1070,10 +1083,17 @@ public class DcatDistribution implements Serializable {
     // }
     // }
 
-    doc.addField("hasDatalets", hasDatalets);
+   
+    	 doc.addField("hasDatalets", hasDatalets);
+    
+   
 
     // doc.addField("documentation", documentation.getValue());
-    doc.addField("downloadURL", downloadUrl.getValue());
+    	 logger.info(downloadUrl);
+   if(downloadUrl!= null) {
+  	 doc.addField("downloadURL", downloadUrl.getValue());
+   }
+
     // doc.addField("language", language.getValue());
 
     if (documentation != null && !documentation.isEmpty()) {
@@ -1103,7 +1123,7 @@ public class DcatDistribution implements Serializable {
     if (releaseDate != null && StringUtils.isNotBlank(releaseDate.getValue())) {
       doc.addField("releaseDate", releaseDate.getValue());
     }
-    if (releaseDate != null && StringUtils.isNotBlank(updateDate.getValue())) {
+    if (updateDate != null && StringUtils.isNotBlank(updateDate.getValue())) {
       doc.addField("updateDate", updateDate.getValue());
     }
     if (rights != null) {
@@ -1234,15 +1254,15 @@ public class DcatDistribution implements Serializable {
     }
 
     DcatDistribution distr = new DcatDistribution(doc.getFieldValue("id").toString(),
-        doc.getFieldValue("nodeID").toString(), doc.getFieldValue("accessURL").toString(),
-        doc.getFieldValue("description").toString(), doc.getFieldValue("format").toString(),
-        license, byteSize, checksum, (ArrayList<String>) doc.getFieldValue("documentation"),
-        doc.getFieldValue("downloadURL").toString(),
-        (ArrayList<String>) doc.getFieldValue("language"), linkedSchemas,
+        doc.getFieldValue("nodeID").toString(), doc.getFieldValue("accessURL")!= null ? doc.getFieldValue("accessURL").toString(): "",
+        doc.getFieldValue("description")!= null ? doc.getFieldValue("description").toString() : "", doc.getFieldValue("format")!= null ? doc.getFieldValue("format").toString(): "",
+        license, byteSize, checksum, doc.getFieldValue("documentation")!= null ? (ArrayList<String>) doc.getFieldValue("documentation") : null,
+        doc.getFieldValue("downloadURL")!=null ? doc.getFieldValue("downloadURL").toString() : "",
+        doc.getFieldValue("language")!=null ? (ArrayList<String>) doc.getFieldValue("language"): null, linkedSchemas,
         (doc.getFieldValue("mediaType") != null) ? doc.getFieldValue("mediaType").toString() : "",
         distribIssued, distribModified,
         (doc.getFieldValue("rights") != null) ? doc.getFieldValue("rights").toString() : "", status,
-        doc.getFieldValue("title").toString(), (Boolean) doc.getFieldValue("hasDatalets"));
+        		doc.getFieldValue("title")!= null  ?doc.getFieldValue("title").toString(): "", doc.getFieldValue("hasDatalets")!= null ? (Boolean) doc.getFieldValue("hasDatalets"): null);
     // datalets);
     distr.setStoredRdf((Boolean) doc.getFieldValue("storedRDF"));
     
