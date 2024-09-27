@@ -22,7 +22,7 @@ bower_components
 .bowerrc
 >>>>>>> branch 'master' of https://github.com/OPSILab/Idra.git
 ### Eclipse ###
-
+.vscode
 .metadata
 bin/
 tmp/

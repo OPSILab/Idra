@@ -329,7 +329,13 @@ public class CkanConnector implements IodmsConnector {
               List<String> ids = new ArrayList<String>();
               JSONArray array = new JSONArray(e.getValue());
               for (int i = 0; i < array.length(); i++) {
-                String identif = array.getJSONObject(i).getString("identifier");
+                String identif = "";
+                if (array.get(i) instanceof JSONObject) {
+                  identif = array.getJSONObject(i).getString("identifier");
+                } else {
+                  identif = array.getString(i);
+                    logger.warn("Element at index " + i + " is not a JSONObject: " + array.get(i));
+                }
                 if (!identif.equals("N/A") && !ids.contains(identif)) {
                   ids.add(identif);
                 }
@@ -345,7 +351,13 @@ public class CkanConnector implements IodmsConnector {
               List<String> themes = new ArrayList<String>();
               JSONArray array = new JSONArray(e.getValue());
               for (int i = 0; i < array.length(); i++) {
-                String themeCode = array.getJSONObject(i).getString("theme");
+                String themeCode = "";
+                if (array.get(i) instanceof JSONObject) {
+                    themeCode = array.getJSONObject(i).getString("theme");
+                } else {
+                  themeCode = array.getString(i);
+                    logger.warn("Element at index " + i + " is not a JSONObject: " + array.get(i));
+                }
                 if (dcatThemes.containsKey(themeCode)) {
                   themes.add(dcatThemes.get(themeCode));
                 } else {
@@ -1382,7 +1394,7 @@ public class CkanConnector implements IodmsConnector {
   private static boolean checkIfJsonObject(String input) {
 
     try {
-      JsonElement jelement = new JsonParser().parse(input);
+      JsonElement jelement = JsonParser.parseString(input);
       JsonObject jobject = jelement.getAsJsonObject();
       return true;
     } catch (Exception e) {
@@ -1400,7 +1412,7 @@ public class CkanConnector implements IodmsConnector {
   private static boolean checkIfJsonArray(String input) {
 
     try {
-      JsonElement jelement = new JsonParser().parse(input);
+      JsonElement jelement = JsonParser.parseString(input);
       JsonArray jarray = jelement.getAsJsonArray();
       return true;
     } catch (Exception e) {

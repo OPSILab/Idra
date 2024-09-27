@@ -460,9 +460,9 @@
         </dependency>
 
         <dependency>
-            <groupId>com.github.OPSILab</groupId>
+            <groupId>com.github.BeOpen-project</groupId>
             <artifactId>CKANClient-J</artifactId>
-            <version>v0.8</version>
+            <version>v2.0.0</version>
         </dependency>
 
         <!-- https://mvnrepository.com/artifact/org.quartz-scheduler/quartz -->

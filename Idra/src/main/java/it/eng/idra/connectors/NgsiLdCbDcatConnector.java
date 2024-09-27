@@ -600,7 +600,7 @@ public class NgsiLdCbDcatConnector implements IodmsConnector {
     headers.put("Content-Type", "application/json");
     RestClient client = new RestClientImpl();
 
-    String url = node.getHost() + "/ngsi-ld/v1/entities?type=Dataset";
+    String url = node.getHost() + "/ngsi-ld/v1/entities?type=Dataset&limit=1000";
     
     HttpResponse response;
     String returnedJson = "";
