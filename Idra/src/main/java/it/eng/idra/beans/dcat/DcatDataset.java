@@ -16,6 +16,8 @@
 package it.eng.idra.beans.dcat;
 
 import com.google.gson.annotations.SerializedName;
+
+import it.eng.idra.api.ClientApi;
 import it.eng.idra.beans.odms.OdmsCatalogueNotFoundException;
 import it.eng.idra.cache.CacheContentType;
 import it.eng.idra.management.FederationCore;
@@ -52,6 +54,8 @@ import org.apache.jena.vocabulary.DCTerms;
 import org.apache.jena.vocabulary.OWL;
 import org.apache.jena.vocabulary.RDFS;
 import org.apache.jena.vocabulary.SKOS;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.apache.solr.common.SolrDocument;
 import org.apache.solr.common.SolrInputDocument;
 import org.hibernate.annotations.LazyCollection;
@@ -69,6 +73,8 @@ import org.hibernate.annotations.Where;
 @Table(name = "dcat_dataset")
 @IdClass(DcatDatasetId.class)
 public class DcatDataset implements Serializable {
+	 /** The logger. */
+	  private static Logger logger = LogManager.getLogger(ClientApi.class);
 
   /** The Constant serialVersionUID. */
   private static final long serialVersionUID = 1L;
@@ -1343,8 +1349,13 @@ public class DcatDataset implements Serializable {
       e.printStackTrace();
     }
 
-    doc.addField("description", description.getValue());
-    doc.addField("title", title.getValue());
+    if(description != null) {
+    	   doc.addField("description", description.getValue());
+    }
+ 
+ if (title!= null) {
+	 doc.addField("title", title.getValue());
+ }
 
     if (theme != null && !theme.isEmpty()) {
       theme.stream().filter(item -> item != null)
@@ -1360,16 +1371,19 @@ public class DcatDataset implements Serializable {
 
       doc.addField("datasetThemes", datasetThemes);
     }
-
-    doc.addField("accessRights", accessRights.getValue());
+  
+if (accessRights != null) {
+	  doc.addField("accessRights", accessRights.getValue());
+}
 
     if (conformsTo != null && !conformsTo.isEmpty()) {
       conformsTo.stream().filter(item -> item != null)
           .forEach(item -> doc.addChildDocument(item.toDoc(CacheContentType.conformsTo)));
     }
-
-    doc.addField("frequency", frequency.getValue());
-
+if (frequency!= null) {
+	doc.addField("frequency", frequency.getValue());
+}
+    
     if (hasVersion != null && !hasVersion.isEmpty()) {
       doc.addField("hasVersion", hasVersion.stream().filter(item -> item != null)
           .map(item -> item.getValue()).collect(Collectors.toList()));
@@ -1379,52 +1393,59 @@ public class DcatDataset implements Serializable {
       doc.addField("documentation", documentation.stream().filter(item -> item != null)
           .map(item -> item.getValue()).collect(Collectors.toList()));
     }
-
+  
     if (relatedResource != null && !relatedResource.isEmpty()) {
       doc.addField("relatedResource", relatedResource.stream().filter(item -> item != null)
           .map(item -> item.getValue()).collect(Collectors.toList()));
     }
-
+ 
     if (isVersionOf != null && !isVersionOf.isEmpty()) {
       doc.addField("isVersionOf", isVersionOf.stream().filter(item -> item != null)
           .map(item -> item.getValue()).collect(Collectors.toList()));
     }
-
-    doc.addField("landingPage", landingPage.getValue());
+   
+    if(landingPage!= null) {
+    	 doc.addField("landingPage", landingPage.getValue());
+    }
+   
 
     if (language != null && !language.isEmpty()) {
       doc.addField("language", language.stream().filter(item -> item != null)
           .map(item -> item.getValue()).collect(Collectors.toList()));
     }
-
+ 
     if (provenance != null && !provenance.isEmpty()) {
       doc.addField("provenance", provenance.stream().filter(item -> item != null)
           .map(item -> item.getValue()).collect(Collectors.toList()));
     }
-
-    if (StringUtils.isNotBlank(releaseDate.getValue())) {
+  
+    if (releaseDate!= null && StringUtils.isNotBlank(releaseDate.getValue())) {
       doc.addField("releaseDate", releaseDate.getValue());
     }
-    if (StringUtils.isNotBlank(updateDate.getValue())) {
+
+    if (updateDate!= null && StringUtils.isNotBlank(updateDate.getValue())) {
       doc.addField("updateDate", updateDate.getValue());
     }
+   
+if(identifier!= null) {
+	   doc.addField("identifier", identifier.getValue());
+}
 
-    doc.addField("identifier", identifier.getValue());
     if (otherIdentifier != null && !otherIdentifier.isEmpty()) {
       doc.addField("otherIdentifier", otherIdentifier.stream().filter(item -> item != null)
           .map(item -> item.getValue()).collect(Collectors.toList()));
     }
-
+   
     if (sample != null && !sample.isEmpty()) {
       doc.addField("sample", sample.stream().filter(item -> item != null)
           .map(item -> item.getValue()).collect(Collectors.toList()));
     }
-
+   
     if (source != null && !source.isEmpty()) {
       doc.addField("source", source.stream().filter(item -> item != null)
           .map(item -> item.getValue()).collect(Collectors.toList()));
     }
-
+ 
     if (spatialCoverage != null) {
       doc.addChildDocument(spatialCoverage.toDoc(CacheContentType.spatialCoverage));
     }
@@ -1432,9 +1453,12 @@ public class DcatDataset implements Serializable {
     if (temporalCoverage != null) {
       doc.addChildDocument(temporalCoverage.toDoc(CacheContentType.temporalCoverage));
     }
-
+  
     doc.addField("type", type.getValue());
-    doc.addField("version", version.getValue());
+    if(version != null) {
+    	  doc.addField("version", version.getValue());
+    }
+   
 
     if (versionNotes != null && !versionNotes.isEmpty()) {
       doc.addField("versionNotes", versionNotes.stream().filter(item -> item != null)
@@ -1444,29 +1468,37 @@ public class DcatDataset implements Serializable {
     if (subject != null && !subject.isEmpty()) {
       subject.stream().forEach(item -> doc.addChildDocument(item.toDoc(CacheContentType.subject)));
     }
-
+  
     if (creator != null) {
       doc.addChildDocument(creator.toDoc(CacheContentType.creator));
     }
-
+   
     if (rightsHolder != null) {
       doc.addChildDocument(rightsHolder.toDoc(CacheContentType.rightsHolder));
     }
-
+   
     if (publisher != null) {
       doc.addChildDocument(publisher.toDoc(CacheContentType.publisher));
     }
-
+   
     if (contactPoint != null && !contactPoint.isEmpty()) {
       contactPoint.stream().filter(item -> item != null)
           .forEach(item -> doc.addChildDocument(item.toDoc(CacheContentType.contactPoint)));
     }
-
+ 
     if (distributions != null && !distributions.isEmpty()) {
+    	logger.info("into distribution block");
+    	logger.info(distributions);
       distributions.stream().filter(item -> item != null)
-          .forEach(item -> doc.addChildDocument(item.toDoc()));
+          .forEach( item -> {
+        	  logger.info(item);
+        	  doc.addChildDocument(item.toDoc());
+          });
 
       doc.addField("distributionFormats", distributions.stream().filter(x -> x != null).map(x -> {
+    	  logger.info("into distributionFormats block");
+    	  logger.info(x.getFormat());
+    	  logger.info(x.getMediaType());
         if (x.getFormat() != null && StringUtils.isNotBlank(x.getFormat().getValue())) {
           return x.getFormat().getValue().replaceFirst("\\.", "").toLowerCase();
         } else if (x.getMediaType() != null
@@ -1480,7 +1512,7 @@ public class DcatDataset implements Serializable {
           return null;
         }
       }).distinct().collect(Collectors.toList()));
-
+      logger.info("dopo distribution formats");
       doc.addField("distributionLicenses",
           distributions.stream()
               .filter(x -> x != null && x.getLicense() != null && x.getLicense().getName() != null
@@ -1488,10 +1520,11 @@ public class DcatDataset implements Serializable {
               .map(x -> x.getLicense().getName().getValue().toLowerCase()).distinct()
               .collect(Collectors.toList()));
     }
+    logger.info("distributionLicenses to doc ok");
     if (keywords != null && !keywords.isEmpty()) {
       doc.addField("keywords", keywords);
     }
-
+    logger.info("keywords to doc ok");
     // try {
     // if(StringUtils.isNotBlank(seoIdentifier))
     // doc.addField("seoIdentifier",seoIdentifier);
@@ -1501,7 +1534,6 @@ public class DcatDataset implements Serializable {
     // } catch (Exception e) {
     // e.printStackTrace();
     // }
-
     return doc;
   }
 
