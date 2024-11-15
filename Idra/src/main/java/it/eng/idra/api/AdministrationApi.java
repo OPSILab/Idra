@@ -377,7 +377,7 @@ public class AdministrationApi {
             && StringUtils.isNotBlank(node.getDumpFilePath())) {
 
           // Read the content of the file from the file system
-          String dumpString = new String(Files.readAllBytes(Paths.get(node.getDumpFilePath())));
+          String dumpString = new String(Files.readAllBytes(Paths.get(node.getDumpFilePath())), StandardCharsets.UTF_8);
           node.setDumpString(dumpString);
         }
       }
@@ -388,7 +388,7 @@ public class AdministrationApi {
             && StringUtils.isNotBlank(conf.getOrionDatasetFilePath())) {
           // Read the content of the file from the file system
           String dumpOrion = new String(
-              Files.readAllBytes(Paths.get(conf.getOrionDatasetFilePath())));
+              Files.readAllBytes(Paths.get(conf.getOrionDatasetFilePath())), StandardCharsets.UTF_8);
           conf.setOrionDatasetDumpString(dumpOrion);
           node.setAdditionalConfig(conf);
         }
@@ -1999,15 +1999,14 @@ public class AdministrationApi {
       @DefaultValue("false") @QueryParam("zip") Boolean returnZip) {
 
     try {
-
       return Response
-          .ok(DcatApDumpManager.getDatasetDumpFromFile(nodeIdentifier, forceDump, returnZip),
-              MediaType.APPLICATION_OCTET_STREAM)
-          .header("content-disposition", "attachment; filename = "
-              + DcatApDumpManager.globalDumpFileName
-              + (StringUtils.isBlank(nodeIdentifier) ? "" : new String("_node_" + nodeIdentifier))
-              + (returnZip ? ".zip" : ""))
-          .build();
+        .ok(DcatApDumpManager.getDatasetDumpFromFile(nodeIdentifier, forceDump, returnZip),
+          MediaType.APPLICATION_OCTET_STREAM)
+        .header("content-disposition", "attachment; filename = "
+          + DcatApDumpManager.globalDumpFileName
+          + (StringUtils.isBlank(nodeIdentifier) ? "" : new String(("_node_" + nodeIdentifier).getBytes(StandardCharsets.UTF_8), StandardCharsets.UTF_8))
+          + (returnZip ? ".zip" : ""))
+        .build();
 
     } catch (Exception e) {
       return handleErrorResponse500(e);

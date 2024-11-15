@@ -600,6 +600,22 @@ public class NgsiLdCbDcatConnector implements IodmsConnector {
     headers.put("Content-Type", "application/json");
     RestClient client = new RestClientImpl();
 
+    // String url = "";
+    // HttpResponse response;
+    // String returnedJson = "";
+    // String tempJSON = "";
+    // int counter = 0;
+    // int offset = 0;
+    // do{
+    //   url = node.getHost() + "/ngsi-ld/v1/entities?type=Dataset&offset="+offset+"&limit=1000";
+  
+    //   response = client.sendGetRequest(url, headers);
+    //   tempJSON = client.getHttpResponseBody(response);
+    //   returnedJson = returnedJson + tempJSON;
+    //   counter = new JSONArray(tempJSON).length();
+    //   offset = offset + counter;
+    // } while(counter > 1000 );
+    
     String url = node.getHost() + "/ngsi-ld/v1/entities?type=Dataset&limit=1000";
     
     HttpResponse response;
@@ -607,7 +623,7 @@ public class NgsiLdCbDcatConnector implements IodmsConnector {
 
     response = client.sendGetRequest(url, headers);
     returnedJson = client.getHttpResponseBody(response);
-System.out.println(returnedJson);
+    System.out.println(returnedJson);
     JSONArray jsonArray = new JSONArray(returnedJson);
     System.out.println("JSONDATASET: " + jsonArray);
     return jsonArray;
