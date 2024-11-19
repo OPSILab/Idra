@@ -45,5 +45,7 @@ public enum OdmsCatalogueType {
   /** The native. */
   NATIVE,
   /** The web. */
-  WEB
+  WEB,
+  /** The Zenodo. */
+  ZENODO
 }
