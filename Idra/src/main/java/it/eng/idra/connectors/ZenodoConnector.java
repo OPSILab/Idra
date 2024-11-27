@@ -37,6 +37,8 @@ import it.eng.idra.beans.zenodo.ZenodoClient;
 import it.eng.idra.beans.zenodo.ZenodoConnection;
 import it.eng.idra.beans.zenodo.ZenodoException;
 import it.eng.idra.utils.CommonUtil;
+import it.eng.idra.utils.GsonUtil;
+import it.eng.idra.utils.GsonUtilException;
 import it.eng.idra.beans.zenodo.ZenodoDataset;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.jena.vocabulary.DCAT;
@@ -90,39 +92,9 @@ public class ZenodoConnector implements IodmsConnector {
   @Override
   public int countDatasets() throws ZenodoException, MalformedURLException, OdmsCatalogueOfflineException,
       OdmsCatalogueNotFoundException, OdmsCatalogueForbiddenException, Exception {
-
-    // for testing
-    logger.info("countDatasets nodeid " + String.valueOf(node.getId()));
-    logger.info("countDatasets node name " + node.getName());
-    logger.info("countDatasets node host" + node.getHost());
-    logger.info("countDatasets node apikey" + node.getApiKey());
-    logger.info("countDatasets node dataset count" + node.getDatasetCount());
-    logger.info("countDatasets node dataset start" + node.getDatasetStart());
-    logger.info("countDatasets node communities" + node.getCommunities());
-    //
-    logger.info("countDatasets method -- Zenodo Connector Request sent -- First synchronization ");
-    ZenodoClient zc = new ZenodoClient(new ZenodoConnection(node.getHost()), node.getApiKey());
-
-    List<ZenodoDataset.Hit> results;
-    try {
-
-      results = zc.findRecords("", "", "", null, null, "", node.getCommunities(), "", "", "", "");
-      logger.info("Zenodo Connector - countDatasets - Records count: " + results.size());
-
-      if (results.size() == 0) {
-        throw new OdmsCatalogueOfflineException(" The ODMS node is currently unreachable");
-      }
-
-      zc = null;
-      System.gc();
-
-      return results.size();
-
-    } catch (ZenodoException e) {
-      e.printStackTrace();
-      handleError(e);
-      return 0;
-    }
+    Integer size = getAllDatasets().size();
+    logger.info("ZenodoConnector - countDatasets - size: " + size);
+    return size;
   }
 
   /**
@@ -162,11 +134,9 @@ public class ZenodoConnector implements IodmsConnector {
     if (searchParameters.containsKey("sort")) {
       sort = (String) searchParameters.remove("sort");
     }
-
     if (searchParameters.containsKey("communities")) {
       communities = (String) searchParameters.remove("communities");
     }
-
     if (searchParameters.containsKey("status")) {
       status = (String) searchParameters.remove("status");
     }
@@ -196,9 +166,9 @@ public class ZenodoConnector implements IodmsConnector {
     logger.info("findDatasets nodeid " + String.valueOf(node.getId()));
     logger.info("findDatasets node name " + node.getName());
     logger.info("findDatasets node host" + node.getHost());
-    logger.info("findDatasets node apikey" + node.getApiKey());
-    logger.info("findDatasets node communities" + node.getCommunities());
-    logger.info("findDatasets searchParameters communities" + communities);
+    logger.info("findDatasets node apikey " + node.getApiKey());
+    logger.info("findDatasets node communities " + node.getCommunities());
+    logger.info("findDatasets searchParameters communities " + communities);
     //
     logger.info("-- Zenodo Connector Request sent -- First synchronization ");
     ZenodoClient zc = new ZenodoClient(new ZenodoConnection(node.getHost()), node.getApiKey());
@@ -209,15 +179,19 @@ public class ZenodoConnector implements IodmsConnector {
     logger.info("START " + node.getDatasetStart());
     logger.info("RESULTS " + dcatResults.size());
 
+    ZenodoDataset.Hits hits;
     List<ZenodoDataset.Hit> results;
+    Integer resultsCount;
     try {
 
-      results = zc.findRecords(query, status, sort, page, size, all_versions, communities, type, subtype, bounds,
+      hits = zc.findRecords(query, status, sort, page, size, all_versions, communities, type, subtype, bounds,
           custom);
+      results = hits.getHits();
+      resultsCount = hits.getTotal();
 
-      logger.info("Zenodo Connector - findDatasets - Records count: " + results.size());
-      for (ZenodoDataset.Hit d : results) {
-        dcatResults.add(datasetToDcat(d, node));
+      logger.info("Zenodo Connector - findDatasets - Records count: " + resultsCount);
+      for (ZenodoDataset.Hit dataset : results) {
+        dcatResults.add(datasetToDcat(dataset, node));
       }
       logger.info("\n-----------------------\n");
 
@@ -269,11 +243,9 @@ public class ZenodoConnector implements IodmsConnector {
     if (searchParameters.containsKey("sort")) {
       sort = (String) searchParameters.remove("sort");
     }
-
     if (searchParameters.containsKey("communities")) {
       communities = (String) searchParameters.remove("communities");
     }
-
     if (searchParameters.containsKey("status")) {
       status = (String) searchParameters.remove("status");
     }
@@ -299,15 +271,6 @@ public class ZenodoConnector implements IodmsConnector {
       custom = (String) searchParameters.remove("custom");
     }
 
-    // just for test logs
-    logger.info("countSearchDatasets nodeid " + String.valueOf(node.getId()));
-    logger.info("countSearchDatasets node name " + node.getName());
-    logger.info("countSearchDatasets node name " + node.getName());
-    logger.info("countSearchDatasets node host" + node.getHost());
-    logger.info("countSearchDatasets node apikey" + node.getApiKey());
-    logger.info("countSearchDatasets node communities" + node.getCommunities());
-    logger.info("countSearchDatasets searchParameters communities" + communities);
-    //
     logger.info("-- Zenodo Connector Request sent -- First synchronization ");
     ZenodoClient zc = new ZenodoClient(new ZenodoConnection(node.getHost()), node.getApiKey());
     ArrayList<DcatDataset> dcatResults = new ArrayList<DcatDataset>();
@@ -317,21 +280,23 @@ public class ZenodoConnector implements IodmsConnector {
     logger.info("START " + node.getDatasetStart());
     logger.info("RESULTS " + dcatResults.size());
 
-    List<ZenodoDataset.Hit> results;
-    try {
-      // check, example for ckan c.findDatasets(query, start, "1", sort); //rows=1
-      results = zc.findRecords(query, status, sort, page, size, all_versions, communities, type, subtype, bounds,
-          custom);
-      logger.info("Zenodo Connector - countSearchDatasets - Records count: " + results.size());
+    ZenodoDataset.Hits hits;
 
-      if (results.size() == 0) {
+    Integer resultsCount;
+    try {
+      hits = zc.findRecords(query, status, sort, page, size, all_versions, communities, type, subtype, bounds,
+          custom);
+      resultsCount = hits.getTotal();
+      logger.info("Zenodo Connector - countSearchDatasets - Records count: " + resultsCount);
+
+      if (resultsCount == 0) {
         throw new OdmsCatalogueOfflineException(" The ODMS node is currently unreachable");
       }
 
       zc = null;
       System.gc();
 
-      return results.size();
+      return resultsCount;
 
     } catch (ZenodoException e) {
       e.printStackTrace();
@@ -356,50 +321,77 @@ public class ZenodoConnector implements IodmsConnector {
   public DcatDataset datasetToDcat(Object dataset, OdmsCatalogue node) throws ZenodoException {
 
     // Cast the dataset to ZenodoDataset.Hit
-    ZenodoDataset.Hit zd = (ZenodoDataset.Hit) dataset;
+    ZenodoDataset.Hit zenodoDataset = (ZenodoDataset.Hit) dataset;
 
-    String identifier = StringUtils.isNotBlank(zd.getId().toString()) ? zd.getId().toString() : "";
+    String identifier = StringUtils.isNotBlank(zenodoDataset.getId().toString()) ? zenodoDataset.getId().toString()
+        : "";
 
     List<String> otherIdentifier = new ArrayList<String>();
     otherIdentifier.add("Id: " + identifier);
-    if (StringUtils.isNotBlank(zd.getDoi()))
-      otherIdentifier.add("Doi: " + zd.getDoi());
-    if (StringUtils.isNotBlank(zd.getConceptrecid()))
-      otherIdentifier.add("Conceptrec Id: " + zd.getConceptrecid());
-    if (StringUtils.isNotBlank(zd.getRecid()))
-      otherIdentifier.add("Rec Id: " + zd.getRecid());
+    if (StringUtils.isNotBlank(zenodoDataset.getDoi()))
+      otherIdentifier.add("Doi: " + zenodoDataset.getDoi());
+    if (StringUtils.isNotBlank(zenodoDataset.getConceptrecid()))
+      otherIdentifier.add("Conceptrec Id: " + zenodoDataset.getConceptrecid());
+    if (StringUtils.isNotBlank(zenodoDataset.getRecid()))
+      otherIdentifier.add("Rec Id: " + zenodoDataset.getRecid());
 
-    String title = StringUtils.isNotBlank(zd.getMetadata().getTitle()) ? zd.getMetadata().getTitle() : "";
-    String description = StringUtils.isNotBlank(zd.getMetadata().getDescription()) ? zd.getMetadata().getDescription()
+    String title = StringUtils.isNotBlank(zenodoDataset.getMetadata().getTitle())
+        ? zenodoDataset.getMetadata().getTitle()
+        : "";
+    String description = StringUtils.isNotBlank(zenodoDataset.getMetadata().getDescription())
+        ? removeEmojis(zenodoDataset.getMetadata().getDescription())// delete emojis in order to not have db errors
         : "";
 
-    DctLicenseDocument license = null;
-    if (zd.getMetadata().getLicense() != null & StringUtils.isNotBlank(zd.getMetadata().getLicense().getId())) {
-      license = new DctLicenseDocument(DCTerms.license.getURI(),
-          zd.getMetadata().getLicense().getId(), zd.getMetadata().getLicense().getId(), "", nodeId);
+    String version = StringUtils.isNotBlank(zenodoDataset.getMetadata().getVersion())
+        ? zenodoDataset.getMetadata().getVersion()
+        : "";
+
+    List<String> keywordsList = zenodoDataset.getMetadata().getKeywords();
+    List<String> keywords = new ArrayList<String>();
+    if (keywordsList != null) {
+      for (String keyword : keywordsList) {
+        keywords.addAll(extractValueList(keyword));
+      }
+    } else {
+      keywords = keywordsList;
     }
 
-    String version = StringUtils.isNotBlank(zd.getMetadata().getVersion()) ? zd.getMetadata().getVersion() : "";
-    List<String> keywords = zd.getMetadata().getKeywords();
-    String releaseDate = CommonUtil.fixBadUtcDate(zd.getCreated().toString());
-    String updateDate = CommonUtil.fixBadUtcDate(zd.getModified().toString());
-    String language = StringUtils.isNotBlank(zd.getMetadata().getLanguage()) ? zd.getMetadata().getLanguage() : "";
+    String releaseDate = CommonUtil.fixBadUtcDate(zenodoDataset.getCreated().toString());
+    String updateDate = CommonUtil.fixBadUtcDate(zenodoDataset.getModified().toString());
+    String language = StringUtils.isNotBlank(zenodoDataset.getMetadata().getLanguage())
+        ? zenodoDataset.getMetadata().getLanguage()
+        : "";
     List<String> languages = new ArrayList<String>();
     languages.add(language);
 
-    String accessRights = StringUtils.isNotBlank(zd.getMetadata().getAccess_right())
-        ? zd.getMetadata().getAccess_right()
+    String accessRights = StringUtils.isNotBlank(zenodoDataset.getMetadata().getAccess_right())
+        ? zenodoDataset.getMetadata().getAccess_right()
         : "";
 
     String accessRightsUri = accessRightsURI(accessRights);
 
-    String type = StringUtils.isNotBlank(zd.getMetadata().getResource_type().getType())
-        ? zd.getMetadata().getResource_type().getType()
+    DctLicenseDocument license = null;
+    boolean hasLicense = zenodoDataset.getMetadata() != null
+        && zenodoDataset.getMetadata().getLicense() != null
+        && StringUtils.isNotBlank(zenodoDataset.getMetadata().getLicense().getId());
+    boolean isOpenOrEmbargoed = accessRightsUri.contains("PUBLIC") || accessRightsUri.contains("EMBARGOED");
+
+    if (hasLicense && isOpenOrEmbargoed) {
+      license = new DctLicenseDocument(
+          DCTerms.license.getURI(),
+          zenodoDataset.getMetadata().getLicense().getId(),
+          zenodoDataset.getMetadata().getLicense().getId(),
+          "",
+          nodeId);
+    }
+
+    String type = StringUtils.isNotBlank(zenodoDataset.getMetadata().getResource_type().getType())
+        ? zenodoDataset.getMetadata().getResource_type().getType()
         : "";
     String subtype = "";
     if ("publication".equals(type)) {
-      subtype = StringUtils.isNotBlank(zd.getMetadata().getResource_type().getTitle())
-          ? zd.getMetadata().getResource_type().getTitle()
+      subtype = StringUtils.isNotBlank(zenodoDataset.getMetadata().getResource_type().getTitle())
+          ? zenodoDataset.getMetadata().getResource_type().getTitle()
           : "";
     }
     String resourceType = "publication".equals(type) ? StringUtils.capitalize(type) + " - " + subtype
@@ -415,11 +407,9 @@ public class ZenodoConnector implements IodmsConnector {
     zenodoThemes.add(title);
     zenodoThemes.add(description);
     List<String> zenodoThemesMatched = mapZenodoThemeToDcat(zenodoThemes);
-    logger.info("Zenodo Connector - datasetToDcat - zenodoThemesMatched size: " + zenodoThemesMatched.size());
 
     List<SkosConceptTheme> datasetTheme = extractConceptList(DCAT.theme.getURI(), zenodoThemesMatched,
         SkosConceptTheme.class);
-    logger.info("Zenodo Connector - datasetToDcat - datasetTheme size: " + datasetTheme.size());
 
     String publisherName = "Zenodo";// node.getPublisherName()
 
@@ -427,32 +417,34 @@ public class ZenodoConnector implements IodmsConnector {
         publisherName, null, null, null, null, nodeId);
 
     Optional<String> creatorName = Optional
-        .ofNullable(zd.getMetadata().getCreators().stream().map(c -> String.valueOf(c.getName()))
-            .collect(Collectors.joining("; ")));
+        .ofNullable(zenodoDataset.getMetadata().getCreators().stream().map(c -> String.valueOf(c.getName()))
+            .collect(Collectors.joining("; ")))
+        .map(this::validateAndTrim);
     Optional<String> creatorIdentifier = Optional
-        .ofNullable(zd.getMetadata().getCreators().stream().map(c -> String.valueOf(c.getOrcid()))
-            .collect(Collectors.joining("; ")));
+        .ofNullable(zenodoDataset.getMetadata().getCreators().stream().map(c -> String.valueOf(c.getOrcid()))
+            .collect(Collectors.joining("; ")))
+        .map(this::validateAndTrim);
 
     FoafAgent creator = new FoafAgent(DCTerms.creator.getURI(), null, creatorName.orElse(null),
         null, null, null, creatorIdentifier.orElse(null), nodeId);
 
-    String nodeHost = node.getHost();
     // Construct the landing page URL for Zenodo
-    String landingPage = nodeHost.contains("https://zenodo.org/api/")
-        ? nodeHost + "records/" + identifier
-        : nodeHost + (nodeHost.endsWith("/") ? "" : "/") + "api/records/" + identifier;
-    /*
-     * String landingPage = nodeHost.contains("http://datos.santander.es/catalogo")
-     * ? nodeHost.replace("catalogo" + (nodeHost.endsWith("/") ? "/" : ""),
-     * "dataset/?id=" + zd.getId())
-     * : nodeHost + (nodeHost.endsWith("/") ? "" : "/") + "dataset/" + identifier;
-     */// check, this is for ckan
+    String landingPage;
+    if (StringUtils.isNotBlank(zenodoDataset.getLinks().getSelf_html())) {
+      landingPage = zenodoDataset.getLinks().getSelf_html();
+    } else {
+      String nodeHost = node.getHost();
+
+      landingPage = nodeHost.contains("https://zenodo.org/api/")
+          ? nodeHost.replace("api/", "") + "records/" + identifier
+          : nodeHost + (nodeHost.endsWith("/") ? "" : "/") + "records/" + identifier;
+    }
 
     List<DcatDistribution> distributionList = new ArrayList<DcatDistribution>();
-    List<ZenodoDataset.File> resourceList = zd.getFiles();
+    List<ZenodoDataset.File> resourceList = zenodoDataset.getFiles();
     if (resourceList != null) {
-      for (ZenodoDataset.File f : resourceList) {
-        distributionList.add(resourceToDcat(f, landingPage, license));
+      for (ZenodoDataset.File file : resourceList) {
+        distributionList.add(resourceToDcat(file, landingPage, license));
       }
     }
 
@@ -503,10 +495,10 @@ public class ZenodoConnector implements IodmsConnector {
     logger.info("getDataset nodeid " + String.valueOf(node.getId()));
     logger.info("getDataset node name " + node.getName());
     logger.info("getDataset node host" + node.getHost());
-    logger.info("getDataset node apikey" + node.getApiKey());
-    logger.info("getDataset node dataset count" + node.getDatasetCount());
-    logger.info("getDataset node dataset start" + node.getDatasetStart());
-    logger.info("getDataset node communities" + node.getCommunities());
+    logger.info("getDataset node apikey " + node.getApiKey());
+    logger.info("getDataset node dataset count " + node.getDatasetCount());
+    logger.info("getDataset node dataset start " + node.getDatasetStart());
+    logger.info("getDataset node communities " + node.getCommunities());
     //
     logger.info("-- Zenodo Connector Request sent -- First synchronization ");
     ZenodoClient zc = new ZenodoClient(new ZenodoConnection(node.getHost()), node.getApiKey());
@@ -556,11 +548,11 @@ public class ZenodoConnector implements IodmsConnector {
     ArrayList<DcatDataset> dcatResults = new ArrayList<DcatDataset>();
 
     // just for test logs
-    logger.info("getAllDatasets nodeid " + String.valueOf(node.getId()));
-    logger.info("getAllDatasets node name " + node.getName());
-    logger.info("getAllDatasets node host" + node.getHost());
-    logger.info("getAllDatasets node apikey" + node.getApiKey());
-    logger.info("getAllDatasets node communities" + node.getCommunities());
+    logger.info("ZenodoConnector - getAllDatasets - nodeid: " + String.valueOf(node.getId()));
+    logger.info("ZenodoConnector - getAllDatasets - node name: " + node.getName());
+    logger.info("ZenodoConnector - getAllDatasets - node host: " + node.getHost());
+    logger.info("ZenodoConnector - getAllDatasets - node apikey: " + node.getApiKey());
+    logger.info("ZenodoConnector - getAllDatasets - node communities: " + node.getCommunities());
     //
     logger.info("-- Zenodo Connector Request sent -- First synchronization ");
     ZenodoClient zc = new ZenodoClient(new ZenodoConnection(node.getHost()), node.getApiKey());
@@ -569,7 +561,11 @@ public class ZenodoConnector implements IodmsConnector {
     logger.info("NODE " + node.getDatasetCount());
     logger.info("START " + node.getDatasetStart());
 
-    List<ZenodoDataset.Hit> results;
+    ZenodoDataset.Hits hits;
+    List<ZenodoDataset.Hit> results = new ArrayList<>();
+    Integer resultsCount = 0;
+    Integer currentPage = 1;
+    Integer pageSize = 25;// zenodo default
 
     logger.info("\n\n-----------------------------------\n\n");
 
@@ -578,20 +574,38 @@ public class ZenodoConnector implements IodmsConnector {
     do {
 
       try {
-        // check, below example for ckan
-        // zc.findDatasets("metadata_modified:[* TO " +
-        // CommonUtil.formatDate(node.getRegisterDate()) +"]",
-        // Integer.toString(node.getDatasetStart()), "10000000", "metadata_modified
-        // asc");
-        results = zc.findRecords("", "", "", null, null, "", node.getCommunities(), "", "", "", "");
-        retry = false;
-        logger.info("Zenodo Connector - getAllDatasets - Records count: " + results.size());
-        for (ZenodoDataset.Hit zd : results) {
-          dcatResults.add(datasetToDcat(zd, node));
+
+        do {
+          logger.info("Zenodo Connector - getAllDatasets - currentPage: " + currentPage);
+          // Fetch the current page
+          hits = zc.findRecords("", "", "", currentPage, pageSize, "", node.getCommunities(), "", "", "", "");
+          // Add datasets to the aggregated list
+          results.addAll(hits.getHits());
+          logger.info("Zenodo Connector - getAllDatasets - Currently on page: " + currentPage
+              + " with default page size: " + pageSize + " - Records count is: " + results.size());
+          // Get total dataset count from the first response
+          if (resultsCount == 0) {
+            resultsCount = hits.getTotal();
+            logger.info("Zenodo Connector - getAllDatasets - Records count: " + resultsCount);
+
+            if (resultsCount == 0) {
+              throw new OdmsCatalogueOfflineException(" The ODMS node is currently unreachable");
+            }
+          }
+
+          // Increment the page number
+          currentPage++;
+
+        } while (results.size() < resultsCount);// Stop when all datasets are fetched
+
+        retry = false;// Successful fetch
+
+        for (ZenodoDataset.Hit dataset : results) {
+          dcatResults.add(datasetToDcat(dataset, node));
         }
 
-        logger.info("\n-----------------------\n");
-        results = null;
+        zc = null;
+        System.gc();
 
       } catch (ZenodoException e) {
         e.printStackTrace();
@@ -856,6 +870,12 @@ public class ZenodoConnector implements IodmsConnector {
         new ArrayList<DctStandard>(), mimeType, "1970-01-01T00:00:00Z", "1970-01-01T00:00:00Z", null, null, title);
   }
 
+  /**
+   * Returns mimeTypeURI for given mimeType format
+   *
+   * @param format mimeType format
+   * @return string mimeTypeURI
+   */
   private String mimeTypeURI(String format) {
     String mimeType;
     switch (format.toLowerCase()) {
@@ -956,6 +976,12 @@ public class ZenodoConnector implements IodmsConnector {
     return mimeType;
   }
 
+  /**
+   * Returns accessRightsURI for given accessRights
+   *
+   * @param accessRights accessRights
+   * @return string accessRightsURI
+   */
   private String accessRightsURI(String accessRights) {
     String accessRightsUri;
     switch (accessRights) {
@@ -978,7 +1004,12 @@ public class ZenodoConnector implements IodmsConnector {
     return accessRightsUri;
   }
 
-  // Map Zenodo to DCAT theme using keywords
+  /**
+   * Map Zenodo to DCAT theme using keywords
+   *
+   * @param zenodoThemesList zenodoThemesList
+   * @return List<String>
+   */
   private List<String> mapZenodoThemeToDcat(List<String> zenodoThemesList) {
     List<String> themes = new ArrayList<String>();
 
@@ -1055,6 +1086,47 @@ public class ZenodoConnector implements IodmsConnector {
   }
 
   /**
+   * Extract value list.
+   *
+   * @param value the value
+   * @return the list
+   */
+  private List<String> extractValueList(String value) {
+
+    // TODO: regex & groups
+    List<String> result = new ArrayList<String>();
+
+    if (StringUtils.isBlank(value)) {
+      return result;
+    }
+
+    if (value.startsWith("[")) {
+      try {
+        result.addAll(GsonUtil.json2Obj(value, GsonUtil.stringListType));
+      } catch (GsonUtilException ex) {
+        if (StringUtils.isNotBlank(value)) {
+          for (String s : value.split(",")) {
+            result.add(s);
+          }
+        } else {
+          result = null;
+        }
+      }
+    } else if (value.startsWith("{")) {
+      for (String s : value.substring(1, value.lastIndexOf("}")).split(",")) {
+        result.add(s);
+      }
+    } else {
+      for (String s : value.split(",")) {
+        result.add(s);
+      }
+    }
+
+    return result;
+
+  }
+
+  /**
    * Handle error.
    *
    * @param e the ZenodoException
@@ -1089,5 +1161,41 @@ public class ZenodoConnector implements IodmsConnector {
     } else {
       throw new ZenodoException("Unknown Zenodo Exception");
     }
+  }
+
+  /**
+   * Validates if the given string is within the allowed limit of 255 characters.
+   * If the string exceeds the limit, it trims the string to fit.
+   * 
+   * @param input The string to validate and potentially trim.
+   * @return A string that is guaranteed to be within the 255-character limit.
+   */
+  public String validateAndTrim(String input) {
+    if (input == null)
+      return null; // Handle null values gracefully
+    return input.length() > 255 ? input.substring(0, 255) : input;
+  }
+
+  /**
+   * Remove Unsupported Characters
+   *
+   * @param input input
+   * @return String
+   */
+  public String removeEmojis(String input) {
+    /*
+     * Explanation:
+     * \\p{Cs}: Matches supplementary characters (including emoji surrogate pairs).
+     * \uFE0F: Matches the variation selector used in emojis.
+     * \\x{1F300}-\\x{1F6FF}: Matches a common emoji range (symbols, animals, food,
+     * etc.).
+     * \\x{1F700}-\\x{1F77F}: Matches alchemical and geometric emoji symbols.
+     * \\x{1F900}-\\x{1F9FF}: Matches supplemental symbols (e.g., smiley faces, hand
+     * gestures).
+     * \\x{1FA70}-\\x{1FAFF}: Matches extended symbols (e.g., tools, household
+     * items).
+     */
+    return input.replaceAll(
+        "[\\p{Cs}\\uFE0F\\x{1F300}-\\x{1F6FF}\\x{1F700}-\\x{1F77F}\\x{1F900}-\\x{1F9FF}\\x{1FA70}-\\x{1FAFF}]", "");
   }
 }

@@ -12,7 +12,6 @@ import java.net.UnknownHostException;
 import java.security.KeyManagementException;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
-import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.ckan.DatasetAdditionalDeserializer;
@@ -64,7 +63,7 @@ public final class ZenodoClient {
      * @throws ZenodoException                 Zenodo Exception
      * @throws Exception                       Exception
      */
-    public List<ZenodoDataset.Hit> findRecords(String query, String status, String sort, Integer page, Integer size,
+    public ZenodoDataset.Hits findRecords(String query, String status, String sort, Integer page, Integer size,
             String all_versions,
             String communities, String type, String subtype, String bounds, String custom)
             throws OdmsCatalogueOfflineException, OdmsCatalogueForbiddenException, OdmsCatalogueNotFoundException,
@@ -176,9 +175,9 @@ public final class ZenodoClient {
             ZenodoDataset.Response zenodoResponse = (ZenodoDataset.Response) this.LoadClass(
                     ZenodoDataset.Response.class,
                     returned_json.toString());
-            List<ZenodoDataset.Hit> hits = null;
+            ZenodoDataset.Hits hits = null;
             if (zenodoResponse != null && zenodoResponse.getHits() != null) {
-                hits = zenodoResponse.getHits().getHits();
+                hits = zenodoResponse.getHits();
                 logger.info("ZenodoClient - findRecords - total: " + zenodoResponse.getHits().getTotal());
             }
             return hits;

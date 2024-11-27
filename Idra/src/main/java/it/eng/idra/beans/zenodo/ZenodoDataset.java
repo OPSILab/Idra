@@ -207,7 +207,7 @@ public class ZenodoDataset {
                                         // Working paper * other: Other
         private String image_type;// Controlled vocabulary: * figure: Figure * plot: Plot * drawing: Drawing *
                                   // diagram: Diagram * photo: Photo * other: Other
-        private Licence license;// The selected license applies to all files in this deposition
+        private License license;// The selected license applies to all files in this deposition
         private String embargo_date;// When the deposited files will be made automatically made publicly available
                                     // by the system. Defaults to current date.
         private String access_conditions;// Specify the conditions under which you grant users access to the files in
@@ -386,11 +386,11 @@ public class ZenodoDataset {
             this.version = version;
         }
 
-        public Licence getLicense() {
+        public License getLicense() {
             return license;
         }
 
-        public void setLicense(Licence license) {
+        public void setLicense(License license) {
             this.license = license;
         }
 
@@ -498,7 +498,7 @@ public class ZenodoDataset {
     }
 
     // Class to represent Licences
-    public static class Licence {
+    public static class License {
         private String id; // Identifier for the license.
         private String title; // The name of the license
         private String url; // URL of the license
@@ -565,7 +565,8 @@ public class ZenodoDataset {
 
     // Class to represent Link
     public static class Link {
-        private String self; // resource url
+        private String self; // resource api url
+        private String self_html; // resource html url
         private String doi; // doi url
 
         // Getters and Setters
@@ -583,6 +584,14 @@ public class ZenodoDataset {
 
         public void setSelf(String self) {
             this.self = self;
+        }
+
+        public String getSelf_html() {
+            return self_html;
+        }
+
+        public void setSelf_html(String self_html) {
+            this.self_html = self_html;
         }
     }
 
@@ -972,7 +981,7 @@ public class ZenodoDataset {
 
     // Class to represent Hits
     public static class Hits {
-        private Long total;// total count of records
+        private Integer total;// total count of records
         private List<Hit> hits; // list of records
 
         // Getters and Setters
@@ -985,11 +994,11 @@ public class ZenodoDataset {
             this.hits = hits;
         }
 
-        public Long getTotal() {
+        public Integer getTotal() {
             return total;
         }
 
-        public void setTotal(Long total) {
+        public void setTotal(Integer total) {
             this.total = total;
         }
     }
