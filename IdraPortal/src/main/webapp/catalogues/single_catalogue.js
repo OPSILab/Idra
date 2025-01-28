@@ -1,6 +1,6 @@
 /*******************************************************************************
  * Idra - Open Data Federation Platform
- *  Copyright (C) 2020 Engineering Ingegneria Informatica S.p.A.
+ *  Copyright (C) 2024 Engineering Ingegneria Informatica S.p.A.
  *  
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -365,6 +365,7 @@ angular.module("IdraPlatform").controller('CatalogueCtrl',['$scope','$http','con
 				country:'',
 				category:'',
 				isActive:true,
+				communities:'',
 				additionalConfig:{}
 				};
 
@@ -429,6 +430,7 @@ angular.module("IdraPlatform").controller('CatalogueCtrl',['$scope','$http','con
 					country:'',
 					category:'',
 					isActive:true,
+					communities:'',
 					additionalConfig:{}
 			};
 			
@@ -626,6 +628,9 @@ angular.module("IdraPlatform").controller('CatalogueCtrl',['$scope','$http','con
 
 			switch(node.nodeType){
 			case 'CKAN':
+				node.federationLevel='LEVEL_3';
+				break;
+			case 'ZENODO':
 				node.federationLevel='LEVEL_3';
 				break;
 			case 'DKAN':

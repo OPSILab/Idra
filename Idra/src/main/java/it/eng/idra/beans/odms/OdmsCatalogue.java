@@ -215,6 +215,11 @@ public class OdmsCatalogue {
   @Expose
   private String category;
 
+    /** The communities. */
+    @Column(name = "communities", unique = false, nullable = true)
+    @SerializedName(value = "communities")
+    private String communities;
+
   /** The additional config. */
   @OneToOne(orphanRemoval = true, cascade = { CascadeType.ALL, CascadeType.REMOVE })
   @JoinColumn(name = "additionalconfig_id")
@@ -279,7 +284,7 @@ public class OdmsCatalogue {
       OdmsCatalogueType nodeType, OdmsCatalogueFederationLevel federationLevel, int datasetCount,
       OdmsCatalogueState nodeState, ZonedDateTime registerDate, ZonedDateTime lastUpdateDate,
       int refreshPeriod, String description, String image, int rdfCount, String location,
-      String locationDescription) {
+      String locationDescription,String communities) {
 
     this.setName(name);
     this.setHost(host);
@@ -301,6 +306,7 @@ public class OdmsCatalogue {
     this.setDatasetStart(0);
     this.setLocation(location);
     this.setLocationDescription(locationDescription);
+    this.setCommunities(communities);
     //this.setFederatedInOrion(false);
   }
 
@@ -330,7 +336,7 @@ public class OdmsCatalogue {
       OdmsCatalogueType nodeType, OdmsCatalogueFederationLevel integrationLevel, int datasetCount,
       OdmsCatalogueState nodeState, ZonedDateTime registerDate, ZonedDateTime lastUpdateDate,
       int refreshPeriod, String description, String image, int rdfCount, String location,
-      String locationDescription) {
+      String locationDescription,String communities) {
 
     this.setId(id);
     this.setName(name);
@@ -353,6 +359,7 @@ public class OdmsCatalogue {
     this.setDatasetStart(0);
     this.setLocation(location);
     this.setLocationDescription(locationDescription);
+    this.setCommunities(communities);
     //this.setFederatedInOrion(false);
   }
 
@@ -382,7 +389,7 @@ public class OdmsCatalogue {
       OdmsCatalogueType nodeType, OdmsCatalogueFederationLevel integrationLevel, int datasetCount,
       OdmsCatalogueState nodeState, ZonedDateTime registerDate, ZonedDateTime lastUpdateDate,
       int refreshPeriod, String description, String image, int rdfCount, int startDataset,
-      String location, String locationDescription) {
+      String location, String locationDescription,String communities) {
 
     this.setId(id);
     this.setName(name);
@@ -405,6 +412,7 @@ public class OdmsCatalogue {
     this.setDatasetStart(startDataset);
     this.setLocation(location);
     this.setLocationDescription(locationDescription);
+    this.setCommunities(communities);
     //this.setFederatedInOrion(false);
   }
 
@@ -1108,6 +1116,24 @@ public class OdmsCatalogue {
    */
   public void setAdditionalConfig(OdmsCatalogueAdditionalConfiguration orionConfig) {
     this.additionalConfig = orionConfig;
+  }
+
+    /**
+   * Gets communities.
+   *
+   * @return communities
+   */
+  public String getCommunities() {
+    return communities;
+  }
+
+  /**
+   * Sets the api key.
+   *
+   * @param communities the new api key
+   */
+  public void setCommunities(String communities) {
+    this.communities = communities;
   }
 
   /**
