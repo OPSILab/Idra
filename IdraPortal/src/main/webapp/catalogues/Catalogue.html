@@ -77,17 +77,22 @@
 				
 				<div class="col-md-12 form-group"
 					ng-class="{ 'has-error': node.homepageInvalid }">
-					<label for="host">Homepage:</label> <input type="url" name="host"
-						class="form-control" ng-model="node.homepage" ng-required />
+					<label for="host">Homepage:</label> 
+					<input type="url" name="host"
+						   class="form-control" ng-model="node.homepage"
+						   ng-disabled="node.nodeType=='DCATDUMP'"
+						   ng-required="node.nodeType!='DCATDUMP'" />
 					<p class="help-block" ng-if="node.homepageInvalid">{{messageHomepage}}</p>
 <!-- 					<p class="help-block" ng-if="checkNodeHomepage() && mode=='create'">Catalogue -->
 <!-- 						host exists</p> -->
 				</div>
 				<div class="col-md-12 form-group"
 					ng-class="{ 'has-error': node.hostInvalid || checkNodeHost() }">
-					<label for="host">API Endpoint:</label> <input type="url" name="host"
-						ng-disabled=" mode=='update'" class="form-control"
-						ng-model="node.host" ng-required />
+					<label for="host">API Endpoint:</label> 
+					<input type="url" name="host"
+						   class="form-control" ng-model="node.host"
+						   ng-disabled="mode=='update' || node.nodeType=='DCATDUMP'"
+						   ng-required="node.nodeType!='DCATDUMP'" />
 					<p class="help-block" ng-if="node.hostInvalid">{{messageUrl}}</p>
 					<p class="help-block" ng-if="checkNodeHost() && mode=='create'">{{'catalogueHostError' | translate}}</p>
 				</div>

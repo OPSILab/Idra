@@ -271,6 +271,7 @@
 	"addURL": "Insert URL",
 	"searchURL": "search URL",
 	"createNewRemoteCatalogue": "Create new remote catalogue",
+	"modifyRemoteCatalogue": "Modify remote catalogue",
 	"searchCatalogueName":"search name",
 	"catalogueType": "Catalogue Type",
 	"authType": "Authentication method",

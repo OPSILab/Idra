@@ -269,7 +269,9 @@
 <script type="text/ng-template" id="RemCatModalContent.html">
 <div class="modal-header">
 	<button type="button" class="close" aria-hidden="true" ng-click="cancel()">x</button>
-    <h3 class="modal-title">{{'createNewRemoteCatalogue' | translate}}</h3>
+    <!--<h3 class="modal-title">{{'createNewRemoteCatalogue' | translate}}</h3>-->
+	<h3 class="modal-title" ng-if="mode == 'create'">{{ 'createNewRemoteCatalogue' | translate }}</h3>
+	<h3 class="modal-title" ng-if="mode != 'create'">{{ 'modifyRemoteCatalogue' | translate }}</h3>
 </div>
 
 
@@ -278,78 +280,78 @@
 		ng-show="alertModal" close="closeAlertModal()" dismiss-on-timeout="3000">
 	{{textAlertModal}} </alert>
 	<div class="col-md-12">
-	<div class="row form-inline" ng-if=" mode=='create' ">
-			<label class="control-label">{{'catalogueType' | translate}}</label>
-				<select ng-model="selected" class="form-control" ng-click="catalogueType(selected); setPlaceholder()">
-				<option value="" selected hidden />
-				<option value="json" ng-selected="true">JSON</option>
-				<option value="idra">Idra</option>
-			    </select>
-	</div>
+		<div class="row form-inline" ng-if=" mode=='create' ">
+				<label class="control-label">{{'catalogueType' | translate}}</label>
+					<select ng-model="selected" class="form-control" ng-click="catalogueType(selected); setPlaceholder()">
+					<option value="" selected hidden />
+					<option value="json" ng-selected="true">JSON</option>
+					<option value="idra">Idra</option>
+					</select>
+		</div>
 	</div>
 	<div class="col-md-12">
-		<div class="row form-inline">
+		<div class="row"><!--form-inline-->
 		<label class="control-label">{{'catalogueName' | translate}}</label>
-			<input type="text" class="form-control" name="catalogueName"
+			<input type="text" class="form-control w-100" name="catalogueName"
 							placeholder="{{'addCatalogueName' | translate}}"
 							ng-model="tmp.catalogueName">
-	</div>
-	<div class="row form-inline" name="formPrefix">
-		<label class="control-label">{{'url' | translate}}</label>
-			<input type="text" class="form-control" name="URL"
-							placeholder="{{somePlaceholder}}" 
-							ng-model="tmp.URL">
-	</div>	
+		</div>
+		<div class="row" name="formPrefix"><!--form-inline-->
+			<label class="control-label">{{'url' | translate}}</label>
+				<input type="text" class="form-control w-100" name="URL"
+								placeholder="{{somePlaceholder}}" 
+								ng-model="tmp.URL">
+		</div>	
 							
-				<!-- NEW -->
-				<div class="row form-inline" ng-show="(isIdra && mode!='update') || (mode=='update' && tmp.username==null && tmp.isIdra)">
-					<label class="control-label">{{'authType' | translate}}</label>
-					<select ng-model="authSelected" class="form-control" ng-click="authenticationType(authSelected)">
-						<option value="" selected hidden />
-						<option value="noAuth" ng-selected="true">N.A.</option>
-						<option value="basic">{{'idraCredentials' | translate}}</option>
-						<option value="oauth2">{{'portalCredentials' | translate}}</option>
-				    </select>
-				</div>
+		<!-- NEW -->
+		<div class="row form-inline" ng-show="(isIdra && mode!='update') || (mode=='update' && tmp.username==null && tmp.isIdra)">
+			<label class="control-label">{{'authType' | translate}}</label>
+			<select ng-model="authSelected" class="form-control" ng-click="authenticationType(authSelected)">
+				<option value="" selected hidden />
+				<option value="noAuth" ng-selected="true">N.A.</option>
+				<option value="basic">{{'idraCredentials' | translate}}</option>
+				<option value="oauth2">{{'portalCredentials' | translate}}</option>
+			</select>
+		</div>
 				
-				<!-- in Edit, è un Idra autenticato -->
-				<div class="row form-inline" ng-show="tmp.isIdra && mode=='update' && tmp.username!=null">
-					<label class="control-label">{{'authType' | translate}}</label>
-					<select ng-model="authSelected" class="form-control" ng-click="authenticationType(authSelected)">
-					    <option value="" selected hidden />
-						<option value="noAuth">N.A.</option>
-						<option value="basic" ng-selected="(tmp.clientID==null)?true:false">{{'idraCredentials' | translate}}</option>
-						<option value="oauth2" ng-selected="(tmp.clientID!=null)?true:false">{{'portalCredentials' | translate}}</option>
-				    </select>
-				</div>
+		<!-- in Edit, è un Idra autenticato -->
+		<div class="row form-inline" ng-show="tmp.isIdra && mode=='update' && tmp.username!=null">
+			<label class="control-label">{{'authType' | translate}}</label>
+			<select ng-model="authSelected" class="form-control" ng-click="authenticationType(authSelected)">
+				<option value="" selected hidden />
+				<option value="noAuth">N.A.</option>
+				<option value="basic" ng-selected="(tmp.clientID==null)?true:false">{{'idraCredentials' | translate}}</option>
+				<option value="oauth2" ng-selected="(tmp.clientID!=null)?true:false">{{'portalCredentials' | translate}}</option>
+			</select>
+		</div>
 			
 	
-				</div>
-			
-			<div class="row form-inline" ng-if=" ((tmp.isIdra) || isIdra)" ng-show="(isBasic) || (mode=='update' && tmp.clientID==null && tmp.username!=null && noAuth==false && isOauth==false) ">
-				<label for="refresh" class="control-label">Username</label> <input type="text" placeholder="Insert Username" class="form-control"
+	</div>
+		<div class="col-md-12">	
+			<div class="row" ng-if=" ((tmp.isIdra) || isIdra)" ng-show="(isBasic) || (mode=='update' && tmp.clientID==null && tmp.username!=null && noAuth==false && isOauth==false) "><!--form-inline-->
+				<label for="refresh" class="control-label">Username</label> <input type="text" placeholder="Insert Username" class="form-control w-100"
 							ng-model="tmp.username">
 				</br>
-				<label for="refresh" class="control-label">Password</label> <input type="password" placeholder="Insert Password" class="form-control"
+				<label for="refresh" class="control-label">Password</label> <input type="password" placeholder="Insert Password" class="form-control w-100"
 							ng-model="tmp.password">
 				</br>
 			</div>
 
 
-			<div class="row form-inline" ng-if="((tmp.isIdra) || isIdra)" ng-show="(isOauth) || (mode=='update' && tmp.clientID!=null && noAuth==false && isBasic==false)">
-				<label for="refresh" class="control-label">Username</label> <input type="text" placeholder="Insert Username" class="form-control"
+			<div class="row" ng-if="((tmp.isIdra) || isIdra)" ng-show="(isOauth) || (mode=='update' && tmp.clientID!=null && noAuth==false && isBasic==false)"><!--form-inline-->
+				<label for="refresh" class="control-label">Username</label> <input type="text" placeholder="Insert Username" class="form-control w-100"
 							ng-model="tmp.username">
 				</br>
-				<label for="refresh" class="control-label">Password</label> <input type="password" placeholder="Insert Password" class="form-control"
+				<label for="refresh" class="control-label">Password</label> <input type="password" placeholder="Insert Password" class="form-control w-100"
 							ng-model="tmp.password">
 				</br>
-				<label for="refresh" class="control-label">Client ID</label> <input type="text" placeholder="Insert Client ID" class="form-control"
+				<label for="refresh" class="control-label">Client ID</label> <input type="text" placeholder="Insert Client ID" class="form-control w-100"
 							ng-model="tmp.clientID">
 				</br>
-				<label for="refresh" class="control-label">Client Secret</label> <input type="text" placeholder="Insert Client secret" class="form-control"
+				<label for="refresh" class="control-label">Client Secret</label> <input type="text" placeholder="Insert Client secret" class="form-control w-100"
 							ng-model="tmp.clientSecret">
 								</br>
-				<label for="refresh" class="control-label">{{'portalURL' | translate}}</label> <input type="text" placeholder="{{'addURL' | translate}}" class="form-control"
+				<label for="refresh" class="control-label">{{'portalURL' | translate}}</label> <input type="text" placeholder="{{'addURL' | translate}}" class="form-control w-100"
 							ng-model="tmp.portal">
 			</div>
 			<!--
@@ -359,7 +361,7 @@
 			</div>	
 	        -->
 	
-	</div>
+		</div>
 </div>
 
 <div class="modal-footer">

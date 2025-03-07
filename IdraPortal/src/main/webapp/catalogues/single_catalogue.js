@@ -601,68 +601,66 @@ angular.module("IdraPlatform").controller('CatalogueCtrl',['$scope','$http','con
 		}
 
 		if(node.host == ''){
-			$scope.node.hostInvalid=true;
-			$scope.messageUrl=$scope.catalogueUrlReq;
+			if(node.nodeType == 'DCATDUMP'){
+				$scope.node.hostInvalid=false;
+				$scope.messageUrl="";
+			}else{
+				$scope.node.hostInvalid=true;
+				$scope.messageUrl=$scope.catalogueUrlReq;
+			}
 		}else{
 			$scope.node.hostInvalid=false;
 			$scope.messageUrl="";
 		}
 		
 		if(node.homepage == ''){
-			$scope.node.homepageInvalid=true;
-			$scope.messageHomepage=$scope.catalogueHomepageReq;
+			if(node.nodeType == 'DCATDUMP'){
+				$scope.node.homepageInvalid=false;
+				$scope.messageHomepage="";
+			}else{
+				$scope.node.homepageInvalid=true;
+				$scope.messageHomepage=$scope.catalogueHomepageReq;
+			}
 		}else{
 			$scope.node.homepageInvalid=false;
 			$scope.messageHomepage="";
 		}
 
-		if($scope.node.nameInvalid || $scope.node.pubNameInvalid || $scope.node.hostInvalid) return;
+		if($scope.node.nameInvalid || $scope.node.pubNameInvalid || $scope.node.hostInvalid || $scope.node.homepageInvalid) return;
 
 		if(!validateUrl(node.homepage)){
-			$scope.node.homepageInvalid=true;
-			$scope.showMessageUrl = true;
-			$scope.messageHomepage =$scope.catalogueValidUrl;
+			if(node.nodeType == 'DCATDUMP'){
+				$scope.node.homepageInvalid=false;
+				$scope.showMessageUrl = false;
+			}else{
+				$scope.node.homepageInvalid=true;
+				$scope.showMessageUrl = true;
+				$scope.messageHomepage =$scope.catalogueValidUrl;
+			}
 		}
 		
-		if(validateUrl(node.host)){
+		if(validateUrl(node.host) || node.nodeType == 'DCATDUMP'){
 
 			switch(node.nodeType){
 			case 'CKAN':
-				node.federationLevel='LEVEL_3';
-				break;
 			case 'ZENODO':
 				node.federationLevel='LEVEL_3';
 				break;
 			case 'DKAN':
-				node.federationLevel='LEVEL_2';
-				break;
 			case 'SOCRATA':
-				node.federationLevel='LEVEL_2';
-				break;
 			case 'SPOD':
-				node.federationLevel='LEVEL_2';
-				break;
 			case 'WEB':
-				node.federationLevel='LEVEL_2';
-				break;
-			case 'DCATDUMP':
-				if(node.dumpURL!='')
-					node.federationLevel='LEVEL_2';
-				else
-					node.federationLevel='LEVEL_4';
-				break;
-			case 'ORION':
-				node.federationLevel='LEVEL_4';
-				break;
 			case 'NGSILD_CB':
-				node.federationLevel='LEVEL_2';
-				break;
-			case 'SPARQL':
-				node.federationLevel='LEVEL_4';
-				break;
 			case 'OPENDATASOFT':
 			case 'JUNAR':	
 				node.federationLevel='LEVEL_2';
+				break;
+			case 'DCATDUMP':
+				node.federationLevel= node.dumpURL!='' ? 'LEVEL_2' : 'LEVEL_4';
+				break;
+			case 'ORION':
+			case 'SPARQL':
+				node.federationLevel='LEVEL_4';
 				break;
 			default:
 				break;

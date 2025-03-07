@@ -263,6 +263,7 @@
 	"addURL": "Inserisci URL",
 	"searchURL": "Cerca URL",
 	"createNewRemoteCatalogue": "Crea nuovo catalogo remoto",
+	"modifyRemoteCatalogue": "Modifica catalogo remoto",
 	"searchCatalogueName":"Cerca nome",
 	"catalogueType": "Tipo di Catalogo",
 	"authType": "Metodo di autenticazione",
