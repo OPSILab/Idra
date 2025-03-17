@@ -18,7 +18,7 @@
 version: '3'
 services :
     db:
-            image: mysql:5.7
+            image: mysql:8.4
             restart: always
             ports:
                 - 3306:3306
@@ -33,7 +33,7 @@ services :
             secrets:
                 - my_secret_data 
 
-            command: --default-authentication-plugin=mysql_native_password --lower_case_table_names=1
+            command: --lower_case_table_names=1
     rdf4j:
             image: yyz1989/rdf4j
             ports:
@@ -52,8 +52,52 @@ services :
                 - ./deep/configuration.js:/var/www/app/deep/deep-components/configuration.js
             networks:
                 idra_main:
+    # NEW VERSION OF THE IDRA PORTAL - also integrated with Metadata Quality Validator Tool
+    idraNewPortal:
+            image: idraopendata/idra-portal:v1.6.5
+            ports:
+                - "4200:80"
+            volumes:
+                - ./config.json:/usr/share/nginx/html/assets/config.json
+                - ./nginx.conf:/etc/nginx/conf.d/default.conf
+    # Metadata Quality Validator Tool
+    mqa-score:
+            image: idraopendata/mqa-scoring:v1.3.5
+            container_name: mqa-score
+            #    build:
+            #      context: .
+            #      dockerfile: ./Dockerfile
+            restart: always
+            ports:
+                - "127.0.0.1:8000:8000"
+            environment:
+                - PORT=8000
+                - MONGO_INITDB_ROOT_USERNAME=root
+                - MONGO_INITDB_DATABASE=admin
+                - MONGO_INITDB_ROOT_PASSWORD=BeOpen2023!
+                - MINIO_URL=play.min.io
+                - MINIO_ACCESS_KEY=Q3AM3UQ867SPQQA43P2F
+                - MINIO_SECRET_KEY=zuf+tfteSlswRu7BJ86wekitnifILbZam1KYY3TG
+                - MINIO_ACTIVE=false
+            networks:
+                idra_main:
+    # Database used by the Metadata Quality Validator Tool
+    mongodb:
+            container_name: mongodb-mqa
+            image: mongo:4.4
+            command: mongod --port 27020
+            environment:
+                - MONGO_INITDB_ROOT_USERNAME=root
+                - MONGO_INITDB_DATABASE=admin
+                - MONGO_INITDB_ROOT_PASSWORD=BeOpen2023!
+            ports:
+                - "127.0.0.1:27020:27020"
+            volumes:
+                - ./data:/data/db  
+            networks:
+                idra_main:
     idra:
-            image: idraopendata/idra:latest
+            image: idraopendata/idra:v3.0.14
             ports:
                 - 8080:8080
             depends_on:
@@ -62,7 +106,7 @@ services :
             command: ["./wait-for-it.sh", "db:3306", "--timeout=0", "--", "catalina.sh", "run"]
 
             environment:
-                - idra.db.host=jdbc:mysql://db:3306/idra_db?serverTimezone=UTC&useLegacyDatetimeCode=false&useEncoding=true&characterEncoding=UTF-8&useSSL=false
+                - idra.db.host=jdbc:mysql://db:3306/idra_db?allowPublicKeyRetrieval=true&serverTimezone=UTC&useLegacyDatetimeCode=false&useEncoding=true&characterEncoding=UTF-8&useSSL=false
                 - idra.db.host.min=jdbc:mysql://db:3306
                 - idra.db.user_FILE=/run/secrets/my_secret_data
                 - idra.db.password_FILE=/run/secrets/my_secret_data
@@ -104,6 +148,8 @@ services :
 networks:
     idra_main:
           driver: bridge
+          driver_opts:
+               com.docker.network.driver.mtu: 1450
           
 secrets:
   my_secret_data:
