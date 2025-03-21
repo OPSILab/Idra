@@ -18,7 +18,7 @@
 version: '3'
 services :
     db:
-            image: mysql:5.7
+            image: mysql:8.4
             restart: always
             ports:
                 - 3306:3306
@@ -33,7 +33,7 @@ services :
             secrets:
                 - my_secret_data 
 
-            command: --default-authentication-plugin=mysql_native_password --lower_case_table_names=1
+            command: --lower_case_table_names=1
     
     rdf4j:
             image: yyz1989/rdf4j
@@ -57,7 +57,7 @@ services :
     
     # NEW VERSION OF THE IDRA PORTAL - integrated with Metadata Quality Validator Tool
     idraNewPortal:
-            image: idraopendata/idra-portal:v1.6.5
+            image: idraopendata/idra-portal:latest
             ports:
                 - "4200:80"
             volumes:
@@ -104,7 +104,7 @@ services :
 
     # Idra back-end latest version
     idra:
-            image: idraopendata/idra:v3.0.14
+            image: idraopendata/idra:latest
             ports:
                 - 8080:8080
             depends_on:
@@ -113,7 +113,7 @@ services :
             command: ["./wait-for-it.sh", "db:3306", "--timeout=0", "--", "catalina.sh", "run"]
 
             environment:
-                - idra.db.host=jdbc:mysql://db:3306/idra_db?serverTimezone=UTC&useLegacyDatetimeCode=false&useEncoding=true&characterEncoding=UTF-8&useSSL=false
+                - idra.db.host=jdbc:mysql://db:3306/idra_db?allowPublicKeyRetrieval=true&serverTimezone=UTC&useLegacyDatetimeCode=false&useEncoding=true&characterEncoding=UTF-8&useSSL=false
                 - idra.db.host.min=jdbc:mysql://db:3306
                 - idra.db.user_FILE=/run/secrets/my_secret_data
                 - idra.db.password_FILE=/run/secrets/my_secret_data
