@@ -16,6 +16,7 @@
 package it.eng.idra.utils;
 
 import it.eng.idra.beans.dcat.DcatDataset;
+
 import it.eng.idra.beans.dcat.DcatDistribution;
 import it.eng.idra.beans.dcat.DctLicenseDocument;
 import it.eng.idra.beans.dcat.DctLocation;
@@ -28,6 +29,7 @@ import it.eng.idra.beans.dcat.SkosConceptTheme;
 import it.eng.idra.beans.dcat.SkosPrefLabel;
 import it.eng.idra.beans.dcat.VcardOrganization;
 import it.eng.idra.beans.odms.OdmsCatalogue;
+import it.eng.idra.connectors.NgsiLdCbDcatConnector;
 import it.eng.idra.utils.restclient.RestClient;
 import it.eng.idra.utils.restclient.RestClientImpl;
 import java.lang.reflect.InvocationTargetException;
@@ -40,6 +42,9 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpResponse;
 import org.apache.jena.vocabulary.DCAT;
 import org.apache.jena.vocabulary.DCTerms;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -48,6 +53,7 @@ import org.json.JSONObject;
  * The Class OrionDcatDeserializer.
  */
 public class NgsiLdCbDcatDeserializer {
+	  private static Logger logger = LogManager.getLogger(NgsiLdCbDcatConnector.class);
   
   //private static Logger logger = LogManager.getLogger(OrionDcatConnector.class);
   
@@ -64,7 +70,7 @@ public class NgsiLdCbDcatDeserializer {
     JSONArray datasetsArray = new JSONArray(returnedJson);
     JSONObject dataset = datasetsArray.getJSONObject(0);
     DcatDataset dcatDataset = datasetToDcat(dataset, node);
-
+logger.info("fine dataset to dcat");
     return dcatDataset;
   }
   
@@ -104,8 +110,11 @@ public class NgsiLdCbDcatDeserializer {
     
     // landingPage
     String landingPage = "";
-    JSONObject lanPageObject = j.getJSONObject("landingPage");
-    landingPage = lanPageObject.getString("value");
+    if (j.has("landingPage")) {
+    	 JSONObject lanPageObject = j.getJSONObject("landingPage");
+    	    landingPage = lanPageObject.getString("value");
+    }
+   
     
     // frequency
     String frequency = "";
@@ -326,6 +335,7 @@ public class NgsiLdCbDcatDeserializer {
           DcatDistribution distro = distributionToDcat(getJsonDistribution(distributionsId.get(i), 
               node), 
               node);
+          logger.info(distro);
           distributionList.add(distro);
           
         }
@@ -387,16 +397,30 @@ public class NgsiLdCbDcatDeserializer {
     Map<String, String> headers = new HashMap<String, String>();
     headers.put("Content-Type", "application/json");
     RestClient client = new RestClientImpl();
-    
-    String distribId = "urn:ngsi-ld:DistributionDCAT-AP:id:" + id.split(":")[4];
+   String idDistr[]= id.split(":");
+   String idDistribution="";
+   for (int i = 4; i< idDistr.length; i++) {
+	   if (i!=idDistr.length-1) {
+		   idDistribution = idDistribution.concat(idDistr[i]).concat(":");  
+	   } else {
+		   idDistribution = idDistribution.concat(idDistr[i]);
+	   }
+	   
+   }
+ logger.info(idDistribution);
+    String distribId = "urn:ngsi-ld:DistributionDCAT-AP:id:" + idDistribution;
 
     String url = node.getHost() + "/ngsi-ld/v1/entities?type=DistributionDCAT-AP&id=" + distribId;
+    logger.info(url);
 
     HttpResponse response = client.sendGetRequest(url, headers);
     String returnedJson = client.getHttpResponseBody(response);
     
+    logger.info(returnedJson);
     JSONArray jsonArr = new JSONArray(returnedJson);
+    logger.info(jsonArr);
     JSONObject jsonObject = jsonArr.getJSONObject(0);
+    logger.info(jsonObject);
     return jsonObject;
   }
   
@@ -416,23 +440,30 @@ public class NgsiLdCbDcatDeserializer {
     distro.setIdentifier(j.getString("id"));
     
     distro.setNodeId(String.valueOf(node.getId())); 
-
+logger.info("id distribution settato");
     String title = null;
     JSONObject titleObject = j.getJSONObject("title");
     title = titleObject.getString("value");
     distro.setTitle(title);
-    
-    distro.setDescription("description");
-    
+    logger.info("title settato");  
+ 
+
+
     String accessUrl = null;
-    JSONObject accessObject = j.getJSONObject("accessUrl");
-    accessUrl = accessObject.getString("value");
-    distro.setAccessUrl(accessUrl);
+    if(j.has("accessUrl")) {
+    	 JSONObject accessObject = j.getJSONObject("accessUrl");
+    	    accessUrl = accessObject.getString("value");
+    	    distro.setAccessUrl(accessUrl);
+    }
+    
     
     String downloadUrl = null;
-    JSONObject downloadObject = j.getJSONObject("downloadURL");
-    downloadUrl = downloadObject.getString("value");
-    distro.setDownloadUrl(downloadUrl);
+    if(j.has("downloadURL")){
+    	  JSONObject downloadObject = j.getJSONObject("downloadURL");
+    	    downloadUrl = downloadObject.getString("value");
+    	    distro.setDownloadUrl(downloadUrl);
+    }
+  
     
     if (j.has("format")) {
       JSONObject formatObject = j.getJSONObject("format");
@@ -496,6 +527,7 @@ public class NgsiLdCbDcatDeserializer {
     //    if (j.has("documentation")) {
     //      logger.info("Distribution documentation skipped");
     //    }
+    logger.info(distro);
     return distro;
   }
   

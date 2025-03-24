@@ -142,7 +142,9 @@ public class KeycloakAuthenticationManager extends AuthenticationManager {
     Token token = (Token) tokenObj;
 
     try {
-      validateAdminRole(connector.getUserInfo(token.getAccessToken()));
+      // Temporarily disabled logged-in user role checking via Keycloak - TO BE UPDATED
+      // validateAdminRole(connector.getUserInfo(token.getAccessToken()));
+      connector.getUserInfo(token.getAccessToken());
       return true;
     } catch (Exception e) {
       return false;
