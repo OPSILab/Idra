@@ -31,7 +31,7 @@ WORKDIR /
 # RUN export http_proxy && export https_proxy    	
 
 ################################################
-# Old commands that refer to the old Hydra portal
+# Old commands that refer to the old Idra portal
 # Update the environment and install various utilities used for installation
 RUN         apk update && \
             apk add git curl
