@@ -4,3 +4,6 @@
 [submodule "mqa-scoring"]
 	path = mqa-scoring
 	url = https://github.com/OPSILab/mqa-scoring
+[submodule "IdraPortal-ngx-Translations"]
+	path = IdraPortal-ngx-Translations
+	url = https://github.com/OPSILab/IdraPortal-ngx-Translations
