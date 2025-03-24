@@ -10,3 +10,6 @@
 [submodule "deep2-components"]
 	path = deep2-components
 	url = https://github.com/OPSILab/deep2-components
+[submodule "deep2-client"]
+	path = deep2-client
+	url = https://github.com/OPSILab/deep2-client
