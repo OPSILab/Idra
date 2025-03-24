@@ -30,21 +30,21 @@ WORKDIR /
     
 # RUN export http_proxy && export https_proxy    	
 
+################################################
+# Old commands that refer to the old Hydra portal
 # Update the environment and install various utilities used for installation
 RUN         apk update && \
             apk add git curl
-
 # Install NodeJS 		
-RUN 		apk add --update nodejs nodejs-npm
-
+# RUN 		apk add --update nodejs nodejs-npm
 #Install Bower
 # RUN npm config set unsafe-perm true
 # RUN			npm install -g bower
-
 ### Clone the official Idra GitHub repository ###
 #RUN			git clone https://github.com/OPSILab/Idra.git #&& mv .bowerrc ./Idra/IdraPortal/src/main/webapp
+################################################
 
-COPY ./Idra .
+COPY . .
     
 ### Build Idra War package
 RUN cd Idra && mvn package
@@ -55,7 +55,6 @@ RUN cd Idra && mvn package
 
 ### Import script for waiting MySQL completes startup
 RUN git clone https://github.com/vishnubob/wait-for-it.git
-
 
 #### Pass built Idra.war and IdraPortal.war to the next build stage in /usr/local/tomcat/webapps container's folder
 FROM        tomcat:8.0.50-jre8-alpine as deploy
