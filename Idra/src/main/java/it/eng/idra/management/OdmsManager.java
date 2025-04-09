@@ -631,26 +631,30 @@ public class OdmsManager {
    * @returns void
    */
   public static void updateOdmsCatalogue(OdmsCatalogue node, boolean persist)
-      throws OdmsCatalogueNotFoundException, OdmsManagerException {
 
-    if (federatedNodes.remove(node)) {
-      if (persist) {
-        PersistenceManager jpa = new PersistenceManager();
-        try {
-          jpa.jpaUpdateOdmsCatalogue(node);
-        } catch (Exception e) {
-          throw new OdmsManagerException(
-              "There " + "was an error while updating the ODMS Node: " + e.getMessage());
-        } finally {
-          jpa.jpaClose();
+    throws OdmsCatalogueNotFoundException, OdmsManagerException {
+      try {
+        if (federatedNodes.remove(node)) {
+          if (persist) {
+            PersistenceManager jpa = new PersistenceManager();
+            try {
+              jpa.jpaUpdateOdmsCatalogue(node);
+            } catch (Exception e) {
+              throw new OdmsManagerException(
+                  "There " + "was an error while updating the ODMS Node: " + e.getMessage());
+            } finally {
+              jpa.jpaClose();
+            }
+          }
+          federatedNodes.add(node);
+
+        } else {
+          throw new OdmsCatalogueNotFoundException("The ODMS node does not exist!");
         }
-      }
-      federatedNodes.add(node);
-
-    } else {
-      throw new OdmsCatalogueNotFoundException("The ODMS node does not exist!");
-    }
-
+      } catch (Exception e) {
+        throw new OdmsManagerException(
+            "There " + "was an error while updating the ODMS Node: " + e.getMessage());
+      } 
   }
 
   /**

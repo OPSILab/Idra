@@ -112,6 +112,9 @@ public class DcatApSerializer {
   /** The Constant FORMAT_BASE_URI. */
   public static final String FORMAT_BASE_URI = "http://publications.europa.eu/mdr/authority/file-type/";
 
+  /** The Constant FORMAT_BASE_URI. */
+  public static final String MEDIATYPE_BASE_URI = "https://www.iana.org/assignments/media-types/";
+
   /** The Constant LICENSE_TYPE_BASE_URI. */
   public static final String LICENSE_TYPE_BASE_URI = "http://purl.org/adms/licencetype/";
 
@@ -655,6 +658,8 @@ public class DcatApSerializer {
 
     serializeFormat(distribution.getFormat(), model, distResource);
 
+    serializeMediaType(distribution.getMediaType(), model, distResource);
+
     serializeLicense(distribution.getLicense(), model, distResource);
 
     serializeByteSize(distribution.getByteSize(), model, distResource);
@@ -787,6 +792,24 @@ public class DcatApSerializer {
       addDcatPropertyAsResource(format, distResource, model, true);
     }
   }
+
+  
+  /**
+   * Serialize mediaType.
+   *
+   * @param mediatype       the format
+   * @param model        the model
+   * @param distResource the dist resource
+   */
+  protected static void serializeMediaType(DcatProperty mediatype, Model model, Resource distResource) {
+
+    if (mediatype != null && StringUtils.isNotBlank(mediatype.getValue())) {
+      mediatype.setValue(MEDIATYPE_BASE_URI + mediatype.getValue());
+      // addDcatPropertyAsResource(format, distResource, model, false);
+      addDcatPropertyAsResource(mediatype, distResource, model, true);
+    }
+  }
+  
 
   /**
    * Serialize dct standard.
