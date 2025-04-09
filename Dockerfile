@@ -1,6 +1,6 @@
 #
 # Idra - Open Data Federation Platform
-# Copyright (C) 2020 Engineering Ingegneria Informatica S.p.A.
+# Copyright (C) 2025 Engineering Ingegneria Informatica S.p.A.
 # 
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as published by
@@ -20,9 +20,8 @@
 # This dockerFile builds the Docker Image from which can be created the related container.
 # This container will install a Tomcat instance where will be deployed the WARs built from the official Idra repository
 
-
 # The base image from which the image build starts
-
+# The image is based on the source code present in the project's Idra folder
 
 FROM        maven:3.5-jdk-8-alpine as build
 MAINTAINER Engineering Ingegneria Informatica S.p.A.
@@ -39,20 +38,20 @@ RUN         apk update && \
 RUN 		apk add --update nodejs nodejs-npm
 
 #Install Bower
-RUN npm config set unsafe-perm true
-RUN			npm install -g bower
+# RUN npm config set unsafe-perm true
+# RUN			npm install -g bower
 
 ### Clone the official Idra GitHub repository ###
 #RUN			git clone https://github.com/OPSILab/Idra.git #&& mv .bowerrc ./Idra/IdraPortal/src/main/webapp
 
-COPY . .
+COPY ./Idra .
     
 ### Build Idra War package
 RUN cd Idra && mvn package
 
 ### Build IdraPortal War package
-RUN cd IdraPortal/src/main/webapp && bower install --allow-root
-RUN cd /IdraPortal && mvn package
+# RUN cd IdraPortal/src/main/webapp && bower install --allow-root
+# RUN cd /IdraPortal && mvn package
 
 ### Import script for waiting MySQL completes startup
 RUN git clone https://github.com/vishnubob/wait-for-it.git
@@ -63,10 +62,11 @@ FROM        tomcat:8.0.50-jre8-alpine as deploy
 
 WORKDIR /
 COPY --from=build /Idra/target/Idra.war /
-COPY --from=build /IdraPortal/target/IdraPortal.war /
+# COPY --from=build /IdraPortal/target/IdraPortal.war /
 COPY --from=build /wait-for-it/wait-for-it.sh /
 
-RUN mv IdraPortal.war /usr/local/tomcat/webapps && mv Idra.war /usr/local/tomcat/webapps
+# RUN mv IdraPortal.war /usr/local/tomcat/webapps && mv Idra.war /usr/local/tomcat/webapps
+RUN mv Idra.war /usr/local/tomcat/webapps
 RUN chmod +x wait-for-it.sh
 
 

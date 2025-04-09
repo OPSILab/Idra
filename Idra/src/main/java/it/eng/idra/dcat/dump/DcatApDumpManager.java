@@ -28,10 +28,12 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Paths;
+import java.nio.charset.StandardCharsets;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.solr.client.solrj.SolrServerException;
+import java.nio.charset.Charset;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -112,17 +114,24 @@ public class DcatApDumpManager {
     try {
       if (forceDump) {
         if (StringUtils.isBlank(nodeId)) {
+          logger.info("Forcing dump creation for all datasets");
           return DcatApSerializer.searchResultToDcatAp(MetadataCacheManager.searchAllDatasets(),
-              dumpFormat, dumpProfile, DcatApWriteType.FILE).getBytes();
+              dumpFormat, dumpProfile, DcatApWriteType.FILE).getBytes(StandardCharsets.UTF_8);
         } else {
+          logger.info("Forcing dump creation for nodeID: " + nodeId);
           return DcatApSerializer.searchResultToDcatApByNode(nodeId,
               MetadataCacheManager.searchAllDatasetsByOdmsNode(Integer.parseInt(nodeId)),
-              dumpFormat, dumpProfile, DcatApWriteType.FILE).getBytes();
+              dumpFormat, dumpProfile, DcatApWriteType.FILE).getBytes(StandardCharsets.UTF_8);
         }
       } else {
-        return Files.readAllBytes(Paths.get(globalDumpFilePath + globalDumpFileName
-            + (StringUtils.isBlank(nodeId) ? "" : new String("_node_" + nodeId))
+        logger.info("Reading dump file" + (StringUtils.isNotBlank(nodeId) ? ("for nodeID: " + nodeId)
+            : "" + " from file system"));
+        byte[] val = Files.readAllBytes(Paths.get(globalDumpFilePath + globalDumpFileName
+            + (StringUtils.isBlank(nodeId) ? "" : "_node_" + nodeId)
             + (returnZip ? ".zip" : "")));
+            // read as ANSI
+            String ansiString = new String(val, Charset.forName("ISO-8859-1"));
+            return ansiString.getBytes(StandardCharsets.UTF_8);
       }
 
     } catch (NoSuchFileException e) {
@@ -134,12 +143,14 @@ public class DcatApDumpManager {
       // Create the dump file for the relative node
 
       if (StringUtils.isBlank(nodeId)) {
+        logger.info("Creating dump for all datasets");
         return DcatApSerializer.searchResultToDcatAp(MetadataCacheManager.searchAllDatasets(),
             dumpFormat, dumpProfile, DcatApWriteType.FILE).getBytes();
       } else {
+        logger.info("Creating dump for nodeID: " + nodeId);
         return DcatApSerializer.searchResultToDcatApByNode(nodeId,
             MetadataCacheManager.searchAllDatasetsByOdmsNode(Integer.parseInt(nodeId)), dumpFormat,
-            dumpProfile, DcatApWriteType.FILE).getBytes();
+            dumpProfile, DcatApWriteType.FILE).getBytes(StandardCharsets.UTF_8);
       }
 
     }

@@ -1,0 +1,20 @@
+
+{   
+    "enableAuthentication":true,
+    "idmBaseURL":"https://your-keycloak-domain.it",
+    "authenticationMethod":"keycloak",
+    "authProfile": "oidc",
+    "keyCloakBaseURL": "https://your-keycloak-domain.it",
+    "dashboardBaseURL":"https://your-domain.it/IdraPortal",
+    "keyCloakRealmName":"master",
+    "idmRealmName":"urbanite",
+    "client_id":"urbanite",
+    "client_secret": "",
+    "idra_base_url":"https://your-domain.it",
+    "enable_datalet":true,
+    "datalet_base_url":"https://your-domain.it/deep/deep-components/creator.html",
+    "mqa_base_url": "https://your-domain.it/mqa-validator",
+    "idra_docker_url": "https://your-domain.it",
+    "languages": ["en","de","fr","it","sp","gr","pt","lt"],
+    "idra.orion.manager.url": false
+}

@@ -901,6 +901,11 @@ public class DcatApSerializer {
 
     // Add the property as literal value
     if (StringUtils.isNotBlank(property.getValue())) {
+      String value = property.getValue();
+      
+      logger.info("Value: " + value);
+      logger.info("Property: " + property.getProperty());
+      logger.info("Property Value: " + property.getValue());
       parentResource.addProperty(property.getProperty(), model.createLiteral(property.getValue()));
     }
   }
