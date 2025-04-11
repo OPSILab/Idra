@@ -76,13 +76,14 @@ public final class ZenodoClient {
         }
 
         // Default to 'road-steamer' community if communities are null or empty
-        if (communities == null || communities.trim().isEmpty()) {
-            communities = "road-steamer";
-        }
+        // if (communities == null || communities.trim().isEmpty()) {
+        // communities = "road-steamer";
+        // }
 
-        if (communities != null && !communities.trim().isEmpty()) {
-            urlStringBuilder.append("communities=").append(communities).append("&");
-        }
+        // because it already have that part
+        // if (communities != null && !communities.trim().isEmpty()) {
+        // urlStringBuilder.append("communities=").append(communities).append("&");
+        // }
 
         if (status != null && !status.trim().isEmpty()) {
             urlStringBuilder.append("status=").append(status).append("&");
@@ -135,7 +136,9 @@ public final class ZenodoClient {
         do {
             try {
 
-                returned_json.append(_connection.sendGetRequest("records?" + urlStringBuilderFinal));
+                // returned_json.append(_connection.sendGetRequest("records?" +
+                // urlStringBuilderFinal));
+                returned_json.append(_connection.sendGetRequest("&" + urlStringBuilderFinal));
 
                 logger.info("ZenodoClient - findRecords - returned_json: " + returned_json.toString());
 

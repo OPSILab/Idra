@@ -1,6 +1,6 @@
 <!--
   Idra - Open Data Federation Platform
-   Copyright (C) 2020 Engineering Ingegneria Informatica S.p.A.
+   Copyright (C) 2025 Engineering Ingegneria Informatica S.p.A.
    
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published by
@@ -89,10 +89,21 @@
 				<div class="col-md-12 form-group"
 					ng-class="{ 'has-error': node.hostInvalid || checkNodeHost() }">
 					<label for="host">API Endpoint:</label> 
+
+	 			<!--ng-init="node.host = 'https://zenodo.org/api/'"-->
+				<!--ZENODO-->
+					<input type="url" name="host"
+						   class="form-control" ng-model="node.host"
+						   ng-disabled="mode=='update' || mode=='create'"
+						   ng-if="node.nodeType == 'ZENODO'"
+						   ng-value="'https://zenodo.org/api/'"/>
+
 					<input type="url" name="host"
 						   class="form-control" ng-model="node.host"
 						   ng-disabled="mode=='update' || node.nodeType=='DCATDUMP'"
-						   ng-required="node.nodeType!='DCATDUMP'" />
+						   ng-required="node.nodeType!='DCATDUMP'"
+						   ng-if="node.nodeType != 'ZENODO'" />
+
 					<p class="help-block" ng-if="node.hostInvalid">{{messageUrl}}</p>
 					<p class="help-block" ng-if="checkNodeHost() && mode=='create'">{{'catalogueHostError' | translate}}</p>
 				</div>
@@ -167,10 +178,12 @@
 						<input type="text" name="apikey" class="form-control" ng-model="node.APIKey" />
 					</div> 
 				</div>
-				<div class="col-md-12 form-group" ng-if="node.nodeType=='ZENODO'">
+				<div class="col-md-12 form-group" ng-class="{ 'has-error': node.hostInvalid }" ng-if="node.nodeType=='ZENODO'">
 					<div class="col-md-12 form-group">
 						<label for="zenodocommunities">Communities:</label> 
-						<input type="text" name="communities" class="form-control" ng-model="node.communities" />
+						<input type="text" name="communities" class="form-control" ng-model="node.communities" 
+							   ng-required="mode=='create'" ng-disabled="mode=='update'" />
+						<p class="help-block" ng-if="node.hostInvalid">{{'catalogueCommunitiesReq' | translate}}</p>
 					</div> 
 				</div>
 				<div class="col-md-12 form-group" ng-if="node.nodeType=='ORION'">

@@ -60,9 +60,8 @@ public class OdmsManager {
   private static List<OdmsCatalogue> federatedNodes = new ArrayList<OdmsCatalogue>();
 
   /** The ODMS connectors list. */
-  private static HashMap<OdmsCatalogueType, String> ODMSConnectorsList = 
-      new HashMap<OdmsCatalogueType, String>();
-  
+  private static HashMap<OdmsCatalogueType, String> ODMSConnectorsList = new HashMap<OdmsCatalogueType, String>();
+
   /** The get nodes lock. */
   private static boolean getNodesLock = false;
   // private static PersistenceManager jpa;
@@ -88,7 +87,7 @@ public class OdmsManager {
           "it.eng.idra.connectors.DcatDumpConnector");
       ODMSConnectorsList.put(OdmsCatalogueType.DKAN, "it.eng.idra.connectors.DkanConnector");
       ODMSConnectorsList.put(OdmsCatalogueType.ORION, "it.eng.idra.connectors.OrionConnector");
-      ODMSConnectorsList.put(OdmsCatalogueType.NGSILD_CB, 
+      ODMSConnectorsList.put(OdmsCatalogueType.NGSILD_CB,
           "it.eng.idra.connectors.NgsiLdCbDcatConnector");
       ODMSConnectorsList.put(OdmsCatalogueType.SPARQL, "it.eng.idra.connectors.SparqlConnector");
       ODMSConnectorsList.put(OdmsCatalogueType.SPOD, "it.eng.idra.connectors.SpodConnector");
@@ -348,6 +347,16 @@ public class OdmsManager {
 
   }
 
+  public static boolean hasDuplicateZenodoCommunity(List<OdmsCatalogue> nodes, OdmsCatalogue newNode) {
+    return "ZENODO".equalsIgnoreCase(newNode.getNodeType().toString())
+        && newNode.getCommunities() != null
+        && !newNode.getCommunities().isBlank()
+        && nodes.stream()
+            .filter(n -> "ZENODO".equalsIgnoreCase(n.getNodeType().toString()))
+            .map(OdmsCatalogue::getCommunities)
+            .anyMatch(c -> c != null && c.equalsIgnoreCase(newNode.getCommunities()));
+  }
+
   /**
    * Adds a federated ODMS node to the Federation Sends a request to CKAN node to
    * retrieve the datasets count Updates the dataset count of the node Forwards
@@ -375,7 +384,7 @@ public class OdmsManager {
     int assignedNodeId;
     int datasetsCount = 0;
 
-    if (!federatedNodes.contains(node)) {
+    if (!federatedNodes.contains(node) || !hasDuplicateZenodoCommunity(federatedNodes, node)) {
       PersistenceManager jpa = new PersistenceManager();
 
       try {
@@ -456,7 +465,7 @@ public class OdmsManager {
               }
 
             }
-            
+
             updateNode = true;
           } else if (node.getNodeType().equals(OdmsCatalogueType.ORION)) {
 

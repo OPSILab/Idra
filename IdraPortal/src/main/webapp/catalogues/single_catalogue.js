@@ -1,6 +1,6 @@
 /*******************************************************************************
  * Idra - Open Data Federation Platform
- *  Copyright (C) 2024 Engineering Ingegneria Informatica S.p.A.
+ *  Copyright (C) 2025 Engineering Ingegneria Informatica S.p.A.
  *  
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -556,7 +556,13 @@ angular.module("IdraPlatform").controller('CatalogueCtrl',['$scope','$http','con
 	
 	$scope.checkNodeHost=function(){
 		
-		if($rootScope.mode=='create' && $scope.node!=''){
+	if($rootScope.mode=='create' && $scope.node!=''&& $scope.node.host!='')
+	{
+
+		if ($scope.node.nodeType == 'ZENODO') {
+				return false;
+			}
+		// Original logic for other catalogs
 			var tmpHost="";
 			if($scope.node.host[$scope.node.host.length-1]=='/'){
 				tmpHost=$scope.node.host.substring(0,$scope.node.host.length-1);
@@ -566,7 +572,7 @@ angular.module("IdraPlatform").controller('CatalogueCtrl',['$scope','$http','con
 			if($rootScope.urls.indexOf($scope.node.host.toLowerCase())>=0 || $rootScope.urls.indexOf(tmpHost.toLowerCase())>=0){
 				return true;
 			}
-		}
+	}
 		return false;
 	}
 	
@@ -604,7 +610,23 @@ angular.module("IdraPlatform").controller('CatalogueCtrl',['$scope','$http','con
 			if(node.nodeType == 'DCATDUMP'){
 				$scope.node.hostInvalid=false;
 				$scope.messageUrl="";
-			}else{
+			}
+			else if(node.nodeType == 'ZENODO'){
+				if(node.communities == '')
+				{
+					$scope.node.hostInvalid=true;
+					$scope.messageUrl=$scope.catalogueCommunitiesReq;
+					$scope.showMessageUrl = true;
+				}
+				else
+				{
+					$scope.node.hostInvalid=false;
+					$scope.messageUrl="";
+					$scope.showMessageUrl = false;
+					node.host = 'https://zenodo.org/api/records?communities='+node.communities;
+				}
+				}
+			else{
 				$scope.node.hostInvalid=true;
 				$scope.messageUrl=$scope.catalogueUrlReq;
 			}

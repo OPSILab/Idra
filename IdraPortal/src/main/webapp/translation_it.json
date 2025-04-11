@@ -336,6 +336,7 @@
 	"authenticationFailed":"Autenticazione fallita",
 	"authenticationFailedMex":"Effettua prima il login!",
 	"registrationFailed":"Registrazione fallita",
+	"catalogueCommunitiesReq":"Campo comunità catalogo obbligatorio per URL completo",
 	
 	"DatasetEvaluation": "Valutazione",
 	"EvaluationIndexes": "Indici di valutazione del dataset",

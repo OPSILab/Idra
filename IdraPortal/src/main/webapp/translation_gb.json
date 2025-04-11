@@ -344,6 +344,7 @@
 	"authenticationFailed":"Authentication failed",
 	"authenticationFailedMex":"Please login first!",
 	"registrationFailed":"Registration failed",
+	"catalogueCommunitiesReq":"Catalogue communities field required for complete url",
 	
 	"DatasetEvaluation": "Evaluation",
 	"EvaluationIndexes" : "Dataset evaluation indexes",
