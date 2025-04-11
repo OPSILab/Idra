@@ -40,7 +40,9 @@ import it.eng.idra.beans.search.SearchResult;
 import it.eng.idra.cache.CachePersistenceManager;
 import it.eng.idra.cache.LodCacheManager;
 import it.eng.idra.cache.MetadataCacheManager;
+import it.eng.idra.dcat.dump.DcatApDeserializer;
 import it.eng.idra.dcat.dump.DcatApDumpManager;
+import it.eng.idra.dcat.dump.DcatApItDeserializer;
 import it.eng.idra.dcat.dump.DcatApSerializer;
 import it.eng.idra.scheduler.IdraScheduler;
 import it.eng.idra.scheduler.exception.SchedulerNotInitialisedException;
@@ -55,6 +57,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
+import org.apache.commons.lang.StringUtils;
+import org.apache.jena.rdf.model.Model;
 import javax.net.ssl.SSLHandshakeException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -743,7 +747,6 @@ public class FederationCore {
         // SynchManager.addODMSNodeSynchTimer(node, false);
 
         IdraScheduler.getSingletonInstance().startCataloguesSynchJob(node, false);
-
       }
 
       if (oldLevel.equals(OdmsCatalogueFederationLevel.LEVEL_2)
@@ -772,11 +775,45 @@ public class FederationCore {
         MetadataCacheManager.deleteAllDatasetsByOdmsCatalogue(node);
         MetadataCacheManager.loadCacheFromOdmsCatalogue(node, false);
       }
+      
+      // Add code to update the dump file if a new dumpString is provided for DCATDUMP catalogs
+      if (node.getNodeType().equals(OdmsCatalogueType.DCATDUMP)) {
+        if (StringUtils.isNotBlank(node.getDumpString())) {
+          Model m = null;
+          switch (node.getDcatProfile()) {
+            case DCATAP_IT:
+              m = new DcatApItDeserializer().dumpToModel(node.getDumpString(), node);
+              break;
+            default:
+              // If no profile was provided, instantiate a base DCATAP Deserializer
+              m = new DcatApDeserializer().dumpToModel(node.getDumpString(), node);
+              break;
+          }
+
+          // Use existing file path or create a new one if needed
+          String filePath = node.getDumpFilePath();
+          if (StringUtils.isBlank(filePath)) {
+            String odmsDumpFilePath = PropertyManager.getProperty(IdraProperty.ODMS_DUMP_FILE_PATH);
+            filePath = odmsDumpFilePath + "dumpFileString_" + node.getId();
+            node.setDumpFilePath(filePath);
+          } else {
+            // Extract directory and filename from the existing path
+            int lastSlashIndex = filePath.lastIndexOf('/');
+            String directory = (lastSlashIndex > 0) ? filePath.substring(0, lastSlashIndex + 1) : "";
+            String filename = (lastSlashIndex > 0) ? filePath.substring(lastSlashIndex + 1) : filePath;
+            
+            // Write model to file
+            DcatApSerializer.writeModelToFile(m, DcatApFormat.RDFXML, directory, filename);
+            
+            logger.info("Updated dump file at: " + filePath);
+          }
+        }
+      }
 
     } catch (SchedulerNotInitialisedException e) {
-      // TODO Auto-generated catch block
       e.printStackTrace();
     }
+    
     OdmsManager.updateOdmsCatalogue(node, true);
     OdmsManager.insertOdmsMessage(node.getId(), "Node successfully updated");
     logger.info("The ODMS Catalogue with name: " + node.getName() + " and ID: " + node.getId()
@@ -786,7 +823,6 @@ public class FederationCore {
     try {
       OdmsManager.updateOdmsCatalogueList();
     } catch (SQLException e) {
-      // TODO Auto-generated catch block
       e.printStackTrace();
     }
 
