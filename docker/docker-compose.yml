@@ -18,13 +18,13 @@
 version: '3'
 services :
     db:
-            image: mysql:5.7
+            image: mysql:8.4
             restart: always
             ports:
                 - 3306:3306
             volumes:
                 - ./opt/idra/mysql-data:/var/lib/mysql
-                - ../idra_db.sql:/docker-entrypoint-initdb.d/idra_db.sql
+                - ./db-config/idra_db.sql:/docker-entrypoint-initdb.d/idra_db.sql
             networks:
                 idra_main:
             environment:
@@ -33,7 +33,8 @@ services :
             secrets:
                 - my_secret_data 
 
-            command: --default-authentication-plugin=mysql_native_password --lower_case_table_names=1
+            command: --lower_case_table_names=1
+    
     rdf4j:
             image: yyz1989/rdf4j
             ports:
@@ -44,6 +45,7 @@ services :
                 - RDF4J_DATA=/opt/rdf4j/data
             networks:
                 idra_main:
+    
     deep:
             image: idraopendata/deep:2.2.6
             ports:
@@ -52,6 +54,55 @@ services :
                 - ./deep/configuration.js:/var/www/app/deep/deep-components/configuration.js
             networks:
                 idra_main:
+    
+    # NEW VERSION OF THE IDRA PORTAL - integrated with Metadata Quality Validator Tool
+    idraNewPortal:
+            image: idraopendata/idra-portal:latest
+            ports:
+                - "4200:80"
+            volumes:
+                - ./idra-new-portal-config/config.json:/usr/share/nginx/html/assets/config.json
+                - ./idra-new-portal-config/nginx.conf:/etc/nginx/conf.d/default.conf
+    
+    # Metadata Quality Validator Tool
+    mqa-score:
+            image: mingo07/mqa-scoring:v1.3.5
+            container_name: mqa-score
+            #    build:
+            #      context: .
+            #      dockerfile: ./Dockerfile
+            restart: always
+            ports:
+                - "8000:8000"
+            environment:
+                - PORT=8000
+                - MONGO_INITDB_ROOT_USERNAME=root
+                - MONGO_INITDB_DATABASE=admin
+                - MONGO_INITDB_ROOT_PASSWORD=BeOpen2023!
+                - MINIO_URL=play.min.io
+                - MINIO_ACCESS_KEY=Q3AM3UQ867SPQQA43P2F
+                - MINIO_SECRET_KEY=zuf+tfteSlswRu7BJ86wekitnifILbZam1KYY3TG
+                - MINIO_ACTIVE=false
+            networks:
+                idra_main:
+
+    # Database used by the Metadata Quality Validator Tool
+    mongodb:
+            container_name: mongodb-mqa
+            image: mongo:4.4
+            command: mongod --port 27020
+            environment:
+                - MONGO_INITDB_ROOT_USERNAME=root
+                - MONGO_INITDB_DATABASE=admin
+                - MONGO_INITDB_ROOT_PASSWORD=BeOpen2023!
+            ports:
+                - "27020:27020"
+            volumes:
+                - ./data:/data/db  
+            networks:
+                idra_main:
+
+    # Idra back-end latest version
     idra:
             image: idraopendata/idra:latest
             ports:
@@ -62,7 +113,7 @@ services :
             command: ["./wait-for-it.sh", "db:3306", "--timeout=0", "--", "catalina.sh", "run"]
 
             environment:
-                - idra.db.host=jdbc:mysql://db:3306/idra_db?serverTimezone=UTC&useLegacyDatetimeCode=false&useEncoding=true&characterEncoding=UTF-8&useSSL=false
+                - idra.db.host=jdbc:mysql://db:3306/idra_db?allowPublicKeyRetrieval=true&serverTimezone=UTC&useLegacyDatetimeCode=false&useEncoding=true&characterEncoding=UTF-8&useSSL=false
                 - idra.db.host.min=jdbc:mysql://db:3306
                 - idra.db.user_FILE=/run/secrets/my_secret_data
                 - idra.db.password_FILE=/run/secrets/my_secret_data
@@ -79,20 +130,33 @@ services :
                 - idra.lod.server.uri.query=http://rdf4j:8080/rdf4j-workbench/repositories/Idra/query
                 - idra.orion.orionDumpFilePath=/opt/idra/dump/
                 - idra.orion.orionInternalAPI=http://localhost:8080/Idra/api/v1/client/executeOrionQuery
-                - idra.authentication.method=BASIC
                 - idm.fiware.version=7
+                - DATALET_ENABLED=true
+                - DATALET_URL=https://your-domain.it/deep/deep-components/demo.html
+                - JAVA_OPTS=-Xms1024m -Xmx3g -XX:PermSize=1024m -XX:MaxPermSize=2048m
+                - idra.orion.manager.url=http://ngsi-broker:8082/
+            # env variables for BASIC authentication that is the one managed directly in Idra
+                - idra.authentication.method=BASIC
                 - idm.protocol=https
                 - idm.host=
                 - idm.path.base=
                 - idm.client.id=
                 - idm.client.secret=
-                - idm.redirecturi=http://IDRA_HOST/Idra/api/v1/administration/login
-                - idm.logout.callback=http://IDRA_HOST/IdraPortal
-                - idra.server.baseurl=<IDRA_PROTOCOL>://<IDRA_HOST>
+                - idm.redirecturi=https://your-domain.it/Idra/api/v1/administration/login
+                - idm.logout.callback=https://your-domain.it/IdraPortal
+                - idra.server.baseurl=https://your-domain.it/
                 - idm.admin.role.name=Admin
-                - DATALET_ENABLED=true
-                - DATALET_URL=http://localhost:80/deep/deep-components/demo.html
-                - JAVA_OPTS=-Xms1024m -Xmx3g -XX:PermSize=1024m -XX:MaxPermSize=2048m
+            # env variables for KEYCLOAK authentication that is the one managed via an instance of Keycloak Identity and Access Manager
+                 # - idra.authentication.method=KEYCLOAK
+                 # - idm.protocol=https
+                 # - idm.host=your-keycloak-domain.it/auth/realms/master/protocol/openid-connect
+                 # - idm.path.base=
+                 # - idm.client.id=idra
+                 # - idm.client.secret=
+                 # - idm.redirecturi=https://your-domain.it/Idra/api/v1/administration/login
+                 # - idm.logout.callback=https://your-domain.it/IdraPortal
+                 # - idra.server.baseurl=https://your-domain.it/
+                 # - idm.admin.role.name=""
             secrets:
                 - my_secret_data           
             volumes:

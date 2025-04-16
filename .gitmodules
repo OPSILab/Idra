@@ -1,0 +1,15 @@
+[submodule "IdraPortal-ngx"]
+	path = IdraPortal-ngx
+	url = https://github.com/OPSILab/IdraPortal-ngx
+[submodule "mqa-scoring"]
+	path = mqa-scoring
+	url = https://github.com/OPSILab/mqa-scoring
+[submodule "IdraPortal-ngx-Translations"]
+	path = IdraPortal-ngx-Translations
+	url = https://github.com/OPSILab/IdraPortal-ngx-Translations
+[submodule "deep2-components"]
+	path = deep2-components
+	url = https://github.com/OPSILab/deep2-components
+[submodule "deep2-client"]
+	path = deep2-client
+	url = https://github.com/OPSILab/deep2-client

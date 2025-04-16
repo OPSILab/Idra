@@ -347,6 +347,8 @@ public class DcatApItSerializer extends DcatApSerializer {
     addDcatPropertyAsLiteral(distribution.getDescription(), distResource, model);
 
     serializeFormat(distribution.getFormat(), model, distResource);
+    
+    serializeMediaType(distribution.getMediaType(), model, distResource);
 
     serializeLicense(distribution.getLicense(), model, distResource);
 

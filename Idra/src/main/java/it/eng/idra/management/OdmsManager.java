@@ -1,6 +1,6 @@
 /*******************************************************************************
  * Idra - Open Data Federation Platform
- * Copyright (C) 2021 Engineering Ingegneria Informatica S.p.A.
+ * Copyright (C) 2024 Engineering Ingegneria Informatica S.p.A.
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -60,8 +60,7 @@ public class OdmsManager {
   private static List<OdmsCatalogue> federatedNodes = new ArrayList<OdmsCatalogue>();
 
   /** The ODMS connectors list. */
-  private static HashMap<OdmsCatalogueType, String> ODMSConnectorsList = 
-      new HashMap<OdmsCatalogueType, String>();
+  private static HashMap<OdmsCatalogueType, String> ODMSConnectorsList = new HashMap<OdmsCatalogueType, String>();
   
   /** The get nodes lock. */
   private static boolean getNodesLock = false;
@@ -88,13 +87,14 @@ public class OdmsManager {
           "it.eng.idra.connectors.DcatDumpConnector");
       ODMSConnectorsList.put(OdmsCatalogueType.DKAN, "it.eng.idra.connectors.DkanConnector");
       ODMSConnectorsList.put(OdmsCatalogueType.ORION, "it.eng.idra.connectors.OrionConnector");
-      ODMSConnectorsList.put(OdmsCatalogueType.NGSILD_CB, 
+      ODMSConnectorsList.put(OdmsCatalogueType.NGSILD_CB,
           "it.eng.idra.connectors.NgsiLdCbDcatConnector");
       ODMSConnectorsList.put(OdmsCatalogueType.SPARQL, "it.eng.idra.connectors.SparqlConnector");
       ODMSConnectorsList.put(OdmsCatalogueType.SPOD, "it.eng.idra.connectors.SpodConnector");
       ODMSConnectorsList.put(OdmsCatalogueType.OPENDATASOFT,
           "it.eng.idra.connectors.OpenDataSoftConnector");
       ODMSConnectorsList.put(OdmsCatalogueType.JUNAR, "it.eng.idra.connectors.JunarConnector");
+      ODMSConnectorsList.put(OdmsCatalogueType.ZENODO, "it.eng.idra.connectors.ZenodoConnector");
 
     } catch (Exception e) {
       e.printStackTrace();
@@ -347,6 +347,16 @@ public class OdmsManager {
 
   }
 
+  public static boolean hasDuplicateZenodoCommunity(List<OdmsCatalogue> nodes, OdmsCatalogue newNode) {
+    return "ZENODO".equalsIgnoreCase(newNode.getNodeType().toString())
+        && newNode.getCommunities() != null
+        && !newNode.getCommunities().isBlank()
+        && nodes.stream()
+            .filter(n -> "ZENODO".equalsIgnoreCase(n.getNodeType().toString()))
+            .map(OdmsCatalogue::getCommunities)
+            .anyMatch(c -> c != null && c.equalsIgnoreCase(newNode.getCommunities()));
+  }
+  
   /**
    * Adds a federated ODMS node to the Federation Sends a request to CKAN node to
    * retrieve the datasets count Updates the dataset count of the node Forwards
@@ -374,7 +384,7 @@ public class OdmsManager {
     int assignedNodeId;
     int datasetsCount = 0;
 
-    if (!federatedNodes.contains(node)) {
+    if (!federatedNodes.contains(node) || !hasDuplicateZenodoCommunity(federatedNodes, node)) {
       PersistenceManager jpa = new PersistenceManager();
 
       try {
@@ -631,26 +641,30 @@ public class OdmsManager {
    * @returns void
    */
   public static void updateOdmsCatalogue(OdmsCatalogue node, boolean persist)
-      throws OdmsCatalogueNotFoundException, OdmsManagerException {
 
-    if (federatedNodes.remove(node)) {
-      if (persist) {
-        PersistenceManager jpa = new PersistenceManager();
-        try {
-          jpa.jpaUpdateOdmsCatalogue(node);
-        } catch (Exception e) {
-          throw new OdmsManagerException(
-              "There " + "was an error while updating the ODMS Node: " + e.getMessage());
-        } finally {
-          jpa.jpaClose();
+    throws OdmsCatalogueNotFoundException, OdmsManagerException {
+      try {
+        if (federatedNodes.remove(node)) {
+          if (persist) {
+            PersistenceManager jpa = new PersistenceManager();
+            try {
+              jpa.jpaUpdateOdmsCatalogue(node);
+            } catch (Exception e) {
+              throw new OdmsManagerException(
+                  "There " + "was an error while updating the ODMS Node: " + e.getMessage());
+            } finally {
+              jpa.jpaClose();
+            }
+          }
+          federatedNodes.add(node);
+
+        } else {
+          throw new OdmsCatalogueNotFoundException("The ODMS node does not exist!");
         }
-      }
-      federatedNodes.add(node);
-
-    } else {
-      throw new OdmsCatalogueNotFoundException("The ODMS node does not exist!");
-    }
-
+      } catch (Exception e) {
+        throw new OdmsManagerException(
+            "There " + "was an error while updating the ODMS Node: " + e.getMessage());
+      } 
   }
 
   /**
