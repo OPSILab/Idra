@@ -830,7 +830,8 @@ public class DcatApDeserializer implements IdcatApDeserialize {
     linkedSchemas = deserializeDctStandard(nodeId, r);
     String mediaType = null;
     if (r.hasProperty(DCAT.mediaType)) {
-      mediaType = r.getProperty(DCAT.mediaType).getString();
+      mediaType = deserializeMediaType(DCAT.mediaType);
+      // mediaType = r.getProperty(DCAT.mediaType).getString();
     }
 
     if (r.hasProperty(DCTerms.issued)) {
@@ -920,6 +921,22 @@ public class DcatApDeserializer implements IdcatApDeserialize {
     return format;
   }
 
+  public String deserializeMediaType(Resource r) {
+
+    Resource mediaTypeR = r.getPropertyResourceValue(DCAT.mediaType);
+    String mediaTypeUri = null;
+    String mediaType = null;
+    if (mediaTypeR != null && StringUtils.isNotBlank(mediaTypeUri = mediaTypeR.getURI())) {
+      if (!IRIFactory.iriImplementation().create(mediaTypeUri).hasViolation(false)) {
+        mediaType = extractMediaTypeFromUri(mediaTypeUri);
+      } else {
+        mediaType = mediaTypeUri;
+      }
+
+    }
+    return mediaType;
+  }
+
   /**
    * extractFormatFromURI.
    *
@@ -931,6 +948,24 @@ public class DcatApDeserializer implements IdcatApDeserialize {
     Matcher matcher = Pattern
         .compile(
             "http:\\/\\/publications\\.europa\\.eu\\/resource\\/authority\\/file-type(\\/|#)(\\w*)")
+        .matcher(uri);
+    String result = null;
+
+    return (matcher.find() && (result = matcher.group(2)) != null) ? result : "";
+
+  }
+
+  /**
+   * extractMediaTypeFromURI.
+   *
+   * @param uri the uri
+   * @return the string
+   */
+  public String extractMediaTypeFromUri(String uri) {
+// update with https://www.iana.org/assignments/media-types/
+    Matcher matcher = Pattern
+        .compile(
+            "https:\\/\\/www\\.iana\\.org\\/assignments\\/media-types(\\/|#)(\\w*)")
         .matcher(uri);
     String result = null;
 

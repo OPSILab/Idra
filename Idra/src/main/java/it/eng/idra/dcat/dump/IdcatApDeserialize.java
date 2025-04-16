@@ -172,6 +172,14 @@ public interface IdcatApDeserialize {
   String deserializeFormat(Resource r);
 
   /**
+   * Deserialize format.
+   *
+   * @param r the r
+   * @return the string
+   */
+  String deserializeMediaType(Resource r);
+
+  /**
    * Extract format from uri.
    *
    * @param uri the uri
