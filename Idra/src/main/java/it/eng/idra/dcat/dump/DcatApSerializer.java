@@ -955,7 +955,10 @@ public class DcatApSerializer {
     } catch (Exception e) {
       e.printStackTrace();
     } finally {
-      out.close();
+    	  if(out!=null){
+    		  out.close();
+    	    }
+     
       Instant tock = Instant.now();
       logger.info("File writing completed in: " + Duration.between(tick, tock).toString());
 
