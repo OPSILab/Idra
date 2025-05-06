@@ -384,7 +384,7 @@ public class OdmsManager {
     int assignedNodeId;
     int datasetsCount = 0;
 
-    if (!federatedNodes.contains(node) || !hasDuplicateZenodoCommunity(federatedNodes, node)) {
+    if (!federatedNodes.contains(node) || !hasDuplicateZenodoCommunity(federatedNodes, node) || node.getNodeType().equals(OdmsCatalogueType.DCATDUMP)) {
       PersistenceManager jpa = new PersistenceManager();
 
       try {
@@ -423,6 +423,7 @@ public class OdmsManager {
            */
           assignedNodeId = jpa.jpaInsertOdmsCatalogue(node);
           node.setId(assignedNodeId);
+          node.setHost(assignedNodeId + "_host");
 
           /*
            * Unlock the Get nodes and add the persisted Node in the global Federated Nodes
