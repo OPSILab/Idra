@@ -350,7 +350,7 @@ public class OdmsManager {
   public static boolean hasDuplicateZenodoCommunity(List<OdmsCatalogue> nodes, OdmsCatalogue newNode) {
     return "ZENODO".equalsIgnoreCase(newNode.getNodeType().toString())
         && newNode.getCommunities() != null
-        && !newNode.getCommunities().isBlank()
+        && !newNode.getCommunities().trim().isEmpty()
         && nodes.stream()
             .filter(n -> "ZENODO".equalsIgnoreCase(n.getNodeType().toString()))
             .map(OdmsCatalogue::getCommunities)
@@ -423,7 +423,10 @@ public class OdmsManager {
            */
           assignedNodeId = jpa.jpaInsertOdmsCatalogue(node);
           node.setId(assignedNodeId);
-          node.setHost(assignedNodeId + "_host");
+          if(federatedNodes.contains(node) && node.getNodeType().equals(OdmsCatalogueType.DCATDUMP) ){
+            node.setHost(assignedNodeId + "_host");
+          }
+         
 
           /*
            * Unlock the Get nodes and add the persisted Node in the global Federated Nodes
