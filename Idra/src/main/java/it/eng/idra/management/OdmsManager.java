@@ -37,6 +37,9 @@ import it.eng.idra.dcat.dump.DcatApSerializer;
 import it.eng.idra.utils.CommonUtil;
 import it.eng.idra.utils.PropertyManager;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -350,7 +353,7 @@ public class OdmsManager {
   public static boolean hasDuplicateZenodoCommunity(List<OdmsCatalogue> nodes, OdmsCatalogue newNode) {
     return "ZENODO".equalsIgnoreCase(newNode.getNodeType().toString())
         && newNode.getCommunities() != null
-        && !newNode.getCommunities().isBlank()
+        && !newNode.getCommunities().trim().isEmpty()
         && nodes.stream()
             .filter(n -> "ZENODO".equalsIgnoreCase(n.getNodeType().toString()))
             .map(OdmsCatalogue::getCommunities)
@@ -421,9 +424,18 @@ public class OdmsManager {
           /*
            * Persist the node and return the ID assigned by the Entity Manager
            */
+          logger.info("nodetype" + node.getNodeType());
+          logger.info(node.getNodeType().equals(OdmsCatalogueType.DCATDUMP));
+          
+           logger.info("Persist the node and return the ID assigned by the Entity Manager");
+           if(node.getNodeType().equals(OdmsCatalogueType.DCATDUMP) ){
+          node.setHost(createUniqueString(node));
+          logger.info(node.getHost());
+        }
           assignedNodeId = jpa.jpaInsertOdmsCatalogue(node);
           node.setId(assignedNodeId);
-          node.setHost(assignedNodeId + "_host");
+        
+         
 
           /*
            * Unlock the Get nodes and add the persisted Node in the global Federated Nodes
@@ -527,6 +539,36 @@ public class OdmsManager {
     }
 
   }
+
+  public static String createUniqueString(OdmsCatalogue node) {
+        String raw =  node.getNodeType() + "-" + node.getName() + "-" + node.getRegisterDate() + "-" + node.getPublisherName();
+        return hashString(raw);
+    }
+
+    private static String hashString(String input) {
+        try {
+            MessageDigest digest = MessageDigest.getInstance("SHA-256");
+            byte[] encodedHash = digest.digest(input.getBytes(StandardCharsets.UTF_8));
+
+            // Converti in esadecimale
+            StringBuilder hexString = new StringBuilder();
+            for (byte b : encodedHash) {
+                String hex = Integer.toHexString(0xff & b);
+                if (hex.length() == 1)
+                    hexString.append('0');
+                hexString.append(hex);
+            }
+            return hexString.toString();
+
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException("SHA-256 not available", e);
+        }
+    }
+
+
+
+  
+  
 
   /**
    * Gets the inactive ODMS catalogue.
