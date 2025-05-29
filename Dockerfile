@@ -44,7 +44,8 @@ RUN         apk update && \
 #RUN			git clone https://github.com/OPSILab/Idra.git #&& mv .bowerrc ./Idra/IdraPortal/src/main/webapp
 ################################################
 
-COPY . .
+COPY Idra/pom.xml Idra/
+COPY Idra/src/ Idra/src/
     
 ### Build Idra War package
 RUN cd Idra && mvn package
