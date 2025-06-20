@@ -1,6 +1,6 @@
 /*******************************************************************************
  * Idra - Open Data Federation Platform
- * Copyright (C) 2021 Engineering Ingegneria Informatica S.p.A.
+ * Copyright (C) 2025 Engineering Ingegneria Informatica S.p.A.
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -15,14 +15,18 @@
 
 package it.eng.idra.dcat.dump;
 
+import it.eng.idra.beans.dcat.DCATAP;
 import it.eng.idra.beans.dcat.DcatApProfileNotValidException;
 import it.eng.idra.beans.dcat.DcatDataset;
+import it.eng.idra.beans.dcat.DcatDatasetSeries;
+import it.eng.idra.beans.dcat.DcatDetails;
 import it.eng.idra.beans.dcat.DcatDistribution;
 import it.eng.idra.beans.dcat.DcatProperty;
 import it.eng.idra.beans.dcat.DctLocation;
 import it.eng.idra.beans.dcat.DctPeriodOfTime;
 import it.eng.idra.beans.dcat.DctStandard;
 import it.eng.idra.beans.dcat.FoafAgent;
+import it.eng.idra.beans.dcat.Relationship;
 import it.eng.idra.beans.dcat.SkosConceptSubject;
 import it.eng.idra.beans.dcat.SkosConceptTheme;
 import it.eng.idra.beans.dcat.VcardOrganization;
@@ -62,6 +66,14 @@ public class DcatApItDeserializer extends DcatApDeserializer {
   private static Property endDateProp = ResourceFactory
       .createProperty(DCATAP_IT_BASE_URI + "endDate");
 
+  /** The beginning prop. */ // check if this is ok
+  private static Property beginningProp = ResourceFactory
+      .createProperty(DCATAP_IT_BASE_URI + "beginning");
+
+  /** The end prop. */ // check if this is ok
+  private static Property endProp = ResourceFactory
+      .createProperty(DCATAP_IT_BASE_URI + "end");
+
   /**
    * Instantiates a new dcat ap it deserializer.
    */
@@ -94,6 +106,18 @@ public class DcatApItDeserializer extends DcatApDeserializer {
     List<String> relatedResource = new ArrayList<String>();
 
     List<DcatDistribution> distributionList = new ArrayList<DcatDistribution>();
+
+    // new
+    List<String> applicableLegislation = new ArrayList<String>();
+    List<DcatDatasetSeries> inSeries = new ArrayList<DcatDatasetSeries>();
+    List<Relationship> qualifiedRelation = new ArrayList<Relationship>();
+    String temporalResolution = null;
+    List<String> wasGeneratedBy = new ArrayList<String>();
+    List<String> HVDCategory = new ArrayList<String>();
+    List<DctLocation> geographicalCoverage = new ArrayList<DctLocation>();
+    List<DcatDetails> titles = new ArrayList<DcatDetails>();
+    List<DcatDetails> descriptions = new ArrayList<DcatDetails>();
+    List<DctPeriodOfTime> temporalCoverageList = new ArrayList<DctPeriodOfTime>();
 
     if (datasetResource.hasProperty(DCTerms.title)) {
       title = datasetResource.getRequiredProperty(DCTerms.title).getString();
@@ -259,12 +283,138 @@ public class DcatApItDeserializer extends DcatApDeserializer {
     while (relIt.hasNext()) {
       relatedResource.add(relIt.next().getString());
     }
+
+    // Iterate over applicableLegislation properties
+    StmtIterator legIt = datasetResource.listProperties(DCATAP.applicableLegislation);
+    while (legIt.hasNext()) {
+      Statement stmt = legIt.next();
+      try {
+        applicableLegislation.add(stmt.getString());
+        // logger.info("applicableLegislation: " + stmt.getString());
+      } catch (LiteralRequiredException e) {
+        applicableLegislation.add(stmt.getResource().getURI());
+        // logger.info("applicableLegislation: " + stmt.getResource().getURI());
+      }
+    }
+    // geographicalCoverage properties
+    geographicalCoverage.add(spatialCoverage);
+
+    /*
+     * DcatDetails dcatDetails = new DcatDetails();
+     * dcatDetails.setTitle(title);
+     * dcatDetails.setDescription(description);
+     * 
+     * // Handle titles
+     * titles.add(dcatDetails);
+     * // Handle descriptions
+     * descriptions.add(dcatDetails);
+     */
+
+    // Handle temporalCoverage
+    temporalCoverageList.add(temporalCoverage);
+
+    // Iterate over inSeries properties
+    /*
+     * StmtIterator inSeriesIt = datasetResource
+     * .listProperties(ResourceFactory.createProperty(
+     * "http://www.w3.org/ns/dcat#inSeries"));
+     * while (inSeriesIt.hasNext()) {
+     * Statement stmt = inSeriesIt.next();
+     * if (stmt.getObject().isResource()) {
+     * inSeries.add(new DcatDatasetSeries(applicableLegislation, contactPointList,
+     * descriptions,
+     * frequency, geographicalCoverage, updateDate, publisher, releaseDate,
+     * temporalCoverageList, titles, nodeId,
+     * identifier));
+     * }
+     * }
+     * 
+     * // Handle qualifiedRelation
+     * Relationship relationship = new
+     * Relationship(datasetResource.getProperty(DCAT.hadRole).getString(),
+     * datasetResource.getProperty(DCTerms.relation).getString(),nodeId);
+     * qualifiedRelation.add(relationship);
+     */
+
+    // Iterate over qualifiedRelation properties
+    // StmtIterator qrelIt = datasetResource
+    // .listProperties(ResourceFactory.createProperty("http://www.w3.org/ns/dcat#qualifiedRelation"));
+    // while (qrelIt.hasNext()) {
+    // qualifiedRelation.add(relationship);// qrelIt.next().getString()
+    // }
+
+    // Extract temporalResolution property
+    if (datasetResource.hasProperty(DCAT.temporalResolution)) {
+      try {
+        temporalResolution = datasetResource.getProperty(DCAT.temporalResolution).getString();
+      } catch (LiteralRequiredException e) {
+        temporalResolution = datasetResource.getProperty(DCAT.temporalResolution).getResource().getURI();
+
+      }
+    }
+
+    // Iterate over wasGeneratedBy properties
+    StmtIterator wasGeneratedByIt = datasetResource
+        .listProperties(ResourceFactory.createProperty("http://www.w3.org/ns/prov#wasGeneratedBy"));
+    while (wasGeneratedByIt.hasNext()) {
+      Statement stmt = wasGeneratedByIt.next();
+      try {
+        wasGeneratedBy.add(stmt.getString());
+      } catch (LiteralRequiredException e) {
+        wasGeneratedBy.add(stmt.getResource().getURI());
+      }
+    }
+
+    // Iterate over HVDCategory properties
+    StmtIterator HVDCategoryIt = datasetResource.listProperties(DCATAP.hvdCategory);
+    while (HVDCategoryIt.hasNext()) {
+      Statement stmt = HVDCategoryIt.next();
+      try {
+        HVDCategory.add(stmt.getString());
+      } catch (LiteralRequiredException e) {
+        HVDCategory.add(stmt.getResource().getURI());
+      }
+    }
+
+    // Iterate over qualifiedRelation properties
+    if (datasetResource.hasProperty(DCAT.qualifiedRelation)) {
+      StmtIterator qualifiedRelationIt = datasetResource.listProperties(DCAT.qualifiedRelation);
+      while (qualifiedRelationIt.hasNext()) {
+        Statement stmt = qualifiedRelationIt.next();
+        if (stmt.getObject().isResource()) {
+          Resource qualifiedRelationRes = stmt.getResource();
+
+          String hadRole = null;
+          if (qualifiedRelationRes.hasProperty(DCAT.hadRole)) {
+            try {
+              hadRole = qualifiedRelationRes.getProperty(DCAT.hadRole).getString();
+            } catch (LiteralRequiredException e) {
+              hadRole = qualifiedRelationRes.getProperty(DCAT.hadRole).getResource().getURI();
+            }
+          }
+
+          String relation = null;
+          if (qualifiedRelationRes.hasProperty(DCTerms.relation)) {
+            try {
+              relation = qualifiedRelationRes.getProperty(DCTerms.relation).getString();
+            } catch (LiteralRequiredException e) {
+              relation = qualifiedRelationRes.getProperty(DCTerms.relation).getResource().getURI();
+            }
+          }
+
+          Relationship relationship = new Relationship(hadRole, relation, nodeId);
+          qualifiedRelation.add(relationship);
+        }
+      }
+    }
+
     DcatDataset mapped;
     mapped = new DcatDataset(nodeId, identifier, title, description, distributionList, theme,
         publisher, contactPointList, keywords, accessRights, conformsTo, documentation, frequency,
         hasVersion, isVersionOf, landingPage, language, provenance, releaseDate, updateDate,
         otherIdentifier, sample, source, spatialCoverage, temporalCoverage, type, version,
-        versionNotes, rightsHolder, creator, subject, relatedResource);
+        versionNotes, rightsHolder, creator, subject, relatedResource, applicableLegislation,
+        inSeries, qualifiedRelation, temporalResolution, wasGeneratedBy, HVDCategory);
 
     distributionList = null;
     contactPointList = null;
@@ -285,6 +435,12 @@ public class DcatApItDeserializer extends DcatApDeserializer {
     source = null;
     versionNotes = null;
     subject = null;
+    applicableLegislation = null;
+    inSeries = null;
+    qualifiedRelation = null;
+    temporalResolution = null;
+    wasGeneratedBy = null;
+    HVDCategory = null;
 
     return mapped;
 
@@ -298,9 +454,11 @@ public class DcatApItDeserializer extends DcatApDeserializer {
    * @return the dct period of time
    */
   public DctPeriodOfTime deserializeTemporalCoverage(String nodeId, Resource datasetResource) {
-    DcatProperty startDate = null;
-    DcatProperty endDate = null;
+    DcatProperty startDate = null; // datasetResource.getProperty(DCAT.startDate);
+    DcatProperty endDate = null; // datasetResource.getProperty(DCAT.endDate);
     Resource temporalResource = datasetResource.getPropertyResourceValue(DCTerms.temporal);
+    DcatProperty beginning = null;
+    DcatProperty end = null;
 
     if (temporalResource != null) {
 
@@ -314,7 +472,17 @@ public class DcatApItDeserializer extends DcatApDeserializer {
             temporalResource.getProperty(endDateProp).getString());
       }
 
-      return new DctPeriodOfTime(DCTerms.temporal.getURI(), startDate, endDate, nodeId);
+      if (temporalResource.hasProperty(beginningProp)) {
+        beginning = new DcatProperty(beginningProp.getURI(),
+            temporalResource.getProperty(beginningProp).getString());
+      }
+
+      if (temporalResource.hasProperty(endProp)) {
+        end = new DcatProperty(endProp.getURI(),
+            temporalResource.getProperty(endProp).getString());
+      }
+
+      return new DctPeriodOfTime(DCTerms.temporal.getURI(), startDate, endDate, nodeId, beginning, end);
 
     }
 

@@ -1,6 +1,6 @@
 /*******************************************************************************
  * Idra - Open Data Federation Platform
- * Copyright (C) 2021 Engineering Ingegneria Informatica S.p.A.
+ * Copyright (C) 2025 Engineering Ingegneria Informatica S.p.A.
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -17,6 +17,7 @@ package it.eng.idra.api.ckan;
 
 import it.eng.idra.beans.dcat.DcatDataset;
 import it.eng.idra.beans.dcat.DcatDistribution;
+import it.eng.idra.beans.dcat.DcatProperty;
 import it.eng.idra.beans.dcat.DctLicenseDocument;
 import it.eng.idra.beans.dcat.DctStandard;
 import it.eng.idra.beans.dcat.SkosConceptSubject;
@@ -24,6 +25,8 @@ import it.eng.idra.beans.dcat.SkosConceptTheme;
 import it.eng.idra.beans.dcat.SkosPrefLabel;
 import it.eng.idra.beans.dcat.VcardOrganization;
 import it.eng.idra.beans.search.SearchResult;
+import it.eng.idra.dcat.dump.DcatApDeserializer;
+
 import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -36,6 +39,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.ckan.Dataset;
 import org.ckan.Extra;
 import org.ckan.Tag;
@@ -50,6 +55,9 @@ public class CkanUtils {
 
   /** The CKA nto DCA tmap. */
   private static HashMap<String, String> CKANtoDCATmap = new HashMap<String, String>();
+
+      /** The logger. */
+  protected static Logger logger = LogManager.getLogger(CkanUtils.class);
 
   /**
    * Instantiates a new ckan utils.
@@ -89,11 +97,22 @@ public class CkanUtils {
     d.setLog_message(null);
 
     if (dataset.getPublisher() != null) {
-      if (dataset.getPublisher().getName() != null) {
-        d.setMaintainer(StringUtils.isNotBlank(dataset.getPublisher().getName().getValue())
-            ? dataset.getPublisher().getName().getValue()
-            : null);
+      if (dataset.getPublisher().getName() != null && !dataset.getPublisher().getName().isEmpty()) {
+        String names = dataset.getPublisher().getName().stream()
+            .map(DcatProperty::getValue)
+            .filter(StringUtils::isNotBlank)
+            .collect(Collectors.joining(", ")); // Join names with commas
+        d.setMaintainer(StringUtils.isNotBlank(names) ? names : null);
       }
+
+      /*
+       * if (dataset.getPublisher().getName() != null) {
+       * d.setMaintainer(StringUtils.isNotBlank(dataset.getPublisher().getName().
+       * getValue())
+       * ? dataset.getPublisher().getName().getValue()
+       * : null);
+       * }
+       */
 
       if (dataset.getPublisher().getMbox() != null) {
         d.setMaintainer_email((StringUtils.isNotBlank(dataset.getPublisher().getMbox().getValue())
@@ -311,9 +330,25 @@ public class CkanUtils {
     }
 
     if (dataset.getCreator() != null) {
+      /*
+       * if (dataset.getCreator().getName() != null
+       * && StringUtils.isNotBlank(dataset.getCreator().getName().getValue())) {
+       * extras.add(new Extra("creator_name",
+       * dataset.getCreator().getName().getValue()));
+       * }
+       */
+
       if (dataset.getCreator().getName() != null
-          && StringUtils.isNotBlank(dataset.getCreator().getName().getValue())) {
-        extras.add(new Extra("creator_name", dataset.getCreator().getName().getValue()));
+          && !dataset.getCreator().getName().isEmpty()) {
+
+        String creatorNames = dataset.getCreator().getName().stream()
+            .map(DcatProperty::getValue)
+            .filter(StringUtils::isNotBlank)
+            .collect(Collectors.joining(", "));
+
+        if (StringUtils.isNotBlank(creatorNames)) {
+          extras.add(new Extra("creator_name", creatorNames));
+        }
       }
 
       if (dataset.getCreator().getMbox() != null
@@ -344,9 +379,24 @@ public class CkanUtils {
     }
 
     if (dataset.getRightsHolder() != null) {
+      /*
+       * if (dataset.getRightsHolder().getName() != null
+       * && StringUtils.isNotBlank(dataset.getRightsHolder().getName().getValue())) {
+       * extras.add(new Extra("holder_name",
+       * dataset.getRightsHolder().getName().getValue()));
+       * }
+       */
       if (dataset.getRightsHolder().getName() != null
-          && StringUtils.isNotBlank(dataset.getRightsHolder().getName().getValue())) {
-        extras.add(new Extra("holder_name", dataset.getRightsHolder().getName().getValue()));
+          && !dataset.getRightsHolder().getName().isEmpty()) {
+
+        String holderNames = dataset.getRightsHolder().getName().stream()
+            .map(DcatProperty::getValue)
+            .filter(StringUtils::isNotBlank)
+            .collect(Collectors.joining(", "));
+
+        if (StringUtils.isNotBlank(holderNames)) {
+          extras.add(new Extra("holder_name", holderNames));
+        }
       }
 
       if (dataset.getRightsHolder().getMbox() != null

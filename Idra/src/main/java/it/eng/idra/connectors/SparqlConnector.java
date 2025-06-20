@@ -1,6 +1,6 @@
 /*******************************************************************************
  * Idra - Open Data Federation Platform
- * Copyright (C) 2021 Engineering Ingegneria Informatica S.p.A.
+ * Copyright (C) 2025 Engineering Ingegneria Informatica S.p.A.
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -16,13 +16,18 @@
 package it.eng.idra.connectors;
 
 import it.eng.idra.beans.IdraProperty;
+import it.eng.idra.beans.dcat.DCATAP;
 import it.eng.idra.beans.dcat.DcatDataset;
+import it.eng.idra.beans.dcat.DcatDatasetSeries;
+import it.eng.idra.beans.dcat.DcatDetails;
 import it.eng.idra.beans.dcat.DcatDistribution;
+import it.eng.idra.beans.dcat.DcatProperty;
 import it.eng.idra.beans.dcat.DctLicenseDocument;
 import it.eng.idra.beans.dcat.DctLocation;
 import it.eng.idra.beans.dcat.DctPeriodOfTime;
 import it.eng.idra.beans.dcat.DctStandard;
 import it.eng.idra.beans.dcat.FoafAgent;
+import it.eng.idra.beans.dcat.Relationship;
 import it.eng.idra.beans.dcat.SkosConcept;
 import it.eng.idra.beans.dcat.SkosConceptSubject;
 import it.eng.idra.beans.dcat.SkosConceptTheme;
@@ -35,6 +40,7 @@ import it.eng.idra.beans.sparql.SparqlDistributionConfig;
 import it.eng.idra.management.OdmsManager;
 import it.eng.idra.utils.CommonUtil;
 import it.eng.idra.utils.GsonUtil;
+import it.eng.idra.utils.GsonUtilException;
 import it.eng.idra.utils.PropertyManager;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
@@ -42,17 +48,22 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.jena.rdf.model.ResourceFactory;
 import org.apache.jena.vocabulary.DCAT;
 import org.apache.jena.vocabulary.DCTerms;
+import org.apache.jena.vocabulary.SKOS;
+import org.apache.jena.vocabulary.XSD;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 // TODO: Auto-generated Javadoc
@@ -123,6 +134,47 @@ public class SparqlConnector implements IodmsConnector {
     return -1;
   }
 
+  /**
+   * Extract value list.
+   *
+   * @param value the value
+   * @return the list
+   */
+  private List<String> extractValueList(String value) {
+
+    // TODO: regex & groups
+    List<String> result = new ArrayList<String>();
+
+    if (StringUtils.isBlank(value)) {
+      return result;
+    }
+
+    if (value.startsWith("[")) {
+      try {
+        result.addAll(GsonUtil.json2Obj(value, GsonUtil.stringListType));
+      } catch (GsonUtilException ex) {
+        if (StringUtils.isNotBlank(value)) {
+          for (String s : value.split(",")) {
+            result.add(s);
+          }
+        } else {
+          result = null;
+        }
+      }
+    } else if (value.startsWith("{")) {
+      for (String s : value.substring(1, value.lastIndexOf("}")).split(",")) {
+        result.add(s);
+      }
+    } else {
+      for (String s : value.split(",")) {
+        result.add(s);
+      }
+    }
+
+    return result;
+
+  }
+
   /*
    * (non-Javadoc)
    * 
@@ -161,6 +213,18 @@ public class SparqlConnector implements IodmsConnector {
 
     List<DcatDistribution> distributionList = new ArrayList<DcatDistribution>();
 
+    // New properties
+    List<String> applicableLegislation = new ArrayList<String>();
+    List<DctLocation> geographicalCoverage = new ArrayList<DctLocation>();
+    List<DcatDetails> descriptions = new ArrayList<DcatDetails>();
+    List<DcatDetails> titles = new ArrayList<DcatDetails>();
+    List<DctPeriodOfTime> temporalCoverageList = new ArrayList<DctPeriodOfTime>();
+    List<DcatDatasetSeries> inSeries = new ArrayList<DcatDatasetSeries>();
+    List<Relationship> qualifiedRelation = new ArrayList<Relationship>();
+    String temporalResolution = null;
+    List<String> wasGeneratedBy = new ArrayList<String>();
+    List<String> HVDCategory = new ArrayList<String>();
+
     title = j.optString("title", null);
     description = j.optString("description", null);
     identifier = UUID.randomUUID().toString();
@@ -190,7 +254,10 @@ public class SparqlConnector implements IodmsConnector {
       if (pub.has("name") || pub.has("mbox") || pub.has("homepage") || pub.has("type")
           || pub.has("identifier") || pub.has("propertyUri")) {
         publisher = new FoafAgent(DCTerms.publisher.getURI(), pub.optString("propertyUri", null),
-            pub.optString("name", null), pub.optString("mbox", null),
+            pub.optString("name") != null
+                ? Collections.singletonList(pub.optString("name"))
+                : Collections.emptyList(),
+            pub.optString("mbox", null),
             pub.optString("homepage", null), pub.optString("type", null),
             pub.optString("identifier", null), nodeId);
       }
@@ -202,7 +269,9 @@ public class SparqlConnector implements IodmsConnector {
       if (pub.has("name") || pub.has("mbox") || pub.has("homepage") || pub.has("type")
           || pub.has("identifier") || pub.has("propertyUri")) {
         rightsHolder = new FoafAgent(DCTerms.rightsHolder.getURI(),
-            pub.optString("propertyUri", null), pub.optString("name", null),
+            pub.optString("propertyUri", null), pub.optString("name") != null
+                ? Collections.singletonList(pub.optString("name"))
+                : Collections.emptyList(),
             pub.optString("mbox", null), pub.optString("homepage", null),
             pub.optString("type", null), pub.optString("identifier", null), nodeId);
       }
@@ -214,7 +283,10 @@ public class SparqlConnector implements IodmsConnector {
       if (pub.has("name") || pub.has("mbox") || pub.has("homepage") || pub.has("type")
           || pub.has("identifier") || pub.has("propertyUri")) {
         creator = new FoafAgent(DCTerms.creator.getURI(), pub.optString("propertyUri", null),
-            pub.optString("name", null), pub.optString("mbox", null),
+            pub.optString("name") != null
+                ? Collections.singletonList(pub.optString("name"))
+                : Collections.emptyList(),
+            pub.optString("mbox", null),
             pub.optString("homepage", null), pub.optString("type", null),
             pub.optString("identifier", null), nodeId);
       }
@@ -236,7 +308,7 @@ public class SparqlConnector implements IodmsConnector {
               new VcardOrganization(DCAT.contactPoint.getURI(), tmp.optString("resourceUri", null),
                   tmp.optString("fn", null), tmp.optString("hasEmail", null),
                   tmp.optString("hasURL", null), tmp.optString("hasTelephoneValue", null),
-                  tmp.optString("hasTelephoneType", null), nodeId));
+                  tmp.optString("hasTelephoneType", null), nodeId));// identifier
         }
       }
     }
@@ -327,19 +399,22 @@ public class SparqlConnector implements IodmsConnector {
       spatialCoverage = new DctLocation(DCTerms.spatial.getURI(),
           j.getJSONObject("spatialCoverage").optString("geographicalIdentifier", null),
           j.getJSONObject("spatialCoverage").optString("geographicalName", null),
-          j.getJSONObject("spatialCoverage").optString("geometry", null), nodeId);
+          j.getJSONObject("spatialCoverage").optString("geometry", null), nodeId,
+          j.getJSONObject("spatialCoverage").optString("bbox", null),
+          j.getJSONObject("spatialCoverage").optString("centroid", null));// j.getJSONObject("spatialCoverage").optString("dataset_id",
+                                                                          // null)
     }
-    
-//    String startDate = null;
-//    String endDate = null;
-//    if (StringUtils.isNotBlank(startDate) && StringUtils.isNotBlank(endDate)) {
-//      temporalCoverage = new DctPeriodOfTime(DCTerms.temporal.getURI(), 
-//    startDate, endDate, nodeId);
-//    }
-    
-    if (j.has("startDate") && j.has("endDate")) {
-      temporalCoverage = new DctPeriodOfTime(DCTerms.temporal.getURI(), j.getString("startDate"), 
-          j.getString("endDate"), nodeId);
+
+    // String startDate = null;
+    // String endDate = null;
+    // if (StringUtils.isNotBlank(startDate) && StringUtils.isNotBlank(endDate)) {
+    // temporalCoverage = new DctPeriodOfTime(DCTerms.temporal.getURI(),
+    // startDate, endDate, nodeId);
+    // }
+
+    if (j.has("startDate") && j.has("endDate") && j.has("beginning") && j.has("end")) {
+      temporalCoverage = new DctPeriodOfTime(DCTerms.temporal.getURI(), j.getString("startDate"),
+          j.getString("endDate"), nodeId, j.getString("beginning"), j.getString("end"));// , j.getString("dataset_id")
     }
 
     // Distribution
@@ -380,11 +455,88 @@ public class SparqlConnector implements IodmsConnector {
       throw new Exception("Sparql Dataset must contain at least one distribution");
     }
 
+    // Handle new properties
+    if (j.has("applicableLegislation")) {
+      applicableLegislation = GsonUtil.json2Obj(j.getJSONArray("applicableLegislation").toString(),
+          GsonUtil.stringListType);
+    }
+/* 
+    if (j.has("inSeries")) {
+
+      // inSeries = GsonUtil.json2Obj(j.getJSONArray("inSeries").toString(),
+      // GsonUtil.dataSeriesListType);
+      JSONArray array = j.optJSONArray("inSeries");
+      if (array != null) {
+        for (int i = 0; i < array.length(); i++) {
+          JSONObject seriesObj = array.getJSONObject(i);
+
+          DcatDetails dcatDetails = new DcatDetails();
+          dcatDetails.setTitle(title);
+          dcatDetails.setDescription(description);
+          // Extracting properties from JSON
+          descriptions.add(dcatDetails);// extractValueList(description);
+          frequency = seriesObj.optString("frequency");
+          geographicalCoverage.add(spatialCoverage); // extractValueList(seriesObj.optString("geographicalCoverage"));
+          temporalCoverageList.add(temporalCoverage);
+          titles.add(dcatDetails); // extractValueList(title);
+
+          // Create the DcatDatasetSeries object
+          DcatDatasetSeries series = new DcatDatasetSeries(
+              applicableLegislation,
+              contactPointList,
+              descriptions,
+              frequency,
+              geographicalCoverage,
+              updateDate,
+              publisher,
+              releaseDate,
+              temporalCoverageList,
+              titles,
+              nodeId,
+              identifier);
+
+          // Add to the list
+          inSeries.add(series);
+        }
+      }
+    } */
+
+    if (j.has("qualifiedRelation")) {
+      JSONArray array = j.optJSONArray("qualifiedRelation");
+      if (array != null) {
+        for (int i = 0; i < array.length(); i++) {
+          JSONObject seriesObj = array.getJSONObject(i);
+          // JSONObject obj = j.getJSONObject("qualifiedRelation");
+          Relationship relationship = new Relationship(seriesObj.optString("had_role"),
+              seriesObj.optString("relation"), nodeId);
+          qualifiedRelation.add(relationship); // extractValueList(dataset.optString("qualifiedRelation"));
+        }
+      }
+
+    }
+
+    if (j.has("temporalResolution")) {
+      temporalResolution = j.optString("temporalResolution");
+    }
+
+    if (j.has("wasGeneratedBy")) {
+      wasGeneratedBy = GsonUtil.json2Obj(j.getJSONArray("wasGeneratedBy").toString(),
+          GsonUtil.stringListType);
+      // wasGeneratedBy = extractValueList(j.optString("wasGeneratedBy"));
+    }
+
+    if (j.has("HVDCategory")) {
+      HVDCategory = GsonUtil.json2Obj(j.getJSONArray("HVDCategory").toString(),
+          GsonUtil.stringListType);
+      // HVDCategory = extractValueList(j.optString("HVDCategory"));
+    }
+
     return new DcatDataset(nodeId, identifier, title, description, distributionList, themeList,
         publisher, contactPointList, keywords, accessRights, conformsTo, documentation, frequency,
         hasVersion, isVersionOf, landingPage, language, provenance, releaseDate, updateDate,
         otherIdentifier, sample, source, spatialCoverage, temporalCoverage, type, version,
-        versionNotes, rightsHolder, creator, subjectList, relatedResource);
+        versionNotes, rightsHolder, creator, subjectList, relatedResource, applicableLegislation,
+        inSeries, qualifiedRelation, temporalResolution, wasGeneratedBy, HVDCategory);
   }
 
   /**
@@ -394,9 +546,11 @@ public class SparqlConnector implements IodmsConnector {
    * @param format the format
    * @param c      the c
    * @return the sparql distribution
+   * @throws GsonUtilException
+   * @throws JSONException
    */
   public DcatDistribution getSparqlDistribution(JSONObject tmp, String format,
-      SparqlDistributionConfig c) {
+      SparqlDistributionConfig c) throws JSONException, GsonUtilException {
     DcatDistribution distro = new DcatDistribution();
     distro.setNodeId(nodeId);
     // downloadURL e accessURL vengono settati dal metadata cache manager
@@ -416,14 +570,14 @@ public class SparqlConnector implements IodmsConnector {
     } else {
       query = c.getQuery();
     }
-    
+
     String url = "";
-//    if (query.contains("query=")) {
-//      url = node.getHost() + "?" + query;
-//    } else {
-//      url = node.getHost() + "?query=" + query;
-//    }
-    
+    // if (query.contains("query=")) {
+    // url = node.getHost() + "?" + query;
+    // } else {
+    // url = node.getHost() + "?query=" + query;
+    // }
+
     if (query.contains("query=")) {
       url = node.getHost() + query;
     } else {
@@ -448,9 +602,9 @@ public class SparqlConnector implements IodmsConnector {
       distro.setMediaType(tmp.optString("mediaType"));
     }
 
-//    if (isFormat) {
-//      distro.setMediaType(format);
-//    }
+    // if (isFormat) {
+    // distro.setMediaType(format);
+    // }
 
     if (tmp.has("releaseDate")) {
       distro.setReleaseDate(tmp.optString("releaseDate"));
@@ -479,6 +633,42 @@ public class SparqlConnector implements IodmsConnector {
         distro.setLicense(new DctLicenseDocument(l.optString("uri"), l.optString("name"),
             l.optString("type"), l.optString("versionInfo"), nodeId));
       }
+    }
+
+    // new
+    if (tmp.has("accessService")) {
+      distro.setAccessService(GsonUtil.json2Obj(tmp.getJSONArray("accessService").toString(),
+          GsonUtil.dataServiceListType));
+    }
+
+    if (tmp.has("applicableLegislation")) {
+      distro.setApplicableLegislation(GsonUtil.json2Obj(tmp.getJSONArray("applicableLegislation").toString(),
+          GsonUtil.stringListType));
+    }
+
+    if (tmp.has("availability")) {
+      distro.setAvailability(new DcatProperty(DCATAP.availability, SKOS.Concept, tmp.getString("availability")));
+    }
+    if (tmp.has("compressionFormat")) {
+      distro.setCompressionFormat(
+          new DcatProperty(DCAT.compressFormat, DCTerms.MediaType, tmp.getString("compressionFormat")));
+    }
+    if (tmp.has("hasPolicy")) {
+      distro.setHasPolicy(
+          new DcatProperty(ResourceFactory.createProperty("https://www.w3.org/ns/odrl/2/"), DCTerms.Policy,
+              tmp.getString("hasPolicy")));
+    }
+    if (tmp.has("packagingFormat")) {
+      distro.setPackagingFormat(
+          new DcatProperty(DCAT.packageFormat, DCTerms.MediaType, tmp.getString("packagingFormat")));
+    }
+    if (tmp.has("spatialResolution")) {
+      distro.setSpatialResolution(
+          new DcatProperty(DCAT.spatialResolutionInMeters, XSD.decimal, tmp.getString("spatialResolution")));
+    }
+    if (tmp.has("temporalResolution")) {
+      distro.setTemporalResolution(
+          new DcatProperty(DCAT.temporalResolution, XSD.duration, tmp.getString("temporalResolution")));
     }
 
     distro.setDistributionAdditionalConfig(c);
@@ -547,7 +737,7 @@ public class SparqlConnector implements IodmsConnector {
   /**
    * Extract concept list.
    *
-   * @param             <T> the generic type
+   * @param <T>         the generic type
    * @param propertyUri the property uri
    * @param concepts    the concepts
    * @param type        the type

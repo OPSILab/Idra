@@ -1,6 +1,6 @@
 /*******************************************************************************
  * Idra - Open Data Federation Platform
- * Copyright (C) 2021 Engineering Ingegneria Informatica S.p.A.
+ * Copyright (C) 2025 Engineering Ingegneria Informatica S.p.A.
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -19,11 +19,14 @@ import com.google.gson.annotations.SerializedName;
 import it.eng.idra.cache.CacheContentType;
 import javax.persistence.AttributeOverride;
 import javax.persistence.AttributeOverrides;
+import javax.persistence.CollectionTable;
 import javax.persistence.Column;
+import javax.persistence.ElementCollection;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 import org.apache.jena.rdf.model.Resource;
@@ -34,6 +37,14 @@ import org.apache.jena.vocabulary.SKOS;
 import org.apache.solr.common.SolrDocument;
 import org.apache.solr.common.SolrInputDocument;
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
+import java.io.Serializable;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -44,14 +55,18 @@ import org.hibernate.annotations.GenericGenerator;
 
 @Entity
 @Table(name = "dcat_agent")
-public class FoafAgent {
+public class FoafAgent implements Serializable {
+
+  /** The Constant serialVersionUID. */
+  private static final long serialVersionUID = 1L;
 
   /** The id. */
   private String id;
 
   /** The name. */
   // Mandatory
-  private DcatProperty name;
+  // private DcatProperty name; //check, need to be list u dcat-apv3
+  private List<DcatProperty> name;
 
   // Recommended
 
@@ -104,20 +119,24 @@ public class FoafAgent {
    *
    * @param propertyUri the property uri
    * @param resourceUri the resource uri
-   * @param name        the name
+   * @param names       the names
    * @param mbox        the mbox
    * @param homepage    the homepage
    * @param type        the type
    * @param identifier  the identifier
    * @param nodeId      the node ID
    */
-  public FoafAgent(String propertyUri, String resourceUri, String name, String mbox,
+  public FoafAgent(String propertyUri, String resourceUri, List<String> names, String mbox,
       String homepage, String type, String identifier, String nodeId) {
 
     setNodeId(nodeId);
     setPropertyUri(propertyUri);
     setResourceUri(resourceUri);
-    setName(new DcatProperty(FOAF.name, RDFS.Literal, name));
+    // setName(new DcatProperty(FOAF.name, RDFS.Literal, name));
+    setName(names == null ? Arrays.asList(new DcatProperty(FOAF.name, RDFS.Literal, ""))
+        : names.stream()
+            .map(name -> new DcatProperty(FOAF.name, RDFS.Literal, name))
+            .collect(Collectors.toList()));
     setMbox(new DcatProperty(FOAF.mbox, RDFS.Literal, mbox));
     setHomepage(new DcatProperty(FOAF.homepage, RDFS.Literal, homepage));
     setType(new DcatProperty(DCTerms.type, SKOS.Concept, type));
@@ -161,6 +180,7 @@ public class FoafAgent {
    *
    * @return the node id
    */
+  @Column(name = "nodeID")
   public String getNodeId() {
     return nodeId;
   }
@@ -223,25 +243,42 @@ public class FoafAgent {
     this.resourceUri = resourceUri;
   }
 
+  // @Embedded
+  // @AttributeOverrides({ @AttributeOverride(name = "value", column =
+  // @Column(name = "name")) })
+  // public DcatProperty getName() {
+  // return name;
+  // }
+
+  // public void setName(DcatProperty name) {
+  // if (name != null) {
+  // this.name = name;
+  // }
+  // }
+
   /**
-   * Gets the name.
+   * Gets the list of names.
    *
-   * @return the name
+   * @return the list of names
    */
-  @Embedded
+  @LazyCollection(LazyCollectionOption.FALSE)
+  @ElementCollection
+  @CollectionTable(name = "dcat_agent_name", joinColumns = {
+      @JoinColumn(name = "agent_id", referencedColumnName = "agent_id"),
+      @JoinColumn(name = "nodeID", referencedColumnName = "nodeID") })
   @AttributeOverrides({ @AttributeOverride(name = "value", column = @Column(name = "name")) })
-  public DcatProperty getName() {
+  public List<DcatProperty> getName() {
     return name;
   }
 
   /**
-   * Sets the name.
+   * Sets the list of names.
    *
-   * @param name the new name
+   * @param names the new list of names
    */
-  public void setName(DcatProperty name) {
-    if (name != null) {
-      this.name = name;
+  public void setName(List<DcatProperty> names) {
+    if (names != null) {
+      this.name = names;
     }
   }
 
@@ -312,8 +349,7 @@ public class FoafAgent {
    */
   @Embedded
   @AttributeOverrides({
-      @AttributeOverride(name = "value", 
-          column = @Column(name = "identifier", columnDefinition = "LONGTEXT")) })
+      @AttributeOverride(name = "value", column = @Column(name = "identifier", columnDefinition = "LONGTEXT")) })
   public DcatProperty getIdentifier() {
     return identifier;
   }
@@ -336,15 +372,30 @@ public class FoafAgent {
   public SolrInputDocument toDoc(CacheContentType contentType) {
 
     SolrInputDocument doc = new SolrInputDocument();
-    doc.addField("id", this.id);
-    doc.addField("nodeID", this.nodeId);
-    doc.addField("content_type", contentType.toString());
-    doc.addField("resourceUri", this.resourceUri);
-    doc.addField("identifier", this.getIdentifier().getValue());
-    doc.addField("name", this.getName().getValue());
-    doc.addField("mbox", this.getMbox().getValue());
-    doc.addField("homepage", this.getHomepage().getValue());
-    doc.addField("type", this.getType().getValue());
+    if (this.id != null)
+      doc.addField("id", this.id);
+    if (this.nodeId != null)
+      doc.addField("nodeID", this.nodeId);
+    if (contentType.toString() != null)
+      doc.addField("content_type", contentType.toString());
+    if (this.resourceUri != null)
+      doc.addField("resourceUri", this.resourceUri);
+    if (this.getIdentifier().getValue() != null)
+      doc.addField("identifier", this.getIdentifier().getValue());
+    // doc.addField("name", this.getName().getValue());
+    if (this.getName() != null && !this.getName().isEmpty()) {
+      doc.addField("nameList", this.getName().stream()
+          .map(DcatProperty::getValue)
+          .collect(Collectors.joining(", ")));
+    } else {
+      doc.addField("nameList", "");
+    }
+    if (this.getMbox().getValue() != null)
+      doc.addField("mbox", this.getMbox().getValue());
+    if (this.getHomepage().getValue() != null)
+      doc.addField("homepage", this.getHomepage().getValue());
+    if (this.getType().getValue() != null)
+      doc.addField("type", this.getType().getValue());
 
     return doc;
   }
@@ -358,11 +409,18 @@ public class FoafAgent {
    * @return the foaf agent
    */
   public static FoafAgent docToFoafAgent(SolrDocument doc, String propertyUri, String nodeId) {
-    FoafAgent f = new FoafAgent(propertyUri, (String) doc.getFieldValue("resourceUri"),
-        doc.getFieldValue("name").toString(), doc.getFieldValue("mbox").toString(),
-        doc.getFieldValue("homepage").toString(), doc.getFieldValue("type").toString(),
-        doc.getFieldValue("identifier").toString(), nodeId);
-    f.setId(doc.getFieldValue("id").toString());
+    // Extract name field as a list of strings
+    List<String> names = Optional.ofNullable(doc.getFieldValue("nameList"))
+        .map(value -> Arrays.asList(value.toString().split(", "))) // Splitting assuming CSV format
+        .orElse(Collections.emptyList());
+
+    FoafAgent f = new FoafAgent(propertyUri,
+        doc.getFieldValue("resourceUri") != null ? doc.getFieldValue("resourceUri").toString() : null,
+        names, doc.getFieldValue("mbox") != null ? doc.getFieldValue("mbox").toString() : null,
+        doc.getFieldValue("homepage") != null ? doc.getFieldValue("homepage").toString() : null,
+        doc.getFieldValue("type") != null ? doc.getFieldValue("type").toString() : null,
+        doc.getFieldValue("identifier") != null ? doc.getFieldValue("identifier").toString() : null, nodeId);
+    f.setId(doc.getFieldValue("id") != null ? doc.getFieldValue("id").toString() : "");
     return f;
   }
 
@@ -373,7 +431,7 @@ public class FoafAgent {
    */
   @Override
   public String toString() {
-    return "FOAFAgent [id=" + id + ", name=" + name + ", propertyUri=" + propertyUri + ", mbox="
+    return "FOAFAgent [id=" + id + ", nameList=" + name + ", propertyUri=" + propertyUri + ", mbox="
         + mbox + ", homepage=" + homepage + ", type=" + type + ", identifier=" + identifier
         + ", nodeID=" + nodeId + "]";
   }

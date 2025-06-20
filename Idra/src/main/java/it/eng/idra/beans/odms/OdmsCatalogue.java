@@ -1,6 +1,6 @@
 /*******************************************************************************
  * Idra - Open Data Federation Platform
- * Copyright (C) 2021 Engineering Ingegneria Informatica S.p.A.
+ * Copyright (C) 2025 Engineering Ingegneria Informatica S.p.A.
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -18,8 +18,16 @@ package it.eng.idra.beans.odms;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.JsonAdapter;
 import com.google.gson.annotations.SerializedName;
+import it.eng.idra.beans.dcat.DCATAP;
 import it.eng.idra.beans.dcat.DcatApFormat;
 import it.eng.idra.beans.dcat.DcatApProfile;
+import it.eng.idra.beans.dcat.DcatCatalogueRecord;
+import it.eng.idra.beans.dcat.DcatDataService;
+import it.eng.idra.beans.dcat.DcatProperty;
+import it.eng.idra.beans.dcat.DctLocation;
+import it.eng.idra.beans.dcat.DctPeriodOfTime;
+import it.eng.idra.beans.dcat.ELI;
+import it.eng.idra.beans.dcat.FoafAgent;
 import it.eng.idra.beans.orion.OrionCatalogueConfiguration;
 import it.eng.idra.beans.sparql.SparqlCatalogueConfiguration;
 import it.eng.idra.beans.webscraper.WebScraperSitemap;
@@ -30,8 +38,15 @@ import it.eng.idra.utils.JsonRequired;
 import it.eng.idra.utils.OdmsCatalogueAdditionalConfigurationDeserializer;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+import javax.persistence.AttributeOverride;
+import javax.persistence.AttributeOverrides;
 import javax.persistence.CascadeType;
+import javax.persistence.CollectionTable;
 import javax.persistence.Column;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -40,6 +55,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinColumns;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.PostPersist;
 import javax.persistence.PostRemove;
@@ -49,12 +66,15 @@ import javax.persistence.PreUpdate;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 import org.apache.commons.lang.StringUtils;
+import org.apache.jena.vocabulary.DCTerms;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 
 // TODO: Auto-generated Javadoc
 /**
  * The Class OdmsCatalogue.
  */
-// Represents a federated ODMS Node  
+// Represents a federated ODMS Node
 @Entity
 @Table(name = "odms")
 public class OdmsCatalogue {
@@ -215,10 +235,10 @@ public class OdmsCatalogue {
   @Expose
   private String category;
 
-    /** The communities. */
-    @Column(name = "communities", unique = false, nullable = true)
-    @SerializedName(value = "communities")
-    private String communities;
+  /** The communities. */
+  @Column(name = "communities", unique = false, nullable = true)
+  @SerializedName(value = "communities")
+  private String communities;
 
   /** The additional config. */
   @OneToOne(orphanRemoval = true, cascade = { CascadeType.ALL, CascadeType.REMOVE })
@@ -233,20 +253,80 @@ public class OdmsCatalogue {
   /** The dcat format. */
   @Transient
   private DcatApFormat dcatFormat;
-  
+
   /** The is Federated In the Context Broker. */
   @Column(name = "isFederatedInCb", nullable = true)
   @Expose
   private Boolean isFederatedInCb;
-  
+
   /** The synch lock for the Context Broker. */
   @Transient
   private OdmsSynchLock synchLockOrion;
-  
+
   /** The autoUpdate value for the Context Broker. */
   @Transient
   private int autoUpdate;
-  
+
+  // new
+  /** The applicable legislation. */
+  @Expose
+  @LazyCollection(LazyCollectionOption.FALSE)
+  @ElementCollection
+  @CollectionTable(name = "odms_applicable_legislation", joinColumns = {
+      @JoinColumn(name = "nodeID", referencedColumnName = "id") })
+  @AttributeOverrides({ @AttributeOverride(name = "value", column = @Column(name = "applicableLegislation")) })
+  private List<DcatProperty> applicableLegislation;
+
+  /** The catalogue. */
+  // private List<DcatCatalog> catalogue;
+
+  /** The creator. */
+  @Expose
+  @OneToOne(cascade = CascadeType.ALL)
+  @JoinColumn(name = "creator_id")
+  private FoafAgent creator;
+
+  /** The geographical coverage. */
+  @Expose
+  @LazyCollection(LazyCollectionOption.FALSE)
+  @OneToMany(cascade = { CascadeType.ALL })
+  // @Fetch(FetchMode.SELECT)
+  @JoinColumn(name = "nodeID")
+  // @JoinColumn(name = "location_id", referencedColumnName =
+  // "geographicalCoverage_id") // FK in dcat_location
+  // @JoinColumns({ @JoinColumn(name = "location_id", referencedColumnName =
+  // "geographicalCoverage_id"),
+  // @JoinColumn(name = "nodeID", referencedColumnName = "nodeID") })
+  private List<DctLocation> geographicalCoverage;
+
+  /** The record. */
+  @Expose
+  @LazyCollection(LazyCollectionOption.FALSE)
+  @OneToMany(cascade = { CascadeType.ALL })
+  // @Fetch(FetchMode.SELECT)
+  @JoinColumns({ @JoinColumn(name = "nodeID", referencedColumnName = "id") })
+  private List<DcatCatalogueRecord> record;
+
+  /** The service. */
+  @Expose
+  @LazyCollection(LazyCollectionOption.FALSE)
+  @OneToMany(cascade = { CascadeType.ALL })
+  // @Fetch(FetchMode.SELECT)
+  @JoinColumns({ @JoinColumn(name = "nodeID", referencedColumnName = "id") })
+  private List<DcatDataService> service;
+
+  /** The temporal coverage. */
+  @Expose
+  @LazyCollection(LazyCollectionOption.FALSE)
+  @OneToMany(cascade = { CascadeType.ALL })
+  // @Fetch(FetchMode.SELECT)
+  @JoinColumn(name = "nodeID")
+  // @JoinColumn(name = "periodOfTime_id", referencedColumnName =
+  // "temporalCoverage_id") // FK in dcat_periodoftime
+  // @JoinColumns({ @JoinColumn(name = "periodOfTime_id", referencedColumnName =
+  // "temporalCoverage_id"),
+  // @JoinColumn(name = "nodeID", referencedColumnName = "nodeID") })
+  private List<DctPeriodOfTime> temporalCoverage;
 
   /**
    * Instantiates a new odms catalogue.
@@ -262,29 +342,38 @@ public class OdmsCatalogue {
   /**
    * Instantiates a new odms catalogue.
    *
-   * @param name                the name
-   * @param host                the host
-   * @param homepage            the homepage
-   * @param apiKey              the API key
-   * @param nodeType            the node type
-   * @param federationLevel     the federation level
-   * @param datasetCount        the dataset count
-   * @param nodeState           the node state
-   * @param registerDate        the register date
-   * @param lastUpdateDate      the last update date
-   * @param refreshPeriod       the refresh period
-   * @param description         the description
-   * @param image               the image
-   * @param rdfCount            the rdf count
-   * @param location            the location
-   * @param locationDescription the location description
+   * @param name                  the name
+   * @param host                  the host
+   * @param homepage              the homepage
+   * @param apiKey                the API key
+   * @param nodeType              the node type
+   * @param federationLevel       the federation level
+   * @param datasetCount          the dataset count
+   * @param nodeState             the node state
+   * @param registerDate          the register date
+   * @param lastUpdateDate        the last update date
+   * @param refreshPeriod         the refresh period
+   * @param description           the description
+   * @param image                 the image
+   * @param rdfCount              the rdf count
+   * @param location              the location
+   * @param locationDescription   the location description
+   * @param applicableLegislation the applicable legislation
+   * @param creator               the creator
+   * @param geographicalCoverage  the geographical coverage
+   * @param record                the record
+   * @param service               the service
+   * @param temporalCoverage      the temporal coverage
    */
   // Throws exception if the type of new object is not allowed
   public OdmsCatalogue(String name, String host, String homepage, String apiKey,
       OdmsCatalogueType nodeType, OdmsCatalogueFederationLevel federationLevel, int datasetCount,
       OdmsCatalogueState nodeState, ZonedDateTime registerDate, ZonedDateTime lastUpdateDate,
       int refreshPeriod, String description, String image, int rdfCount, String location,
-      String locationDescription,String communities) {
+      String locationDescription, String communities, List<String> applicableLegislation,
+      FoafAgent creator, List<DctLocation> geographicalCoverage,
+      List<DcatCatalogueRecord> record, List<DcatDataService> service,
+      List<DctPeriodOfTime> temporalCoverage) {
 
     this.setName(name);
     this.setHost(host);
@@ -307,36 +396,64 @@ public class OdmsCatalogue {
     this.setLocation(location);
     this.setLocationDescription(locationDescription);
     this.setCommunities(communities);
-    //this.setFederatedInOrion(false);
+    // this.setFederatedInOrion(false);
+    // **New Fields Mapping**
+    setApplicableLegislation(applicableLegislation != null && !applicableLegislation.isEmpty()
+        ? applicableLegislation.stream()
+            .map(item -> new DcatProperty(DCATAP.applicableLegislation, ELI.LegalResource, item))
+            .collect(Collectors.toList())
+        : Arrays.asList(new DcatProperty(DCATAP.applicableLegislation, ELI.LegalResource, "")));
+    // setCatalogue(catalogue);
+    setCreator(creator != null ? creator
+        : new FoafAgent(DCTerms.creator.getURI(), "",
+            creator.getName() == null ? null
+                : creator.getName().stream()
+                    .map(DcatProperty::toString)
+                    .collect(Collectors.toList()),
+            creator.getMbox().toString(), creator.getHomepage().toString(),
+            creator.getType().toString(), "", creator.getId()));
+    setGeographicalCoverage(geographicalCoverage);
+    setRecord(record);
+    setService(service);
+    setTemporalCoverage(temporalCoverage);
   }
 
   /**
    * Instantiates a new odms catalogue.
    *
-   * @param id                  the id
-   * @param name                the name
-   * @param host                the host
-   * @param homepage            the homepage
-   * @param apiKey              the API key
-   * @param nodeType            the node type
-   * @param integrationLevel    the integration level
-   * @param datasetCount        the dataset count
-   * @param nodeState           the node state
-   * @param registerDate        the register date
-   * @param lastUpdateDate      the last update date
-   * @param refreshPeriod       the refresh period
-   * @param description         the description
-   * @param image               the image
-   * @param rdfCount            the rdf count
-   * @param location            the location
-   * @param locationDescription the location description
+   * @param id                    the id
+   * @param name                  the name
+   * @param host                  the host
+   * @param homepage              the homepage
+   * @param apiKey                the API key
+   * @param nodeType              the node type
+   * @param integrationLevel      the integration level
+   * @param datasetCount          the dataset count
+   * @param nodeState             the node state
+   * @param registerDate          the register date
+   * @param lastUpdateDate        the last update date
+   * @param refreshPeriod         the refresh period
+   * @param description           the description
+   * @param image                 the image
+   * @param rdfCount              the rdf count
+   * @param location              the location
+   * @param locationDescription   the location description
+   * @param applicableLegislation the applicable legislation
+   * @param creator               the creator
+   * @param geographicalCoverage  the geographical coverage
+   * @param record                the record
+   * @param service               the service
+   * @param temporalCoverage      the temporal coverage
    */
   // Throws exception if the type of new object is not allowed
   public OdmsCatalogue(int id, String name, String host, String homepage, String apiKey,
       OdmsCatalogueType nodeType, OdmsCatalogueFederationLevel integrationLevel, int datasetCount,
       OdmsCatalogueState nodeState, ZonedDateTime registerDate, ZonedDateTime lastUpdateDate,
       int refreshPeriod, String description, String image, int rdfCount, String location,
-      String locationDescription,String communities) {
+      String locationDescription, String communities, List<String> applicableLegislation,
+      FoafAgent creator, List<DctLocation> geographicalCoverage,
+      List<DcatCatalogueRecord> record, List<DcatDataService> service,
+      List<DctPeriodOfTime> temporalCoverage) {
 
     this.setId(id);
     this.setName(name);
@@ -360,36 +477,64 @@ public class OdmsCatalogue {
     this.setLocation(location);
     this.setLocationDescription(locationDescription);
     this.setCommunities(communities);
-    //this.setFederatedInOrion(false);
+    // this.setFederatedInOrion(false);
+    // **New Fields Mapping**
+    setApplicableLegislation(applicableLegislation != null && !applicableLegislation.isEmpty()
+        ? applicableLegislation.stream()
+            .map(item -> new DcatProperty(DCATAP.applicableLegislation, ELI.LegalResource, item))
+            .collect(Collectors.toList())
+        : Arrays.asList(new DcatProperty(DCATAP.applicableLegislation, ELI.LegalResource, "")));
+    // setCatalogue(catalogue);
+    setCreator(creator != null ? creator
+        : new FoafAgent(DCTerms.creator.getURI(), "",
+            creator.getName() == null ? null
+                : creator.getName().stream()
+                    .map(DcatProperty::toString)
+                    .collect(Collectors.toList()),
+            creator.getMbox().toString(), creator.getHomepage().toString(),
+            creator.getType().toString(), "", creator.getId()));
+    setGeographicalCoverage(geographicalCoverage);
+    setRecord(record);
+    setService(service);
+    setTemporalCoverage(temporalCoverage);
   }
 
   /**
    * Instantiates a new odms catalogue.
    *
-   * @param id                  the id
-   * @param name                the name
-   * @param host                the host
-   * @param homepage            the homepage
-   * @param apiKey              the API key
-   * @param nodeType            the node type
-   * @param integrationLevel    the integration level
-   * @param datasetCount        the dataset count
-   * @param nodeState           the node state
-   * @param registerDate        the register date
-   * @param lastUpdateDate      the last update date
-   * @param refreshPeriod       the refresh period
-   * @param description         the description
-   * @param image               the image
-   * @param rdfCount            the rdf count
-   * @param startDataset        the start dataset
-   * @param location            the location
-   * @param locationDescription the location description
+   * @param id                    the id
+   * @param name                  the name
+   * @param host                  the host
+   * @param homepage              the homepage
+   * @param apiKey                the API key
+   * @param nodeType              the node type
+   * @param integrationLevel      the integration level
+   * @param datasetCount          the dataset count
+   * @param nodeState             the node state
+   * @param registerDate          the register date
+   * @param lastUpdateDate        the last update date
+   * @param refreshPeriod         the refresh period
+   * @param description           the description
+   * @param image                 the image
+   * @param rdfCount              the rdf count
+   * @param startDataset          the start dataset
+   * @param location              the location
+   * @param locationDescription   the location description
+   * @param applicableLegislation the applicable legislation
+   * @param creator               the creator
+   * @param geographicalCoverage  the geographical coverage
+   * @param record                the record
+   * @param service               the service
+   * @param temporalCoverage      the temporal coverage
    */
   public OdmsCatalogue(int id, String name, String host, String homepage, String apiKey,
       OdmsCatalogueType nodeType, OdmsCatalogueFederationLevel integrationLevel, int datasetCount,
       OdmsCatalogueState nodeState, ZonedDateTime registerDate, ZonedDateTime lastUpdateDate,
       int refreshPeriod, String description, String image, int rdfCount, int startDataset,
-      String location, String locationDescription,String communities) {
+      String location, String locationDescription, String communities, List<String> applicableLegislation,
+      FoafAgent creator, List<DctLocation> geographicalCoverage,
+      List<DcatCatalogueRecord> record, List<DcatDataService> service,
+      List<DctPeriodOfTime> temporalCoverage) {
 
     this.setId(id);
     this.setName(name);
@@ -413,7 +558,26 @@ public class OdmsCatalogue {
     this.setLocation(location);
     this.setLocationDescription(locationDescription);
     this.setCommunities(communities);
-    //this.setFederatedInOrion(false);
+    // this.setFederatedInOrion(false);
+    // **New Fields Mapping**
+    setApplicableLegislation(applicableLegislation != null && !applicableLegislation.isEmpty()
+        ? applicableLegislation.stream()
+            .map(item -> new DcatProperty(DCATAP.applicableLegislation, ELI.LegalResource, item))
+            .collect(Collectors.toList())
+        : Arrays.asList(new DcatProperty(DCATAP.applicableLegislation, ELI.LegalResource, "")));
+    // setCatalogue(catalogue);
+    setCreator(creator != null ? creator
+        : new FoafAgent(DCTerms.creator.getURI(), "",
+            creator.getName() == null ? null
+                : creator.getName().stream()
+                    .map(DcatProperty::toString)
+                    .collect(Collectors.toList()),
+            creator.getMbox().toString(), creator.getHomepage().toString(),
+            creator.getType().toString(), "", creator.getId()));
+    setGeographicalCoverage(geographicalCoverage);
+    setRecord(record);
+    setService(service);
+    setTemporalCoverage(temporalCoverage);
   }
 
   /**
@@ -740,7 +904,7 @@ public class OdmsCatalogue {
   public Boolean isActive() {
     return isActive;
   }
-  
+
   /**
    * Sets the active.
    *
@@ -749,7 +913,7 @@ public class OdmsCatalogue {
   public void setActive(Boolean isActive) {
     this.isActive = isActive;
   }
-  
+
   /**
    * Checks if the node is federated in CB.
    *
@@ -766,6 +930,62 @@ public class OdmsCatalogue {
    */
   public void setFederatedInCb(Boolean isFederatedInCb) {
     this.isFederatedInCb = isFederatedInCb;
+  }
+
+  public List<DcatProperty> getApplicableLegislation() {
+    return applicableLegislation;
+  }
+
+  public void setApplicableLegislation(List<DcatProperty> applicableLegislation) {
+    this.applicableLegislation = applicableLegislation;
+  }
+
+  // public List<DcatCatalog> getCatalogue() {
+  // return catalogue;
+  // }
+
+  // public void setCatalogue(List<DcatCatalog> catalogue) {
+  // this.catalogue = catalogue;
+  // }
+
+  public FoafAgent getCreator() {
+    return creator;
+  }
+
+  public void setCreator(FoafAgent creator) {
+    this.creator = creator;
+  }
+
+  public List<DctLocation> getGeographicalCoverage() {
+    return geographicalCoverage;
+  }
+
+  public void setGeographicalCoverage(List<DctLocation> geographicalCoverage) {
+    this.geographicalCoverage = geographicalCoverage;
+  }
+
+  public List<DcatCatalogueRecord> getRecord() {
+    return record;
+  }
+
+  public void setRecord(List<DcatCatalogueRecord> record) {
+    this.record = record;
+  }
+
+  public List<DcatDataService> getService() {
+    return service;
+  }
+
+  public void setService(List<DcatDataService> service) {
+    this.service = service;
+  }
+
+  public List<DctPeriodOfTime> getTemporalCoverage() {
+    return temporalCoverage;
+  }
+
+  public void setTemporalCoverage(List<DctPeriodOfTime> temporalCoverage) {
+    this.temporalCoverage = temporalCoverage;
   }
 
   /*
@@ -865,7 +1085,7 @@ public class OdmsCatalogue {
   public void setSynchLock(OdmsSynchLock synchLock) {
     this.synchLock = synchLock;
   }
-  
+
   /**
    * Gets the synch lock Orion.
    *
@@ -883,7 +1103,7 @@ public class OdmsCatalogue {
   public void setAutoUpdate(int autoUpdate) {
     this.autoUpdate = autoUpdate;
   }
-  
+
   /**
    * Gets the autoUpdate for Orion.
    *
@@ -1118,7 +1338,7 @@ public class OdmsCatalogue {
     this.additionalConfig = orionConfig;
   }
 
-    /**
+  /**
    * Gets communities.
    *
    * @return communities

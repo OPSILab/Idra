@@ -1,6 +1,6 @@
 /*******************************************************************************
  * Idra - Open Data Federation Platform
- * Copyright (C) 2021 Engineering Ingegneria Informatica S.p.A.
+ * Copyright (C) 2025 Engineering Ingegneria Informatica S.p.A.
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -142,8 +142,8 @@ public class ClientApi {
    */
   @GET
   @Path("/dcat-ap/dump/{nodeID}")
-//  @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-  @Produces({"application/rdf+xml" , MediaType.APPLICATION_JSON })
+  // @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+  @Produces({ "application/rdf+xml", MediaType.APPLICATION_JSON })
   public Response getCatalogueDcatApDump(@Context HttpServletRequest httpRequest,
       @DefaultValue("false") @QueryParam("forceDump") Boolean forceDump,
       @PathParam("nodeID") String nodeIdentifier) {
@@ -198,7 +198,7 @@ public class ClientApi {
    *
    * @param nodeId the id of the catalogue
    * @param apiKey the apiKey of the catalogue
-   * @param n the notification
+   * @param n      the notification
    * @return the response
    * @throws Exception exception
    */
@@ -220,8 +220,8 @@ public class ClientApi {
 
       DataEntity[] data = notification.getData();
 
-      //Each date field is a dataset that has received a change 
-      //and therefore needs to be updated in Idra
+      // Each date field is a dataset that has received a change
+      // and therefore needs to be updated in Idra
       for (int i = 0; i < data.length; i++) {
 
         String ngsiEntitytId = data[i].getId();
@@ -303,12 +303,15 @@ public class ClientApi {
             }
           }
 
-          // N.B. If you ADD in the CB a Distribution whose id is not present in any Dataset,
+          // N.B. If you ADD in the CB a Distribution whose id is not present in any
+          // Dataset,
           // it is not possible to create its DcatDistribution in Idra.
-          // As soon as a Dataset will be added/modified in the CB which in its Distribution list
+          // As soon as a Dataset will be added/modified in the CB which in its
+          // Distribution list
           // presents the Id of the new Distribution, then the DcatDistribution
           // will be created in Idra.
-          // You must therefore always create the Distribution in the CB first and then the
+          // You must therefore always create the Distribution in the CB first and then
+          // the
           // Dataset that contains it.
           if (datasetIdentif == "") {
             logger.info("The Distribution added in the CB is not present in any Dataset in Idra. "
@@ -385,10 +388,10 @@ public class ClientApi {
             contactPointList.add(
                 new VcardOrganization(DCAT.contactPoint.getURI(),
                     null, "", contactPointListOld.get(k).getHasEmail().getValue(),
-                    "", "", "", String.valueOf(node.getId())));
+                    "", "", "", String.valueOf(node.getId())));// datasetIdentif
           }
 
-          List<SkosConceptTheme> themeList =  new ArrayList<SkosConceptTheme>();
+          List<SkosConceptTheme> themeList = new ArrayList<SkosConceptTheme>();
           List<SkosConceptTheme> themeListOld = datasetToUpdateInIdra.getTheme();
           List<String> themes = new ArrayList<String>();
           for (int k = 0; k < themeListOld.size(); k++) {
@@ -404,12 +407,33 @@ public class ClientApi {
           List<DctStandard> conformsTo = datasetToUpdateInIdra.getConformsTo();
           FoafAgent publisherOld = datasetToUpdateInIdra.getPublisher();
           FoafAgent publisher = new FoafAgent(DCTerms.publisher.getURI(), "",
-              publisherOld.getName().getValue(), "", "", null,
+              publisherOld.getName().stream()
+                  .map(DcatProperty::getValue)
+                  .collect(Collectors.toList()),
+              "", "", null,
               "", String.valueOf(node.getId()));
           FoafAgent creatorOld = datasetToUpdateInIdra.getCreator();
           FoafAgent creator = new FoafAgent(DCTerms.creator.getURI(), "",
-              creatorOld.getName().getValue(), "", "", null,
+              creatorOld.getName().stream()
+                  .map(DcatProperty::getValue)
+                  .collect(Collectors.toList()),
+              "", "", null,
               "", String.valueOf(node.getId()));
+
+          List<String> applicableLegislation = new ArrayList<String>();
+          for (DcatProperty prop : datasetToUpdateInIdra.getApplicableLegislation()) {
+            applicableLegislation.add(prop.getValue());
+          }
+
+          List<String> wasgeneratedby = new ArrayList<String>();
+          for (DcatProperty prop : datasetToUpdateInIdra.getWasGeneratedBy()) {
+            wasgeneratedby.add(prop.getValue());
+          }
+
+          List<String> HVDCategory = new ArrayList<String>();
+          for (DcatProperty prop : datasetToUpdateInIdra.getHVDCategory()) {
+            HVDCategory.add(prop.getValue());
+          }
 
           DcatDataset datasetUpdated = new DcatDataset(String.valueOf(node.getId()),
               datasetToUpdateInIdra.getIdentifier().getValue(),
@@ -429,7 +453,12 @@ public class ClientApi {
               datasetToUpdateInIdra.getType().getValue(),
               datasetToUpdateInIdra.getVersion().getValue(),
               versionNotes, datasetToUpdateInIdra.getRightsHolder(),
-              creator, datasetToUpdateInIdra.getSubject(), null);
+              creator, datasetToUpdateInIdra.getSubject(), null,
+              applicableLegislation,
+              null,datasetToUpdateInIdra.getQualifiedRelation(),//datasetToUpdateInIdra.getInSeries(), 
+              datasetToUpdateInIdra.getTemporalResolution().getValue(),
+              wasgeneratedby,
+              HVDCategory);
 
           logger.info("Updated Dataset, to be inserted in Idra: " + datasetUpdated
               .getTitle().getValue());
@@ -437,7 +466,7 @@ public class ClientApi {
           MetadataCacheManager.updateDataset(Integer.parseInt(nodeId),
               datasetUpdated);
 
-          //OdmsSynchJob.updateDataset(node, datasetUpdated);
+          // OdmsSynchJob.updateDataset(node, datasetUpdated);
 
           logger.info("Dataset after notification on a Distribution, "
               + " updated in Idra");
@@ -1300,12 +1329,14 @@ public class ClientApi {
       switch (ordBy) {
         case ID:
           Collections.sort(nodes, ordType.equals(OrderType.DESC)
-              ? CommonUtil.idOrder.reverse() : CommonUtil.idOrder);
+              ? CommonUtil.idOrder.reverse()
+              : CommonUtil.idOrder);
           break;
         case DATASETCOUNT:
           Collections.sort(nodes,
               ordType.equals(OrderType.DESC)
-              ? CommonUtil.datasetCountOrder.reverse() : CommonUtil.datasetCountOrder);
+                  ? CommonUtil.datasetCountOrder.reverse()
+                  : CommonUtil.datasetCountOrder);
           break;
         case FEDERATIONLEVEL:
           Collections.sort(nodes, ordType.equals(OrderType.DESC)
@@ -1314,35 +1345,42 @@ public class ClientApi {
           break;
         case HOST:
           Collections.sort(nodes, ordType.equals(OrderType.DESC)
-              ? CommonUtil.hostOrder.reverse() : CommonUtil.hostOrder);
+              ? CommonUtil.hostOrder.reverse()
+              : CommonUtil.hostOrder);
           break;
         case LASTUPDATEDATE:
           Collections.sort(nodes,
               ordType.equals(OrderType.DESC)
-              ? CommonUtil.lastUpdateOrder.reverse() : CommonUtil.lastUpdateOrder);
+                  ? CommonUtil.lastUpdateOrder.reverse()
+                  : CommonUtil.lastUpdateOrder);
           break;
         case NAME:
           Collections.sort(nodes, ordType.equals(OrderType.DESC)
-              ? CommonUtil.nameOrder.reverse() : CommonUtil.nameOrder);
+              ? CommonUtil.nameOrder.reverse()
+              : CommonUtil.nameOrder);
           break;
         case NODESTATE:
           Collections.sort(nodes,
               ordType.equals(OrderType.DESC)
-              ? CommonUtil.stateOrder.reverse() : CommonUtil.stateOrder);
+                  ? CommonUtil.stateOrder.reverse()
+                  : CommonUtil.stateOrder);
           break;
         case NODETYPE:
           Collections.sort(nodes, ordType.equals(OrderType.DESC)
-              ? CommonUtil.typeOrder.reverse() : CommonUtil.typeOrder);
+              ? CommonUtil.typeOrder.reverse()
+              : CommonUtil.typeOrder);
           break;
         case REFRESHPERIOD:
           Collections.sort(nodes,
               ordType.equals(OrderType.DESC)
-              ? CommonUtil.refreshPeriodOrder.reverse() : CommonUtil.refreshPeriodOrder);
+                  ? CommonUtil.refreshPeriodOrder.reverse()
+                  : CommonUtil.refreshPeriodOrder);
           break;
         case REGISTERDATE:
           Collections.sort(nodes,
               ordType.equals(OrderType.DESC)
-              ? CommonUtil.registerDateOrder.reverse() : CommonUtil.registerDateOrder);
+                  ? CommonUtil.registerDateOrder.reverse()
+                  : CommonUtil.registerDateOrder);
           break;
         default:
           break;

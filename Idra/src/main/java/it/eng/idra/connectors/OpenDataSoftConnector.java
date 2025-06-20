@@ -1,6 +1,6 @@
 /*******************************************************************************
  * Idra - Open Data Federation Platform
- * Copyright (C) 2021 Engineering Ingegneria Informatica S.p.A.
+ * Copyright (C) 2025 Engineering Ingegneria Informatica S.p.A.
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -20,11 +20,13 @@ import com.google.common.collect.Sets;
 import com.google.common.collect.Sets.SetView;
 import com.google.gson.Gson;
 import it.eng.idra.beans.dcat.DcatDataset;
+import it.eng.idra.beans.dcat.DcatDatasetSeries;
 import it.eng.idra.beans.dcat.DcatDistribution;
 import it.eng.idra.beans.dcat.DctLocation;
 import it.eng.idra.beans.dcat.DctPeriodOfTime;
 import it.eng.idra.beans.dcat.DctStandard;
 import it.eng.idra.beans.dcat.FoafAgent;
+import it.eng.idra.beans.dcat.Relationship;
 import it.eng.idra.beans.dcat.SkosConcept;
 import it.eng.idra.beans.dcat.SkosConceptSubject;
 import it.eng.idra.beans.dcat.SkosConceptTheme;
@@ -45,6 +47,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -240,16 +243,28 @@ public class OpenDataSoftConnector implements IodmsConnector {
     Optional<String> publisherIdentifier = Optional.empty();
 
     FoafAgent publisher = new FoafAgent(DCTerms.publisher.getURI(), publisherUri.orElse(null),
-        publisherName.orElse(null), publisherMbox.orElse(null), publisherHomepage.orElse(null),
+        publisherName != null
+            ? Collections.singletonList(publisherName.toString())
+            : Collections.emptyList(),
+        publisherMbox.orElse(null), publisherHomepage.orElse(null),
         publisherType.orElse(null), publisherIdentifier.orElse(null), nodeId);
 
     List<String> keywords = metadata.getKeyword();
+
+    // New properties, null for now
+    List<String> applicableLegislation = new ArrayList<String>();
+    List<DcatDatasetSeries> inSeries = new ArrayList<DcatDatasetSeries>();
+    List<Relationship> qualifiedRelation = new ArrayList<Relationship>();
+    String temporalResolution = null;
+    List<String> wasGeneratedBy = new ArrayList<String>();
+    List<String> HVDCategory = new ArrayList<String>();
 
     DcatDataset mapped = new DcatDataset(nodeId, identifier, title, description, distributionList,
         datasetTheme, publisher, contactPointList, keywords, accessRights, conformsTo,
         documentation, frequency, hasVersion, isVersionOf, landingPage, languages, provenance,
         releaseDate, updateDate, otherIdentifier, sample, source, spatialCoverage, temporalCoverage,
-        type, version, versionNotes, rightsHolder, publisher, subjectList, relatedResources);
+        type, version, versionNotes, rightsHolder, publisher, subjectList, relatedResources, applicableLegislation,
+        inSeries, qualifiedRelation, temporalResolution, wasGeneratedBy, HVDCategory);
 
     return mapped;
   }
@@ -322,7 +337,7 @@ public class OpenDataSoftConnector implements IodmsConnector {
   /**
    * Extract concept list.
    *
-   * @param             <T> the generic type
+   * @param <T>         the generic type
    * @param propertyUri the property uri
    * @param concepts    the concepts
    * @param type        the type

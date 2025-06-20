@@ -1,6 +1,6 @@
 /*******************************************************************************
  * Idra - Open Data Federation Platform
- * Copyright (C) 2021 Engineering Ingegneria Informatica S.p.A.
+ * Copyright (C) 2025 Engineering Ingegneria Informatica S.p.A.
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -16,9 +16,11 @@
 package it.eng.idra.dcat.dump;
 
 import it.eng.idra.beans.IdraProperty;
+import it.eng.idra.beans.dcat.DCATAP;
 import it.eng.idra.beans.dcat.DcatApFormat;
 import it.eng.idra.beans.dcat.DcatApProfile;
 import it.eng.idra.beans.dcat.DcatApWriteType;
+import it.eng.idra.beans.dcat.DcatDataService;
 import it.eng.idra.beans.dcat.DcatDataset;
 import it.eng.idra.beans.dcat.DcatDistribution;
 import it.eng.idra.beans.dcat.DcatProperty;
@@ -27,7 +29,9 @@ import it.eng.idra.beans.dcat.DctLicenseDocument;
 import it.eng.idra.beans.dcat.DctLocation;
 import it.eng.idra.beans.dcat.DctPeriodOfTime;
 import it.eng.idra.beans.dcat.DctStandard;
+import it.eng.idra.beans.dcat.ELI;
 import it.eng.idra.beans.dcat.FoafAgent;
+import it.eng.idra.beans.dcat.Relationship;
 import it.eng.idra.beans.dcat.SkosConcept;
 import it.eng.idra.beans.dcat.SkosPrefLabel;
 import it.eng.idra.beans.dcat.SpdxChecksum;
@@ -35,7 +39,6 @@ import it.eng.idra.beans.dcat.VcardOrganization;
 import it.eng.idra.beans.odms.OdmsCatalogue;
 import it.eng.idra.beans.search.SearchResult;
 import it.eng.idra.management.FederationCore;
-import it.eng.idra.utils.CommonUtil;
 import it.eng.idra.utils.PropertyManager;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -63,17 +66,19 @@ import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.rdf.model.ResourceRequiredException;
-import org.apache.jena.shared.BadURIException;
+//import org.apache.jena.shared.BadURIException;
 import org.apache.jena.sparql.vocabulary.FOAF;
 import org.apache.jena.vocabulary.DCAT;
 import org.apache.jena.vocabulary.DCTerms;
 import org.apache.jena.vocabulary.OWL;
+import org.apache.jena.vocabulary.RDF;
 import org.apache.jena.vocabulary.RDFS;
 import org.apache.jena.vocabulary.SKOS;
 import org.apache.jena.vocabulary.VCARD4;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.eclipse.rdf4j.model.vocabulary.XMLSchema;
+import org.apache.jena.rdf.model.ResourceFactory;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -156,10 +161,10 @@ public class DcatApSerializer {
           model = DcatApItSerializer.addDatasetToModel(dataset, model);
           break;
 
-          /*
-           * ADD HERE MORE CASES FOR FURTHER PROFILES
-           */
-          
+        /*
+         * ADD HERE MORE CASES FOR FURTHER PROFILES
+         */
+
         default:
           model = addDatasetToModel(dataset, model);
           break;
@@ -192,6 +197,9 @@ public class DcatApSerializer {
     model.setNsPrefix("xsd", XMLSchema.NAMESPACE);
     model.setNsPrefix("vcard", VCARD4.getURI());
     model.setNsPrefix("locn", "http://www.w3.org/ns/locn#");
+    model.setNsPrefix("dcatap", "http://data.europa.eu/r5r/");
+    model.setNsPrefix("rdf", RDF.getURI());
+    model.setNsPrefix("eli", "http://data.europa.eu/eli/ontology#");// ns1
     return model;
   }
 
@@ -240,13 +248,14 @@ public class DcatApSerializer {
    * @param dataset the dataset
    * @param model   the model
    * @return the model
+   * @throws IRIException the IRI exception
    */
-  private static Model addDatasetToModel(DcatDataset dataset, Model model) {
+  protected static Model addDatasetToModel(DcatDataset dataset, Model model) throws IRIException {
 
     String landingPage = dataset.getLandingPage().getValue();
     IRI iri = iriFactory.create(landingPage);
     if (iri.hasViolation(false)) {
-      throw new BadURIException(
+      throw new IllegalArgumentException(
           "URI for dataset: " + iri + "is not valid, skipping the dataset in the Jena Model:"
               + (iri.violations(false).next()).getShortMessage());
     }
@@ -297,13 +306,15 @@ public class DcatApSerializer {
 
     addDcatPropertyAsResource(dataset.getLandingPage(), datasetResource, model, false);
 
-//  datasetResource.addProperty(model.createProperty(dataset.getLandingPage().getUri()),
-//  model.createResource(dataset.getLandingPage().getRange())
-//      .addProperty(dataset.getLandingPage().getProperty(),
-//          dataset.getLandingPage().getRange()));
+    // datasetResource.addProperty(model.createProperty(dataset.getLandingPage().getUri()),
+    // model.createResource(dataset.getLandingPage().getRange())
+    // .addProperty(dataset.getLandingPage().getProperty(),
+    // dataset.getLandingPage().getRange()));
 
-//    Property p = model.createProperty(dataset.getLandingPage().getUri());
-//    dataset.getLandingPage().getProperty().addProperty(p, model.createResource(dataset.getLandingPage().getValue(), dataset.getLandingPage().getRange()));
+    // Property p = model.createProperty(dataset.getLandingPage().getUri());
+    // dataset.getLandingPage().getProperty().addProperty(p,
+    // model.createResource(dataset.getLandingPage().getValue(),
+    // dataset.getLandingPage().getRange()));
 
     serializeLanguage(dataset.getLanguage(), model, datasetResource);
 
@@ -351,6 +362,101 @@ public class DcatApSerializer {
       versionNotes.stream().forEach(item -> addDcatPropertyAsLiteral(item, datasetResource, model));
     }
 
+    // new, add also List<DcatDatasetSeries> inSeries;
+    /*
+     * logger.info(
+     * "applicableLegislation size: " +
+     * (applicableLegislation != null && !applicableLegislation.isEmpty() ?
+     * applicableLegislation.size() : null));
+     */
+    List<DcatProperty> applicableLegislation = dataset.getApplicableLegislation();
+    if (applicableLegislation != null) {
+      applicableLegislation.stream()
+          .filter(item -> StringUtils.isNotBlank(item.getValue()))
+          .forEach(item -> {
+            if (isValidUri(item.getValue())) {
+              Resource legalResource = model.createResource(item.getValue());
+              legalResource.addProperty(RDF.type, ELI.LegalResource);
+              datasetResource.addProperty(DCATAP.applicableLegislation, legalResource);
+            } else {
+              datasetResource.addProperty(DCATAP.applicableLegislation, model.createLiteral(item.getValue()));
+            }
+          });
+    }
+
+    // For wasGeneratedBy
+    List<DcatProperty> wasGeneratedBy = dataset.getWasGeneratedBy();
+    if (wasGeneratedBy != null) {
+      wasGeneratedBy.stream()
+          .filter(item -> StringUtils.isNotBlank(item.getValue()))
+          .forEach(item -> {
+            if (isValidUri(item.getValue())) {
+              Resource resource = model.createResource(item.getValue());
+              datasetResource.addProperty(ResourceFactory.createProperty("https://www.w3.org/ns/prov#wasGeneratedBy"),
+                  resource);
+            } else {
+              datasetResource.addProperty(ResourceFactory.createProperty("https://www.w3.org/ns/prov#wasGeneratedBy"),
+                  model.createLiteral(item.getValue()));
+            }
+          });
+    }
+
+    // For HVDCategory
+    List<DcatProperty> HVDCategory = dataset.getHVDCategory();
+    if (HVDCategory != null) {
+      HVDCategory.stream()
+          .filter(item -> StringUtils.isNotBlank(item.getValue()))
+          .forEach(item -> {
+            if (isValidUri(item.getValue())) {
+              Resource resource = model.createResource(item.getValue());
+              datasetResource.addProperty(DCATAP.hvdCategory, resource);
+            } else {
+              datasetResource.addProperty(DCATAP.hvdCategory, model.createLiteral(item.getValue()));
+            }
+          });
+    }
+
+    if (StringUtils.isNotBlank(dataset.getTemporalResolution().getValue())) {
+      if (isValidUri(dataset.getTemporalResolution().getValue())) {
+        datasetResource.addProperty(DCAT.temporalResolution,
+            model.createResource(dataset.getTemporalResolution().getValue()));
+      } else {
+        datasetResource.addProperty(DCAT.temporalResolution,
+            model.createLiteral(dataset.getTemporalResolution().getValue()));
+      }
+    }
+
+    // Serialize qualifiedRelation
+    List<Relationship> qualifiedRelation = dataset.getQualifiedRelation();
+    if (qualifiedRelation != null && !qualifiedRelation.isEmpty()) {
+      for (Relationship relationship : qualifiedRelation) {
+
+        Resource relationshipResource = model.createResource(Relationship.getRdfClass());
+
+        if (StringUtils.isNotBlank(relationship.getHad_role().getValue())) {
+          if (isValidUri(relationship.getHad_role().getValue())) {
+            relationshipResource.addProperty(DCAT.hadRole,
+                model.createResource(relationship.getHad_role().getValue()));
+          } else {
+            relationshipResource.addProperty(DCAT.hadRole,
+                model.createLiteral(relationship.getHad_role().getValue()));
+          }
+        }
+
+        if (StringUtils.isNotBlank(relationship.getRelation().getValue())) {
+          if (isValidUri(relationship.getRelation().getValue())) {
+            relationshipResource.addProperty(DCTerms.relation,
+                model.createResource(relationship.getRelation().getValue()));
+          } else {
+            relationshipResource.addProperty(DCTerms.relation,
+                model.createLiteral(relationship.getRelation().getValue()));
+          }
+        }
+
+        datasetResource.addProperty(DCAT.qualifiedRelation, relationshipResource);
+      }
+    }
+
     for (DcatDistribution distribution : dataset.getDistributions()) {
       addDistributionToModel(model, datasetResource, distribution);
     }
@@ -387,10 +493,12 @@ public class DcatApSerializer {
      * create it, either or both for dataset and catalog
      */
 
-//    serializeFoafAgent(
-//        new FoafAgent(DCTerms.publisher.getURI(), publisherResourceUri, node.getPublisherName(),
-//            node.getPublisherEmail(), node.getPublisherUrl(), "", "", String.valueOf(node.getId())),
-//        model, model.getResource(node.getHost()));
+    // serializeFoafAgent(
+    // new FoafAgent(DCTerms.publisher.getURI(), publisherResourceUri,
+    // node.getPublisherName(),
+    // node.getPublisherEmail(), node.getPublisherUrl(), "", "",
+    // String.valueOf(node.getId())),
+    // model, model.getResource(node.getHost()));
 
     FoafAgent datasetPublisher = dataset.getPublisher();
     if (datasetPublisher != null) {
@@ -423,7 +531,11 @@ public class DcatApSerializer {
               .addProperty(temporalCoverage.getStartDate().getProperty(),
                   temporalCoverage.getStartDate().getValue(), XSDDateType.XSDdate)
               .addProperty(temporalCoverage.getEndDate().getProperty(),
-                  temporalCoverage.getEndDate().getValue(), XSDDateType.XSDdate));
+                  temporalCoverage.getEndDate().getValue(), XSDDateType.XSDdate)
+              .addProperty(temporalCoverage.getBeginning().getProperty(), temporalCoverage.getBeginning().getValue(),
+                  XSDDateType.XSDdate)
+              .addProperty(temporalCoverage.getEnd().getProperty(), temporalCoverage.getEnd().getValue(),
+                  XSDDateType.XSDdate));
     }
   }
 
@@ -459,6 +571,9 @@ public class DcatApSerializer {
       // TODO Geographical Name as SKOS CONCEPT
       addDcatPropertyAsResource(spatialCoverage.getGeographicalName(), spatialResource, model,
           false);
+
+      addDcatPropertyAsLiteral(spatialCoverage.getBbox(), spatialResource, model);
+      addDcatPropertyAsLiteral(spatialCoverage.getCentroid(), spatialResource, model);
 
       parentResource.addProperty(model.createProperty(spatialCoverage.getUri()), spatialResource);
 
@@ -580,7 +695,12 @@ public class DcatApSerializer {
         agentResource = model.createResource(FoafAgent.getRdfClass());
       }
 
-      addDcatPropertyAsLiteral(agent.getName(), agentResource, model);
+      // addDcatPropertyAsLiteral(agent.getName(), agentResource, model);
+      if (agent.getName() != null) {
+        for (DcatProperty name : agent.getName()) {
+          addDcatPropertyAsLiteral(name, agentResource, model);
+        }
+      }
       addDcatPropertyAsLiteral(agent.getMbox(), agentResource, model);
       addDcatPropertyAsLiteral(agent.getType(), agentResource, model);
       addDcatPropertyAsLiteral(agent.getIdentifier(), agentResource, model);
@@ -594,7 +714,7 @@ public class DcatApSerializer {
   /**
    * Serialize concept.
    *
-   * @param                <T> the generic type
+   * @param <T>            the generic type
    * @param conceptList    the concept list
    * @param model          the model
    * @param parentResource the parent resource
@@ -687,15 +807,197 @@ public class DcatApSerializer {
         distribution.getUpdateDate().getValue(), XSDDateType.XSDdateTime);
 
     // addDcatPropertyAsLiteral(distribution.getRights(), distResource, model);
-     addDcatPropertyAsResource(distribution.getRights(), distResource, model,
-     true);
+    addDcatPropertyAsResource(distribution.getRights(), distResource, model,
+        true);
 
-//    Property p = model.createProperty(distribution.getRights().getUri());
-//    distResource.addProperty(p, model.createResource(distribution.getRights().getValue(), distribution.getRights().getRange()));
+    // Property p = model.createProperty(distribution.getRights().getUri());
+    // distResource.addProperty(p,
+    // model.createResource(distribution.getRights().getValue(),
+    // distribution.getRights().getRange()));
 
     serializeConcept(Arrays.asList(distribution.getStatus()), model, distResource);
 
     addDcatPropertyAsLiteral(distribution.getTitle(), distResource, model);
+
+    // new
+    // Serialize accessService(s)
+    List<DcatDataService> accessServices = distribution.getAccessService();
+    if (accessServices != null && !accessServices.isEmpty()) {
+      for (DcatDataService service : accessServices) {
+
+        Resource serviceResource = model.createResource(DcatDataService.getRdfClass());
+
+        if (service.getEndpointURL() != null) {
+          service.getEndpointURL().stream()
+              .filter(item -> StringUtils.isNotBlank(item.getValue()))
+              .forEach(item -> {
+                if (isValidUri(item.getValue())) {
+                  serviceResource.addProperty(DCAT.endpointURL, model.createResource(item.getValue()));
+                } else {
+                  serviceResource.addProperty(DCAT.endpointURL, model.createLiteral(item.getValue()));
+                }
+              });
+        }
+
+        if (service.getEndpointDescription() != null) {
+          service.getEndpointDescription().stream()
+              .filter(item -> StringUtils.isNotBlank(item.getValue()))
+              .forEach(item -> {
+                if (isValidUri(item.getValue())) {
+                  serviceResource.addProperty(DCAT.endpointDescription, model.createResource(item.getValue()));
+                } else {
+                  serviceResource.addProperty(DCAT.endpointDescription, model.createLiteral(item.getValue()));
+                }
+              });
+        }
+
+        /*
+         * if (service.getApplicableLegislation() != null) {
+         * service.getApplicableLegislation().stream()
+         * .filter(item -> StringUtils.isNotBlank(item.getValue()))
+         * .forEach(item -> {
+         * if (isValidUri(item.getValue())) {
+         * Resource legalResource = model.createResource(item.getValue());
+         * legalResource.addProperty(RDF.type, ELI.LegalResource);
+         * serviceResource.addProperty(DCATAP.applicableLegislation, legalResource);
+         * } else {
+         * serviceResource.addProperty(DCATAP.applicableLegislation,
+         * model.createLiteral(item.getValue()));
+         * }
+         * });
+         * }
+         */
+
+        /*
+         * if (service.getContactPoint() != null &&
+         * !service.getContactPoint().isEmpty()) {
+         * serializeContactPoint(service.getContactPoint(), model, serviceResource);
+         * }
+         */
+
+        /*
+         * if (StringUtils.isNotBlank(service.getLicence().getValue())) {
+         * if (isValidUri(service.getLicence().getValue())) {
+         * serviceResource.addProperty(DCTerms.license,
+         * model.createResource(service.getLicence().getValue()));
+         * } else {
+         * serviceResource.addProperty(DCTerms.license,
+         * model.createLiteral(service.getLicence().getValue()));
+         * }
+         * }
+         */
+
+        if (service.getRights() != null) {
+          service.getRights().stream()
+              .filter(item -> StringUtils.isNotBlank(item.getValue()))
+              .forEach(item -> {
+                if (isValidUri(item.getValue())) {
+                  serviceResource.addProperty(DCTerms.rights, model.createResource(item.getValue()));
+                } else {
+                  serviceResource.addProperty(DCTerms.rights, model.createLiteral(item.getValue()));
+                }
+              });
+        }
+
+        if (service.getServesDataset() != null) {
+          service.getServesDataset().stream()
+              .filter(item -> StringUtils.isNotBlank(item.getValue()))
+              .forEach(item -> {
+                if (isValidUri(item.getValue())) {
+                  serviceResource.addProperty(DCAT.servesDataset, model.createResource(item.getValue()));
+                } else {
+                  serviceResource.addProperty(DCAT.servesDataset, model.createLiteral(item.getValue()));
+                }
+              });
+        }
+
+        addDcatPropertyAsLiteral(service.getTitle(), serviceResource, model);
+
+        // Link the distribution to the DataService
+        distResource.addProperty(DCAT.accessService, serviceResource);
+      }
+    }
+
+    /*
+     * logger.info(
+     * "applicableLegislation size: " +
+     * (applicableLegislation != null && !applicableLegislation.isEmpty() ?
+     * applicableLegislation.size() : null));
+     */
+    List<DcatProperty> applicableLegislation = distribution.getApplicableLegislation();
+    if (applicableLegislation != null) {
+      applicableLegislation.stream()
+          .filter(item -> StringUtils.isNotBlank(item.getValue()))
+          .forEach(item -> {
+            if (isValidUri(item.getValue())) {
+              Resource legalResource = model.createResource(item.getValue());
+              legalResource.addProperty(RDF.type, ELI.LegalResource);
+              distResource.addProperty(DCATAP.applicableLegislation, legalResource);
+            } else {
+              distResource.addProperty(DCATAP.applicableLegislation, model.createLiteral(item.getValue()));
+            }
+          });
+    }
+
+    //addDcatPropertyAsResource(distribution.getHasPolicy(), distResource, model, false);
+
+    if (StringUtils.isNotBlank(distribution.getHasPolicy().getValue())) {
+      if (isValidUri(distribution.getHasPolicy().getValue())) {
+        distResource.addProperty(model.createProperty("https://www.w3.org/ns/odrl/2/"),
+            model.createResource(distribution.getHasPolicy().getValue()));
+      } else {
+        distResource.addProperty(model.createProperty("https://www.w3.org/ns/odrl/2/"),
+            model.createLiteral(distribution.getHasPolicy().getValue()));
+      }
+    }
+
+    if (StringUtils.isNotBlank(distribution.getAvailability().getValue())) {
+      if (isValidUri(distribution.getAvailability().getValue())) {
+        distResource.addProperty(DCATAP.availability,
+            model.createResource(distribution.getAvailability().getValue()));
+      } else {
+        distResource.addProperty(DCATAP.availability,
+            model.createLiteral(distribution.getAvailability().getValue()));
+      }
+    }
+    if (StringUtils.isNotBlank(distribution.getCompressionFormat().getValue())) {
+      if (isValidUri(distribution.getCompressionFormat().getValue())) {
+        distResource.addProperty(DCAT.compressFormat,
+            model.createResource(distribution.getCompressionFormat().getValue()));
+      } else {
+        distResource.addProperty(DCAT.compressFormat,
+            model.createLiteral(distribution.getCompressionFormat().getValue()));
+      }
+    }
+    if (StringUtils.isNotBlank(distribution.getPackagingFormat().getValue())) {
+      if (isValidUri(distribution.getPackagingFormat().getValue())) {
+        distResource.addProperty(DCAT.packageFormat,
+            model.createResource(distribution.getPackagingFormat().getValue()));
+      } else {
+        distResource.addProperty(DCAT.packageFormat,
+            model.createLiteral(distribution.getPackagingFormat().getValue()));
+      }
+    }
+
+    if (StringUtils.isNotBlank(distribution.getTemporalResolution().getValue())) {
+      if (isValidUri(distribution.getTemporalResolution().getValue())) {
+        distResource.addProperty(DCAT.temporalResolution,
+            model.createResource(distribution.getTemporalResolution().getValue()));
+      } else {
+        distResource.addProperty(DCAT.temporalResolution,
+            model.createLiteral(distribution.getTemporalResolution().getValue()));
+      }
+    }
+
+    if (StringUtils.isNotBlank(distribution.getSpatialResolution().getValue())) {
+      if (isValidUri(distribution.getSpatialResolution().getValue())) {
+        distResource.addProperty(DCAT.spatialResolutionInMeters,
+            model.createResource(distribution.getSpatialResolution().getValue()));
+      } else {
+        distResource.addProperty(DCAT.spatialResolutionInMeters,
+            model.createLiteral(distribution.getSpatialResolution().getValue()));
+      }
+    }
 
     datasetResource.addProperty(DCAT.distribution, distResource);
   }
@@ -793,11 +1095,10 @@ public class DcatApSerializer {
     }
   }
 
-  
   /**
    * Serialize mediaType.
    *
-   * @param mediatype       the format
+   * @param mediatype    the format
    * @param model        the model
    * @param distResource the dist resource
    */
@@ -809,7 +1110,6 @@ public class DcatApSerializer {
       addDcatPropertyAsResource(mediatype, distResource, model, true);
     }
   }
-  
 
   /**
    * Serialize dct standard.
@@ -902,7 +1202,7 @@ public class DcatApSerializer {
     // Add the property as literal value
     if (StringUtils.isNotBlank(property.getValue())) {
       String value = property.getValue();
-      
+
       logger.info("Value: " + value);
       logger.info("Property: " + property.getProperty());
       logger.info("Property Value: " + property.getValue());
@@ -983,10 +1283,10 @@ public class DcatApSerializer {
     } catch (Exception e) {
       e.printStackTrace();
     } finally {
-    	  if(out!=null){
-    		  out.close();
-    	    }
-     
+      if (out != null) {
+        out.close();
+      }
+
       Instant tock = Instant.now();
       logger.info("File writing completed in: " + Duration.between(tick, tock).toString());
 

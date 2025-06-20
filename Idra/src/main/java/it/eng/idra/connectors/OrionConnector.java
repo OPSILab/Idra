@@ -1,6 +1,6 @@
 /*******************************************************************************
  * Idra - Open Data Federation Platform
- * Copyright (C) 2021 Engineering Ingegneria Informatica S.p.A.
+ * Copyright (C) 2025 Engineering Ingegneria Informatica S.p.A.
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -17,12 +17,15 @@ package it.eng.idra.connectors;
 
 import it.eng.idra.beans.IdraProperty;
 import it.eng.idra.beans.dcat.DcatDataset;
+import it.eng.idra.beans.dcat.DcatDatasetSeries;
+import it.eng.idra.beans.dcat.DcatDetails;
 import it.eng.idra.beans.dcat.DcatDistribution;
 import it.eng.idra.beans.dcat.DctLicenseDocument;
 import it.eng.idra.beans.dcat.DctLocation;
 import it.eng.idra.beans.dcat.DctPeriodOfTime;
 import it.eng.idra.beans.dcat.DctStandard;
 import it.eng.idra.beans.dcat.FoafAgent;
+import it.eng.idra.beans.dcat.Relationship;
 import it.eng.idra.beans.dcat.SkosConcept;
 import it.eng.idra.beans.dcat.SkosConceptSubject;
 import it.eng.idra.beans.dcat.SkosConceptTheme;
@@ -35,6 +38,7 @@ import it.eng.idra.beans.orion.OrionDistributionConfig;
 import it.eng.idra.management.OdmsManager;
 import it.eng.idra.utils.CommonUtil;
 import it.eng.idra.utils.GsonUtil;
+import it.eng.idra.utils.GsonUtilException;
 import it.eng.idra.utils.PropertyManager;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
@@ -42,6 +46,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
@@ -121,6 +126,47 @@ public class OrionConnector implements IodmsConnector {
     return -1;
   }
 
+  /**
+   * Extract value list.
+   *
+   * @param value the value
+   * @return the list
+   */
+  private List<String> extractValueList(String value) {
+
+    // TODO: regex & groups
+    List<String> result = new ArrayList<String>();
+
+    if (StringUtils.isBlank(value)) {
+      return result;
+    }
+
+    if (value.startsWith("[")) {
+      try {
+        result.addAll(GsonUtil.json2Obj(value, GsonUtil.stringListType));
+      } catch (GsonUtilException ex) {
+        if (StringUtils.isNotBlank(value)) {
+          for (String s : value.split(",")) {
+            result.add(s);
+          }
+        } else {
+          result = null;
+        }
+      }
+    } else if (value.startsWith("{")) {
+      for (String s : value.substring(1, value.lastIndexOf("}")).split(",")) {
+        result.add(s);
+      }
+    } else {
+      for (String s : value.split(",")) {
+        result.add(s);
+      }
+    }
+
+    return result;
+
+  }
+
   /*
    * (non-Javadoc)
    * 
@@ -159,6 +205,20 @@ public class OrionConnector implements IodmsConnector {
 
     List<DcatDistribution> distributionList = new ArrayList<DcatDistribution>();
 
+    // New properties
+    String beginning = null;
+    String end = null;
+    List<String> applicableLegislation = new ArrayList<String>();
+    List<DctLocation> geographicalCoverage = new ArrayList<DctLocation>();
+    List<DcatDetails> descriptions = new ArrayList<DcatDetails>();
+    List<DcatDetails> titles = new ArrayList<DcatDetails>();
+    List<DctPeriodOfTime> temporalCoverageList = new ArrayList<DctPeriodOfTime>();
+    List<DcatDatasetSeries> inSeries = new ArrayList<DcatDatasetSeries>();
+    List<Relationship> qualifiedRelation = new ArrayList<Relationship>();
+    String temporalResolution = null;
+    List<String> wasGeneratedBy = new ArrayList<String>();
+    List<String> HVDCategory = new ArrayList<String>();
+
     title = j.optString("title", null);
     description = j.optString("description", null);
     identifier = UUID.randomUUID().toString();
@@ -188,7 +248,10 @@ public class OrionConnector implements IodmsConnector {
       if (pub.has("name") || pub.has("mbox") || pub.has("homepage") || pub.has("type")
           || pub.has("identifier") || pub.has("propertyUri")) {
         publisher = new FoafAgent(DCTerms.publisher.getURI(), pub.optString("propertyUri", null),
-            pub.optString("name", null), pub.optString("mbox", null),
+            pub.optString("name") != null
+                ? Collections.singletonList(pub.optString("name"))
+                : Collections.emptyList(),
+            pub.optString("mbox", null),
             pub.optString("homepage", null), pub.optString("type", null),
             pub.optString("identifier", null), nodeId);
       }
@@ -200,7 +263,9 @@ public class OrionConnector implements IodmsConnector {
       if (pub.has("name") || pub.has("mbox") || pub.has("homepage") || pub.has("type")
           || pub.has("identifier") || pub.has("propertyUri")) {
         rightsHolder = new FoafAgent(DCTerms.rightsHolder.getURI(),
-            pub.optString("propertyUri", null), pub.optString("name", null),
+            pub.optString("propertyUri", null), pub.optString("name") != null
+                ? Collections.singletonList(pub.optString("name"))
+                : Collections.emptyList(),
             pub.optString("mbox", null), pub.optString("homepage", null),
             pub.optString("type", null), pub.optString("identifier", null), nodeId);
       }
@@ -212,7 +277,10 @@ public class OrionConnector implements IodmsConnector {
       if (pub.has("name") || pub.has("mbox") || pub.has("homepage") || pub.has("type")
           || pub.has("identifier") || pub.has("propertyUri")) {
         creator = new FoafAgent(DCTerms.creator.getURI(), pub.optString("propertyUri", null),
-            pub.optString("name", null), pub.optString("mbox", null),
+            pub.optString("name") != null
+                ? Collections.singletonList(pub.optString("name"))
+                : Collections.emptyList(),
+            pub.optString("mbox", null),
             pub.optString("homepage", null), pub.optString("type", null),
             pub.optString("identifier", null), nodeId);
       }
@@ -234,7 +302,7 @@ public class OrionConnector implements IodmsConnector {
               new VcardOrganization(DCAT.contactPoint.getURI(), tmp.optString("resourceUri", null),
                   tmp.optString("fn", null), tmp.optString("hasEmail", null),
                   tmp.optString("hasURL", null), tmp.optString("hasTelephoneValue", null),
-                  tmp.optString("hasTelephoneType", null), nodeId));
+                  tmp.optString("hasTelephoneType", null), nodeId));// identifier
         }
       }
     }
@@ -327,13 +395,17 @@ public class OrionConnector implements IodmsConnector {
       spatialCoverage = new DctLocation(DCTerms.spatial.getURI(),
           j.getJSONObject("spatialCoverage").optString("geographicalIdentifier", null),
           j.getJSONObject("spatialCoverage").optString("geographicalName", null),
-          j.getJSONObject("spatialCoverage").optString("geometry", null), nodeId);
+          j.getJSONObject("spatialCoverage").optString("geometry", null), nodeId,
+          j.getJSONObject("spatialCoverage").optString("bbox", null),
+          j.getJSONObject("spatialCoverage").optString("centroid", null));// j.getJSONObject("spatialCoverage").optString("dataset_id",
+                                                                          // null)
     }
 
     String startDate = null;
     String endDate = null;
-    if (StringUtils.isNotBlank(startDate) && StringUtils.isNotBlank(endDate)) {
-      temporalCoverage = new DctPeriodOfTime(DCTerms.temporal.getURI(), startDate, endDate, nodeId);
+    if (StringUtils.isNotBlank(startDate) && StringUtils.isNotBlank(endDate)
+        && StringUtils.isNotBlank(beginning) && StringUtils.isNotBlank(end)) {
+      temporalCoverage = new DctPeriodOfTime(DCTerms.temporal.getURI(), startDate, endDate, nodeId, beginning, end);// identifier
     }
 
     // Distribution
@@ -421,11 +493,85 @@ public class OrionConnector implements IodmsConnector {
       throw new Exception("Orion Dataset must contain at least one distribution");
     }
 
+    // Handle new properties
+    if (j.has("applicableLegislation")) {
+      applicableLegislation = GsonUtil.json2Obj(j.getJSONArray("applicableLegislation").toString(),
+          GsonUtil.stringListType);
+    }
+
+/*     if (j.has("inSeries")) {
+      JSONArray array = j.optJSONArray("inSeries");
+      if (array != null) {
+        for (int i = 0; i < array.length(); i++) {
+          JSONObject seriesObj = array.getJSONObject(i);
+
+          DcatDetails dcatDetails = new DcatDetails();
+          dcatDetails.setTitle(title);
+          dcatDetails.setDescription(description);
+          // Extracting properties from JSON
+          descriptions.add(dcatDetails); // extractValueList(description);
+          frequency = seriesObj.optString("frequency");
+          geographicalCoverage.add(spatialCoverage); // extractValueList(seriesObj.optString("geographicalCoverage"));
+          temporalCoverageList.add(temporalCoverage);
+          titles.add(dcatDetails); // extractValueList(title);
+
+          // Create the DcatDatasetSeries object
+          DcatDatasetSeries series = new DcatDatasetSeries(
+              applicableLegislation,
+              contactPointList,
+              descriptions,
+              frequency,
+              geographicalCoverage,
+              updateDate,
+              publisher,
+              releaseDate,
+              temporalCoverageList,
+              titles,
+              nodeId,
+              identifier);
+
+          // Add to the list
+          inSeries.add(series);
+        }
+      }
+    } */
+
+    if (j.has("qualifiedRelation")) {
+      JSONArray array = j.optJSONArray("qualifiedRelation");
+      if (array != null) {
+        for (int i = 0; i < array.length(); i++) {
+          JSONObject seriesObj = array.getJSONObject(i);
+          // JSONObject obj = j.getJSONObject("qualifiedRelation");
+          Relationship relationship = new Relationship(seriesObj.optString("had_role"),
+              seriesObj.optString("relation"),nodeId);
+          qualifiedRelation.add(relationship); // extractValueList(dataset.optString("qualifiedRelation"));
+        }
+      }
+
+    }
+
+    if (j.has("temporalResolution")) {
+      temporalResolution = j.optString("temporalResolution");
+    }
+
+    if (j.has("wasGeneratedBy")) {
+      wasGeneratedBy = GsonUtil.json2Obj(j.getJSONArray("wasGeneratedBy").toString(),
+          GsonUtil.stringListType);
+      // wasGeneratedBy = extractValueList(j.optString("wasGeneratedBy"));
+    }
+
+    if (j.has("HVDCategory")) {
+      HVDCategory = GsonUtil.json2Obj(j.getJSONArray("HVDCategory").toString(),
+          GsonUtil.stringListType);
+      // HVDCategory = extractValueList(j.optString("HVDCategory"));
+    }
+
     return new DcatDataset(nodeId, identifier, title, description, distributionList, themeList,
         publisher, contactPointList, keywords, accessRights, conformsTo, documentation, frequency,
         hasVersion, isVersionOf, landingPage, language, provenance, releaseDate, updateDate,
         otherIdentifier, sample, source, spatialCoverage, temporalCoverage, type, version,
-        versionNotes, rightsHolder, creator, subjectList, null);
+        versionNotes, rightsHolder, creator, subjectList, relatedResource, applicableLegislation,
+        inSeries, qualifiedRelation, temporalResolution, wasGeneratedBy, HVDCategory);
   }
 
   /*
@@ -491,7 +637,7 @@ public class OrionConnector implements IodmsConnector {
   /**
    * Extract concept list.
    *
-   * @param             <T> the generic type
+   * @param <T>         the generic type
    * @param propertyUri the property uri
    * @param concepts    the concepts
    * @param type        the type

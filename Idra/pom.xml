@@ -25,8 +25,8 @@
     <name>Idra_Maven Maven Webapp</name>
     <url>http://maven.apache.org</url>
     <properties>
-        <maven.compiler.source>1.8</maven.compiler.source>
-        <maven.compiler.target>1.8</maven.compiler.target>
+        <maven.compiler.source>20</maven.compiler.source>
+        <maven.compiler.target>20</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <rdf4j.version>3.6.0</rdf4j.version>
     </properties>
@@ -40,10 +40,10 @@
             <id>jitpack.io</id>
             <url>https://jitpack.io</url>
         </repository>
-        <repository>
+         <repository>
             <id>github-repo</id>
             <url>https://maven.pkg.github.com/BeOpen-project/CKANClient-J</url>
-        </repository>
+        </repository> 
     </repositories>
 
     <dependencies>
@@ -79,19 +79,19 @@
         <dependency>
             <groupId>org.apache.jena</groupId>
             <artifactId>jena-arq</artifactId>
-            <version>3.3.0</version>
+            <version>5.4.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.jena</groupId>
+            <artifactId>jena-iri</artifactId>
+            <version>4.6.0</version>
         </dependency>
         <dependency>
             <groupId>com.zaxxer</groupId>
             <artifactId>HikariCP</artifactId>
             <version>2.6.1</version>
         </dependency>
-        <!-- https://mvnrepository.com/artifact/org.hibernate/hibernate-hikaricp -->
-        <dependency>
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-hikaricp</artifactId>
-            <version>5.5.5.Final</version>
-        </dependency>
+        <!-- Remove hibernate-commons-annotations, it's included transitively -->
 
         <!-- https://mvnrepository.com/artifact/com.mchange/c3p0 -->
         <!-- <dependency> -->
@@ -165,34 +165,27 @@
             <artifactId>guava</artifactId>
             <version>31.0.1-jre</version>
         </dependency>
-        <!-- https://mvnrepository.com/artifact/org.hibernate/hibernate-core -->
-        <dependency>
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-core</artifactId>
-            <version>5.5.5.Final</version>
-        </dependency>
 
         <!-- https://mvnrepository.com/artifact/org.hibernate/hibernate-jpamodelgen -->
 
 
-        <!-- for JPA, use hibernate-entitymanager instead of hibernate-core -->
+        <!-- https://mvnrepository.com/artifact/org.hibernate/hibernate-hikaricp -->
         <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-core</artifactId>
+            <version>5.6.15.Final</version>
+        </dependency>
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-hikaricp</artifactId>
+            <version>5.6.15.Final</version>
+        </dependency>
+        <!-- for JPA, use hibernate-entitymanager instead of hibernate-core -->
+        <!-- <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-entitymanager</artifactId>
             <version>5.5.5.Final</version>
         </dependency>
-        <!-- <dependency> -->
-        <!-- <groupId>org.hibernate</groupId> -->
-        <!-- <artifactId>hibernate-c3p0</artifactId> -->
-        <!-- <version>5.2.4.Final</version> -->
-        <!-- <exclusions> -->
-        <!-- <exclusion> -->
-        <!-- <groupId>c3p0</groupId> -->
-        <!-- <artifactId>c3p0</artifactId> -->
-        <!-- Bcoz this version is incompatible with hibernate -->
-        <!-- </exclusion> -->
-        <!-- </exclusions> -->
-        <!-- </dependency> -->
         <dependency>
             <groupId>org.hibernate.common</groupId>
             <artifactId>hibernate-commons-annotations</artifactId>
@@ -202,7 +195,7 @@
             <groupId>org.hibernate.javax.persistence</groupId>
             <artifactId>hibernate-jpa-2.1-api</artifactId>
             <version>1.0.0.Final</version>
-        </dependency>
+        </dependency> -->
         <!-- https://mvnrepository.com/artifact/org.glassfish.hk2/hk2-api -->
 
         <!-- https://mvnrepository.com/artifact/org.eclipse.persistence/javax.persistence -->
@@ -466,7 +459,7 @@
         <dependency>
             <groupId>com.github.BeOpen-project</groupId>
             <artifactId>CKANClient-J</artifactId>
-            <version>v2.0.0</version>
+            <version>v3.0.1</version>
         </dependency>
 
         <!-- https://mvnrepository.com/artifact/org.quartz-scheduler/quartz -->
@@ -650,10 +643,10 @@
         <plugins>
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.5.1</version>
+                <version>3.11.0</version>
                 <configuration>
-                    <source>1.8</source>
-                    <target>1.8</target>
+                    <source>20</source>
+                    <target>20</target>
                 </configuration>
             </plugin>
             <plugin>
