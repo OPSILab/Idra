@@ -38,14 +38,21 @@ import it.eng.idra.beans.RemoteCatalogue;
 import it.eng.idra.beans.User;
 import it.eng.idra.beans.ckan.CkanErrorResponse;
 import it.eng.idra.beans.ckan.CkanSuccessResponse;
+import it.eng.idra.beans.dcat.DcatDataService;
 import it.eng.idra.beans.dcat.DcatDataset;
+import it.eng.idra.beans.dcat.DcatDatasetSeries;
+import it.eng.idra.beans.dcat.DcatDetails;
 import it.eng.idra.beans.dcat.DcatDistribution;
 import it.eng.idra.beans.dcat.DcatProperty;
 import it.eng.idra.beans.dcat.DctLicenseDocument;
+import it.eng.idra.beans.dcat.DctLocation;
+import it.eng.idra.beans.dcat.DctPeriodOfTime;
 import it.eng.idra.beans.dcat.DctStandard;
+import it.eng.idra.beans.dcat.Relationship;
 import it.eng.idra.beans.dcat.SkosConcept;
 import it.eng.idra.beans.dcat.SkosPrefLabel;
 import it.eng.idra.beans.dcat.SpdxChecksum;
+import it.eng.idra.beans.dcat.VcardOrganization;
 import it.eng.idra.beans.odms.OdmsCatalogue;
 import it.eng.idra.beans.odms.OdmsCatalogueImage;
 import it.eng.idra.beans.odms.OdmsCatalogueMessage;
@@ -279,6 +286,34 @@ public final class GsonUtil {
 
   /** The ckan err type. */
   public static Type ckanErrType = new TypeToken<CkanErrorResponse>() {
+  }.getType();
+
+  /** The dataServiceListType. */
+  public static Type dataServiceListType = new TypeToken<List<DcatDataService>>() {
+  }.getType();
+
+  /** The dataSeriesListType. */
+  public static Type dataSeriesListType = new TypeToken<List<DcatDatasetSeries>>() {
+  }.getType();
+
+  /** The relationshipListType. */
+  public static Type relationshipListType = new TypeToken<List<Relationship>>() {
+  }.getType();
+
+  /** The detailsListType. */
+  public static Type detailsListType = new TypeToken<List<DcatDetails>>() {
+  }.getType();
+
+  /** The vcardListType. */
+  public static Type vcardListType = new TypeToken<List<VcardOrganization>>() {
+  }.getType();
+
+  /** The locationListType. */
+  public static Type locationListType = new TypeToken<List<DctLocation>>() {
+  }.getType();
+
+    /** The periodOfTimeListType. */
+  public static Type periodOfTimeListType = new TypeToken<List<DctPeriodOfTime>>() {
   }.getType();
 
   /** The gson builder. */

@@ -38,13 +38,14 @@ import org.apache.commons.io.IOUtils;
 import org.apache.jena.atlas.web.HttpException;
 import org.apache.jena.query.Query;
 import org.apache.jena.query.QueryExecution;
-import org.apache.jena.query.QueryExecutionFactory;
+//import org.apache.jena.query.QueryExecutionFactory;
 import org.apache.jena.query.QueryFactory;
 import org.apache.jena.query.ResultSet;
 import org.apache.jena.query.ResultSetFormatter;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.shared.JenaException;
+import org.apache.jena.sparql.exec.http.QueryExecutionHTTP;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.eclipse.rdf4j.model.IRI;
@@ -366,7 +367,8 @@ public class LodCacheManager {
     logger.info("Running SPARQL query");
     // query=addPrefixes(QueryLanguage.SPARQL,query);
     final Query queryS = QueryFactory.create(query);
-    final QueryExecution exec = QueryExecutionFactory.createServiceRequest(getRepositoryUrl(),
+    //QueryExecutionFactory.createServiceRequest(getRepositoryUrl(),queryS);
+    final QueryExecution exec = QueryExecutionHTTP.service(getRepositoryUrl(),
         queryS);
     final ResultSet resultSet = exec.execSelect();
     // logger.info(resultSet.getRowNumber());
