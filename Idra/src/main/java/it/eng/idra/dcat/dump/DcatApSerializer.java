@@ -274,7 +274,12 @@ public class DcatApSerializer {
         .forEach(keyword -> datasetResource.addLiteral(DCAT.keyword, keyword));
 
     // addDcatPropertyAsLiteral(dataset.getAccessRights(), datasetResource, model);
-    addDcatPropertyAsResource(dataset.getAccessRights(), datasetResource, model, true);
+
+    if (isValidUri(dataset.getAccessRights().getValue())) {
+      addDcatPropertyAsResource(dataset.getAccessRights(), datasetResource, model, true);
+    } else {
+      addDcatPropertyAsLiteral(dataset.getAccessRights(), datasetResource, model);
+    }
 
     serializeDctStandard(dataset.getConformsTo(), datasetResource, model);
 
@@ -523,19 +528,21 @@ public class DcatApSerializer {
    * @param model            the model
    * @param datasetResource  the dataset resource
    */
-  protected static void serializeTemporalCoverage(DctPeriodOfTime temporalCoverage, Model model,
+  protected static void serializeTemporalCoverage(List<DctPeriodOfTime> temporalCoverage, Model model,
       Resource datasetResource) {
     if (temporalCoverage != null) {
-      datasetResource.addProperty(model.createProperty(temporalCoverage.getUri()),
-          model.createResource(DctPeriodOfTime.getRdfClass())
-              .addProperty(temporalCoverage.getStartDate().getProperty(),
-                  temporalCoverage.getStartDate().getValue(), XSDDateType.XSDdate)
-              .addProperty(temporalCoverage.getEndDate().getProperty(),
-                  temporalCoverage.getEndDate().getValue(), XSDDateType.XSDdate)
-              .addProperty(temporalCoverage.getBeginning().getProperty(), temporalCoverage.getBeginning().getValue(),
-                  XSDDateType.XSDdate)
-              .addProperty(temporalCoverage.getEnd().getProperty(), temporalCoverage.getEnd().getValue(),
-                  XSDDateType.XSDdate));
+      for (DctPeriodOfTime period : temporalCoverage) {
+        datasetResource.addProperty(model.createProperty(period.getUri()),
+            model.createResource(DctPeriodOfTime.getRdfClass())
+                .addProperty(period.getStartDate().getProperty(),
+                    period.getStartDate().getValue(), XSDDateType.XSDdate)
+                .addProperty(period.getEndDate().getProperty(),
+                    period.getEndDate().getValue(), XSDDateType.XSDdate)
+                .addProperty(period.getBeginning().getProperty(), period.getBeginning().getValue(),
+                    XSDDateType.XSDdate)
+                .addProperty(period.getEnd().getProperty(), period.getEnd().getValue(),
+                    XSDDateType.XSDdate));
+      }
     }
   }
 
@@ -546,37 +553,39 @@ public class DcatApSerializer {
    * @param model           the model
    * @param parentResource  the parent resource
    */
-  protected static void serializeSpatialCoverage(DctLocation spatialCoverage, Model model,
+  protected static void serializeSpatialCoverage(List<DctLocation> spatialCoverage, Model model,
       Resource parentResource) {
 
     if (spatialCoverage != null) {
 
-      Resource spatialResource = model.createResource(DctLocation.getRdfClass());
-      String geoUri = null;
-      // Initialize spatial Resource
+      for (DctLocation location : spatialCoverage) {
+        Resource spatialResource = model.createResource(DctLocation.getRdfClass());
+        String geoUri = null;
+        // Initialize spatial Resource
 
-      if (StringUtils.isNotBlank(geoUri = spatialCoverage.getGeographicalIdentifier().getValue())) {
+        if (StringUtils.isNotBlank(geoUri = location.getGeographicalIdentifier().getValue())) {
 
-        if (IRIFactory.iriImplementation().create(geoUri).hasViolation(false)) {
-          spatialCoverage.getGeographicalIdentifier().setValue(GEO_BASE_URI + geoUri);
+          if (IRIFactory.iriImplementation().create(geoUri).hasViolation(false)) {
+            location.getGeographicalIdentifier().setValue(GEO_BASE_URI + geoUri);
+          }
+
+          addDcatPropertyAsLiteral(location.getGeographicalIdentifier(), spatialResource,
+              model);
         }
 
-        addDcatPropertyAsLiteral(spatialCoverage.getGeographicalIdentifier(), spatialResource,
-            model);
+        addDcatPropertyAsLiteral(location.getGeographicalIdentifier(), spatialResource, model);
+        addDcatPropertyAsLiteral(location.getGeometry(), spatialResource, model);
+
+        // TODO Geographical Name as SKOS CONCEPT
+        addDcatPropertyAsResource(location.getGeographicalName(), spatialResource, model,
+            false);
+
+        addDcatPropertyAsLiteral(location.getBbox(), spatialResource, model);
+        addDcatPropertyAsLiteral(location.getCentroid(), spatialResource, model);
+
+        parentResource.addProperty(model.createProperty(location.getUri()), spatialResource);
+
       }
-
-      addDcatPropertyAsLiteral(spatialCoverage.getGeographicalIdentifier(), spatialResource, model);
-      addDcatPropertyAsLiteral(spatialCoverage.getGeometry(), spatialResource, model);
-
-      // TODO Geographical Name as SKOS CONCEPT
-      addDcatPropertyAsResource(spatialCoverage.getGeographicalName(), spatialResource, model,
-          false);
-
-      addDcatPropertyAsLiteral(spatialCoverage.getBbox(), spatialResource, model);
-      addDcatPropertyAsLiteral(spatialCoverage.getCentroid(), spatialResource, model);
-
-      parentResource.addProperty(model.createProperty(spatialCoverage.getUri()), spatialResource);
-
     }
 
   }
@@ -807,8 +816,12 @@ public class DcatApSerializer {
         distribution.getUpdateDate().getValue(), XSDDateType.XSDdateTime);
 
     // addDcatPropertyAsLiteral(distribution.getRights(), distResource, model);
-    addDcatPropertyAsResource(distribution.getRights(), distResource, model,
-        true);
+
+    if (isValidUri(distribution.getRights().getValue())) {
+      addDcatPropertyAsResource(distribution.getRights(), distResource, model, true);
+    } else {
+      addDcatPropertyAsLiteral(distribution.getRights(), distResource, model);
+    }
 
     // Property p = model.createProperty(distribution.getRights().getUri());
     // distResource.addProperty(p,
@@ -891,6 +904,7 @@ public class DcatApSerializer {
           service.getRights().stream()
               .filter(item -> StringUtils.isNotBlank(item.getValue()))
               .forEach(item -> {
+                  // serviceResource.addProperty(DCTerms.rights, model.createLiteral(item.getValue()));
                 if (isValidUri(item.getValue())) {
                   serviceResource.addProperty(DCTerms.rights, model.createResource(item.getValue()));
                 } else {
@@ -939,7 +953,8 @@ public class DcatApSerializer {
           });
     }
 
-    //addDcatPropertyAsResource(distribution.getHasPolicy(), distResource, model, false);
+    // addDcatPropertyAsResource(distribution.getHasPolicy(), distResource, model,
+    // false);
 
     if (StringUtils.isNotBlank(distribution.getHasPolicy().getValue())) {
       if (isValidUri(distribution.getHasPolicy().getValue())) {

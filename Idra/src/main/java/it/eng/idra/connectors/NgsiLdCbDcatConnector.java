@@ -355,7 +355,7 @@ public class NgsiLdCbDcatConnector implements IodmsConnector {
     String title = null;
     String description = null;
     String identifier = null;
-    DctPeriodOfTime temporalCoverage = null;
+    List<DctPeriodOfTime> temporalCoverage = new ArrayList<DctPeriodOfTime>();
     List<String> keywords = new ArrayList<String>();
     List<String> documentation = new ArrayList<String>();
     List<String> provenance = new ArrayList<String>();
@@ -597,7 +597,7 @@ public class NgsiLdCbDcatConnector implements IodmsConnector {
     List<String> hasVersion = new ArrayList<String>();
     List<String> isVersionOf = new ArrayList<String>();
 
-    DctLocation spatialCoverage = null;
+    List<DctLocation> spatialCoverage = new ArrayList<DctLocation>();
     spatialCoverage = deserializeSpatial(j, nodeId);
     List<SkosConceptSubject> subjectList = new ArrayList<SkosConceptSubject>();
     List<DctStandard> conformsTo = new ArrayList<DctStandard>();
@@ -606,7 +606,8 @@ public class NgsiLdCbDcatConnector implements IodmsConnector {
     String endDate = null;
     if (StringUtils.isNotBlank(startDate) && StringUtils.isNotBlank(endDate)
         && StringUtils.isNotBlank(beginning) && StringUtils.isNotBlank(end)) {
-      temporalCoverage = new DctPeriodOfTime(DCTerms.temporal.getURI(), startDate, endDate, nodeId, beginning, end);// identifier
+      temporalCoverage.add(
+          new DctPeriodOfTime(DCTerms.temporal.getURI(), startDate, endDate, nodeId, beginning, end));
     }
 
     // DISTRIBUTIONS
@@ -682,42 +683,45 @@ public class NgsiLdCbDcatConnector implements IodmsConnector {
           GsonUtil.stringListType);
     }
 
-/*     if (j.has("inSeries")) {
-      JSONArray array = j.optJSONArray("inSeries");
-      if (array != null) {
-        for (int i = 0; i < array.length(); i++) {
-          JSONObject seriesObj = array.getJSONObject(i);
-
-          DcatDetails dcatDetails = new DcatDetails();
-          dcatDetails.setTitle(title);
-          dcatDetails.setDescription(description);
-          // Extracting properties from JSON
-          descriptions.add(dcatDetails);// extractValueList(description);
-          frequency = seriesObj.optString("frequency");
-          geographicalCoverage.add(spatialCoverage); // extractValueList(seriesObj.optString("geographicalCoverage"));
-          temporalCoverageList.add(temporalCoverage);
-          titles.add(dcatDetails); // extractValueList(title);
-
-          // Create the DcatDatasetSeries object
-          DcatDatasetSeries series = new DcatDatasetSeries(
-              applicableLegislation,
-              contactPointList,
-              descriptions,
-              frequency,
-              geographicalCoverage,
-              updateDate,
-              publisher,
-              releaseDate,
-              temporalCoverageList,
-              titles,
-              nodeId,
-              identifier);
-
-          // Add to the list
-          inSeries.add(series);
-        }
-      }
-    } */
+    /*
+     * if (j.has("inSeries")) {
+     * JSONArray array = j.optJSONArray("inSeries");
+     * if (array != null) {
+     * for (int i = 0; i < array.length(); i++) {
+     * JSONObject seriesObj = array.getJSONObject(i);
+     * 
+     * DcatDetails dcatDetails = new DcatDetails();
+     * dcatDetails.setTitle(title);
+     * dcatDetails.setDescription(description);
+     * // Extracting properties from JSON
+     * descriptions.add(dcatDetails);// extractValueList(description);
+     * frequency = seriesObj.optString("frequency");
+     * geographicalCoverage.add(spatialCoverage); //
+     * extractValueList(seriesObj.optString("geographicalCoverage"));
+     * temporalCoverageList.add(temporalCoverage);
+     * titles.add(dcatDetails); // extractValueList(title);
+     * 
+     * // Create the DcatDatasetSeries object
+     * DcatDatasetSeries series = new DcatDatasetSeries(
+     * applicableLegislation,
+     * contactPointList,
+     * descriptions,
+     * frequency,
+     * geographicalCoverage,
+     * updateDate,
+     * publisher,
+     * releaseDate,
+     * temporalCoverageList,
+     * titles,
+     * nodeId,
+     * identifier);
+     * 
+     * // Add to the list
+     * inSeries.add(series);
+     * }
+     * }
+     * }
+     */
 
     if (j.has("qualifiedRelation")) {
       JSONArray array = j.optJSONArray("qualifiedRelation");
@@ -765,17 +769,38 @@ public class NgsiLdCbDcatConnector implements IodmsConnector {
    * @param nodeId  the node id
    * @return the dct location
    */
-  protected DctLocation deserializeSpatial(JSONObject dataset, String nodeId) {
-
+  protected List<DctLocation> deserializeSpatial(JSONObject dataset, String nodeId) {
+    List<DctLocation> locations = new ArrayList<>();
     try {
-      JSONObject obj = dataset.getJSONObject("spatialCoverage");
-      return new DctLocation(obj.optString("uri"), obj.optString("geographicalIdentifier"),
-          obj.optString("geographicalName"), obj.optString("geometry"), nodeId,
-          obj.optString("bbox"), obj.optString("centroid"));// , obj.optString("dataset_id")
+      Object obj = dataset.get("spatialCoverage");
+      if (obj instanceof JSONArray) {
+        JSONArray arr = (JSONArray) obj;
+        for (int i = 0; i < arr.length(); i++) {
+          JSONObject locObj = arr.getJSONObject(i);
+          locations.add(new DctLocation(
+              locObj.optString("uri"),
+              locObj.optString("geographicalIdentifier"),
+              locObj.optString("geographicalName"),
+              locObj.optString("geometry"),
+              nodeId,
+              locObj.optString("bbox"),
+              locObj.optString("centroid")));
+        }
+      } else if (obj instanceof JSONObject) {
+        JSONObject locObj = (JSONObject) obj;
+        locations.add(new DctLocation(
+            locObj.optString("uri"),
+            locObj.optString("geographicalIdentifier"),
+            locObj.optString("geographicalName"),
+            locObj.optString("geometry"),
+            nodeId,
+            locObj.optString("bbox"),
+            locObj.optString("centroid")));
+      }
     } catch (JSONException ignore) {
       logger.info("Spatial object not valid! - Skipped");
     }
-    return null;
+    return locations;
   }
 
   /*

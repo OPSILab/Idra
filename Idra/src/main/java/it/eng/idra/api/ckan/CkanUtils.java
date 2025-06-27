@@ -19,6 +19,8 @@ import it.eng.idra.beans.dcat.DcatDataset;
 import it.eng.idra.beans.dcat.DcatDistribution;
 import it.eng.idra.beans.dcat.DcatProperty;
 import it.eng.idra.beans.dcat.DctLicenseDocument;
+import it.eng.idra.beans.dcat.DctLocation;
+import it.eng.idra.beans.dcat.DctPeriodOfTime;
 import it.eng.idra.beans.dcat.DctStandard;
 import it.eng.idra.beans.dcat.SkosConceptSubject;
 import it.eng.idra.beans.dcat.SkosConceptTheme;
@@ -56,7 +58,7 @@ public class CkanUtils {
   /** The CKA nto DCA tmap. */
   private static HashMap<String, String> CKANtoDCATmap = new HashMap<String, String>();
 
-      /** The logger. */
+  /** The logger. */
   protected static Logger logger = LogManager.getLogger(CkanUtils.class);
 
   /**
@@ -425,37 +427,39 @@ public class CkanUtils {
         extras.add(new Extra("holder_uri", dataset.getRightsHolder().getResourceUri()));
       }
     }
+    for (DctLocation sc : dataset.getSpatialCoverage()) {
+      if (sc != null) {
+        if (sc.getGeographicalIdentifier() != null && StringUtils
+            .isNotBlank(sc.getGeographicalIdentifier().getValue())) {
+          extras.add(new Extra("geographical_identifier",
+              sc.getGeographicalIdentifier().getValue()));
+        }
 
-    if (dataset.getSpatialCoverage() != null) {
-      if (dataset.getSpatialCoverage().getGeographicalIdentifier() != null && StringUtils
-          .isNotBlank(dataset.getSpatialCoverage().getGeographicalIdentifier().getValue())) {
-        extras.add(new Extra("geographical_identifier",
-            dataset.getSpatialCoverage().getGeographicalIdentifier().getValue()));
-      }
+        if (sc.getGeographicalName() != null && StringUtils
+            .isNotBlank(sc.getGeographicalName().getValue())) {
+          extras.add(new Extra("geographical_name",
+              sc.getGeographicalName().getValue()));
+        }
 
-      if (dataset.getSpatialCoverage().getGeographicalName() != null && StringUtils
-          .isNotBlank(dataset.getSpatialCoverage().getGeographicalName().getValue())) {
-        extras.add(new Extra("geographical_name",
-            dataset.getSpatialCoverage().getGeographicalName().getValue()));
-      }
-
-      if (dataset.getSpatialCoverage().getGeometry() != null
-          && StringUtils.isNotBlank(dataset.getSpatialCoverage().getGeometry().getValue())) {
-        extras.add(new Extra("geometry", dataset.getSpatialCoverage().getGeometry().getValue()));
+        if (sc.getGeometry() != null
+            && StringUtils.isNotBlank(sc.getGeometry().getValue())) {
+          extras.add(new Extra("geometry", sc.getGeometry().getValue()));
+        }
       }
     }
+    for (DctPeriodOfTime tc : dataset.getTemporalCoverage()) {
+      if (tc != null) {
+        if (tc.getEndDate() != null
+            && StringUtils.isNotBlank(tc.getEndDate().getValue())) {
+          extras
+              .add(new Extra("temporal_end", tc.getEndDate().getValue()));
+        }
 
-    if (dataset.getTemporalCoverage() != null) {
-      if (dataset.getTemporalCoverage().getEndDate() != null
-          && StringUtils.isNotBlank(dataset.getTemporalCoverage().getEndDate().getValue())) {
-        extras
-            .add(new Extra("temporal_end", dataset.getTemporalCoverage().getEndDate().getValue()));
-      }
-
-      if (dataset.getTemporalCoverage().getStartDate() != null
-          && StringUtils.isNotBlank(dataset.getTemporalCoverage().getStartDate().getValue())) {
-        extras.add(
-            new Extra("temporal_start", dataset.getTemporalCoverage().getStartDate().getValue()));
+        if (tc.getStartDate() != null
+            && StringUtils.isNotBlank(tc.getStartDate().getValue())) {
+          extras.add(
+              new Extra("temporal_start", tc.getStartDate().getValue()));
+        }
       }
     }
 

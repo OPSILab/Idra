@@ -221,8 +221,8 @@ public class OpenDataSoftConnector implements IodmsConnector {
 
     List<String> sample = new ArrayList<String>();
     List<String> source = new ArrayList<String>();
-    DctLocation spatialCoverage = null;
-    DctPeriodOfTime temporalCoverage = null;
+    List<DctLocation> spatialCoverage = new ArrayList<DctLocation>();
+    List<DctPeriodOfTime> temporalCoverage = new ArrayList<DctPeriodOfTime>();
     String type = null;
     String version = null;
     List<String> versionNotes = new ArrayList<String>();

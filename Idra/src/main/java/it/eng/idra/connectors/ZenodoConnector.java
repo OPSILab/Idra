@@ -457,8 +457,8 @@ public class ZenodoConnector implements IodmsConnector {
       }
     }
 
-    DctLocation spatialCoverage = null;
-    DctPeriodOfTime temporalCoverage = null;
+    List<DctLocation> spatialCoverage = new ArrayList<DctLocation>();
+    List<DctPeriodOfTime> temporalCoverage = new ArrayList<DctPeriodOfTime>();
     FoafAgent rightsHolder = null;
     String frequency = null;
     List<VcardOrganization> contactPointList = new ArrayList<VcardOrganization>();

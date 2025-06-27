@@ -223,7 +223,7 @@ public class OpenDataFederationNativeConnector implements IodmsConnector {
     FoafAgent publisher = null;
     FoafAgent rightsHolder = null;
     FoafAgent creator = null;
-    DctPeriodOfTime temporalCoverage = null;
+    List<DctPeriodOfTime> temporalCoverage = new ArrayList<>();
 
     List<String> keywords = new ArrayList<String>();
     List<String> documentation = new ArrayList<String>();
@@ -364,7 +364,7 @@ public class OpenDataFederationNativeConnector implements IodmsConnector {
     List<SkosConceptSubject> subjectList = null;
     subjectList = deserializeConcept(dataset, "subject", DCTerms.subject, nodeId,
         SkosConceptSubject.class);
-    DctLocation spatialCoverage = null;
+    List<DctLocation> spatialCoverage = new ArrayList<>();
     spatialCoverage = deserializeSpatial(dataset, nodeId);
 
     if (dataset.has("distributions")) {
@@ -385,42 +385,45 @@ public class OpenDataFederationNativeConnector implements IodmsConnector {
           GsonUtil.stringListType);
     }
 
-/*     if (dataset.has("inSeries")) {
-      JSONArray array = dataset.optJSONArray("inSeries");
-      if (array != null) {
-        for (int i = 0; i < array.length(); i++) {
-          JSONObject seriesObj = array.getJSONObject(i);
-
-          DcatDetails dcatDetails = new DcatDetails();
-          dcatDetails.setTitle(title);
-          dcatDetails.setDescription(description);
-          // Extracting properties from JSON
-          descriptions.add(dcatDetails); // extractValueList(description);
-          frequency = seriesObj.optString("frequency");
-          geographicalCoverage.add(spatialCoverage); // extractValueList(seriesObj.optString("geographicalCoverage"));
-          temporalCoverageList.add(temporalCoverage);
-          titles.add(dcatDetails); // extractValueList(title);
-
-          // Create the DcatDatasetSeries object
-          DcatDatasetSeries series = new DcatDatasetSeries(
-              applicableLegislation,
-              contactPointList,
-              descriptions,
-              frequency,
-              geographicalCoverage,
-              updateDate,
-              publisher,
-              releaseDate,
-              temporalCoverageList,
-              titles,
-              nodeId,
-              identifier);
-
-          // Add to the list
-          inSeries.add(series);
-        }
-      }
-    } */
+    /*
+     * if (dataset.has("inSeries")) {
+     * JSONArray array = dataset.optJSONArray("inSeries");
+     * if (array != null) {
+     * for (int i = 0; i < array.length(); i++) {
+     * JSONObject seriesObj = array.getJSONObject(i);
+     * 
+     * DcatDetails dcatDetails = new DcatDetails();
+     * dcatDetails.setTitle(title);
+     * dcatDetails.setDescription(description);
+     * // Extracting properties from JSON
+     * descriptions.add(dcatDetails); // extractValueList(description);
+     * frequency = seriesObj.optString("frequency");
+     * geographicalCoverage.add(spatialCoverage); //
+     * extractValueList(seriesObj.optString("geographicalCoverage"));
+     * temporalCoverageList.add(temporalCoverage);
+     * titles.add(dcatDetails); // extractValueList(title);
+     * 
+     * // Create the DcatDatasetSeries object
+     * DcatDatasetSeries series = new DcatDatasetSeries(
+     * applicableLegislation,
+     * contactPointList,
+     * descriptions,
+     * frequency,
+     * geographicalCoverage,
+     * updateDate,
+     * publisher,
+     * releaseDate,
+     * temporalCoverageList,
+     * titles,
+     * nodeId,
+     * identifier);
+     * 
+     * // Add to the list
+     * inSeries.add(series);
+     * }
+     * }
+     * }
+     */
 
     if (dataset.has("qualifiedRelation")) {
       JSONArray array = dataset.optJSONArray("qualifiedRelation");
@@ -429,7 +432,7 @@ public class OpenDataFederationNativeConnector implements IodmsConnector {
           JSONObject seriesObj = array.getJSONObject(i);
           // JSONObject obj = j.getJSONObject("qualifiedRelation");
           Relationship relationship = new Relationship(seriesObj.optString("had_role"),
-              seriesObj.optString("relation"),nodeId);
+              seriesObj.optString("relation"), nodeId);
           qualifiedRelation.add(relationship); // extractValueList(dataset.optString("qualifiedRelation"));
         }
       }
@@ -468,16 +471,36 @@ public class OpenDataFederationNativeConnector implements IodmsConnector {
    * @param nodeId  the node id
    * @return the dct period of time
    */
-  protected DctPeriodOfTime deserializeTemporal(JSONObject dataset, String nodeId) {
-
+  protected List<DctPeriodOfTime> deserializeTemporal(JSONObject dataset, String nodeId) {
+    List<DctPeriodOfTime> periods = new ArrayList<>();
     try {
-      JSONObject temporal = dataset.getJSONObject("temporal");
-      return new DctPeriodOfTime(temporal.optString("uri"), temporal.optString("startDate"),
-          temporal.optString("endDate"), nodeId, temporal.optString("beginning"), temporal.optString("end"));// temporal.optString("dataset_id"))
+      Object obj = dataset.get("temporal");
+      if (obj instanceof JSONArray) {
+        JSONArray arr = (JSONArray) obj;
+        for (int i = 0; i < arr.length(); i++) {
+          JSONObject temporal = arr.getJSONObject(i);
+          periods.add(new DctPeriodOfTime(
+              temporal.optString("uri"),
+              temporal.optString("startDate"),
+              temporal.optString("endDate"),
+              nodeId,
+              temporal.optString("beginning"),
+              temporal.optString("end")));
+        }
+      } else if (obj instanceof JSONObject) {
+        JSONObject temporal = (JSONObject) obj;
+        periods.add(new DctPeriodOfTime(
+            temporal.optString("uri"),
+            temporal.optString("startDate"),
+            temporal.optString("endDate"),
+            nodeId,
+            temporal.optString("beginning"),
+            temporal.optString("end")));
+      }
     } catch (JSONException ignore) {
       logger.info("Temporal object not valid! - Skipped");
     }
-    return null;
+    return periods;
   }
 
   /**
@@ -654,17 +677,38 @@ public class OpenDataFederationNativeConnector implements IodmsConnector {
    * @param nodeId  the node id
    * @return the dct location
    */
-  protected DctLocation deserializeSpatial(JSONObject dataset, String nodeId) {
-
+  protected List<DctLocation> deserializeSpatial(JSONObject dataset, String nodeId) {
+    List<DctLocation> locations = new ArrayList<>();
     try {
-      JSONObject obj = dataset.getJSONObject("spatialCoverage");
-      return new DctLocation(obj.optString("uri"), obj.optString("geographicalIdentifier"),
-          obj.optString("geographicalName"), obj.optString("geometry"), nodeId,
-          obj.optString("bbox"), obj.optString("centroid"));// , obj.optString("dataset_id")
+      Object obj = dataset.get("spatialCoverage");
+      if (obj instanceof JSONArray) {
+        JSONArray arr = (JSONArray) obj;
+        for (int i = 0; i < arr.length(); i++) {
+          JSONObject locObj = arr.getJSONObject(i);
+          locations.add(new DctLocation(
+              locObj.optString("uri"),
+              locObj.optString("geographicalIdentifier"),
+              locObj.optString("geographicalName"),
+              locObj.optString("geometry"),
+              nodeId,
+              locObj.optString("bbox"),
+              locObj.optString("centroid")));
+        }
+      } else if (obj instanceof JSONObject) {
+        JSONObject locObj = (JSONObject) obj;
+        locations.add(new DctLocation(
+            locObj.optString("uri"),
+            locObj.optString("geographicalIdentifier"),
+            locObj.optString("geographicalName"),
+            locObj.optString("geometry"),
+            nodeId,
+            locObj.optString("bbox"),
+            locObj.optString("centroid")));
+      }
     } catch (JSONException ignore) {
       logger.info("Spatial object not valid! - Skipped");
     }
-    return null;
+    return locations;
   }
 
   /**

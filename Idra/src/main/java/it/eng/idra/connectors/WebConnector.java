@@ -672,8 +672,8 @@ public class WebConnector implements IodmsConnector {
     mapped = new DcatDataset(nodeId, identifier, title, description, distributionList, themeList,
         publisher, contactPointList, keywords, accessRights, new ArrayList<DctStandard>(),
         documentation, frequency, hasVersion, isVersionOf, landingPage, language, provenance,
-        releaseDate, updateDate, new ArrayList<String>(), sample, source, spatialCoverage,
-        temporalCoverage, type, version, versionNotes, rightsHolder, creator, null,
+        releaseDate, updateDate, new ArrayList<String>(), sample, source, geographicalCoverage,
+        temporalCoverageList, type, version, versionNotes, rightsHolder, creator, null,
         new ArrayList<String>(), applicableLegislation, inSeries, qualifiedRelation, temporalResolution,
         wasGeneratedBy, HVDCategory);
 

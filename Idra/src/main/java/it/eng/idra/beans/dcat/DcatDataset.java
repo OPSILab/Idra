@@ -42,6 +42,7 @@ import javax.persistence.Id;
 import javax.persistence.IdClass;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinColumns;
+import javax.persistence.JoinTable;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
@@ -177,10 +178,10 @@ public class DcatDataset implements Serializable {
   private List<DcatProperty> source;
 
   /** The spatial coverage. */
-  private DctLocation spatialCoverage;
+  List<DctLocation> spatialCoverage = new ArrayList<>();
 
   /** The temporal coverage. */
-  private DctPeriodOfTime temporalCoverage;
+  List<DctPeriodOfTime> temporalCoverage = new ArrayList<>();
 
   /** The type. */
   private DcatProperty type;
@@ -280,8 +281,8 @@ public class DcatDataset implements Serializable {
       List<DctStandard> conformsTo, List<String> documentation, String frequency,
       List<String> hasVersion, List<String> isVersionOf, String landingPage, List<String> language,
       List<String> provenance, String releaseDate, String updateDate, List<String> otherIdentifier,
-      List<String> sample, List<String> source, DctLocation spatialCoverage,
-      DctPeriodOfTime temporalCoverage, String type, String version, List<String> versionNotes,
+      List<String> sample, List<String> source, List<DctLocation> spatialCoverage,
+      List<DctPeriodOfTime> temporalCoverage, String type, String version, List<String> versionNotes,
       FoafAgent rightsHolder, FoafAgent creator, List<SkosConceptSubject> subject,
       List<String> relatedResource, List<String> applicableLegislation,
       List<DcatDatasetSeries> inSeries, List<Relationship> qualifiedRelation, String temporalResolution,
@@ -380,10 +381,10 @@ public class DcatDataset implements Serializable {
 
     // setSpatialCoverage(spatialCoverage != null ? spatialCoverage
     // : new DCTLocation(DCTerms.spatial.getURI(), "", "", "", nodeID));
-    setSpatialCoverage(spatialCoverage);
+    setSpatialCoverage(spatialCoverage != null ? spatialCoverage : new ArrayList<>());
     // setTemporalCoverage(temporalCoverage != null ? temporalCoverage
     // : new DCTPeriodOfTime(DCTerms.temporal.getURI(), "", "", nodeID));
-    setTemporalCoverage(temporalCoverage);
+    setTemporalCoverage(temporalCoverage != null ? temporalCoverage : new ArrayList<>());
     setType(new DcatProperty(DCTerms.type, SKOS.Concept, type));
     setVersion(new DcatProperty(OWL.versionInfo, RDFS.Literal, version));
     setVersionNotes(versionNotes != null
@@ -497,8 +498,8 @@ public class DcatDataset implements Serializable {
       List<DctStandard> conformsTo, List<String> documentation, String frequency,
       List<String> hasVersion, List<String> isVersionOf, String landingPage, List<String> language,
       List<String> provenance, String releaseDate, String updateDate, List<String> otherIdentifier,
-      List<String> sample, List<String> source, DctLocation spatialCoverage,
-      DctPeriodOfTime temporalCoverage, String type, String version, List<String> versionNotes,
+      List<String> sample, List<String> source, List<DctLocation> spatialCoverage,
+      List<DctPeriodOfTime> temporalCoverage, String type, String version, List<String> versionNotes,
       FoafAgent rightsHolder, FoafAgent creator, List<SkosConceptSubject> subject,
       List<String> relatedResource, boolean hasStoredRdf, List<String> applicableLegislation,
       List<DcatDatasetSeries> inSeries, List<Relationship> qualifiedRelation, String temporalResolution,
@@ -852,18 +853,16 @@ public class DcatDataset implements Serializable {
    *
    * @return the spatial coverage
    */
-  @OneToOne(cascade = CascadeType.ALL)
-  @JoinColumn(name = "spatialCoverage_id")
-  public DctLocation getSpatialCoverage() {
+  @OneToMany(cascade = CascadeType.ALL)
+  @JoinTable(name = "dcat_spatial_coverage", joinColumns = {
+      @JoinColumn(name = "dataset_id", referencedColumnName = "dataset_id"),
+      @JoinColumn(name = "nodeID", referencedColumnName = "nodeID")
+  }, inverseJoinColumns = @JoinColumn(name = "spatialCoverage_id"))
+  public List<DctLocation> getSpatialCoverage() {
     return spatialCoverage;
   }
 
-  /**
-   * Sets the spatial coverage.
-   *
-   * @param spatialCoverage the new spatial coverage
-   */
-  protected void setSpatialCoverage(DctLocation spatialCoverage) {
+  protected void setSpatialCoverage(List<DctLocation> spatialCoverage) {
     this.spatialCoverage = spatialCoverage;
   }
 
@@ -872,18 +871,16 @@ public class DcatDataset implements Serializable {
    *
    * @return the temporal coverage
    */
-  @OneToOne(cascade = CascadeType.ALL)
-  @JoinColumn(name = "temporalCoverage_id")
-  public DctPeriodOfTime getTemporalCoverage() {
+  @OneToMany(cascade = CascadeType.ALL)
+  @JoinTable(name = "dcat_temporal_coverage", joinColumns = {
+      @JoinColumn(name = "dataset_id", referencedColumnName = "dataset_id"),
+      @JoinColumn(name = "nodeID", referencedColumnName = "nodeID")
+  }, inverseJoinColumns = @JoinColumn(name = "temporalCoverage_id"))
+  public List<DctPeriodOfTime> getTemporalCoverage() {
     return temporalCoverage;
   }
 
-  /**
-   * Sets the temporal coverage.
-   *
-   * @param temporalCoverage the new temporal coverage
-   */
-  protected void setTemporalCoverage(DctPeriodOfTime temporalCoverage) {
+  protected void setTemporalCoverage(List<DctPeriodOfTime> temporalCoverage) {
     this.temporalCoverage = temporalCoverage;
   }
 
@@ -1589,12 +1586,16 @@ public class DcatDataset implements Serializable {
           .map(item -> item.getValue()).collect(Collectors.toList()));
     }
 
-    if (spatialCoverage != null) {
-      doc.addChildDocument(spatialCoverage.toDoc(CacheContentType.spatialCoverage));
+    if (spatialCoverage != null && !spatialCoverage.isEmpty()) {
+      for (DctLocation sc : spatialCoverage) {
+        doc.addChildDocument(sc.toDoc(CacheContentType.spatialCoverage));
+      }
     }
 
-    if (temporalCoverage != null) {
-      doc.addChildDocument(temporalCoverage.toDoc(CacheContentType.temporalCoverage));
+    if (temporalCoverage != null && !temporalCoverage.isEmpty()) {
+      for (DctPeriodOfTime tc : temporalCoverage) {
+        doc.addChildDocument(tc.toDoc(CacheContentType.temporalCoverage));
+      }
     }
 
     doc.addField("type", type.getValue());
@@ -1757,8 +1758,8 @@ public class DcatDataset implements Serializable {
     FoafAgent rightsHolder = null;
     List<VcardOrganization> contactPointList = new ArrayList<VcardOrganization>();
     List<DctStandard> conformsToList = new ArrayList<DctStandard>();
-    DctLocation spatialCoverage = null;
-    DctPeriodOfTime temporalCoverage = null;
+    List<DctLocation> spatialCoverage = new ArrayList<DctLocation>();
+    List<DctPeriodOfTime> temporalCoverage = new ArrayList<DctPeriodOfTime>();
 
     if (null != childDocs) {
 
@@ -1769,16 +1770,14 @@ public class DcatDataset implements Serializable {
           conformsToList.add(DctStandard.docToDcatStandard(child, nodeIdentifier));
         }
 
-        if (child.containsKey("content_type") && child.getFieldValue("content_type")
-            .equals(CacheContentType.spatialCoverage.toString())) {
-          spatialCoverage = DctLocation.docToDctLocation(child, DCTerms.spatial.getURI(),
-              nodeIdentifier);
+        if (child.containsKey("content_type")
+            && child.getFieldValue("content_type").equals(CacheContentType.spatialCoverage.toString())) {
+          spatialCoverage.add(DctLocation.docToDctLocation(child, DCTerms.spatial.getURI(), nodeIdentifier));
         }
 
-        if (child.containsKey("content_type") && child.getFieldValue("content_type")
-            .equals(CacheContentType.temporalCoverage.toString())) {
-          temporalCoverage = DctPeriodOfTime.docToDctPeriodOfTime(child, DCTerms.temporal.getURI(),
-              nodeIdentifier);
+        if (child.containsKey("content_type")
+            && child.getFieldValue("content_type").equals(CacheContentType.temporalCoverage.toString())) {
+          temporalCoverage.add(DctPeriodOfTime.docToDctPeriodOfTime(child, DCTerms.temporal.getURI(), nodeIdentifier));
         }
 
         if (child.containsKey("content_type")

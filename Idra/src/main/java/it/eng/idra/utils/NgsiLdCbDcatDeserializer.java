@@ -577,7 +577,7 @@ public class NgsiLdCbDcatDeserializer {
         distributionList, themeList,
         publisher, contactPointList, keywords, accessRights, conformsTo, documentation, frequency,
         hasVersion, isVersionOf, landingPage, language, provenance, releaseDate, updateDate,
-        otherIdentifier, sample, source, spatialCoverage, temporalCoverage, type, version,
+        otherIdentifier, sample, source, geographicalCoverage, temporalCoverageList, type, version,
         versionNotes, rightsHolder, creator, subjectList, null, applicableLegislation,
         inSeries, qualifiedRelation, temporalResolution, wasGeneratedBy, HVDCategory);
   }

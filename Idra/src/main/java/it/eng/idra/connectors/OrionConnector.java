@@ -187,8 +187,8 @@ public class OrionConnector implements IodmsConnector {
     FoafAgent rightsHolder = null;
     FoafAgent creator = null;
     List<VcardOrganization> contactPointList = new ArrayList<VcardOrganization>();
-    DctPeriodOfTime temporalCoverage = null;
-    DctLocation spatialCoverage = null;
+    List<DctPeriodOfTime> temporalCoverage = new ArrayList<DctPeriodOfTime>();
+    List<DctLocation> spatialCoverage = new ArrayList<DctLocation>();
     List<SkosConceptTheme> themeList = new ArrayList<SkosConceptTheme>();
     List<SkosConceptSubject> subjectList = new ArrayList<SkosConceptSubject>();
     List<String> keywords = new ArrayList<String>();
@@ -392,20 +392,59 @@ public class OrionConnector implements IodmsConnector {
     }
 
     if (j.has("spatialCoverage")) {
-      spatialCoverage = new DctLocation(DCTerms.spatial.getURI(),
-          j.getJSONObject("spatialCoverage").optString("geographicalIdentifier", null),
-          j.getJSONObject("spatialCoverage").optString("geographicalName", null),
-          j.getJSONObject("spatialCoverage").optString("geometry", null), nodeId,
-          j.getJSONObject("spatialCoverage").optString("bbox", null),
-          j.getJSONObject("spatialCoverage").optString("centroid", null));// j.getJSONObject("spatialCoverage").optString("dataset_id",
-                                                                          // null)
+      Object obj = j.get("spatialCoverage");
+      if (obj instanceof JSONArray) {
+        JSONArray arr = (JSONArray) obj;
+        for (int i = 0; i < arr.length(); i++) {
+          JSONObject loc = arr.getJSONObject(i);
+          spatialCoverage.add(new DctLocation(
+              DCTerms.spatial.getURI(),
+              loc.optString("geographicalIdentifier", null),
+              loc.optString("geographicalName", null),
+              loc.optString("geometry", null),
+              nodeId,
+              loc.optString("bbox", null),
+              loc.optString("centroid", null)));
+        }
+      } else if (obj instanceof JSONObject) {
+        JSONObject loc = (JSONObject) obj;
+        spatialCoverage.add(new DctLocation(
+            DCTerms.spatial.getURI(),
+            loc.optString("geographicalIdentifier", null),
+            loc.optString("geographicalName", null),
+            loc.optString("geometry", null),
+            nodeId,
+            loc.optString("bbox", null),
+            loc.optString("centroid", null)));
+      }
     }
 
     String startDate = null;
     String endDate = null;
-    if (StringUtils.isNotBlank(startDate) && StringUtils.isNotBlank(endDate)
-        && StringUtils.isNotBlank(beginning) && StringUtils.isNotBlank(end)) {
-      temporalCoverage = new DctPeriodOfTime(DCTerms.temporal.getURI(), startDate, endDate, nodeId, beginning, end);// identifier
+    if (j.has("temporalCoverage")) {
+      Object obj = j.get("temporalCoverage");
+      if (obj instanceof JSONArray) {
+        JSONArray arr = (JSONArray) obj;
+        for (int i = 0; i < arr.length(); i++) {
+          JSONObject temporal = arr.getJSONObject(i);
+          temporalCoverage.add(new DctPeriodOfTime(
+              DCTerms.temporal.getURI(),
+              temporal.optString("startDate", null),
+              temporal.optString("endDate", null),
+              nodeId,
+              temporal.optString("beginning", null),
+              temporal.optString("end", null)));
+        }
+      } else if (obj instanceof JSONObject) {
+        JSONObject temporal = (JSONObject) obj;
+        temporalCoverage.add(new DctPeriodOfTime(
+            DCTerms.temporal.getURI(),
+            temporal.optString("startDate", null),
+            temporal.optString("endDate", null),
+            nodeId,
+            temporal.optString("beginning", null),
+            temporal.optString("end", null)));
+      }
     }
 
     // Distribution
@@ -499,42 +538,45 @@ public class OrionConnector implements IodmsConnector {
           GsonUtil.stringListType);
     }
 
-/*     if (j.has("inSeries")) {
-      JSONArray array = j.optJSONArray("inSeries");
-      if (array != null) {
-        for (int i = 0; i < array.length(); i++) {
-          JSONObject seriesObj = array.getJSONObject(i);
-
-          DcatDetails dcatDetails = new DcatDetails();
-          dcatDetails.setTitle(title);
-          dcatDetails.setDescription(description);
-          // Extracting properties from JSON
-          descriptions.add(dcatDetails); // extractValueList(description);
-          frequency = seriesObj.optString("frequency");
-          geographicalCoverage.add(spatialCoverage); // extractValueList(seriesObj.optString("geographicalCoverage"));
-          temporalCoverageList.add(temporalCoverage);
-          titles.add(dcatDetails); // extractValueList(title);
-
-          // Create the DcatDatasetSeries object
-          DcatDatasetSeries series = new DcatDatasetSeries(
-              applicableLegislation,
-              contactPointList,
-              descriptions,
-              frequency,
-              geographicalCoverage,
-              updateDate,
-              publisher,
-              releaseDate,
-              temporalCoverageList,
-              titles,
-              nodeId,
-              identifier);
-
-          // Add to the list
-          inSeries.add(series);
-        }
-      }
-    } */
+    /*
+     * if (j.has("inSeries")) {
+     * JSONArray array = j.optJSONArray("inSeries");
+     * if (array != null) {
+     * for (int i = 0; i < array.length(); i++) {
+     * JSONObject seriesObj = array.getJSONObject(i);
+     * 
+     * DcatDetails dcatDetails = new DcatDetails();
+     * dcatDetails.setTitle(title);
+     * dcatDetails.setDescription(description);
+     * // Extracting properties from JSON
+     * descriptions.add(dcatDetails); // extractValueList(description);
+     * frequency = seriesObj.optString("frequency");
+     * geographicalCoverage.add(spatialCoverage); //
+     * extractValueList(seriesObj.optString("geographicalCoverage"));
+     * temporalCoverageList.add(temporalCoverage);
+     * titles.add(dcatDetails); // extractValueList(title);
+     * 
+     * // Create the DcatDatasetSeries object
+     * DcatDatasetSeries series = new DcatDatasetSeries(
+     * applicableLegislation,
+     * contactPointList,
+     * descriptions,
+     * frequency,
+     * geographicalCoverage,
+     * updateDate,
+     * publisher,
+     * releaseDate,
+     * temporalCoverageList,
+     * titles,
+     * nodeId,
+     * identifier);
+     * 
+     * // Add to the list
+     * inSeries.add(series);
+     * }
+     * }
+     * }
+     */
 
     if (j.has("qualifiedRelation")) {
       JSONArray array = j.optJSONArray("qualifiedRelation");
@@ -543,7 +585,7 @@ public class OrionConnector implements IodmsConnector {
           JSONObject seriesObj = array.getJSONObject(i);
           // JSONObject obj = j.getJSONObject("qualifiedRelation");
           Relationship relationship = new Relationship(seriesObj.optString("had_role"),
-              seriesObj.optString("relation"),nodeId);
+              seriesObj.optString("relation"), nodeId);
           qualifiedRelation.add(relationship); // extractValueList(dataset.optString("qualifiedRelation"));
         }
       }

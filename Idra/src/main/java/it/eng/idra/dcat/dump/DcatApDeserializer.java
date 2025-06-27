@@ -447,7 +447,7 @@ public class DcatApDeserializer implements IdcatApDeserialize {
     mapped = new DcatDataset(nodeId, identifier, title, description, distributionList, theme,
         publisher, contactPointList, keywords, accessRights, conformsTo, documentation, frequency,
         hasVersion, isVersionOf, landingPage, language, provenance, releaseDate, updateDate,
-        otherIdentifier, sample, source, spatialCoverage, temporalCoverage, type, version,
+        otherIdentifier, sample, source, geographicalCoverage, temporalCoverageList, type, version,
         versionNotes, null, null, new ArrayList<SkosConceptSubject>(), relatedResource, applicableLegislation,
         inSeries, qualifiedRelation, temporalResolution, wasGeneratedBy, HVDCategory);
 

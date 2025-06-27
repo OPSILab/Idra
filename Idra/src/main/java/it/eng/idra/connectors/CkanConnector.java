@@ -833,7 +833,7 @@ public class CkanConnector implements IodmsConnector {
     mapped = new DcatDataset(nodeId, identifier, title, description, distributionList, themeList,
         publisher, contactPointList, keywords, accessRights, conformsTo, documentation, frequency,
         hasVersion, isVersionOf, landingPage, language, provenance, releaseDate, updateDate,
-        otherIdentifier, sample, source, spatialCoverage, temporalCoverage, type, version,
+        otherIdentifier, sample, source, geographicalCoverage, temporalCoverageList, type, version,
         versionNotes, rightsHolder, creator, subjectList, relatedResource, applicableLegislation,
         inSeries, qualifiedRelation, temporalResolution, wasGeneratedBy, HVDCategory);
 
