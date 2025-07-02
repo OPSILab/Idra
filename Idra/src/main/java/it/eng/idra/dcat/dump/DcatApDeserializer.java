@@ -1152,8 +1152,8 @@ public class DcatApDeserializer implements IdcatApDeserialize {
           }
 
           // rights (dct:rights)
-          if (serviceRes.hasProperty(DCTerms.rights)) {
-            StmtIterator rightsIt = serviceRes.listProperties(DCTerms.rights);
+          if (serviceRes.hasProperty(DCTerms.accessRights)) {
+            StmtIterator rightsIt = serviceRes.listProperties(DCTerms.accessRights);
             while (rightsIt.hasNext()) {
               Statement rightsStmt = rightsIt.next();
               try {

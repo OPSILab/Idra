@@ -46,6 +46,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.math.BigDecimal;
+import java.net.URI;
 import java.net.URISyntaxException;
 import java.time.Duration;
 import java.time.Instant;
@@ -904,11 +905,12 @@ public class DcatApSerializer {
           service.getRights().stream()
               .filter(item -> StringUtils.isNotBlank(item.getValue()))
               .forEach(item -> {
-                  // serviceResource.addProperty(DCTerms.rights, model.createLiteral(item.getValue()));
+                // serviceResource.addProperty(DCTerms.rights,
+                // model.createLiteral(item.getValue()));
                 if (isValidUri(item.getValue())) {
-                  serviceResource.addProperty(DCTerms.rights, model.createResource(item.getValue()));
+                  serviceResource.addProperty(DCTerms.accessRights, model.createResource(item.getValue()));
                 } else {
-                  serviceResource.addProperty(DCTerms.rights, model.createLiteral(item.getValue()));
+                  serviceResource.addProperty(DCTerms.accessRights, model.createLiteral(item.getValue()));
                 }
               });
         }
@@ -1441,7 +1443,24 @@ public class DcatApSerializer {
    * @return true, if is valid uri
    */
   protected static boolean isValidUri(String uri) {
-    return !iriFactory.create(uri).hasViolation(false);
+    // return !iriFactory.create(uri).hasViolation(false);
+    if (uri == null || uri.trim().isEmpty())
+      return false;
+
+    uri = uri.trim();
+    try {
+      // Basic URI check
+      URI parsedUri = new URI(uri);
+      String scheme = parsedUri.getScheme();
+      boolean isHttp = scheme != null && (scheme.equalsIgnoreCase("http") || scheme.equalsIgnoreCase("https"));
+
+      // Additional IRI spec validation if needed
+      boolean hasIriViolations = iriFactory.create(uri).hasViolation(false);
+
+      return isHttp && !hasIriViolations;
+    } catch (Exception e) {
+      return false;
+    }
   }
 
 }

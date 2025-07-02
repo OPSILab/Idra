@@ -163,9 +163,9 @@ public class DcatDataService implements Serializable {
                 : Arrays.asList(new DcatProperty(DCATAP.hvdCategory, SKOS.Concept, "")));
         setLicence(new DcatProperty(DCTerms.license.getURI(), DCTerms.LicenseDocument, licence));
         setRights(rights == null || rights.isEmpty()
-                ? Arrays.asList(new DcatProperty(DCTerms.rights.getURI(), DCTerms.rights, ""))
+                ? Arrays.asList(new DcatProperty(DCTerms.accessRights.getURI(), DCTerms.RightsStatement, ""))
                 : rights.stream()
-                        .map(r -> new DcatProperty(DCTerms.rights.getURI(), DCTerms.rights, r))
+                        .map(r -> new DcatProperty(DCTerms.accessRights.getURI(), DCTerms.RightsStatement, r))
                         .collect(Collectors.toList()));
         setServesDataset(servesDataset == null || servesDataset.isEmpty()
                 ? Arrays.asList(new DcatProperty(DCAT.servesDataset, DCAT.Dataset, ""))

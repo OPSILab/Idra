@@ -554,9 +554,9 @@ public class DcatApItSerializer extends DcatApSerializer {
               .filter(item -> StringUtils.isNotBlank(item.getValue()))
               .forEach(item -> {
                 if (isValidUri(item.getValue())) {
-                  serviceResource.addProperty(DCTerms.rights, model.createResource(item.getValue()));
+                  serviceResource.addProperty(DCTerms.accessRights, model.createResource(item.getValue()));
                 } else {
-                  serviceResource.addProperty(DCTerms.rights, model.createLiteral(item.getValue()));
+                  serviceResource.addProperty(DCTerms.accessRights, model.createLiteral(item.getValue()));
                 }
               });
         }
