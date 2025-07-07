@@ -689,10 +689,10 @@ public class DcatApDeserializer implements IdcatApDeserialize {
     if (spatialResource != null) {
 
       if (spatialResource.hasProperty(ResourceFactory
-          .createProperty("http://dati.gov.it/onto/dcatapit#geographicalIdentifier"))) {
+          .createProperty("http://www.w3.org/2000/01/rdf-schema#seeAlso"))) {
         geographicalIdentifier = spatialResource
             .getProperty(ResourceFactory
-                .createProperty("http://dati.gov.it/onto/dcatapit#geographicalIdentifier"))
+                .createProperty("http://www.w3.org/2000/01/rdf-schema#seeAlso"))
             .getString();
       }
       if (spatialResource

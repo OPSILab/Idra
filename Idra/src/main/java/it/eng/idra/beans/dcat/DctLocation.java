@@ -96,7 +96,7 @@ public class DctLocation {
     setUri(uri);
     setNodeId(nodeId);
     setGeographicalIdentifier(new DcatProperty(
-        ResourceFactory.createProperty("http://dati.gov.it/onto/dcatapit#geographicalIdentifier"),
+        ResourceFactory.createProperty("http://www.w3.org/2000/01/rdf-schema#seeAlso"),
         RDFS.Literal, geographicalIdentifier));
     setGeographicalName(new DcatProperty(
         ResourceFactory.createProperty("http://www.w3.org/ns/locn#geographicalName"), SKOS.Concept,

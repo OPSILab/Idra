@@ -334,6 +334,7 @@ public class CkanConnector implements IodmsConnector {
     // new
     String bbox = null;
     String centroid = null;
+    String geom = null;
     String beginning = null;
     String end = null;
     List<String> applicableLegislation = new ArrayList<String>();
@@ -437,10 +438,10 @@ public class CkanConnector implements IodmsConnector {
           case "spatial_geometry":
             // case "geographicalCoverage":
             String input = e.getValue();
-            if (checkIfJsonObject(input)) {
-              geometry = input;
-            } else if (input.startsWith("http://")) {
+            if (input.startsWith("http://") || input.startsWith("https://"))
               geographicalIdentifier = input.trim();
+            else if (checkIfJsonObject(input)) {
+              geometry = input;
             } else {
               geographicalName = input.trim();
             }
@@ -662,16 +663,17 @@ public class CkanConnector implements IodmsConnector {
         for (SpatialCoverage s : spatialCoverages) {
           bbox = s.getBbox();
           centroid = s.getCentroid();
-          String geom = s.getGeom();
+          geom = s.getGeom();
           // String text = s.getText();
           // String uri = s.getUri();
-          if (StringUtils.isNotBlank(geographicalIdentifier) || StringUtils.isNotBlank(geographicalName)
-              || StringUtils.isNotBlank(geom) || StringUtils.isNotBlank(bbox) || StringUtils.isNotBlank(centroid)) {
-            spatialCoverage = new DctLocation(DCTerms.spatial.getURI(), geographicalIdentifier,
-                geographicalName, geom, nodeId, bbox, centroid);
-            geographicalCoverage.add(spatialCoverage);
-          }
         }
+      }
+
+      if (StringUtils.isNotBlank(geographicalIdentifier) || StringUtils.isNotBlank(geographicalName)
+          || StringUtils.isNotBlank(geom) || StringUtils.isNotBlank(bbox) || StringUtils.isNotBlank(centroid)) {
+        spatialCoverage = new DctLocation(DCTerms.spatial.getURI(), geographicalIdentifier,
+            geographicalName, geom, nodeId, bbox, centroid);
+        geographicalCoverage.add(spatialCoverage);
       }
 
       List<TemporalCoverage> temporalCoverages = d.getTemporal_coverage();
@@ -1016,7 +1018,8 @@ public class CkanConnector implements IodmsConnector {
     String title = null;
     title = r.getName();
 
-    //logger.info("accessService size: " + (r.getAccess_services() != null ? r.getAccess_services().size() : null));
+    // logger.info("accessService size: " + (r.getAccess_services() != null ?
+    // r.getAccess_services().size() : null));
     if (r.getAccess_services() != null) {
       for (AccessService src : r.getAccess_services()) {
         String accessRights = src.getAccess_rights();

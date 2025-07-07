@@ -40,10 +40,9 @@ import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 // TODO: Auto-generated Javadoc
@@ -384,12 +383,10 @@ public class FoafAgent implements Serializable {
       doc.addField("identifier", this.getIdentifier().getValue());
     // doc.addField("name", this.getName().getValue());
     if (this.getName() != null && !this.getName().isEmpty()) {
-      doc.addField("nameList", this.getName().stream()
-          .map(DcatProperty::getValue)
-          .collect(Collectors.joining(", ")));
-    } else {
-      doc.addField("nameList", "");
+      doc.addField("nameList", this.getName().stream().filter(item -> item != null)
+          .map(item -> item.getValue()).collect(Collectors.toList()));
     }
+
     if (this.getMbox().getValue() != null)
       doc.addField("mbox", this.getMbox().getValue());
     if (this.getHomepage().getValue() != null)
@@ -410,13 +407,10 @@ public class FoafAgent implements Serializable {
    */
   public static FoafAgent docToFoafAgent(SolrDocument doc, String propertyUri, String nodeId) {
     // Extract name field as a list of strings
-    List<String> names = Optional.ofNullable(doc.getFieldValue("nameList"))
-        .map(value -> Arrays.asList(value.toString().split(", "))) // Splitting assuming CSV format
-        .orElse(Collections.emptyList());
-
     FoafAgent f = new FoafAgent(propertyUri,
         doc.getFieldValue("resourceUri") != null ? doc.getFieldValue("resourceUri").toString() : null,
-        names, doc.getFieldValue("mbox") != null ? doc.getFieldValue("mbox").toString() : null,
+        (ArrayList<String>) doc.getFieldValue("nameList"),
+        doc.getFieldValue("mbox") != null ? doc.getFieldValue("mbox").toString() : null,
         doc.getFieldValue("homepage") != null ? doc.getFieldValue("homepage").toString() : null,
         doc.getFieldValue("type") != null ? doc.getFieldValue("type").toString() : null,
         doc.getFieldValue("identifier") != null ? doc.getFieldValue("identifier").toString() : null, nodeId);

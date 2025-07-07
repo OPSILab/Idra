@@ -244,7 +244,7 @@ public class OpenDataSoftConnector implements IodmsConnector {
 
     FoafAgent publisher = new FoafAgent(DCTerms.publisher.getURI(), publisherUri.orElse(null),
         publisherName != null
-            ? Collections.singletonList(publisherName.toString())
+            ? Collections.singletonList(publisherName.get())
             : Collections.emptyList(),
         publisherMbox.orElse(null), publisherHomepage.orElse(null),
         publisherType.orElse(null), publisherIdentifier.orElse(null), nodeId);
@@ -334,7 +334,8 @@ public class OpenDataSoftConnector implements IodmsConnector {
         try {
           out.add(datasetToDcat(d, node));
         } catch (Exception e) {
-          logger.error("Error processing dataset: " + (d != null && d.getDataset() != null ? d.getDataset().getDatasetId() : "null"), e);
+          logger.error("Error processing dataset: "
+              + (d != null && d.getDataset() != null ? d.getDataset().getDatasetId() : "null"), e);
         }
       });
 
@@ -445,14 +446,14 @@ public class OpenDataSoftConnector implements IodmsConnector {
       try {
         int oldIndex = oldDatasets.indexOf(d);
         int newIndex = newDatasets.indexOf(d);
-        
+
         // Check if both indices are valid to prevent ArrayIndexOutOfBoundsException
         if (oldIndex >= 0 && newIndex >= 0 && oldIndex < oldDatasets.size() && newIndex < newDatasets.size()) {
           DcatDataset oldDataset = oldDatasets.get(oldIndex);
           DcatDataset newDataset = newDatasets.get(newIndex);
-          
+
           // Check if update dates are not null
-          if (oldDataset.getUpdateDate() != null && newDataset.getUpdateDate() != null 
+          if (oldDataset.getUpdateDate() != null && newDataset.getUpdateDate() != null
               && oldDataset.getUpdateDate().getValue() != null && newDataset.getUpdateDate().getValue() != null) {
             oldDate.setTime(iso.parse(oldDataset.getUpdateDate().getValue()));
             newDate.setTime(iso.parse(newDataset.getUpdateDate().getValue()));
