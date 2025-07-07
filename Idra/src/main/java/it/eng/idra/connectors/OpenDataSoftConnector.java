@@ -308,19 +308,33 @@ public class OpenDataSoftConnector implements IodmsConnector {
       String sjson = sendGetRequest(url);
       DatasetDto datasets = new Gson().fromJson(sjson, DatasetDto.class);
 
+      if (datasets == null) {
+        logger.error("Received null datasets from API");
+        break;
+      }
+
       totDatasets = datasets.getTotalCount();
 
       if (startIndex == 0) {
         logger.info(totDatasets + " total datasets found");
       }
 
+      if (datasets.getDatasets() == null) {
+        logger.warn("Received null datasets list from API");
+        break;
+      }
+
       Integer currentDatasetNumber = datasets.getDatasets().size();
       logger.debug("Took " + currentDatasetNumber + " datasets");
-      datasets.getDatasets().stream().parallel().forEach(d -> {
+      if (currentDatasetNumber == 0) {
+        // No more datasets to process, break the loop
+        break;
+      }
+      datasets.getDatasets().forEach(d -> {
         try {
           out.add(datasetToDcat(d, node));
         } catch (Exception e) {
-          e.printStackTrace();
+          logger.error("Error processing dataset: " + (d != null && d.getDataset() != null ? d.getDataset().getDatasetId() : "null"), e);
         }
       });
 
@@ -431,16 +445,29 @@ public class OpenDataSoftConnector implements IodmsConnector {
       try {
         int oldIndex = oldDatasets.indexOf(d);
         int newIndex = newDatasets.indexOf(d);
-        oldDate.setTime(iso.parse(oldDatasets.get(oldIndex).getUpdateDate().getValue()));
-        newDate.setTime(iso.parse(newDatasets.get(newIndex).getUpdateDate().getValue()));
+        
+        // Check if both indices are valid to prevent ArrayIndexOutOfBoundsException
+        if (oldIndex >= 0 && newIndex >= 0 && oldIndex < oldDatasets.size() && newIndex < newDatasets.size()) {
+          DcatDataset oldDataset = oldDatasets.get(oldIndex);
+          DcatDataset newDataset = newDatasets.get(newIndex);
+          
+          // Check if update dates are not null
+          if (oldDataset.getUpdateDate() != null && newDataset.getUpdateDate() != null 
+              && oldDataset.getUpdateDate().getValue() != null && newDataset.getUpdateDate().getValue() != null) {
+            oldDate.setTime(iso.parse(oldDataset.getUpdateDate().getValue()));
+            newDate.setTime(iso.parse(newDataset.getUpdateDate().getValue()));
 
-        if (newDate.after(oldDate)) {
-          syncrhoResult.addToChangedList(d);
+            if (newDate.after(oldDate)) {
+              syncrhoResult.addToChangedList(d);
+            }
+          }
+        } else {
+          logger.warn("Dataset not found in one of the lists: " + d.getIdentifier());
         }
       } catch (Exception ex) {
         exception++;
         if (exception % 1000 == 0) {
-          ex.printStackTrace();
+          logger.error("Exception during dataset comparison", ex);
         }
       }
     }

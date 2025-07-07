@@ -28,6 +28,7 @@ import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import javax.persistence.AttributeOverride;
@@ -409,7 +410,7 @@ public class DcatDataset implements Serializable {
     // ? subject.stream().map(item -> new DCATProperty(DCTerms.subject,
     // SKOS.Concept.getURI(), item))
     // .collect(Collectors.toList())
-    // : Arrays.asList(new DCATProperty(DCTerms.subject, SKOS.Concept.getURI(),
+    // : Arrays.asList(new DCATProperty(Dcterms.subject, SKOS.Concept.getURI(),
     // "")));
     setSubject(subject);
 
@@ -1438,23 +1439,10 @@ public class DcatDataset implements Serializable {
    */
   @Override
   public boolean equals(Object obj) {
-
-    if (this == obj) {
-      return true;
-    }
-    if (obj == null) {
-      return false;
-    }
-    if (getClass() != obj.getClass()) {
-      return false;
-    }
-    DcatDataset other = (DcatDataset) obj;
-
-    if (this.getIdentifier().getValue().equals(other.getIdentifier().getValue())) {
-      return true;
-    } else {
-      return false;
-    }
+    if (this == obj) return true;
+    if (obj == null || getClass() != obj.getClass()) return false;
+    DcatDataset that = (DcatDataset) obj;
+    return Objects.equals(this.getIdentifier(), that.getIdentifier());
   }
 
   /*
@@ -1462,9 +1450,10 @@ public class DcatDataset implements Serializable {
    * 
    * @see java.lang.Object#hashCode()
    */
+
   @Override
   public int hashCode() {
-    return this.getIdentifier().hashCode();
+    return Objects.hash(getIdentifier());
   }
 
   /**
