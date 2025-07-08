@@ -13,3 +13,6 @@
 [submodule "deep2-client"]
 	path = deep2-client
 	url = https://github.com/OPSILab/deep2-client
+[submodule "wait-for-it"]
+	path = wait-for-it
+	url = https://github.com/vishnubob/wait-for-it.git
