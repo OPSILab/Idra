@@ -243,9 +243,7 @@ public class OpenDataSoftConnector implements IodmsConnector {
     Optional<String> publisherIdentifier = Optional.empty();
 
     FoafAgent publisher = new FoafAgent(DCTerms.publisher.getURI(), publisherUri.orElse(null),
-        publisherName != null
-            ? Collections.singletonList(publisherName.get())
-            : Collections.emptyList(),
+        publisherName.map(Collections::singletonList).orElse(Collections.emptyList()),
         publisherMbox.orElse(null), publisherHomepage.orElse(null),
         publisherType.orElse(null), publisherIdentifier.orElse(null), nodeId);
 
