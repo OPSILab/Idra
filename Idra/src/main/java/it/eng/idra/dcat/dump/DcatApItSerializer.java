@@ -38,7 +38,6 @@ import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.rdf.model.ResourceFactory;
 import org.apache.jena.rdf.model.ResourceRequiredException;
 //import org.apache.jena.shared.BadURIException;
-import org.apache.jena.iri.IRIException;
 import org.apache.jena.vocabulary.DCAT;
 import org.apache.jena.vocabulary.DCTerms;
 import org.apache.jena.vocabulary.RDF;
@@ -79,10 +78,8 @@ public class DcatApItSerializer extends DcatApSerializer {
    * @param dataset the dataset
    * @param model   the model
    * @return the model
-   * @throws IRIException the IRI exception
    */
-  protected static Model addDatasetToModel(DcatDataset dataset, Model model)
-      throws IRIException {
+  protected static Model addDatasetToModel(DcatDataset dataset, Model model) {
 
     String landingPage = dataset.getLandingPage().getValue();
     IRI iri = iriFactory.create(landingPage);

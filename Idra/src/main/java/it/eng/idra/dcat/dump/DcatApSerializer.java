@@ -61,7 +61,6 @@ import org.apache.jena.datatypes.RDFDatatype;
 import org.apache.jena.datatypes.xsd.XSDhexBinary;
 import org.apache.jena.datatypes.xsd.impl.XSDDateType;
 import org.apache.jena.iri.IRI;
-import org.apache.jena.iri.IRIException;
 import org.apache.jena.iri.IRIFactory;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
@@ -249,9 +248,8 @@ public class DcatApSerializer {
    * @param dataset the dataset
    * @param model   the model
    * @return the model
-   * @throws IRIException the IRI exception
    */
-  protected static Model addDatasetToModel(DcatDataset dataset, Model model) throws IRIException {
+  protected static Model addDatasetToModel(DcatDataset dataset, Model model) {
 
     String landingPage = dataset.getLandingPage().getValue();
     IRI iri = iriFactory.create(landingPage);
@@ -606,7 +604,7 @@ public class DcatApSerializer {
         try {
           datasetResource.addProperty(lang.getProperty(),
               model.createResource(iriFactory.construct(lang.getValue()).toURI().toString()));
-        } catch (IRIException | URISyntaxException e) {
+        } catch (URISyntaxException e) {
           datasetResource.addProperty(lang.getProperty(),
               model.createResource(LANGUAGE_BASE_URI + lang.getValue()));
         }
@@ -762,7 +760,7 @@ public class DcatApSerializer {
         // IRIFactory.jenaImplementation().construct(concept.getValue()).toURI().toString(),
         // SKOS.Concept));
 
-        // } catch (IRIException | URISyntaxException e) {
+        // } catch (URISyntaxException e) {
         // datasetResource.addProperty(concept.getProperty(),
         // model.createResource(THEME_BASE_URI + concept.getValue(), SKOS.Concept));
         // }
@@ -1191,7 +1189,7 @@ public class DcatApSerializer {
           parentResource.addProperty(property.getProperty(),
               model.createResource(iriFactory.construct(property.getValue()).toURI().toString()));
         }
-      } catch (ResourceRequiredException | IRIException | URISyntaxException e) {
+      } catch (ResourceRequiredException | URISyntaxException e) {
 
         // Add anyway the property as string value
         System.out.println("ERROR in addDcatPropertyAsResource for " + property.getProperty() + ": "
