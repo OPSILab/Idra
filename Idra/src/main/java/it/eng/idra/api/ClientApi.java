@@ -550,6 +550,11 @@ public class ClientApi {
         filters.stream()
             .forEach(filter -> searchParameters.put(filter.getField(), (Object) filter.getValue()));
 
+        // Map hasHvdCategory if present in SearchRequest
+        if (request.getHasHvdCategory() != null) {
+          searchParameters.put("hasHvdCategory", request.getHasHvdCategory());
+        }
+
         // Adds rows, start, sort parameters
         searchParameters.put("rows", request.getRows());
         searchParameters.put("start", request.getStart());

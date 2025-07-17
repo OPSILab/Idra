@@ -57,6 +57,9 @@ public class SearchRequest {
   @JsonRequired
   private List<Integer> nodes;
 
+  /** The hasHvdCategory filter. */
+  private Boolean hasHvdCategory;
+
   /**
    * Instantiates a new search request.
    *
@@ -72,7 +75,7 @@ public class SearchRequest {
    */
   public SearchRequest(List<SearchFilter> filters, SearchDateFilter issued,
       SearchDateFilter modified, boolean live, SearchEuroVocFilter eurovocFilter, SortOption sort,
-      String rows, String start, List<Integer> nodes) {
+      String rows, String start, List<Integer> nodes, Boolean hasHvdCategory) {
     super();
     this.filters = filters;
     this.releaseDate = issued;
@@ -83,6 +86,24 @@ public class SearchRequest {
     this.rows = rows;
     this.start = start;
     this.nodes = nodes;
+    this.hasHvdCategory = hasHvdCategory;
+  }
+  /**
+   * Gets the hasHvdCategory filter.
+   *
+   * @return the hasHvdCategory
+   */
+  public Boolean getHasHvdCategory() {
+    return hasHvdCategory;
+  }
+
+  /**
+   * Sets the hasHvdCategory filter.
+   *
+   * @param hasHvdCategory the new hasHvdCategory
+   */
+  public void setHasHvdCategory(Boolean hasHvdCategory) {
+    this.hasHvdCategory = hasHvdCategory;
   }
 
   /**

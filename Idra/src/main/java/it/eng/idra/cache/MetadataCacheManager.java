@@ -683,6 +683,18 @@ public class MetadataCacheManager {
       query.set("sort", sort[0] + " " + sort[1]);
     }
 
+    // Add filter for hvdCategory presence if requested
+    if (searchParameters.containsKey("hasHvdCategory")) {
+      boolean hasHvdCategory = Boolean.parseBoolean(searchParameters.remove("hasHvdCategory").toString());
+      if (hasHvdCategory) {
+        // Only datasets with at least one non-empty HVDCategory
+        query.addFilterQuery("HVDCategory:*?*");
+      } else {
+        // Only datasets with no HVDCategory or only empty string
+        query.addFilterQuery("-HVDCategory:*?*");
+      }
+    }
+
     // DATASETS QUERY
     query.setQuery(buildGenericQuery(searchParameters));
 

@@ -23,7 +23,7 @@
 # The base image from which the image build starts
 # The image is based on the source code present in the project's Idra folder
 
-FROM        maven:3.5-jdk-8-alpine as build
+FROM        maven:3.9.6-eclipse-temurin-21 as build
 MAINTAINER Engineering Ingegneria Informatica S.p.A.
 
 WORKDIR /
@@ -33,8 +33,8 @@ WORKDIR /
 ################################################
 # Old commands that refer to the old Idra portal
 # Update the environment and install various utilities used for installation
-RUN         apk update && \
-            apk add git curl
+RUN         apt-get update && \
+            apt-get install -y git curl
 # Install NodeJS 		
 # RUN 		apk add --update nodejs nodejs-npm
 #Install Bower
