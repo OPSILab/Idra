@@ -348,7 +348,7 @@ public class LodCacheManager {
     } finally {
       repoConnection.close();
     }
-    logger.info("Deleted Context:" + context);
+    // logger.info("Deleted Context:" + context);
   }
 
   /**

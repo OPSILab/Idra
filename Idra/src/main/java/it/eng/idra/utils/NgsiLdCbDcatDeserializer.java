@@ -365,7 +365,7 @@ public class NgsiLdCbDcatDeserializer {
           DcatDistribution distro = distributionToDcat(getJsonDistribution(distributionsId.get(i),
               node),
               node);
-          logger.info(distro);
+          // logger.info(distro);
           distributionList.add(distro);
 
         }
@@ -605,20 +605,20 @@ public class NgsiLdCbDcatDeserializer {
       }
 
     }
-    logger.info(idDistribution);
+    // logger.info(idDistribution);
     String distribId = "urn:ngsi-ld:DistributionDCAT-AP:id:" + idDistribution;
 
     String url = node.getHost() + "/ngsi-ld/v1/entities?type=DistributionDCAT-AP&id=" + distribId;
-    logger.info(url);
+    // logger.info(url);
 
     HttpResponse response = client.sendGetRequest(url, headers);
     String returnedJson = client.getHttpResponseBody(response);
 
-    logger.info(returnedJson);
+    // logger.info(returnedJson);
     JSONArray jsonArr = new JSONArray(returnedJson);
-    logger.info(jsonArr);
+    // logger.info(jsonArr);
     JSONObject jsonObject = jsonArr.getJSONObject(0);
-    logger.info(jsonObject);
+    // logger.info(jsonObject);
     return jsonObject;
   }
 

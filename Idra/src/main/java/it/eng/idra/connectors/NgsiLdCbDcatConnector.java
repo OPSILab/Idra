@@ -853,9 +853,9 @@ public class NgsiLdCbDcatConnector implements IodmsConnector {
 
     response = client.sendGetRequest(url, headers);
     returnedJson = client.getHttpResponseBody(response);
-    System.out.println(returnedJson);
+    // System.out.println(returnedJson);
     JSONArray jsonArray = new JSONArray(returnedJson);
-    System.out.println("JSONDATASET: " + jsonArray);
+    // System.out.println("JSONDATASET: " + jsonArray);
     return jsonArray;
   }
 

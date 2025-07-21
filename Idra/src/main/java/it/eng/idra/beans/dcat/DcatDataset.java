@@ -1620,7 +1620,7 @@ public class DcatDataset implements Serializable {
 
     if (distributions != null && !distributions.isEmpty()) {
       logger.info("into distribution block");
-      logger.info(distributions);
+      // logger.info(distributions);
       distributions.stream().filter(item -> item != null)
           .forEach(item -> {
             logger.info(item);

@@ -450,7 +450,7 @@ public class OdmsSynchJob implements InterruptableJob {
       
       String body = client.getHttpResponseBody(response);
       JSONObject objResponse = new JSONObject(body);
-      logger.info(objResponse);
+      // logger.info(objResponse);
       int status = objResponse.getInt("status");
       
       if (status != 200 && status != 207 && status != 204 

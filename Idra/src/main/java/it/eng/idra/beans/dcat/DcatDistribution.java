@@ -1235,7 +1235,7 @@ public class DcatDistribution implements Serializable {
     doc.addField("hasDatalets", hasDatalets);
 
     // doc.addField("documentation", documentation.getValue());
-    logger.info(downloadUrl);
+    // logger.info(downloadUrl);
     if (downloadUrl != null) {
       doc.addField("downloadURL", downloadUrl.getValue());
     }

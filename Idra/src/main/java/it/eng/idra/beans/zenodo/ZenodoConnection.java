@@ -120,7 +120,7 @@ public class ZenodoConnection {
          logger.info("ZenodoConnection - sendGetRequest - status: " + status);
          if (status == 200) {
             String responseBody = client.getHttpResponseBody(response);
-            logger.info("ZenodoConnection - sendGetRequest - getHttpResponseBody: " + responseBody);
+            // logger.info("ZenodoConnection - sendGetRequest - getHttpResponseBody: " + responseBody);
             return responseBody;
          } else {
             return null;
@@ -149,7 +149,7 @@ public class ZenodoConnection {
       URL url = null;
       String body = "";
       logger.info("CONNECTION: OPEN");
-      System.out.println(this._host + path + "\t" + data);
+      // System.out.println(this._host + path + "\t" + data);
       url = new URL(this._host + path);
       RequestConfig requestConfig = RequestConfig.custom().setConnectTimeout(300000).setSocketTimeout(900000).build();
       SSLContextBuilder builder = SSLContextBuilder.create();
