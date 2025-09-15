@@ -565,20 +565,40 @@ public class ClientApi {
         //
         // searchParameters.put("sort", request.getSort().getField().trim() + ","
         // + request.getSort().getMode().toString().trim());
-
+        // if (searchParameters.containsKey("datasetThemes")) {
+        //   List<String> tmp = Arrays
+        //       .asList(((String) searchParameters.remove("datasetThemes")).split(",")).stream()
+        //       .distinct().collect(Collectors.toList());
+        //   List<String> themeAbbr = tmp.stream().filter(x -> FederationCore.isDcatTheme(x))
+        //       .collect(Collectors.toList());
+        //   logger.info("Requested themes: " + tmp);
+        //   logger.info("Mapped themes: " + themeAbbr);
+        //   if (!themeAbbr.isEmpty()) {
+        //     searchParameters.put("datasetThemes", String.join(",", themeAbbr));
+        //   } else {
+        //     searchParameters.put("datasetThemes", Arrays.asList());
+        //   }
+        // }
         if (searchParameters.containsKey("datasetThemes")) {
-          List<String> tmp = Arrays
-              .asList(((String) searchParameters.remove("datasetThemes")).split(",")).stream()
-              .distinct().collect(Collectors.toList());
-          List<String> themeAbbr = tmp.stream().filter(x -> FederationCore.isDcatTheme(x))
-              .collect(Collectors.toList());
+          Object themeObj = searchParameters.remove("datasetThemes");
+          List<String> tmp = new ArrayList<>();
+          if (themeObj instanceof String) {
+            if (!((String) themeObj).isEmpty()) {
+              tmp.add((String) themeObj);
+            }
+          } else if (themeObj instanceof List) {
+            tmp.addAll((List<String>) themeObj);
+          }
+          List<String> themeAbbr = tmp.stream().filter(x -> FederationCore.isDcatTheme(x)).collect(Collectors.toList());
+          logger.info("Requested themes: " + tmp);
+          logger.info("v2 ");
+          logger.info("Mapped themes: " + themeAbbr);
           if (!themeAbbr.isEmpty()) {
-            searchParameters.put("datasetThemes", String.join(",", themeAbbr));
+            searchParameters.put("datasetThemes", themeAbbr);
           } else {
             searchParameters.put("datasetThemes", Arrays.asList());
           }
         }
-
         // Adds the id of the nodes to search on
         List<Integer> ids = new ArrayList<Integer>();
         if (searchParameters.containsKey("catalogues")) {

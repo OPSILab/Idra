@@ -1054,7 +1054,17 @@ public class MetadataCacheManager {
       if (key.equals("releaseDate") || key.equals("updateDate")) {
         continue;
       }
-      value = ((String) e.getValue()).replaceAll("\"", "").trim();
+
+      Object paramValue = e.getValue();
+      if (paramValue instanceof List) {
+        // Join list elements with comma
+        value = ((List<?>) paramValue).stream()
+          .map(Object::toString)
+          .collect(Collectors.joining(","));
+      } else {
+        value = paramValue != null ? paramValue.toString() : "";
+      }
+      value = value.replaceAll("\"", "").trim();
 
       if (key.equals("ALL")) {
 
@@ -1100,15 +1110,18 @@ public class MetadataCacheManager {
       } else if (!key.equals("sort") && !key.equals("rows") && !key.equals("start")
           && !key.equals("releaseDate") && !key.equals("updateDate")) {
 
-        // Add passed keywords to statistics DB
         StatisticsManager.storeKeywordsStatistic((String) value);
 
-        // Build the SOLR query String
-        // queryString += (isFirst ? "" : " AND ") + key.trim() + ":(*"
-        // + ((String) value).replaceAll("\\s", "*").replaceAll(",", "*
-        // OR *") + "*)";
-        queryString += (isFirst ? "" : " AND ") + key.trim() + ":(\""
-            + ((String) value).replaceAll(",", "\" " + defaultOperator + " \"") + "\")";
+        // If value is a comma-separated string, split and OR them
+        if (paramValue instanceof List) {
+          List<?> values = (List<?>) paramValue;
+          String joined = values.stream()
+            .map(v -> "\"" + v.toString() + "\"")
+            .collect(Collectors.joining(" OR "));
+          queryString += (isFirst ? "" : " AND ") + key.trim() + ":(" + joined + ")";
+        } else {
+          queryString += (isFirst ? "" : " AND ") + key.trim() + ":(\"" + value + "\")";
+        }
         isFirst = false;
       }
 
@@ -1118,15 +1131,15 @@ public class MetadataCacheManager {
 
     if (searchParameters.containsKey("releaseDate")) {
       String[] startEnd = (String[]) searchParameters.remove("releaseDate");
-      queryString += (isFirst ? "" : " AND ") + "releaseDate:[" + startEnd[0] + " TO " + startEnd[1]
-          + "]";
+      String end = startEnd[1].replace("T00:00:00Z", "") + "T23:59:59Z";
+      queryString += (isFirst ? "" : " AND ") + "releaseDate:[" + startEnd[0] + " TO " + end + "]";
       isFirst = false;
     }
 
     if (searchParameters.containsKey("updateDate")) {
       String[] startEnd = (String[]) searchParameters.remove("updateDate");
-      queryString += ((isFirst ? "" : " AND ") + "updateDate:[" + startEnd[0] + " TO " + startEnd[1]
-          + "]");
+      String end = startEnd[1].replace("T00:00:00Z", "") + "T23:59:59Z";
+      queryString += ((isFirst ? "" : " AND ") + "updateDate:[" + startEnd[0] + " TO " + end + "]");
       isFirst = false;
     }
     logger.info(queryString);
@@ -1154,8 +1167,6 @@ public class MetadataCacheManager {
    * distrQueryString += " OR " + distrKey.trim() + "_solr" + ":" + "*" +
    * ((String) distrValue).trim().replaceAll("\\s", "*") + "*"; isFirst = false; }
    * } }
-   * 
-   * return distrQueryString; }
    * 
    */
 

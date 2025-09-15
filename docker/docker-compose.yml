@@ -104,7 +104,10 @@ services :
 
     # Idra back-end latest version
     idra:
-            image: idraopendata/idra:latest
+            # build local
+            build:
+              context: ..
+              dockerfile: ./Dockerfile
             ports:
                 - 8080:8080
             depends_on:

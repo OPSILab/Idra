@@ -1041,6 +1041,8 @@ public class FederationCore {
    * @return true, if is dcat theme
    */
   public static boolean isDcatTheme(String value) {
+    // log dcatThemes
+    logger.info("Available DCAT themes: " + dcatThemes.toString());
     return dcatThemes.stream().anyMatch(
         x -> x.getIdentifier().equalsIgnoreCase(value) || x.getEn().equalsIgnoreCase(value));
   }
