@@ -40,6 +40,7 @@ import it.eng.idra.beans.opendatasoft.DatasetDto;
 import it.eng.idra.beans.opendatasoft.DatasourceDto;
 import it.eng.idra.beans.opendatasoft.InnerDatasetMetaDefault;
 import it.eng.idra.beans.opendatasoft.Link;
+import it.eng.idra.management.FederationCore;
 import it.eng.idra.utils.CommonUtil;
 import it.eng.idra.utils.restclient.RestClient;
 import it.eng.idra.utils.restclient.RestClientImpl;
@@ -364,7 +365,7 @@ public class OpenDataSoftConnector implements IodmsConnector {
       for (String label : concepts) {
         try {
           result.add(type.getDeclaredConstructor(SkosConcept.class).newInstance(new SkosConcept(
-              propertyUri, "", Arrays.asList(new SkosPrefLabel("", label, nodeId)), nodeId)));
+              propertyUri, "", Arrays.asList(new SkosPrefLabel("", FederationCore.getEnglishDcatTheme(label), nodeId)), nodeId)));
         } catch (InstantiationException | IllegalAccessException | IllegalArgumentException
             | InvocationTargetException | NoSuchMethodException | SecurityException e) {
           e.printStackTrace();

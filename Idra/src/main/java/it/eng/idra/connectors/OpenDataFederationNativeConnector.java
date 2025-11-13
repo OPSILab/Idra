@@ -38,6 +38,7 @@ import it.eng.idra.beans.dcat.VcardOrganization;
 import it.eng.idra.beans.odms.OdmsCatalogue;
 import it.eng.idra.beans.odms.OdmsCatalogueOfflineException;
 import it.eng.idra.beans.odms.OdmsSynchronizationResult;
+import it.eng.idra.management.FederationCore;
 import it.eng.idra.utils.CommonUtil;
 import it.eng.idra.utils.GsonUtil;
 import it.eng.idra.utils.GsonUtilException;
@@ -558,8 +559,13 @@ public class OpenDataFederationNativeConnector implements IodmsConnector {
           if (labelArray != null) {
             for (int j = 0; j < labelArray.length(); j++) {
               JSONObject labelObj = labelArray.optJSONObject(j);
-              prefLabelList.add(new SkosPrefLabel(labelObj.optString("language"),
-                  labelObj.optString("value"), nodeId));
+              if ("theme".equalsIgnoreCase(fieldName)) {
+                prefLabelList.add(new SkosPrefLabel(labelObj.optString("language"),
+                    FederationCore.getEnglishDcatTheme(labelObj.optString("value")), nodeId));
+              } else {
+                prefLabelList.add(new SkosPrefLabel(labelObj.optString("language"),
+                    labelObj.optString("value"), nodeId));
+              }
             }
           }
 

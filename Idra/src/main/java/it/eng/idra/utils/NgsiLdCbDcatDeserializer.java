@@ -34,6 +34,7 @@ import it.eng.idra.beans.dcat.SkosPrefLabel;
 import it.eng.idra.beans.dcat.VcardOrganization;
 import it.eng.idra.beans.odms.OdmsCatalogue;
 import it.eng.idra.connectors.NgsiLdCbDcatConnector;
+import it.eng.idra.management.FederationCore;
 import it.eng.idra.utils.restclient.RestClient;
 import it.eng.idra.utils.restclient.RestClientImpl;
 import java.lang.reflect.InvocationTargetException;
@@ -781,7 +782,7 @@ public class NgsiLdCbDcatDeserializer {
     for (String label : concepts) {
       try {
         result.add(type.getDeclaredConstructor(SkosConcept.class).newInstance(new SkosConcept(
-            propertyUri, "", Arrays.asList(new SkosPrefLabel("", label,
+            propertyUri, "", Arrays.asList(new SkosPrefLabel("", FederationCore.getEnglishDcatTheme(label),
                 String.valueOf(node.getId()))),
             String.valueOf(node.getId()))));
       } catch (InstantiationException | IllegalAccessException | IllegalArgumentException

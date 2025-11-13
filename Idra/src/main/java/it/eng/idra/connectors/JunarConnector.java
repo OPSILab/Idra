@@ -39,6 +39,7 @@ import it.eng.idra.beans.odms.OdmsCatalogue;
 import it.eng.idra.beans.odms.OdmsCatalogueForbiddenException;
 import it.eng.idra.beans.odms.OdmsCatalogueOfflineException;
 import it.eng.idra.beans.odms.OdmsSynchronizationResult;
+import it.eng.idra.management.FederationCore;
 import it.eng.idra.utils.CommonUtil;
 import it.eng.idra.utils.GsonUtil;
 import it.eng.idra.utils.GsonUtilException;
@@ -559,7 +560,7 @@ public class JunarConnector implements IodmsConnector {
         String label = conceptArray.getString(i);
         if (StringUtils.isNotBlank(label)) {
 
-          List<SkosPrefLabel> prefLabelList = Arrays.asList(new SkosPrefLabel(null, label, nodeId));
+          List<SkosPrefLabel> prefLabelList = Arrays.asList(new SkosPrefLabel(null, FederationCore.getEnglishDcatTheme(label), nodeId));
           try {
             result.add(type.getDeclaredConstructor(SkosConcept.class)
                 .newInstance(new SkosConcept(property.getURI(), null, prefLabelList, nodeId)));

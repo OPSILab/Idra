@@ -94,7 +94,12 @@ public class PlatformStatisticsManager {
 
           resultForFacets.getFacets().stream()
               .filter(x -> x.getSearchParameter().equals("datasetThemes")).map(x -> x.getValues())
-              .findFirst().get());
+              .findFirst().get(),
+              
+          resultForFacets.getFacets().stream()
+              .filter(x -> x.getSearchParameter().equals("HVDCategory")).map(x -> x.getValues())
+              .findFirst().get() // Add this line for HVDCategory
+      );
       result.setFacets(facetsStats);
 
       searchParameters.put("live", false);

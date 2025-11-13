@@ -41,6 +41,7 @@ import it.eng.idra.beans.odms.OdmsCatalogueNotFoundException;
 import it.eng.idra.beans.odms.OdmsCatalogueOfflineException;
 import it.eng.idra.beans.odms.OdmsSynchronizationResult;
 import it.eng.idra.cache.MetadataCacheManager;
+import it.eng.idra.management.FederationCore;
 import it.eng.idra.management.StatisticsManager;
 import it.eng.idra.utils.CommonUtil;
 import it.eng.idra.utils.GsonUtil;
@@ -378,22 +379,31 @@ public class CkanConnector implements IodmsConnector {
           case "theme":
             if (checkIfJsonArray(e.getValue())) {
               logger.info("THEME: " + e.getValue() + " IS A JSON ARRAY");
-              List<String> themes = new ArrayList<String>();
+              List<String> themes = new ArrayList<>();
               JSONArray array = new JSONArray(e.getValue());
+
               for (int i = 0; i < array.length(); i++) {
-                String themeCode = array.getJSONObject(i).getString("theme");
-                if (dcatThemes.containsKey(themeCode)) {
-                  themes.add(dcatThemes.get(themeCode));
+                Object element = array.get(i);
+
+                if (element instanceof JSONObject) {
+                  JSONObject obj = (JSONObject) element;
+                  if (obj.has("theme")) {
+                    String themeCode = obj.getString("theme");
+                    themes.add(dcatThemes.getOrDefault(themeCode, themeCode));
+                  }
+                } else if (element instanceof String) {
+                  String themeCode = (String) element;
+                  themes.add(dcatThemes.getOrDefault(themeCode, themeCode));
                 } else {
-                  themes.add(themeCode);
+                  themes.add(element.toString());
                 }
               }
-              themeList
-                  .addAll(extractConceptList(DCAT.theme.getURI(),
-                      themes, SkosConceptTheme.class));
+
+              themeList.addAll(
+                  extractConceptList(DCAT.theme.getURI(), themes, SkosConceptTheme.class));
             } else {
-              themeList
-                  .addAll(extractConceptList(DCAT.theme.getURI(),
+              themeList.addAll(
+                  extractConceptList(DCAT.theme.getURI(),
                       extractValueList(e.getValue()), SkosConceptTheme.class));
             }
             break;
@@ -813,6 +823,57 @@ public class CkanConnector implements IodmsConnector {
         }
       }
 
+      if (d.getTheme() != null && !d.getTheme().isEmpty()) {
+        List<String> themes = new ArrayList<>();
+
+        for (String rawTheme : d.getTheme()) {
+          String value = rawTheme.trim();
+
+          try {
+            if (checkIfJsonArray(value)) {
+              // Case: JSON array (could be array of objects OR strings)
+              JSONArray array = new JSONArray(value);
+              for (int i = 0; i < array.length(); i++) {
+                Object element = array.get(i);
+
+                if (element instanceof JSONObject) {
+                  // [{"theme": "ECON"}]
+                  JSONObject obj = (JSONObject) element;
+                  if (obj.has("theme")) {
+                    String themeCode = obj.getString("theme");
+                    themes.add(dcatThemes.getOrDefault(themeCode, themeCode));
+                  }
+                } else if (element instanceof String) {
+                  // ["http://publications.europa.eu/resource/authority/data-theme/ENVI"]
+                  String themeCode = (String) element;
+                  themes.add(dcatThemes.getOrDefault(themeCode, themeCode));
+                } else {
+                  // Fallback: unknown type inside array
+                  themes.add(element.toString());
+                }
+              }
+            } else if (checkIfJsonObject(value)) {
+              // Case: single JSON object {"theme": "TRAN"}
+              JSONObject obj = new JSONObject(value);
+              if (obj.has("theme")) {
+                String themeCode = obj.getString("theme");
+                themes.add(dcatThemes.getOrDefault(themeCode, themeCode));
+              }
+            } else {
+              // Case: plain string value
+              themes.addAll(extractValueList(value));
+            }
+          } catch (Exception e) {
+            logger.warn("Failed to parse theme value: {}", value, e);
+            themes.add(value); // fallback
+          }
+        }
+
+        // finally add to themeList
+        themeList.addAll(
+            extractConceptList(DCAT.theme.getURI(), themes, SkosConceptTheme.class));
+      }
+
       /*
        * if (datasetSeries != null) {
        * datasetSeries.setContactPoint(contactPointList);
@@ -866,7 +927,8 @@ public class CkanConnector implements IodmsConnector {
     for (String label : concepts) {
       try {
         result.add(type.getDeclaredConstructor(SkosConcept.class).newInstance(new SkosConcept(
-            propertyUri, "", Arrays.asList(new SkosPrefLabel("", label, nodeId)), nodeId)));
+            propertyUri, "", Arrays.asList(new SkosPrefLabel("", FederationCore.getEnglishDcatTheme(label), nodeId)),
+            nodeId)));
       } catch (InstantiationException | IllegalAccessException | IllegalArgumentException
           | InvocationTargetException | NoSuchMethodException | SecurityException e) {
         // TODO Auto-generated catch block

@@ -37,6 +37,7 @@ import it.eng.idra.beans.dcat.SkosPrefLabel;
 import it.eng.idra.beans.dcat.SpdxChecksum;
 import it.eng.idra.beans.dcat.VcardOrganization;
 import it.eng.idra.beans.odms.OdmsCatalogue;
+import it.eng.idra.management.FederationCore;
 import it.eng.idra.utils.CommonUtil;
 import java.io.ByteArrayInputStream;
 import java.lang.reflect.InvocationTargetException;
@@ -537,7 +538,7 @@ public class DcatApDeserializer implements IdcatApDeserialize {
         } else if (toExtractP.getURI().equals(DCAT.theme.getURI())) {
           String extractedLabel = extractThemeFromUri(conceptUri);
           labelList = new ArrayList<SkosPrefLabel>();
-          labelList.add(new SkosPrefLabel("ENG", extractedLabel, nodeId));
+          labelList.add(new SkosPrefLabel("ENG", FederationCore.getEnglishDcatTheme(extractedLabel), nodeId));
 
           // For subject, the label is the entire URI. e.g. http://eurovoc.europa.eu/106
         } else if (toExtractP.getURI().equals(DCTerms.subject.getURI())) {

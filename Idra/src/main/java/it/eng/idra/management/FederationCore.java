@@ -1043,8 +1043,76 @@ public class FederationCore {
   public static boolean isDcatTheme(String value) {
     // log dcatThemes
     logger.info("Available DCAT themes: " + dcatThemes.toString());
+
+    String identifierFromLink = (value != null && (value.startsWith("http://") || value.startsWith("https://"))) ? value.substring(value.lastIndexOf("/") + 1) : null;
+  
     return dcatThemes.stream().anyMatch(
-        x -> x.getIdentifier().equalsIgnoreCase(value) || x.getEn().equalsIgnoreCase(value));
+        x -> x.getIdentifier().equalsIgnoreCase(value) || x.getIdentifier().equalsIgnoreCase(identifierFromLink)
+            || x.getEn().equalsIgnoreCase(value)
+            || fixEncoding(x.getIt()).equalsIgnoreCase(value) || fixEncoding(x.getDa()).equalsIgnoreCase(value)
+            || fixEncoding(x.getBg()).equalsIgnoreCase(value) || fixEncoding(x.getCs()).equalsIgnoreCase(value)
+            || fixEncoding(x.getDe()).equalsIgnoreCase(value) || fixEncoding(x.getEl()).equalsIgnoreCase(value)
+            || fixEncoding(x.getEs()).equalsIgnoreCase(value) || fixEncoding(x.getFr()).equalsIgnoreCase(value)
+            || fixEncoding(x.getHu()).equalsIgnoreCase(value) || fixEncoding(x.getLt()).equalsIgnoreCase(value)
+            || fixEncoding(x.getLv()).equalsIgnoreCase(value) || fixEncoding(x.getNl()).equalsIgnoreCase(value)
+            || fixEncoding(x.getPl()).equalsIgnoreCase(value) || fixEncoding(x.getPt()).equalsIgnoreCase(value)
+            || fixEncoding(x.getRo()).equalsIgnoreCase(value) || fixEncoding(x.getHu()).equalsIgnoreCase(value)
+            || fixEncoding(x.getSk()).equalsIgnoreCase(value) || fixEncoding(x.getSl()).equalsIgnoreCase(value)
+            || fixEncoding(x.getSv()).equalsIgnoreCase(value) || fixEncoding(x.getEt()).equalsIgnoreCase(value)
+            || fixEncoding(x.getFi()).equalsIgnoreCase(value) || fixEncoding(x.getGa()).equalsIgnoreCase(value)
+            || fixEncoding(x.getHr()).equalsIgnoreCase(value) || fixEncoding(x.getMt()).equalsIgnoreCase(value)
+            || fixEncoding(x.getNo()).equalsIgnoreCase(value));
+  }
+
+  private static String fixEncoding(String value) {
+    try {
+      return new String(value.getBytes("ISO-8859-1"), "UTF-8");
+    } catch (Exception e) {
+      return value;
+    }
+  }
+
+  /**
+   * Gets the English DCAT theme for any language input.
+   *
+   * @param value the theme value (any language)
+   * @return the English theme if found, otherwise null
+   */
+  public static String getEnglishDcatTheme(String value) {
+    String identifierFromLink = (value != null && (value.startsWith("http://") || value.startsWith("https://"))) ? value.substring(value.lastIndexOf("/") + 1) : null;
+    // First, try to match by identifier or English
+    for (DcatThemes x : dcatThemes) {
+      if (x.getIdentifier().equalsIgnoreCase(value) || x.getIdentifier().equalsIgnoreCase(identifierFromLink)
+          || x.getEn().equalsIgnoreCase(value)) {
+        return x.getEn();
+      }
+    }
+    // If not found, check all other languages
+    for (DcatThemes x : dcatThemes) {
+      if (fixEncoding(x.getIt()).equalsIgnoreCase(value) || fixEncoding(x.getDa()).equalsIgnoreCase(value)
+          || fixEncoding(x.getBg()).equalsIgnoreCase(value) || fixEncoding(x.getCs()).equalsIgnoreCase(value)
+          || fixEncoding(x.getDe()).equalsIgnoreCase(value) || fixEncoding(x.getEl()).equalsIgnoreCase(value)
+          || fixEncoding(x.getEs()).equalsIgnoreCase(value) || fixEncoding(x.getFr()).equalsIgnoreCase(value)
+          || fixEncoding(x.getHu()).equalsIgnoreCase(value) || fixEncoding(x.getLt()).equalsIgnoreCase(value)
+          || fixEncoding(x.getLv()).equalsIgnoreCase(value) || fixEncoding(x.getNl()).equalsIgnoreCase(value)
+          || fixEncoding(x.getPl()).equalsIgnoreCase(value) || fixEncoding(x.getPt()).equalsIgnoreCase(value)
+          || fixEncoding(x.getRo()).equalsIgnoreCase(value) || fixEncoding(x.getSk()).equalsIgnoreCase(value)
+          || fixEncoding(x.getSl()).equalsIgnoreCase(value) || fixEncoding(x.getSv()).equalsIgnoreCase(value)
+          || fixEncoding(x.getEt()).equalsIgnoreCase(value) || fixEncoding(x.getFi()).equalsIgnoreCase(value)
+          || fixEncoding(x.getGa()).equalsIgnoreCase(value) || fixEncoding(x.getHr()).equalsIgnoreCase(value)
+          || fixEncoding(x.getMt()).equalsIgnoreCase(value) || fixEncoding(x.getNo()).equalsIgnoreCase(value)) {
+
+        // Found in another language, use identifier to get English
+        String identifier = x.getIdentifier();
+        for (DcatThemes theme : dcatThemes) {
+          if (theme.getIdentifier().equalsIgnoreCase(identifier)) {
+            return theme.getEn();
+          }
+        }
+      }
+    }
+    // Not found
+    return null;
   }
 
   /**

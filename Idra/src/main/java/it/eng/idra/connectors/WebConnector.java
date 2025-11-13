@@ -41,6 +41,7 @@ import it.eng.idra.beans.webscraper.DatasetSelector;
 import it.eng.idra.beans.webscraper.WebScraperSelector;
 import it.eng.idra.beans.webscraper.WebScraperSelectorType;
 import it.eng.idra.connectors.webscraper.WebScraper;
+import it.eng.idra.management.FederationCore;
 import it.eng.idra.utils.CommonUtil;
 import it.eng.idra.utils.GsonUtil;
 import it.eng.idra.utils.GsonUtilException;
@@ -497,7 +498,7 @@ public class WebConnector implements IodmsConnector {
           break;
         case "theme":
           themeList.addAll(extractConceptList(DCAT.theme.getURI(),
-              extractedValues, SkosConceptTheme.class));
+              extractValueList(extractedValues.get(0)), SkosConceptTheme.class));
           break;
         case "bbox":
           bbox = extractedValues.get(0);
@@ -517,59 +518,64 @@ public class WebConnector implements IodmsConnector {
         case "applicableLegislation":
           applicableLegislation.addAll(extractValueList(extractedValues.get(0)));
           break;
-/*         case "in_series":
-        case "inSeries":
-          if (checkIfJsonArray(extractedValues.get(0))) {
-            JSONArray array = new JSONArray(extractedValues.get(0));
-            for (int i = 0; i < array.length(); i++) {
-              JSONObject seriesObj = array.getJSONObject(i);
-
-              // DcatDetails dcatDetails = new DcatDetails();
-              // dcatDetails.setTitle(title);
-              // dcatDetails.setDescription(description);
-              // Extracting properties from JSON
-              applicableLegislation.addAll(extractValueList(seriesObj.optString("applicableLegislation")));// .addAll(extractValueList(extractedValues.get(0)));
-              // descriptions.add(dcatDetails); //
-              // extractValueList(seriesObj.optString("description", "[]"));
-              frequency = seriesObj.optString("frequency", null);
-              // geographicalCoverage.add(spatialCoverage); //
-              // extractValueList(seriesObj.optString("geographicalCoverage",
-              // "[]"));
-              updateDate = seriesObj.optString("modificationDate", null);
-              // publisher = new FoafAgent(DCTerms.publisher.getURI(), publisherUri,
-              // publisherName != null
-              // ? Collections.singletonList(publisherName)
-              // : Collections.emptyList(),
-              // publisherMbox, publisherHomepage, publisherType, publisherIdentifier,
-              // nodeId);
-              releaseDate = seriesObj.optString("releaseDate", null);
-              // temporalCoverage = new DctPeriodOfTime(DCTerms.temporal.getURI(), startDate,
-              // endDate,
-              // nodeId, beginning, end, identifier);
-              // temporalCoverageList.add(temporalCoverage);
-              // titles.add(dcatDetails); // extractValueList(seriesObj.optString("title",
-              // "[]"));
-
-              // Create part of the DcatDatasetSeries object DcatDatasetSeries series
-              datasetSeries = new DcatDatasetSeries(
-                  applicableLegislation,
-                  null, // contactPointList,
-                  null, // descriptions,
-                  frequency,
-                  null, // geographicalCoverage,
-                  updateDate,
-                  null, // publisher,
-                  releaseDate,
-                  null, // temporalCoverageList,
-                  null, // titles,
-                  String.valueOf(node.getId()),
-                  identifier);
-
-              // Add to the list
-              // inSeries.add(series);
-            }
-          }
-          break; */
+        /*
+         * case "in_series":
+         * case "inSeries":
+         * if (checkIfJsonArray(extractedValues.get(0))) {
+         * JSONArray array = new JSONArray(extractedValues.get(0));
+         * for (int i = 0; i < array.length(); i++) {
+         * JSONObject seriesObj = array.getJSONObject(i);
+         * 
+         * // DcatDetails dcatDetails = new DcatDetails();
+         * // dcatDetails.setTitle(title);
+         * // dcatDetails.setDescription(description);
+         * // Extracting properties from JSON
+         * applicableLegislation.addAll(extractValueList(seriesObj.optString(
+         * "applicableLegislation")));//
+         * .addAll(extractValueList(extractedValues.get(0)));
+         * // descriptions.add(dcatDetails); //
+         * // extractValueList(seriesObj.optString("description", "[]"));
+         * frequency = seriesObj.optString("frequency", null);
+         * // geographicalCoverage.add(spatialCoverage); //
+         * // extractValueList(seriesObj.optString("geographicalCoverage",
+         * // "[]"));
+         * updateDate = seriesObj.optString("modificationDate", null);
+         * // publisher = new FoafAgent(DCTerms.publisher.getURI(), publisherUri,
+         * // publisherName != null
+         * // ? Collections.singletonList(publisherName)
+         * // : Collections.emptyList(),
+         * // publisherMbox, publisherHomepage, publisherType, publisherIdentifier,
+         * // nodeId);
+         * releaseDate = seriesObj.optString("releaseDate", null);
+         * // temporalCoverage = new DctPeriodOfTime(DCTerms.temporal.getURI(),
+         * startDate,
+         * // endDate,
+         * // nodeId, beginning, end, identifier);
+         * // temporalCoverageList.add(temporalCoverage);
+         * // titles.add(dcatDetails); // extractValueList(seriesObj.optString("title",
+         * // "[]"));
+         * 
+         * // Create part of the DcatDatasetSeries object DcatDatasetSeries series
+         * datasetSeries = new DcatDatasetSeries(
+         * applicableLegislation,
+         * null, // contactPointList,
+         * null, // descriptions,
+         * frequency,
+         * null, // geographicalCoverage,
+         * updateDate,
+         * null, // publisher,
+         * releaseDate,
+         * null, // temporalCoverageList,
+         * null, // titles,
+         * String.valueOf(node.getId()),
+         * identifier);
+         * 
+         * // Add to the list
+         * // inSeries.add(series);
+         * }
+         * }
+         * break;
+         */
         case "qualified_relation":
         case "qualifiedRelation":
         case "relationship":
@@ -657,16 +663,18 @@ public class WebConnector implements IodmsConnector {
       updateDate = releaseDate;
     }
 
-/*     if (datasetSeries != null) {
-      datasetSeries.setContactPoint(contactPointList);
-      datasetSeries.setDescription(descriptions);
-      datasetSeries.setTitle(titles);
-      datasetSeries.setGeographicalCoverage(geographicalCoverage);
-      datasetSeries.setTemporalCoverage(temporalCoverageList);
-      datasetSeries.setPublisher(publisher);
-      // Add to the list
-      inSeries.add(datasetSeries);
-    } */
+    /*
+     * if (datasetSeries != null) {
+     * datasetSeries.setContactPoint(contactPointList);
+     * datasetSeries.setDescription(descriptions);
+     * datasetSeries.setTitle(titles);
+     * datasetSeries.setGeographicalCoverage(geographicalCoverage);
+     * datasetSeries.setTemporalCoverage(temporalCoverageList);
+     * datasetSeries.setPublisher(publisher);
+     * // Add to the list
+     * inSeries.add(datasetSeries);
+     * }
+     */
 
     DcatDataset mapped;
     mapped = new DcatDataset(nodeId, identifier, title, description, distributionList, themeList,
@@ -1160,7 +1168,8 @@ public class WebConnector implements IodmsConnector {
     for (String label : concepts) {
       try {
         result.add(type.getDeclaredConstructor(SkosConcept.class).newInstance(new SkosConcept(
-            propertyUri, "", Arrays.asList(new SkosPrefLabel("", label, nodeId)), nodeId)));
+            propertyUri, "", Arrays.asList(new SkosPrefLabel("", FederationCore.getEnglishDcatTheme(label), nodeId)),
+            nodeId)));
       } catch (InstantiationException | IllegalAccessException | IllegalArgumentException
           | InvocationTargetException | NoSuchMethodException | SecurityException e) {
         e.printStackTrace();
