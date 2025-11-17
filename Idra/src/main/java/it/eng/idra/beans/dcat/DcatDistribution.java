@@ -1,6 +1,6 @@
 /*******************************************************************************
  * Idra - Open Data Federation Platform
- * Copyright (C) 2021 Engineering Ingegneria Informatica S.p.A.
+ * Copyright (C) 2025 Engineering Ingegneria Informatica S.p.A.
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -16,8 +16,6 @@
 package it.eng.idra.beans.dcat;
 
 import com.google.gson.annotations.SerializedName;
-
-import it.eng.idra.api.ClientApi;
 import it.eng.idra.beans.DistributionAdditionalConfiguration;
 import it.eng.idra.cache.CacheContentType;
 import it.eng.idra.utils.CommonUtil;
@@ -47,14 +45,18 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.jena.rdf.model.Resource;
+import org.apache.jena.rdf.model.ResourceFactory;
 import org.apache.jena.sparql.vocabulary.FOAF;
 import org.apache.jena.vocabulary.DCAT;
 import org.apache.jena.vocabulary.DCTerms;
 import org.apache.jena.vocabulary.RDFS;
+import org.apache.jena.vocabulary.SKOS;
+import org.apache.jena.vocabulary.XSD;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.solr.common.SolrDocument;
 import org.apache.solr.common.SolrInputDocument;
+import org.eclipse.rdf4j.model.vocabulary.ODRL2;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
@@ -73,7 +75,8 @@ import org.json.JSONObject;
 @Table(name = "dcat_distribution")
 @Entity
 public class DcatDistribution implements Serializable {
-	  private static Logger logger = LogManager.getLogger(ClientApi.class);
+  // private static Logger logger = LogManager.getLogger(ClientApi.class);
+  private static Logger logger = LogManager.getLogger(DcatDistribution.class);
 
   /** The Constant serialVersionUID. */
   private static final long serialVersionUID = 1L;
@@ -175,9 +178,34 @@ public class DcatDistribution implements Serializable {
 
   /** The distribution additional config. */
   private DistributionAdditionalConfiguration distributionAdditionalConfig;
-  
+
   /** The identifier. */
   private DcatProperty identifier;
+
+  // new
+  /** The access service. */
+  private List<DcatDataService> accessService;
+
+  /** The applicable legislation. */
+  private List<DcatProperty> applicableLegislation;
+
+  /** The availability. */
+  private DcatProperty availability;
+
+  /** The compression format. */
+  private DcatProperty compressionFormat;
+
+  /** The has policy. */
+  private DcatProperty hasPolicy;
+
+  /** The packaging format. */
+  private DcatProperty packagingFormat;
+
+  /** The spatial resolution. */
+  private DcatProperty spatialResolution;
+
+  /** The temporal resolution. */
+  private DcatProperty temporalResolution;
 
   /**
    * Instantiates a new dcat distribution.
@@ -195,41 +223,53 @@ public class DcatDistribution implements Serializable {
    */
   public DcatDistribution(String nodeId) {
     this(nodeId, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
-        null, null);
+        null, null, null, null, null, null, null, null, null, null);
   }
 
   /**
    * Instantiates a new dcat distribution.
    *
-   * @param id            the id
-   * @param nodeId        the node ID
-   * @param accessUrl     the access URL
-   * @param description   the description
-   * @param format        the format
-   * @param license       the license
-   * @param byteSize      the byte size
-   * @param checksum      the checksum
-   * @param documentation the documentation
-   * @param downloadUrl   the download URL
-   * @param language      the language
-   * @param linkedSchemas the linked schemas
-   * @param mediaType     the media type
-   * @param releaseDate   the release date
-   * @param updateDate    the update date
-   * @param rights        the rights
-   * @param status        the status
-   * @param title         the title
-   * @param hasDatalets   the has datalets
+   * @param id                    the id
+   * @param nodeId                the node ID
+   * @param accessUrl             the access URL
+   * @param description           the description
+   * @param format                the format
+   * @param license               the license
+   * @param byteSize              the byte size
+   * @param checksum              the checksum
+   * @param documentation         the documentation
+   * @param downloadUrl           the download URL
+   * @param language              the language
+   * @param linkedSchemas         the linked schemas
+   * @param mediaType             the media type
+   * @param releaseDate           the release date
+   * @param updateDate            the update date
+   * @param rights                the rights
+   * @param status                the status
+   * @param title                 the title
+   * @param hasDatalets           the has datalets
+   * @param accessService         the access service
+   * @param applicableLegislation the applicable legislation
+   * @param availability          the availability
+   * @param compressionFormat     the compression format
+   * @param hasPolicy             the has policy
+   * @param packagingFormat       the packaging format
+   * @param spatialResolution     the spatial resolution
+   * @param temporalResolution    the temporal resolution
    */
   public DcatDistribution(String id, String nodeId, String accessUrl, String description,
       String format, DctLicenseDocument license, String byteSize, SpdxChecksum checksum,
       List<String> documentation, String downloadUrl, List<String> language,
       List<DctStandard> linkedSchemas, String mediaType, String releaseDate, String updateDate,
-      String rights, SkosConceptStatus status, String title, boolean hasDatalets) {
+      String rights, SkosConceptStatus status, String title, boolean hasDatalets,
+      List<DcatDataService> accessService, List<String> applicableLegislation,
+      String availability, String compressionFormat, String hasPolicy, String packagingFormat,
+      String spatialResolution, String temporalResolution) {
 
     this(nodeId, accessUrl, description, format, license, byteSize, checksum, documentation,
         downloadUrl, language, linkedSchemas, mediaType, releaseDate, updateDate, rights, status,
-        title);
+        title, accessService, applicableLegislation, availability, compressionFormat, hasPolicy,
+        packagingFormat, spatialResolution, temporalResolution);
     this.setId(id);
     this.setHasDatalets(hasDatalets);
     // setDatalets(datalets);
@@ -238,29 +278,40 @@ public class DcatDistribution implements Serializable {
   /**
    * Instantiates a new dcat distribution.
    *
-   * @param nodeId        the node ID
-   * @param accessUrl     the access URL
-   * @param description   the description
-   * @param format        the format
-   * @param license       the license
-   * @param byteSize      the byte size
-   * @param checksum      the checksum
-   * @param documentation the documentation
-   * @param downloadUrl   the download URL
-   * @param language      the language
-   * @param linkedSchemas the linked schemas
-   * @param mediaType     the media type
-   * @param releaseDate   the release date
-   * @param updateDate    the update date
-   * @param rights        the rights
-   * @param status        the status
-   * @param title         the title
+   * @param nodeId                the node ID
+   * @param accessUrl             the access URL
+   * @param description           the description
+   * @param format                the format
+   * @param license               the license
+   * @param byteSize              the byte size
+   * @param checksum              the checksum
+   * @param documentation         the documentation
+   * @param downloadUrl           the download URL
+   * @param language              the language
+   * @param linkedSchemas         the linked schemas
+   * @param mediaType             the media type
+   * @param releaseDate           the release date
+   * @param updateDate            the update date
+   * @param rights                the rights
+   * @param status                the status
+   * @param title                 the title
+   * @param accessService         the access service
+   * @param applicableLegislation the applicable legislation
+   * @param availability          the availability
+   * @param compressionFormat     the compression format
+   * @param hasPolicy             the has policy
+   * @param packagingFormat       the packaging format
+   * @param spatialResolution     the spatial resolution
+   * @param temporalResolution    the temporal resolution
    */
   public DcatDistribution(String nodeId, String accessUrl, String description, String format,
       DctLicenseDocument license, String byteSize, SpdxChecksum checksum,
       List<String> documentation, String downloadUrl, List<String> language,
       List<DctStandard> linkedSchemas, String mediaType, String releaseDate, String updateDate,
-      String rights, SkosConceptStatus status, String title) {
+      String rights, SkosConceptStatus status, String title, List<DcatDataService> accessService,
+      List<String> applicableLegislation, String availability, String compressionFormat,
+      String hasPolicy, String packagingFormat, String spatialResolution,
+      String temporalResolution) {
     super();
     setNodeId(nodeId);
     setAccessUrl(new DcatProperty(DCAT.accessURL, RDFS.Resource, accessUrl));
@@ -293,6 +344,27 @@ public class DcatDistribution implements Serializable {
     setRights(new DcatProperty(DCTerms.rights, DCTerms.RightsStatement, rights));
     setStatus(status);
     setTitle(new DcatProperty(DCTerms.title, RDFS.Literal, title));
+
+    // **New Fields Mapping**
+    setAccessService(accessService);
+    /*
+     * logger.info(
+     * "applicableLegislation size: " +
+     * (applicableLegislation != null && !applicableLegislation.isEmpty() ?
+     * applicableLegislation.size() : null));
+     */
+    setApplicableLegislation(applicableLegislation != null && !applicableLegislation.isEmpty()
+        ? applicableLegislation.stream()
+            .map(item -> new DcatProperty(DCATAP.applicableLegislation, ELI.LegalResource, item))
+            .collect(Collectors.toList())
+        : Arrays.asList(new DcatProperty(DCATAP.applicableLegislation, ELI.LegalResource, "")));
+    setAvailability(new DcatProperty(DCATAP.availability, SKOS.Concept, availability));
+    setCompressionFormat(new DcatProperty(DCAT.compressFormat, DCTerms.MediaType, compressionFormat));
+    setHasPolicy(
+        new DcatProperty(ResourceFactory.createProperty("https://www.w3.org/ns/odrl/2/"), DCTerms.Policy, hasPolicy));
+    setPackagingFormat(new DcatProperty(DCAT.packageFormat, DCTerms.MediaType, packagingFormat));
+    setSpatialResolution(new DcatProperty(DCAT.spatialResolutionInMeters, XSD.decimal, spatialResolution));
+    setTemporalResolution(new DcatProperty(DCAT.temporalResolution, XSD.duration, temporalResolution));
   }
 
   /**
@@ -310,6 +382,7 @@ public class DcatDistribution implements Serializable {
    *
    * @return the node id
    */
+  @Column(name = "nodeID")
   public String getNodeId() {
     return nodeId;
   }
@@ -322,7 +395,7 @@ public class DcatDistribution implements Serializable {
   public void setNodeId(String nodeId) {
     this.nodeId = nodeId;
   }
-  
+
   /**
    * Gets the identifier.
    *
@@ -342,7 +415,7 @@ public class DcatDistribution implements Serializable {
   public void setIdentifier(DcatProperty dcatIdentifier) {
     this.identifier = dcatIdentifier;
   }
-  
+
   /**
    * Sets the identifier.
    *
@@ -377,8 +450,7 @@ public class DcatDistribution implements Serializable {
    */
   @Embedded
   @AttributeOverrides({
-      @AttributeOverride(name = "value", 
-          column = @Column(name = "title", columnDefinition = "LONGTEXT")) })
+      @AttributeOverride(name = "value", column = @Column(name = "title", columnDefinition = "LONGTEXT")) })
   public DcatProperty getTitle() {
     return title;
   }
@@ -408,8 +480,7 @@ public class DcatDistribution implements Serializable {
    */
   @Embedded
   @AttributeOverrides({
-      @AttributeOverride(name = "value", 
-          column = @Column(name = "accessURL", length = 65535, columnDefinition = "Text")) })
+      @AttributeOverride(name = "value", column = @Column(name = "accessURL", length = 65535, columnDefinition = "Text")) })
   public DcatProperty getAccessUrl() {
     return accessUrl;
   }
@@ -439,8 +510,7 @@ public class DcatDistribution implements Serializable {
    */
   @Embedded
   @AttributeOverrides({
-      @AttributeOverride(name = "value", 
-          column = @Column(name = "description", columnDefinition = "LONGTEXT")) })
+      @AttributeOverride(name = "value", column = @Column(name = "description", columnDefinition = "LONGTEXT")) })
   public DcatProperty getDescription() {
     return description;
   }
@@ -649,9 +719,7 @@ public class DcatDistribution implements Serializable {
    */
   @Embedded
   @AttributeOverrides({
-      @AttributeOverride(name = "value", 
-          column = @Column(name = "releaseDate", 
-          columnDefinition = "varchar(255) default '1970-01-01T00:00:00Z'")) })
+      @AttributeOverride(name = "value", column = @Column(name = "releaseDate", columnDefinition = "varchar(255) default '1970-01-01T00:00:00Z'")) })
   public DcatProperty getReleaseDate() {
     return releaseDate;
   }
@@ -681,9 +749,7 @@ public class DcatDistribution implements Serializable {
    */
   @Embedded
   @AttributeOverrides({
-      @AttributeOverride(name = "value", 
-          column = @Column(name = "updateDate", 
-          columnDefinition = "varchar(255) default '1970-01-01T00:00:00Z'")) })
+      @AttributeOverride(name = "value", column = @Column(name = "updateDate", columnDefinition = "varchar(255) default '1970-01-01T00:00:00Z'")) })
   public DcatProperty getUpdateDate() {
     return updateDate;
   }
@@ -723,8 +789,7 @@ public class DcatDistribution implements Serializable {
       @JoinColumn(name = "distribution_id", referencedColumnName = "id"),
       @JoinColumn(name = "nodeID", referencedColumnName = "nodeID") })
   @AttributeOverrides({
-      @AttributeOverride(name = "value", 
-          column = @Column(name = "documentation", columnDefinition = "LONGTEXT")) })
+      @AttributeOverride(name = "value", column = @Column(name = "documentation", columnDefinition = "LONGTEXT")) })
   public List<DcatProperty> getDocumentation() {
     return documentation;
   }
@@ -754,8 +819,7 @@ public class DcatDistribution implements Serializable {
    */
   @Embedded
   @AttributeOverrides({
-      @AttributeOverride(name = "value", 
-          column = @Column(name = "downloadURL", length = 65535, columnDefinition = "Text")) })
+      @AttributeOverride(name = "value", column = @Column(name = "downloadURL", length = 65535, columnDefinition = "Text")) })
   public DcatProperty getDownloadUrl() {
     return downloadUrl;
   }
@@ -999,6 +1063,92 @@ public class DcatDistribution implements Serializable {
   // this.datalets.add(datalet);
   //
   // }
+  @LazyCollection(LazyCollectionOption.FALSE)
+  @OneToMany(cascade = { CascadeType.ALL })
+  // @Fetch(FetchMode.SELECT)
+  @JoinColumns({ @JoinColumn(name = "distribution_id", referencedColumnName = "id"),
+      @JoinColumn(name = "nodeID", referencedColumnName = "nodeID") })
+  public List<DcatDataService> getAccessService() {
+    return accessService;
+  }
+
+  public void setAccessService(List<DcatDataService> accessService) {
+    this.accessService = accessService;
+  }
+
+  @LazyCollection(LazyCollectionOption.FALSE)
+  @ElementCollection
+  @CollectionTable(name = "dcat_distribution_applicable_legislation", joinColumns = {
+      @JoinColumn(name = "distribution_id", referencedColumnName = "id"),
+      @JoinColumn(name = "nodeID", referencedColumnName = "nodeID") })
+  @AttributeOverrides({ @AttributeOverride(name = "value", column = @Column(name = "applicableLegislation")) })
+  public List<DcatProperty> getApplicableLegislation() {
+    return applicableLegislation;
+  }
+
+  public void setApplicableLegislation(List<DcatProperty> applicableLegislation) {
+    this.applicableLegislation = applicableLegislation;
+  }
+
+  @Embedded
+  @AttributeOverrides({ @AttributeOverride(name = "value", column = @Column(name = "availability")) })
+  public DcatProperty getAvailability() {
+    return availability;
+  }
+
+  public void setAvailability(DcatProperty availability) {
+    this.availability = availability;
+  }
+
+  @Embedded
+  @AttributeOverrides({ @AttributeOverride(name = "value", column = @Column(name = "compressionFormat")) })
+  public DcatProperty getCompressionFormat() {
+    return compressionFormat;
+  }
+
+  public void setCompressionFormat(DcatProperty compressionFormat) {
+    this.compressionFormat = compressionFormat;
+  }
+
+  @Embedded
+  @AttributeOverrides({ @AttributeOverride(name = "value", column = @Column(name = "hasPolicy")) })
+  public DcatProperty getHasPolicy() {
+    return hasPolicy;
+  }
+
+  public void setHasPolicy(DcatProperty hasPolicy) {
+    this.hasPolicy = hasPolicy;
+  }
+
+  @Embedded
+  @AttributeOverrides({ @AttributeOverride(name = "value", column = @Column(name = "packagingFormat")) })
+  public DcatProperty getPackagingFormat() {
+    return packagingFormat;
+  }
+
+  public void setPackagingFormat(DcatProperty packagingFormat) {
+    this.packagingFormat = packagingFormat;
+  }
+
+  @Embedded
+  @AttributeOverrides({ @AttributeOverride(name = "value", column = @Column(name = "spatialResolution")) })
+  public DcatProperty getSpatialResolution() {
+    return spatialResolution;
+  }
+
+  public void setSpatialResolution(DcatProperty spatialResolution) {
+    this.spatialResolution = spatialResolution;
+  }
+
+  @Embedded
+  @AttributeOverrides({ @AttributeOverride(name = "value", column = @Column(name = "temporalResolution")) })
+  public DcatProperty getTemporalResolution() {
+    return temporalResolution;
+  }
+
+  public void setTemporalResolution(DcatProperty temporalResolution) {
+    this.temporalResolution = temporalResolution;
+  }
 
   /**
    * Checks if is rdf.
@@ -1037,17 +1187,16 @@ public class DcatDistribution implements Serializable {
       e.printStackTrace();
     }
 
-    if(accessUrl != null) {
-    	doc.addField("accessURL", accessUrl.getValue());
+    if (accessUrl != null) {
+      doc.addField("accessURL", accessUrl.getValue());
     }
-    if(description != null) {
-    	 doc.addField("description", description.getValue());
+    if (description != null) {
+      doc.addField("description", description.getValue());
     }
-    
-    if(format != null) {
-    	 doc.addField("format", format.getValue());
+
+    if (format != null) {
+      doc.addField("format", format.getValue());
     }
-   
 
     // if (license != null)
     // doc.addChildDocument(license.toDoc(CacheContentType.licenseDocument));
@@ -1083,16 +1232,13 @@ public class DcatDistribution implements Serializable {
     // }
     // }
 
-   
-    	 doc.addField("hasDatalets", hasDatalets);
-    
-   
+    doc.addField("hasDatalets", hasDatalets);
 
     // doc.addField("documentation", documentation.getValue());
-    	 logger.info(downloadUrl);
-   if(downloadUrl!= null) {
-  	 doc.addField("downloadURL", downloadUrl.getValue());
-   }
+    // logger.info(downloadUrl);
+    if (downloadUrl != null) {
+      doc.addField("downloadURL", downloadUrl.getValue());
+    }
 
     // doc.addField("language", language.getValue());
 
@@ -1132,14 +1278,10 @@ public class DcatDistribution implements Serializable {
     if (title != null) {
       doc.addField("title", title.getValue());
     }
-    
 
-    
     if (identifier != null) {
       doc.addField("identifier", identifier.getValue());
     }
-    
-    
 
     if (status != null) {
       try {
@@ -1147,6 +1289,40 @@ public class DcatDistribution implements Serializable {
       } catch (GsonUtilException e) {
         e.printStackTrace();
       }
+    }
+
+    // New fields
+
+    if (accessService != null && !accessService.isEmpty()) {
+      try {
+        doc.addField("accessService", GsonUtil.obj2Json(accessService, GsonUtil.dataServiceListType));
+      } catch (GsonUtilException e) {
+        e.printStackTrace();
+      }
+    }
+
+    if (applicableLegislation != null && !applicableLegislation.isEmpty()) {
+      doc.addField("applicableLegislation", applicableLegislation.stream().filter(item -> item != null)
+          .map(item -> item.getValue()).collect(Collectors.toList()));
+    }
+
+    if (availability != null) {
+      doc.addField("availability", availability.getValue());
+    }
+    if (compressionFormat != null) {
+      doc.addField("compressionFormat", compressionFormat.getValue());
+    }
+    if (hasPolicy != null) {
+      doc.addField("hasPolicy", hasPolicy.getValue());
+    }
+    if (packagingFormat != null) {
+      doc.addField("packagingFormat", packagingFormat.getValue());
+    }
+    if (spatialResolution != null) {
+      doc.addField("spatialResolution", spatialResolution.getValue());
+    }
+    if (temporalResolution != null) {
+      doc.addField("temporalResolution", temporalResolution.getValue());
     }
 
     return doc;
@@ -1253,19 +1429,86 @@ public class DcatDistribution implements Serializable {
       byteSize = doc.getFieldValue("byteSize").toString();
     }
 
+    // new
+    List<DcatDataService> accessService = new ArrayList<DcatDataService>();
+    if (doc.getFieldValue("accessService") != null) {
+      accessService = DcatDataService.jsonArrayToDcatDataService(
+          new JSONArray(doc.getFieldValue("accessService").toString()), nodeIdentifier);
+    }
+
+    /*
+     * List<String> applicableLegislation = new ArrayList<String>();
+     * if (doc.getFieldValue("applicableLegislation") != null) {
+     * JSONArray jsonArray = new
+     * JSONArray(doc.getFieldValue("applicableLegislation").toString());
+     * for (int i = 0; i < jsonArray.length(); i++) {
+     * applicableLegislation.add(jsonArray.optString(i, ""));
+     * }
+     * }
+     */
+
+    /*
+     * List<String> applicableLegislation = new ArrayList<>();
+     * Collection<Object> values = doc.getFieldValues("applicableLegislation");
+     * if (values != null) {
+     * for (Object val : values) {
+     * if (val != null && !val.toString().isEmpty()) {
+     * applicableLegislation.add(val.toString());
+     * }
+     * }
+     * }
+     */
+
+    String availability = null;
+    if (doc.getFieldValue("availability") != null) {
+      availability = doc.getFieldValue("availability").toString();
+    }
+
+    String compressionFormat = null;
+    if (doc.getFieldValue("compressionFormat") != null) {
+      compressionFormat = doc.getFieldValue("compressionFormat").toString();
+    }
+
+    String hasPolicy = null;
+    if (doc.getFieldValue("hasPolicy") != null) {
+      hasPolicy = doc.getFieldValue("hasPolicy").toString();
+    }
+
+    String packagingFormat = null;
+    if (doc.getFieldValue("packagingFormat") != null) {
+      packagingFormat = doc.getFieldValue("packagingFormat").toString();
+    }
+
+    String spatialResolution = null;
+    if (doc.getFieldValue("spatialResolution") != null) {
+      spatialResolution = doc.getFieldValue("spatialResolution").toString();
+    }
+
+    String temporalResolution = null;
+    if (doc.getFieldValue("temporalResolution") != null) {
+      temporalResolution = doc.getFieldValue("temporalResolution").toString();
+    }
+
     DcatDistribution distr = new DcatDistribution(doc.getFieldValue("id").toString(),
-        doc.getFieldValue("nodeID").toString(), doc.getFieldValue("accessURL")!= null ? doc.getFieldValue("accessURL").toString(): "",
-        doc.getFieldValue("description")!= null ? doc.getFieldValue("description").toString() : "", doc.getFieldValue("format")!= null ? doc.getFieldValue("format").toString(): "",
-        license, byteSize, checksum, doc.getFieldValue("documentation")!= null ? (ArrayList<String>) doc.getFieldValue("documentation") : null,
-        doc.getFieldValue("downloadURL")!=null ? doc.getFieldValue("downloadURL").toString() : "",
-        doc.getFieldValue("language")!=null ? (ArrayList<String>) doc.getFieldValue("language"): null, linkedSchemas,
+        doc.getFieldValue("nodeID").toString(),
+        doc.getFieldValue("accessURL") != null ? doc.getFieldValue("accessURL").toString() : "",
+        doc.getFieldValue("description") != null ? doc.getFieldValue("description").toString() : "",
+        doc.getFieldValue("format") != null ? doc.getFieldValue("format").toString() : "",
+        license, byteSize, checksum,
+        doc.getFieldValue("documentation") != null ? (ArrayList<String>) doc.getFieldValue("documentation") : null,
+        doc.getFieldValue("downloadURL") != null ? doc.getFieldValue("downloadURL").toString() : "",
+        doc.getFieldValue("language") != null ? (ArrayList<String>) doc.getFieldValue("language") : null, linkedSchemas,
         (doc.getFieldValue("mediaType") != null) ? doc.getFieldValue("mediaType").toString() : "",
         distribIssued, distribModified,
         (doc.getFieldValue("rights") != null) ? doc.getFieldValue("rights").toString() : "", status,
-        		doc.getFieldValue("title")!= null  ?doc.getFieldValue("title").toString(): "", doc.getFieldValue("hasDatalets")!= null ? (Boolean) doc.getFieldValue("hasDatalets"): null);
-    // datalets);
+        doc.getFieldValue("title").toString(), (Boolean) doc.getFieldValue("hasDatalets"),
+        accessService,
+        (ArrayList<String>) doc.getFieldValue("applicableLegislation"), // applicableLegislation,
+        availability, compressionFormat, hasPolicy,
+        packagingFormat, spatialResolution, temporalResolution);
+    // datalets);accessService
     distr.setStoredRdf((Boolean) doc.getFieldValue("storedRDF"));
-    
+
     if (doc.getFieldValue("identifier") != null) {
       distr.setIdentifier((String) doc.getFieldValue("identifier").toString());
     }

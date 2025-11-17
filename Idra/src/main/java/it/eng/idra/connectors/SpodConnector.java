@@ -1,6 +1,6 @@
 /*******************************************************************************
  * Idra - Open Data Federation Platform
- * Copyright (C) 2021 Engineering Ingegneria Informatica S.p.A.
+ * Copyright (C) 2025 Engineering Ingegneria Informatica S.p.A.
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -21,13 +21,17 @@ import com.google.common.collect.Sets.SetView;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import it.eng.idra.beans.dcat.DcatDataService;
 import it.eng.idra.beans.dcat.DcatDataset;
+import it.eng.idra.beans.dcat.DcatDatasetSeries;
+import it.eng.idra.beans.dcat.DcatDetails;
 import it.eng.idra.beans.dcat.DcatDistribution;
 import it.eng.idra.beans.dcat.DctLicenseDocument;
 import it.eng.idra.beans.dcat.DctLocation;
 import it.eng.idra.beans.dcat.DctPeriodOfTime;
 import it.eng.idra.beans.dcat.DctStandard;
 import it.eng.idra.beans.dcat.FoafAgent;
+import it.eng.idra.beans.dcat.Relationship;
 import it.eng.idra.beans.dcat.SkosConcept;
 import it.eng.idra.beans.dcat.SkosConceptTheme;
 import it.eng.idra.beans.dcat.SkosPrefLabel;
@@ -39,6 +43,7 @@ import it.eng.idra.beans.odms.OdmsCatalogueNotFoundException;
 import it.eng.idra.beans.odms.OdmsCatalogueOfflineException;
 import it.eng.idra.beans.odms.OdmsSynchronizationResult;
 import it.eng.idra.beans.spod.SpodDataset;
+import it.eng.idra.management.FederationCore;
 import it.eng.idra.utils.CommonUtil;
 import it.eng.idra.utils.GsonUtil;
 import it.eng.idra.utils.GsonUtilException;
@@ -52,6 +57,7 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
@@ -67,10 +73,14 @@ import org.apache.jena.vocabulary.DCAT;
 import org.apache.jena.vocabulary.DCTerms;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.ckan.AccessService;
 import org.ckan.CKANException;
 import org.ckan.Extra;
+import org.ckan.QualifiedRelation;
 import org.ckan.Resource;
+import org.ckan.SpatialCoverage;
 import org.ckan.Tag;
+import org.ckan.TemporalCoverage;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -371,12 +381,32 @@ public class SpodConnector implements IodmsConnector {
         + (node.getHost().endsWith("/") ? "" : "/") + "SpodCkanApi/api/2/rest/dataset/" + id,
         new HashMap<String, String>());
     int status = client.getStatus(response);
+    //added because of language problem
+    String body = client.getHttpResponseBody(response);
+    body = normalizeJsonArrayField(body, "language");
+    //
     if (status == 200) {
-      return GsonUtil.json2Obj(client.getHttpResponseBody(response), GsonUtil.spodDatasetType);
+      return GsonUtil.json2Obj(body, GsonUtil.spodDatasetType);//client.getHttpResponseBody(response)
     } else {
       return null;
     }
   }
+
+  //added because of language problem
+  public static String normalizeJsonArrayField(String json, String fieldName) {
+    try {
+        JsonObject obj = JsonParser.parseString(json).getAsJsonObject();
+        JsonElement elem = obj.get(fieldName);
+        if (elem != null && elem.isJsonPrimitive()) {
+            // Convert string to array
+            obj.add(fieldName, JsonParser.parseString("[\"" + elem.getAsString() + "\"]"));
+            return obj.toString();
+        }
+    } catch (Exception e) {
+        logger.warn("Could not normalize field {}: {}", fieldName, e.getMessage());
+    }
+    return json;
+}
 
   /**
    * datasetToDcat.
@@ -453,6 +483,24 @@ public class SpodConnector implements IodmsConnector {
     List<String> versionNotes = new ArrayList<String>();
     List<String> relatedResource = new ArrayList<String>();
 
+    // new
+    String bbox = null;
+    String centroid = null;
+    String beginning = null;
+    String end = null;
+    List<String> applicableLegislation = new ArrayList<String>();
+    List<DctLocation> geographicalCoverage = new ArrayList<DctLocation>();
+    List<DcatDetails> descriptions = new ArrayList<DcatDetails>();
+    List<DcatDetails> titles = new ArrayList<DcatDetails>();
+    List<DctPeriodOfTime> temporalCoverageList = new ArrayList<DctPeriodOfTime>();
+    List<DcatDatasetSeries> inSeries = new ArrayList<DcatDatasetSeries>();
+    List<Relationship> qualifiedRelation = new ArrayList<Relationship>();
+    String temporalResolution = null;
+    List<String> wasGeneratedBy = new ArrayList<String>();
+    List<String> HVDCategory = new ArrayList<String>();
+    List<String> names = new ArrayList<String>();
+    DcatDatasetSeries datasetSeries = null;
+
     List<DcatDistribution> distributionList = new ArrayList<DcatDistribution>();
 
     otherIdentifier.add(d.getName());
@@ -466,7 +514,7 @@ public class SpodConnector implements IodmsConnector {
             break;
           case "theme":
             themeList
-                .addAll(extractConceptList(DCAT.theme.getURI(), 
+                .addAll(extractConceptList(DCAT.theme.getURI(),
                     extractValueList(e.getValue()), SkosConceptTheme.class));
             break;
           case "access_rights":
@@ -506,8 +554,16 @@ public class SpodConnector implements IodmsConnector {
           case "geographical_geonames_url":
           case "spatial_coverage":
           case "Copertura Geografica URI":
+          case "geometry":
+          case "spatial_geometry":
+            // case "geographicalCoverage":
             String input = e.getValue();
             if (checkIfJsonObject(input)) {
+              // JsonObject jobject = JsonParser.parseString(input).getAsJsonObject();
+              // bbox = jobject.get("bbox") != null ? jobject.get("bbox").getAsString() :
+              // null;
+              // centroid = jobject.get("centroid") != null ?
+              // jobject.get("centroid").getAsString() : null;
               geometry = input;
             } else if (input.startsWith("http://")) {
               geographicalIdentifier = input.trim();
@@ -515,12 +571,14 @@ public class SpodConnector implements IodmsConnector {
               geographicalName = input.trim();
             }
             break;
-          case "temporal_start":
-            startDate = e.getValue();
-            break;
-          case "temporal_end":
-            endDate = e.getValue();
-            break;
+          /*
+           * case "temporal_start":
+           * startDate = e.getValue();
+           * break;
+           * case "temporal_end":
+           * endDate = e.getValue();
+           * break;
+           */
           case "dcat_type":
             type = e.getValue();
             break;
@@ -598,6 +656,91 @@ public class SpodConnector implements IodmsConnector {
           case "contact_email":
             vcardHasEmail = e.getValue();
             break;
+          // case "bbox":
+          // bbox = e.getValue();
+          // break;
+          // case "centroid":
+          /// centroid = e.getValue();
+          // break;
+          case "has_beginning":
+          case "beginning":
+            beginning = e.getValue();
+            break;
+          case "has_end":
+          case "end":
+            end = e.getValue();
+            break;
+          /*
+           * case "in_series":
+           * case "inSeries":
+           * if (checkIfJsonArray(e.getValue())) {
+           * JSONArray array = new JSONArray(e.getValue());
+           * for (int i = 0; i < array.length(); i++) {
+           * JSONObject seriesObj = array.getJSONObject(i);
+           * 
+           * // DcatDetails dcatDetails = new DcatDetails();
+           * // dcatDetails.setTitle(title);
+           * // dcatDetails.setDescription(description);
+           * // Extracting properties from JSON
+           * applicableLegislation.addAll(extractValueList(seriesObj.optString(
+           * "applicableLegislation")));// .addAll(extractValueList(e.getValue()));
+           * // descriptions.add(dcatDetails); //
+           * // extractValueList(seriesObj.optString("description", "[]"));
+           * frequency = seriesObj.optString("frequency", null);
+           * // geographicalCoverage.add(spatialCoverage); //
+           * // extractValueList(seriesObj.optString("geographicalCoverage",
+           * // "[]"));
+           * updateDate = seriesObj.optString("modificationDate", null);
+           * // publisher = new FoafAgent(DCTerms.publisher.getURI(), publisherUri,
+           * // publisherName != null
+           * // ? Collections.singletonList(publisherName)
+           * // : Collections.emptyList(),
+           * // publisherMbox, publisherHomepage, publisherType, publisherIdentifier,
+           * // nodeId);
+           * releaseDate = seriesObj.optString("releaseDate", null);
+           * // temporalCoverage = new DctPeriodOfTime(DCTerms.temporal.getURI(),
+           * startDate,
+           * // endDate,
+           * // nodeId, beginning, end, identifier);
+           * // temporalCoverageList.add(temporalCoverage);
+           * // titles.add(dcatDetails); // extractValueList(seriesObj.optString("title",
+           * // "[]"));
+           * 
+           * // Create part of the DcatDatasetSeries object DcatDatasetSeries series
+           * datasetSeries = new DcatDatasetSeries(
+           * applicableLegislation,
+           * null, // contactPointList,
+           * null, // descriptions,
+           * frequency,
+           * null, // geographicalCoverage,
+           * updateDate,
+           * null, // publisher,
+           * releaseDate,
+           * null, // temporalCoverageList,
+           * null, // titles,
+           * String.valueOf(node.getId()),
+           * identifier);
+           * 
+           * // Add to the list
+           * // inSeries.add(series);
+           * }
+           * }
+           * break;
+           * case "qualified_relation":
+           * case "qualifiedRelation":
+           * case "relationship":
+           * JsonElement jelement = JsonParser.parseString(e.getValue());
+           * JsonObject jobject = jelement.getAsJsonObject();
+           * Relationship relationship = new
+           * Relationship(jobject.get("had_role").getAsString(),
+           * jobject.get("relation").getAsString());
+           * qualifiedRelation.add(relationship); //
+           * addAll(extractValueList(e.getValue()));
+           * break;
+           */
+          case "name":
+            names.add(e.getValue());
+            break;
           default:
             break;
         }
@@ -619,6 +762,14 @@ public class SpodConnector implements IodmsConnector {
        */
       identifier = d.getId();
 
+      /*
+       * DcatDetails dcatDetails = new DcatDetails();
+       * dcatDetails.setTitle(title);
+       * dcatDetails.setDescription(description);
+       * descriptions.add(dcatDetails);
+       * titles.add(dcatDetails);
+       */
+
       // Convert date fields into ISO 8601 format with UTC time zone
       if (StringUtils.isNotBlank(d.getMetadata_created())) {
         releaseDate = CommonUtil.fixBadUtcDate(d.getMetadata_created());
@@ -627,16 +778,54 @@ public class SpodConnector implements IodmsConnector {
         updateDate = CommonUtil.fixBadUtcDate(d.getMetadata_modified());
       }
 
-      if (StringUtils.isNotBlank(geographicalIdentifier) || StringUtils.isNotBlank(geographicalName)
-          || StringUtils.isNotBlank(geometry)) {
-        spatialCoverage = new DctLocation(DCTerms.spatial.getURI(), geographicalIdentifier,
-            geographicalName, geometry, nodeId);
+      List<SpatialCoverage> spatialCoverages = d.getSpatial_coverage();
+      if (spatialCoverages != null && !spatialCoverages.isEmpty()) {
+        for (SpatialCoverage s : spatialCoverages) {
+          bbox = s.getBbox();
+          centroid = s.getCentroid();
+          String geom = s.getGeom();
+          // String text = s.getText();
+          // String uri = s.getUri();
+          if (StringUtils.isNotBlank(geographicalIdentifier) || StringUtils.isNotBlank(geographicalName)
+              || StringUtils.isNotBlank(geom) || StringUtils.isNotBlank(bbox) || StringUtils.isNotBlank(centroid)) {
+            spatialCoverage = new DctLocation(DCTerms.spatial.getURI(), geographicalIdentifier,
+                geographicalName, geom, nodeId, bbox, centroid);
+            geographicalCoverage.add(spatialCoverage);
+          }
+        }
       }
 
-      if (StringUtils.isNotBlank(startDate) && StringUtils.isNotBlank(endDate)) {
-        temporalCoverage = new DctPeriodOfTime(DCTerms.temporal.getURI(), startDate, endDate,
-            nodeId);
+      List<TemporalCoverage> temporalCoverages = d.getTemporal_coverage();
+      if (temporalCoverages != null && !temporalCoverages.isEmpty()) {
+        for (TemporalCoverage t : temporalCoverages) {
+          startDate = t.getStart();
+          endDate = t.getEnd();
+          if (StringUtils.isNotBlank(startDate) || StringUtils.isNotBlank(endDate)
+              || StringUtils.isNotBlank(beginning) || StringUtils.isNotBlank(end)) {
+            temporalCoverage = new DctPeriodOfTime(DCTerms.temporal.getURI(), startDate, endDate,
+                nodeId, beginning, end);
+            temporalCoverageList.add(temporalCoverage);
+          }
+        }
       }
+
+      /*
+       * if (StringUtils.isNotBlank(geographicalIdentifier) ||
+       * StringUtils.isNotBlank(geographicalName)
+       * || StringUtils.isNotBlank(geometry)) {
+       * spatialCoverage = new DctLocation(DCTerms.spatial.getURI(),
+       * geographicalIdentifier,
+       * geographicalName, geometry, nodeId, bbox, centroid);
+       * geographicalCoverage.add(spatialCoverage);
+       * }
+       * 
+       * if (StringUtils.isNotBlank(startDate) && StringUtils.isNotBlank(endDate)) {
+       * temporalCoverage = new DctPeriodOfTime(DCTerms.temporal.getURI(), startDate,
+       * endDate,
+       * nodeId, beginning, end);
+       * temporalCoverageList.add(temporalCoverage);
+       * }
+       */
 
       // Contact Point
       if (StringUtils.isBlank(vcardFn)) {
@@ -659,19 +848,25 @@ public class SpodConnector implements IodmsConnector {
       // Publisher
       if (publisherUri != null || publisherName != null || publisherMbox != null
           || publisherHomepage != null || publisherType != null || publisherIdentifier != null) {
-        publisher = new FoafAgent(DCTerms.publisher.getURI(), publisherUri, publisherName,
+        publisher = new FoafAgent(DCTerms.publisher.getURI(), publisherUri, publisherName != null
+            ? Collections.singletonList(publisherName)
+            : Collections.emptyList(),
             publisherMbox, publisherHomepage, publisherType, publisherIdentifier, nodeId);
       }
       // Rights Holder
       if (holderUri != null || holderName != null || holderMbox != null || holderHomepage != null
           || holderType != null || holderIdentifier != null) {
-        rightsHolder = new FoafAgent(DCTerms.rightsHolder.getURI(), holderUri, holderName,
+        rightsHolder = new FoafAgent(DCTerms.rightsHolder.getURI(), holderUri, holderName != null
+            ? Collections.singletonList(holderName)
+            : Collections.emptyList(),
             holderMbox, holderHomepage, holderType, holderIdentifier, nodeId);
       }
       // Creator
       if (creatorUri != null || creatorName != null || creatorMbox != null
           || creatorHomepage != null || creatorType != null || creatorIdentifier != null) {
-        creator = new FoafAgent(DCTerms.creator.getURI(), creatorUri, creatorName, creatorMbox,
+        creator = new FoafAgent(DCTerms.creator.getURI(), creatorUri, creatorName != null
+            ? Collections.singletonList(creatorName)
+            : Collections.emptyList(), creatorMbox,
             creatorHomepage, creatorType, creatorIdentifier, nodeId);
       }
       // License
@@ -697,6 +892,44 @@ public class SpodConnector implements IodmsConnector {
         landingPage = nodeHost + (nodeHost.endsWith("/") ? "" : "/") + "opendata/" + d.getName();
       }
 
+      // show error for language, resiti it.eng.idra.utils.GsonUtilException: JSON to
+      // OBJECT failed: java.lang.IllegalStateException: Expected BEGIN_ARRAY but was
+      // STRING at line 1 column 4017 path $.language
+      // at
+      // it.eng.idra.connectors.SpodConnector.getCkanDataset(SpodConnector.java:382)
+
+      /*
+       * logger.info(
+       * "applicableLegislation size: " +
+       * (d.getApplicable_legislation() != null &&
+       * !d.getApplicable_legislation().isEmpty()
+       * ? d.getApplicable_legislation().size()
+       * : null));
+       */
+      applicableLegislation = d.getApplicable_legislation();
+
+      /*
+       * // logger.info("qualifiedRelation size: " +
+       * d.getQualified_relation().size());
+       * if (d.getQualified_relation() != null) {
+       * for (QualifiedRelation q : d.getQualified_relation()) {
+       * String role = q.getRole(); // maps to had_role
+       * String relation = q.getRelation(); // maps to relation
+       * if ((role != null && !role.isEmpty()) || (relation != null &&
+       * !relation.isEmpty())) {
+       * qualifiedRelation.add(new Relationship(role, relation,nodeId));
+       * }
+       * }
+       * }
+       */
+
+      // logger.info("temporalResolution: " + d.getTemporal_resolution());
+      temporalResolution = d.getTemporal_resolution();
+      // logger.info("wasGeneratedBy size: " + d.getWas_generated_by().size());
+      wasGeneratedBy = d.getWas_generated_by();
+      // logger.info("HVDCategory: " + d.getHvd_category());
+      HVDCategory.add(d.getHvd_category());
+
       // Distributions
       List<Resource> resourceList = d.getResources();
       if (resourceList != null) {
@@ -704,6 +937,25 @@ public class SpodConnector implements IodmsConnector {
           distributionList.add(resourceToDcat(r, landingPage, license));
         }
       }
+
+      /*
+       * if (datasetSeries != null) {
+       * datasetSeries.setContactPoint(contactPointList);
+       * datasetSeries.setDescription(descriptions);
+       * datasetSeries.setTitle(titles);
+       * datasetSeries.setGeographicalCoverage(geographicalCoverage);
+       * datasetSeries.setTemporalCoverage(temporalCoverageList);
+       * datasetSeries.setPublisher(publisher);
+       * // check, below part because in setter it is dcatproperty
+       * datasetSeries.setApplicableLegislation(null);
+       * datasetSeries.setFrequency(null);
+       * datasetSeries.setModificationDate(null);
+       * datasetSeries.setReleaseDate(null);
+       * // Add to the list
+       * inSeries.add(datasetSeries);
+       * }
+       */
+
     }
 
     if (d.getRelations() != null) {
@@ -713,8 +965,9 @@ public class SpodConnector implements IodmsConnector {
     mapped = new DcatDataset(nodeId, identifier, title, description, distributionList, themeList,
         publisher, contactPointList, keywords, accessRights, conformsTo, documentation, frequency,
         hasVersion, isVersionOf, landingPage, language, provenance, releaseDate, updateDate,
-        otherIdentifier, sample, source, spatialCoverage, temporalCoverage, type, version,
-        versionNotes, rightsHolder, creator, null, relatedResource);
+        otherIdentifier, sample, source, geographicalCoverage, temporalCoverageList, type, version,
+        versionNotes, rightsHolder, creator, null, relatedResource, applicableLegislation, inSeries, qualifiedRelation,
+        temporalResolution, wasGeneratedBy, HVDCategory);
 
     distributionList = null;
     publisher = null;
@@ -726,7 +979,7 @@ public class SpodConnector implements IodmsConnector {
   /**
    * Extract concept list.
    *
-   * @param             <T> the generic type
+   * @param <T>         the generic type
    * @param propertyUri the property uri
    * @param concepts    the concepts
    * @param type        the type
@@ -743,7 +996,7 @@ public class SpodConnector implements IodmsConnector {
     for (String label : concepts) {
       try {
         result.add(type.getDeclaredConstructor(SkosConcept.class).newInstance(new SkosConcept(
-            propertyUri, "", Arrays.asList(new SkosPrefLabel("", label, nodeId)), nodeId)));
+            propertyUri, "", Arrays.asList(new SkosPrefLabel("", FederationCore.getEnglishDcatTheme(label), nodeId)), nodeId)));
       } catch (InstantiationException | IllegalAccessException | IllegalArgumentException
           | InvocationTargetException | NoSuchMethodException | SecurityException e) {
         // TODO Auto-generated catch block
@@ -852,6 +1105,16 @@ public class SpodConnector implements IodmsConnector {
     String format = null;
     String downloadUrl = null;
 
+    // New Properties
+    List<DcatDataService> accessService = new ArrayList<>();
+    List<String> applicableLegislation = new ArrayList<>();
+    String availability = null;
+    String compressionFormat = null;
+    String hasPolicy = null;
+    String packagingFormat = null;
+    String spatialResolution = null;
+    String temporalResolution = null;
+
     accessUrl = downloadUrl = StringUtils.isNotBlank(r.getUrl()) ? r.getUrl() : datasetLandingPage;
     description = r.getDescription();
     format = r.getFormat();
@@ -877,25 +1140,87 @@ public class SpodConnector implements IodmsConnector {
     String title = null;
     title = r.getName();
 
+    //logger.info("accessService size: " + (r.getAccess_services() != null ? r.getAccess_services().size() : null));
+    if (r.getAccess_services() != null) {
+      for (AccessService src : r.getAccess_services()) {
+        String accessRights = src.getAccess_rights();
+        String endpointDescription = src.getEndpoint_description();
+        List<String> endpointUrls = src.getEndpoint_url();
+        List<String> servesDatasets = src.getServes_dataset();
+        String titleservice = src.getTitle();
+        // String uri = src.getUri();
+        DcatDataService service = new DcatDataService(
+            null, // r.getApplicable_legislation(), // applicableLegislation
+            null, // contactPoint
+            null, // r.getDocumentation(), // documentation
+            endpointDescription != null ? List.of(endpointDescription) : null,
+            endpointUrls,
+            null, // HVDCategory
+            null, // r.getLicense(), // licence
+            accessRights != null ? List.of(accessRights) : null, // rights
+            servesDatasets, // servesDataset (if needed, map servesDatasets to DcatDataset list)
+            titleservice,
+            nodeId);
+
+        accessService.add(service);
+      }
+    }
+
+    /*
+     * logger.info(
+     * "applicableLegislation size: " +
+     * (r.getApplicable_legislation() != null ? r.getApplicable_legislation().size()
+     * : null));
+     */
+    applicableLegislation = r.getApplicable_legislation();
+    // logger.info("availability: " + r.getAvailability());
+    availability = r.getAvailability();
+    // logger.info("compressionFormat: " + r.getCompress_format());
+    compressionFormat = r.getCompress_format();
+    // logger.info("hasPolicy: " + r.getHas_policy());
+    hasPolicy = r.getHas_policy();
+    // logger.info("packagingFormat: " + r.getPackage_format());
+    packagingFormat = r.getPackage_format();
+    // logger.info("spatialResolution: " + r.getSpatial_resolution_in_meters());
+    spatialResolution = r.getSpatial_resolution_in_meters();
+    // logger.info("temporalResolution: " + r.getTemporal_resolution());
+    temporalResolution = r.getTemporal_resolution();
+
     return new DcatDistribution(nodeId, accessUrl, description, format, datasetLicense, byteSize,
         checksum, new ArrayList<String>(), downloadUrl, new ArrayList<String>(),
-        new ArrayList<DctStandard>(), mediaType, releaseDate, updateDate, null, null, title);
+        new ArrayList<DctStandard>(), mediaType, releaseDate, updateDate, null, null, title, accessService,
+        applicableLegislation, availability, compressionFormat, hasPolicy, packagingFormat,
+        spatialResolution, temporalResolution);
   }
 
   /**
-   * Check if json object.
+   * Check if input is a valid JSON array.
    *
-   * @param input the input
-   * @return true, if successful
+   * @param input the input string
+   * @return true if valid JSON array, false otherwise
    */
-  private static boolean checkIfJsonObject(String input) {
-
+  public static boolean checkIfJsonArray(String input) {
     try {
-      JsonElement jelement = new JsonParser().parse(input);
-      JsonObject jobject = jelement.getAsJsonObject();
-      return true;
+      JsonElement element = JsonParser.parseString(input);
+      return element != null && element.isJsonArray();
     } catch (Exception e) {
-      logger.debug("Spatial string is not a valid GeoJson: " + e.getMessage());
+      logger.debug("Input is not a valid JSON Array: {}", e.getMessage());
+      return false;
+    }
+  }
+
+  /**
+   * Check if input is a valid JSON object.
+   *
+   * @param input the input string
+   * @return true if valid JSON object, false otherwise
+   */
+  public static boolean checkIfJsonObject(String input) {
+    try {
+      JsonElement element = JsonParser.parseString(input);
+      return element != null && element.isJsonObject();
+    } catch (Exception e) {
+      logger.debug("Input is not a valid JSON Object: {}", e.getMessage());
       return false;
     }
   }

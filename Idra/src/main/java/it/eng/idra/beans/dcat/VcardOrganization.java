@@ -95,6 +95,7 @@ public class VcardOrganization {
    * @param hasTelephoneValue the has telephone value
    * @param hasTelephoneType  the has telephone type
    * @param nodeId            the node ID
+   * 
    */
   public VcardOrganization(String propertyUri, String resourceUri, String fn, String hasEmail,
       String hasUrl, String hasTelephoneValue, String hasTelephoneType, String nodeId) {
@@ -330,15 +331,24 @@ public class VcardOrganization {
    */
   public SolrInputDocument toDoc(CacheContentType contentType) {
     SolrInputDocument doc = new SolrInputDocument();
-    doc.addField("id", this.id);
-    doc.addField("nodeID", this.nodeId);
-    doc.addField("content_type", contentType.toString());
-    doc.addField("resourceUri", this.resourceUri);
-    doc.addField("fn", this.getFn().getValue());
-    doc.addField("hasEmail", this.getHasEmail().getValue());
-    doc.addField("hasURL", this.getHasUrl().getValue());
-    doc.addField("hasTelephoneValue", this.getHasTelephoneValue().getValue());
-    doc.addField("hasTelephoneType", this.getHasTelephoneType().getValue());
+    if (this.id != null)
+      doc.addField("id", this.id);
+    if (this.nodeId != null)
+      doc.addField("nodeID", this.nodeId);
+    if (contentType.toString() != null)
+      doc.addField("content_type", contentType.toString());
+    if (this.resourceUri != null)
+      doc.addField("resourceUri", this.resourceUri);
+    if (this.getFn().getValue() != null)
+      doc.addField("fn", this.getFn().getValue());
+    if (this.getHasEmail().getValue() != null)
+      doc.addField("hasEmail", this.getHasEmail().getValue());
+    if (this.getHasUrl().getValue() != null)
+      doc.addField("hasURL", this.getHasUrl().getValue());
+    if (this.getHasTelephoneValue().getValue() != null)
+      doc.addField("hasTelephoneValue", this.getHasTelephoneValue().getValue());
+    if (this.getHasTelephoneType().getValue() != null)
+      doc.addField("hasTelephoneType", this.getHasTelephoneType().getValue());
     return doc;
   }
 
@@ -352,11 +362,15 @@ public class VcardOrganization {
    */
   public static VcardOrganization docToVcardOrganization(SolrDocument doc, String propertyUri,
       String nodeId) {
-    return new VcardOrganization((String) doc.getFieldValue("id"), propertyUri,
-        (String) doc.getFieldValue("resourceUri"), doc.getFieldValue("fn").toString(),
-        doc.getFieldValue("hasEmail").toString(), doc.getFieldValue("hasURL").toString(),
-        doc.getFieldValue("hasTelephoneValue").toString(),
-        doc.getFieldValue("hasTelephoneType").toString(), nodeId);
+    return new VcardOrganization(doc.getFieldValue("id") != null ? doc.getFieldValue("id").toString() : null,
+        propertyUri,
+        doc.getFieldValue("resourceUri") != null ? doc.getFieldValue("resourceUri").toString() : null,
+        doc.getFieldValue("fn") != null ? doc.getFieldValue("fn").toString() : null,
+        doc.getFieldValue("hasEmail") != null ? doc.getFieldValue("hasEmail").toString() : null,
+        doc.getFieldValue("hasURL") != null ? doc.getFieldValue("hasURL").toString() : null,
+        doc.getFieldValue("hasTelephoneValue") != null ? doc.getFieldValue("hasTelephoneValue").toString() : null,
+        doc.getFieldValue("hasTelephoneType") != null ? doc.getFieldValue("hasTelephoneType").toString() : null,
+        nodeId);
   }
 
   /*

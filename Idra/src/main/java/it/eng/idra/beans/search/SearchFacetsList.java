@@ -88,6 +88,10 @@ public class SearchFacetsList {
         this.searchParameter = category;
         this.displayName = "Categories";
         break;
+      case "HVDCategory":
+        this.searchParameter = category;
+        this.displayName = "HVD Categories";
+        break;
       default:
         this.searchParameter = category;
         this.displayName = StringUtils.capitalize(category);

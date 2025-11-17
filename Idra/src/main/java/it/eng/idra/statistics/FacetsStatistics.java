@@ -34,6 +34,8 @@ public class FacetsStatistics {
   /** The themes statistics. */
   private List<ThemeStatistics> themesStatistics;
 
+  private List<HvdCategoryStatistics> hvdCategoryStatistics;
+
   /**
    * Instantiates a new facets statistics.
    */
@@ -49,11 +51,30 @@ public class FacetsStatistics {
    * @param themes   the themes
    */
   public FacetsStatistics(List<SearchFacet> formats, List<SearchFacet> licenses,
-      List<SearchFacet> themes) {
+      List<SearchFacet> themes, List<SearchFacet> hvdCategories) {
     super();
     this.setFormats(getFormatStatFromFacets(formats));
     this.setLicenses(getLicenseStatFromFacets(licenses));
     this.setThemesStatistics(getThemeStatFromFacets(themes));
+    this.setHvdCategoryStatistics(getHvdCategoryStatFromFacets(hvdCategories));
+  }
+
+  // Add getter and setter
+  public List<HvdCategoryStatistics> getHvdCategoryStatistics() {
+    return hvdCategoryStatistics;
+  }
+
+  public void setHvdCategoryStatistics(List<HvdCategoryStatistics> hvdCategoryStatistics) {
+    this.hvdCategoryStatistics = hvdCategoryStatistics;
+  }
+
+  // Add mapping method, similar to getFormatStatFromFacets
+  private List<HvdCategoryStatistics> getHvdCategoryStatFromFacets(List<SearchFacet> values) {
+    return values.stream().map(x -> {
+      return new HvdCategoryStatistics(
+          x.getKeyword(),
+          Integer.parseInt(x.getFacet().substring(x.getFacet().lastIndexOf("(") + 1, x.getFacet().lastIndexOf(")"))));
+    }).collect(Collectors.toList());
   }
 
   /**

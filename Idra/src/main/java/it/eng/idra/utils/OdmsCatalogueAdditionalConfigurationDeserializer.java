@@ -48,36 +48,40 @@ public class OdmsCatalogueAdditionalConfigurationDeserializer
   public OdmsCatalogueAdditionalConfiguration deserialize(JsonElement arg0, Type arg1,
       JsonDeserializationContext arg2) throws JsonParseException {
     // TODO Auto-generated method stub
-    JSONObject j = new JSONObject(arg0.toString());
-    if (j.has("orionDatasetDumpString")) {
-      boolean isAuth = false;
-      String datasets = j.optString("orionDatasetDumpString", "");
-      String dumpPath = j.optString("orionDatasetFilePath", "");
-      String authToken = "";
-      String oauth2Endpoint = "";
-      String clientId = "";
-      String clientSecret = "";
-      boolean isNgsild = false;
-      try {
-        isAuth = j.getBoolean("isAuthenticated");
-        isNgsild = j.getBoolean("ngsild");
-      } catch (JSONException e) {
-        e.printStackTrace();
+    try {
+      JSONObject j = new JSONObject(arg0.toString());
+      if (j.has("orionDatasetDumpString") && j.optString("orionDatasetDumpString",null) != null) {
+        boolean isAuth = false;
+        String datasets = j.optString("orionDatasetDumpString", "");
+        String dumpPath = j.optString("orionDatasetFilePath", "");
+        String authToken = "";
+        String oauth2Endpoint = "";
+        String clientId = "";
+        String clientSecret = "";
+        boolean isNgsild = false;
+        try {
+          isAuth = j.getBoolean("isAuthenticated");
+          isNgsild = j.getBoolean("ngsild");
+        } catch (JSONException e) {
+          e.printStackTrace();
+        }
+        if (isAuth) {
+          authToken = j.optString("authToken");
+          oauth2Endpoint = j.optString("oauth2Endpoint");
+          clientId = j.optString("clientID");
+          clientSecret = j.optString("clientSecret");
+        }
+        // return new OrionCatalogueConfiguration(isAuth, authToken, refreshToken,
+        // oauth2Endpoint, client_id, client_secret, datasets,dumpPath);
+        return new OrionCatalogueConfiguration(isAuth, authToken, oauth2Endpoint, clientId,
+            clientSecret, datasets, dumpPath, isNgsild);
+      } else if (j.has("sparqlDatasetDumpString") && j.optString("sparqlDatasetDumpString",null) != null) {
+        String datasets = j.optString("sparqlDatasetDumpString", "");
+        String dumpPath = j.optString("sparqlDatasetFilePath", "");
+        return new SparqlCatalogueConfiguration(datasets, dumpPath);
       }
-      if (isAuth) {
-        authToken = j.optString("authToken");
-        oauth2Endpoint = j.optString("oauth2Endpoint");
-        clientId = j.optString("clientID");
-        clientSecret = j.optString("clientSecret");
-      }
-      // return new OrionCatalogueConfiguration(isAuth, authToken, refreshToken,
-      // oauth2Endpoint, client_id, client_secret, datasets,dumpPath);
-      return new OrionCatalogueConfiguration(isAuth, authToken, oauth2Endpoint, clientId,
-          clientSecret, datasets, dumpPath, isNgsild);
-    } else if (j.has("sparqlDatasetDumpString")) {
-      String datasets = j.optString("sparqlDatasetDumpString", "");
-      String dumpPath = j.optString("sparqlDatasetFilePath", "");
-      return new SparqlCatalogueConfiguration(datasets, dumpPath);
+    } catch (Exception e) {
+      return null;
     }
     return null;
   }

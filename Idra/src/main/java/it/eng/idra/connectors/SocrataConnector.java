@@ -1,6 +1,6 @@
 /*******************************************************************************
  * Idra - Open Data Federation Platform
- * Copyright (C) 2021 Engineering Ingegneria Informatica S.p.A.
+ * Copyright (C) 2025 Engineering Ingegneria Informatica S.p.A.
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -19,11 +19,17 @@ import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
 import com.google.common.collect.Sets.SetView;
 import it.eng.idra.beans.IdraProperty;
+import it.eng.idra.beans.dcat.DcatDataService;
 import it.eng.idra.beans.dcat.DcatDataset;
+import it.eng.idra.beans.dcat.DcatDatasetSeries;
+import it.eng.idra.beans.dcat.DcatDetails;
 import it.eng.idra.beans.dcat.DcatDistribution;
 import it.eng.idra.beans.dcat.DctLicenseDocument;
+import it.eng.idra.beans.dcat.DctLocation;
+import it.eng.idra.beans.dcat.DctPeriodOfTime;
 import it.eng.idra.beans.dcat.DctStandard;
 import it.eng.idra.beans.dcat.FoafAgent;
+import it.eng.idra.beans.dcat.Relationship;
 import it.eng.idra.beans.dcat.SkosConcept;
 import it.eng.idra.beans.dcat.SkosConceptStatus;
 import it.eng.idra.beans.dcat.SkosConceptTheme;
@@ -35,7 +41,10 @@ import it.eng.idra.beans.odms.OdmsCatalogueForbiddenException;
 import it.eng.idra.beans.odms.OdmsCatalogueNotFoundException;
 import it.eng.idra.beans.odms.OdmsCatalogueOfflineException;
 import it.eng.idra.beans.odms.OdmsSynchronizationResult;
+import it.eng.idra.management.FederationCore;
 import it.eng.idra.utils.CommonUtil;
+import it.eng.idra.utils.GsonUtil;
+import it.eng.idra.utils.GsonUtilException;
 import it.eng.idra.utils.PropertyManager;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -51,6 +60,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
@@ -87,7 +97,6 @@ import org.apache.jena.vocabulary.DCAT;
 import org.apache.jena.vocabulary.DCTerms;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.ckan.CKANException;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -163,6 +172,47 @@ public class SocrataConnector implements IodmsConnector {
     return jsonArray;
   }
 
+  /**
+   * Extract value list.
+   *
+   * @param value the value
+   * @return the list
+   */
+  private List<String> extractValueList(String value) {
+
+    // TODO: regex & groups
+    List<String> result = new ArrayList<String>();
+
+    if (StringUtils.isBlank(value)) {
+      return result;
+    }
+
+    if (value.startsWith("[")) {
+      try {
+        result.addAll(GsonUtil.json2Obj(value, GsonUtil.stringListType));
+      } catch (GsonUtilException ex) {
+        if (StringUtils.isNotBlank(value)) {
+          for (String s : value.split(",")) {
+            result.add(s);
+          }
+        } else {
+          result = null;
+        }
+      }
+    } else if (value.startsWith("{")) {
+      for (String s : value.substring(1, value.lastIndexOf("}")).split(",")) {
+        result.add(s);
+      }
+    } else {
+      for (String s : value.split(",")) {
+        result.add(s);
+      }
+    }
+
+    return result;
+
+  }
+
   /*
    * (non-Javadoc)
    * 
@@ -171,7 +221,7 @@ public class SocrataConnector implements IodmsConnector {
    */
   @Override
   public DcatDataset datasetToDcat(Object d, OdmsCatalogue node)
-      throws JSONException, ParseException {
+      throws JSONException, ParseException,GsonUtilException {
 
     JSONObject dataset = (JSONObject) d;
 
@@ -185,6 +235,26 @@ public class SocrataConnector implements IodmsConnector {
     List<String> keywords = new ArrayList<String>();
     DctLicenseDocument license = null;
     ArrayList<DcatDistribution> distributionList = new ArrayList<DcatDistribution>();
+
+    // New properties
+    String beginning = null;
+    String end = null;
+    List<String> applicableLegislation = new ArrayList<String>();
+    List<DctLocation> geographicalCoverage = new ArrayList<DctLocation>();
+    List<DcatDetails> descriptions = new ArrayList<DcatDetails>();
+    List<DcatDetails> titles = new ArrayList<DcatDetails>();
+    List<DctPeriodOfTime> temporalCoverageList = new ArrayList<DctPeriodOfTime>();
+    List<DcatDatasetSeries> inSeries = new ArrayList<DcatDatasetSeries>();
+    List<Relationship> qualifiedRelation = new ArrayList<Relationship>();
+    String temporalResolution = null;
+    List<String> wasGeneratedBy = new ArrayList<String>();
+    List<String> HVDCategory = new ArrayList<String>();
+    String startDate = null;
+    String endDate = null;
+    DctPeriodOfTime temporalCoverage = null;
+    String frequency = null;
+    String title = null;
+    DctLocation spatialCoverage = null;
 
     /*
      * DON'T TOUCH - GetString and not OptString for identifier, because it's
@@ -215,7 +285,7 @@ public class SocrataConnector implements IodmsConnector {
     }
     List<VcardOrganization> contactPointList = null;
     contactPointList = deserializeContactPoint(dataset);
-    String title = null;
+
     title = dataset.optString("title");
 
     if (dataset.has("publisher")) {
@@ -240,10 +310,110 @@ public class SocrataConnector implements IodmsConnector {
       }
     }
 
+    spatialCoverage = deserializeSpatial(dataset, nodeId);
+
+    // Handle new properties
+    if (dataset.has("applicableLegislation")) {
+            applicableLegislation = GsonUtil.json2Obj(dataset.getJSONArray("applicableLegislation").toString(),
+          GsonUtil.stringListType);
+    }
+
+/*     if (dataset.has("inSeries")) {
+      JSONArray array = dataset.optJSONArray("inSeries");
+      if (array != null) {
+        for (int i = 0; i < array.length(); i++) {
+          JSONObject seriesObj = array.getJSONObject(i);
+
+          DcatDetails dcatDetails = new DcatDetails();
+          dcatDetails.setTitle(title);
+          dcatDetails.setDescription(description);
+          // Extracting properties from JSON
+          descriptions.add(dcatDetails); // extractValueList(description);
+          geographicalCoverage.add(spatialCoverage); // extractValueList(seriesObj.optString("geographicalCoverage"));
+          startDate = seriesObj.optString("startDate");
+          endDate = seriesObj.optString("endDate");
+          temporalCoverage = new DctPeriodOfTime(DCTerms.temporal.getURI(), startDate,
+              endDate, nodeId, beginning, end);//identifier
+          temporalCoverageList.add(temporalCoverage);
+          frequency = seriesObj.optString("frequency");
+          titles.add(dcatDetails); // extractValueList(title);
+
+          // Create the DcatDatasetSeries object
+          DcatDatasetSeries series = new DcatDatasetSeries(
+              applicableLegislation,
+              contactPointList,
+              descriptions,
+              frequency,
+              geographicalCoverage,
+              modified,
+              publisher,
+              issued,
+              temporalCoverageList,
+              titles,
+              nodeId,
+              identifier);
+
+          // Add to the list
+          inSeries.add(series);
+        }
+      }
+    } */
+
+    if (dataset.has("qualifiedRelation")) {
+      JSONArray array = dataset.optJSONArray("qualifiedRelation");
+      if (array != null) {
+        for (int i = 0; i < array.length(); i++) {
+          JSONObject seriesObj = array.getJSONObject(i);
+          // JSONObject obj = j.getJSONObject("qualifiedRelation");
+          Relationship relationship = new Relationship(seriesObj.optString("had_role"),
+              seriesObj.optString("relation"),nodeId);
+          qualifiedRelation.add(relationship); // extractValueList(dataset.optString("qualifiedRelation"));
+        }
+      }
+
+    }
+
+    if (dataset.has("temporalResolution")) {
+      temporalResolution = dataset.optString("temporalResolution");
+    }
+
+    if (dataset.has("wasGeneratedBy")) {
+      wasGeneratedBy = GsonUtil.json2Obj(dataset.getJSONArray("wasGeneratedBy").toString(),
+          GsonUtil.stringListType);
+      // wasGeneratedBy = extractValueList(j.optString("wasGeneratedBy"));
+    }
+
+    if (dataset.has("HVDCategory")) {
+      HVDCategory = GsonUtil.json2Obj(dataset.getJSONArray("HVDCategory").toString(),
+          GsonUtil.stringListType);
+      // HVDCategory = extractValueList(j.optString("HVDCategory"));
+    }
+
     return new DcatDataset(nodeId, identifier, title, description, distributionList, themeList,
         publisher, contactPointList, keywords, null, null, null, null, null, null, landingPage,
         null, null, issued, modified, null, null, null, null, null, null, null, null, null, null,
-        null, null);
+        null, null, applicableLegislation, inSeries, qualifiedRelation, temporalResolution, wasGeneratedBy,
+        HVDCategory);
+  }
+
+  /**
+   * Deserialize spatial.
+   *
+   * @param dataset the dataset
+   * @param nodeId  the node id
+   * @return the dct location
+   */
+  protected DctLocation deserializeSpatial(JSONObject dataset, String nodeId) {
+
+    try {
+      JSONObject obj = dataset.getJSONObject("spatialCoverage");
+      return new DctLocation(obj.optString("uri"), obj.optString("geographicalIdentifier"),
+          obj.optString("geographicalName"), obj.optString("geometry"), nodeId,
+          obj.optString("bbox"), obj.optString("centroid"));//, obj.optString("dataset_id")
+    } catch (JSONException ignore) {
+      logger.info("Spatial object not valid! - Skipped");
+    }
+    return null;
   }
 
   /**
@@ -274,12 +444,52 @@ public class SocrataConnector implements IodmsConnector {
     List<DctStandard> linkedSchemas = null;
     SkosConceptStatus status = null;
 
+    // New Properties, for now all are null in contructor at the end of method
+    List<DcatDataService> accessService = new ArrayList<>();
+    List<String> applicableLegislation = new ArrayList<>();
+    String availability = null;
+    String compressionFormat = null;
+    String hasPolicy = null;
+    String packagingFormat = null;
+    String spatialResolution = null;
+    String temporalResolution = null;
+
+        //new
+    if (obj.has("accessService")) {
+      accessService = GsonUtil.json2Obj(obj.getJSONArray("accessService").toString(),
+          GsonUtil.dataServiceListType);
+    }
+
+    if (obj.has("applicableLegislation")) {
+      applicableLegislation = GsonUtil.json2Obj(obj.getJSONArray("applicableLegislation").toString(),
+          GsonUtil.stringListType);
+    }
+    if (obj.has("availability")) {
+      availability = obj.getString("availability");
+    }
+    if (obj.has("compressionFormat")) {
+      compressionFormat = obj.getString("compressionFormat");
+    }
+    if (obj.has("hasPolicy")) {
+      hasPolicy = obj.getString("hasPolicy");
+    }
+    if (obj.has("packagingFormat")) {
+      packagingFormat = obj.getString("packagingFormat");
+    }
+    if (obj.has("spatialResolution")) {
+      spatialResolution = obj.getString("spatialResolution");
+    }
+    if (obj.has("temporalResolution")) {
+      temporalResolution = obj.getString("temporalResolution");
+    }
+
     mediaType = obj.optString("mediaType");
     accessUrl = downloadUrl = obj.getString("downloadURL");
 
     return new DcatDistribution(nodeId, accessUrl, description, format, license, byteSize, checksum,
         documentation, downloadUrl, language, linkedSchemas, mediaType, releaseDate, updateDate,
-        rights, status, title);
+        rights, status, title, accessService, applicableLegislation, availability, compressionFormat,
+        hasPolicy, packagingFormat, spatialResolution, temporalResolution);
 
   }
 
@@ -300,7 +510,8 @@ public class SocrataConnector implements IodmsConnector {
         result.add(new VcardOrganization(DCAT.contactPoint.getURI(), null,
             contactObj.optString("fn"), contactObj.optString("hasEmail"),
             contactObj.optString("hasURL"), contactObj.optString("hasTelephoneValue"),
-            contactObj.optString("hasTelephoneType"), nodeId));
+            contactObj.optString("hasTelephoneType"), nodeId
+            ));
       }
     }
     return result;
@@ -320,7 +531,9 @@ public class SocrataConnector implements IodmsConnector {
 
     try {
       JSONObject obj = dataset.getJSONObject(fieldName);
-      return new FoafAgent(property.getURI(), obj.optString("resourceUri"), obj.optString("name"),
+      return new FoafAgent(property.getURI(), obj.optString("resourceUri"), obj.optString("name") != null
+          ? Collections.singletonList(obj.optString("name"))
+          : Collections.emptyList(),
           obj.optString("mbox"), obj.optString("homepage"), obj.optString("type"),
           obj.optString("identifier"), nodeId);
     } catch (JSONException ignore) {
@@ -353,7 +566,7 @@ public class SocrataConnector implements IodmsConnector {
   /**
    * Deserialize concept.
    *
-   * @param           <T> the generic type
+   * @param <T>       the generic type
    * @param obj       the obj
    * @param fieldName the field name
    * @param property  the property
@@ -374,7 +587,7 @@ public class SocrataConnector implements IodmsConnector {
         String label = conceptArray.getString(i);
         if (StringUtils.isNotBlank(label)) {
 
-          List<SkosPrefLabel> prefLabelList = Arrays.asList(new SkosPrefLabel(null, label, nodeId));
+          List<SkosPrefLabel> prefLabelList = Arrays.asList(new SkosPrefLabel(null, FederationCore.getEnglishDcatTheme(label), nodeId));
           try {
             result.add(type.getDeclaredConstructor(SkosConcept.class)
                 .newInstance(new SkosConcept(property.getURI(), null, prefLabelList, nodeId)));

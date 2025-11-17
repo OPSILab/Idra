@@ -1,6 +1,6 @@
 /*******************************************************************************
  * Idra - Open Data Federation Platform
- * Copyright (C) 2021 Engineering Ingegneria Informatica S.p.A.
+ * Copyright (C) 2025 Engineering Ingegneria Informatica S.p.A.
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -20,11 +20,13 @@ import com.google.common.collect.Sets;
 import com.google.common.collect.Sets.SetView;
 import com.google.gson.Gson;
 import it.eng.idra.beans.dcat.DcatDataset;
+import it.eng.idra.beans.dcat.DcatDatasetSeries;
 import it.eng.idra.beans.dcat.DcatDistribution;
 import it.eng.idra.beans.dcat.DctLocation;
 import it.eng.idra.beans.dcat.DctPeriodOfTime;
 import it.eng.idra.beans.dcat.DctStandard;
 import it.eng.idra.beans.dcat.FoafAgent;
+import it.eng.idra.beans.dcat.Relationship;
 import it.eng.idra.beans.dcat.SkosConcept;
 import it.eng.idra.beans.dcat.SkosConceptSubject;
 import it.eng.idra.beans.dcat.SkosConceptTheme;
@@ -38,6 +40,7 @@ import it.eng.idra.beans.opendatasoft.DatasetDto;
 import it.eng.idra.beans.opendatasoft.DatasourceDto;
 import it.eng.idra.beans.opendatasoft.InnerDatasetMetaDefault;
 import it.eng.idra.beans.opendatasoft.Link;
+import it.eng.idra.management.FederationCore;
 import it.eng.idra.utils.CommonUtil;
 import it.eng.idra.utils.restclient.RestClient;
 import it.eng.idra.utils.restclient.RestClientImpl;
@@ -45,6 +48,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -218,8 +222,8 @@ public class OpenDataSoftConnector implements IodmsConnector {
 
     List<String> sample = new ArrayList<String>();
     List<String> source = new ArrayList<String>();
-    DctLocation spatialCoverage = null;
-    DctPeriodOfTime temporalCoverage = null;
+    List<DctLocation> spatialCoverage = new ArrayList<DctLocation>();
+    List<DctPeriodOfTime> temporalCoverage = new ArrayList<DctPeriodOfTime>();
     String type = null;
     String version = null;
     List<String> versionNotes = new ArrayList<String>();
@@ -240,16 +244,26 @@ public class OpenDataSoftConnector implements IodmsConnector {
     Optional<String> publisherIdentifier = Optional.empty();
 
     FoafAgent publisher = new FoafAgent(DCTerms.publisher.getURI(), publisherUri.orElse(null),
-        publisherName.orElse(null), publisherMbox.orElse(null), publisherHomepage.orElse(null),
+        publisherName.map(Collections::singletonList).orElse(Collections.emptyList()),
+        publisherMbox.orElse(null), publisherHomepage.orElse(null),
         publisherType.orElse(null), publisherIdentifier.orElse(null), nodeId);
 
     List<String> keywords = metadata.getKeyword();
+
+    // New properties, null for now
+    List<String> applicableLegislation = new ArrayList<String>();
+    List<DcatDatasetSeries> inSeries = new ArrayList<DcatDatasetSeries>();
+    List<Relationship> qualifiedRelation = new ArrayList<Relationship>();
+    String temporalResolution = null;
+    List<String> wasGeneratedBy = new ArrayList<String>();
+    List<String> HVDCategory = new ArrayList<String>();
 
     DcatDataset mapped = new DcatDataset(nodeId, identifier, title, description, distributionList,
         datasetTheme, publisher, contactPointList, keywords, accessRights, conformsTo,
         documentation, frequency, hasVersion, isVersionOf, landingPage, languages, provenance,
         releaseDate, updateDate, otherIdentifier, sample, source, spatialCoverage, temporalCoverage,
-        type, version, versionNotes, rightsHolder, publisher, subjectList, relatedResources);
+        type, version, versionNotes, rightsHolder, publisher, subjectList, relatedResources, applicableLegislation,
+        inSeries, qualifiedRelation, temporalResolution, wasGeneratedBy, HVDCategory);
 
     return mapped;
   }
@@ -293,19 +307,34 @@ public class OpenDataSoftConnector implements IodmsConnector {
       String sjson = sendGetRequest(url);
       DatasetDto datasets = new Gson().fromJson(sjson, DatasetDto.class);
 
+      if (datasets == null) {
+        logger.error("Received null datasets from API");
+        break;
+      }
+
       totDatasets = datasets.getTotalCount();
 
       if (startIndex == 0) {
         logger.info(totDatasets + " total datasets found");
       }
 
+      if (datasets.getDatasets() == null) {
+        logger.warn("Received null datasets list from API");
+        break;
+      }
+
       Integer currentDatasetNumber = datasets.getDatasets().size();
       logger.debug("Took " + currentDatasetNumber + " datasets");
-      datasets.getDatasets().stream().parallel().forEach(d -> {
+      if (currentDatasetNumber == 0) {
+        // No more datasets to process, break the loop
+        break;
+      }
+      datasets.getDatasets().forEach(d -> {
         try {
           out.add(datasetToDcat(d, node));
         } catch (Exception e) {
-          e.printStackTrace();
+          logger.error("Error processing dataset: "
+              + (d != null && d.getDataset() != null ? d.getDataset().getDatasetId() : "null"), e);
         }
       });
 
@@ -322,7 +351,7 @@ public class OpenDataSoftConnector implements IodmsConnector {
   /**
    * Extract concept list.
    *
-   * @param             <T> the generic type
+   * @param <T>         the generic type
    * @param propertyUri the property uri
    * @param concepts    the concepts
    * @param type        the type
@@ -336,7 +365,7 @@ public class OpenDataSoftConnector implements IodmsConnector {
       for (String label : concepts) {
         try {
           result.add(type.getDeclaredConstructor(SkosConcept.class).newInstance(new SkosConcept(
-              propertyUri, "", Arrays.asList(new SkosPrefLabel("", label, nodeId)), nodeId)));
+              propertyUri, "", Arrays.asList(new SkosPrefLabel("", FederationCore.getEnglishDcatTheme(label), nodeId)), nodeId)));
         } catch (InstantiationException | IllegalAccessException | IllegalArgumentException
             | InvocationTargetException | NoSuchMethodException | SecurityException e) {
           e.printStackTrace();
@@ -416,16 +445,29 @@ public class OpenDataSoftConnector implements IodmsConnector {
       try {
         int oldIndex = oldDatasets.indexOf(d);
         int newIndex = newDatasets.indexOf(d);
-        oldDate.setTime(iso.parse(oldDatasets.get(oldIndex).getUpdateDate().getValue()));
-        newDate.setTime(iso.parse(newDatasets.get(newIndex).getUpdateDate().getValue()));
 
-        if (newDate.after(oldDate)) {
-          syncrhoResult.addToChangedList(d);
+        // Check if both indices are valid to prevent ArrayIndexOutOfBoundsException
+        if (oldIndex >= 0 && newIndex >= 0 && oldIndex < oldDatasets.size() && newIndex < newDatasets.size()) {
+          DcatDataset oldDataset = oldDatasets.get(oldIndex);
+          DcatDataset newDataset = newDatasets.get(newIndex);
+
+          // Check if update dates are not null
+          if (oldDataset.getUpdateDate() != null && newDataset.getUpdateDate() != null
+              && oldDataset.getUpdateDate().getValue() != null && newDataset.getUpdateDate().getValue() != null) {
+            oldDate.setTime(iso.parse(oldDataset.getUpdateDate().getValue()));
+            newDate.setTime(iso.parse(newDataset.getUpdateDate().getValue()));
+
+            if (newDate.after(oldDate)) {
+              syncrhoResult.addToChangedList(d);
+            }
+          }
+        } else {
+          logger.warn("Dataset not found in one of the lists: " + d.getIdentifier());
         }
       } catch (Exception ex) {
         exception++;
         if (exception % 1000 == 0) {
-          ex.printStackTrace();
+          logger.error("Exception during dataset comparison", ex);
         }
       }
     }

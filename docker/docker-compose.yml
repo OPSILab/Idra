@@ -104,7 +104,10 @@ services :
 
     # Idra back-end latest version
     idra:
-            image: idraopendata/idra:latest
+            # build local
+            build:
+              context: ..
+              dockerfile: ./Dockerfile
             ports:
                 - 8080:8080
             depends_on:
@@ -133,7 +136,7 @@ services :
                 - idm.fiware.version=7
                 - DATALET_ENABLED=true
                 - DATALET_URL=https://your-domain.it/deep/deep-components/demo.html
-                - JAVA_OPTS=-Xms1024m -Xmx3g -XX:PermSize=1024m -XX:MaxPermSize=2048m
+                - JAVA_OPTS=-Xms1024m -Xmx3g
                 - idra.orion.manager.url=http://ngsi-broker:8082/
             # env variables for BASIC authentication that is the one managed directly in Idra
                 - idra.authentication.method=BASIC

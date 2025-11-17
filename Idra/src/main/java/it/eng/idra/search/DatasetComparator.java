@@ -1,6 +1,6 @@
 /*******************************************************************************
  * Idra - Open Data Federation Platform
- * Copyright (C) 2021 Engineering Ingegneria Informatica S.p.A.
+ * Copyright (C) 2025 Engineering Ingegneria Informatica S.p.A.
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -16,11 +16,13 @@
 package it.eng.idra.search;
 
 import it.eng.idra.beans.dcat.DcatDataset;
+import it.eng.idra.beans.dcat.DcatProperty;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Comparator;
 import java.util.GregorianCalendar;
 import java.util.TimeZone;
+import org.apache.commons.lang3.StringUtils;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -50,10 +52,35 @@ public enum DatasetComparator implements Comparator<DcatDataset> {
   },
 
   /** The publisher name sort. */
+  /*
+   * PUBLISHER_NAME_SORT {
+   * public int compare(DcatDataset o1, DcatDataset o2) {
+   * return o1.getPublisher().getName().getValue()
+   * .compareTo(o2.getPublisher().getName().getValue());
+   * }
+   * }
+   */
+  /** The publisher name sort. */
   PUBLISHER_NAME_SORT {
     public int compare(DcatDataset o1, DcatDataset o2) {
-      return o1.getPublisher().getName().getValue()
-          .compareTo(o2.getPublisher().getName().getValue());
+      String name1 = getFirstPublisherName(o1);
+      String name2 = getFirstPublisherName(o2);
+
+      return name1.compareTo(name2);
+    }
+
+    private String getFirstPublisherName(DcatDataset dataset) {
+      if (dataset != null && dataset.getPublisher() != null
+          && dataset.getPublisher().getName() != null
+          && !dataset.getPublisher().getName().isEmpty()) {
+
+        return dataset.getPublisher().getName().stream()
+            .map(DcatProperty::getValue)
+            .filter(StringUtils::isNotBlank)
+            .findFirst()
+            .orElse("");
+      }
+      return "";
     }
   },
 

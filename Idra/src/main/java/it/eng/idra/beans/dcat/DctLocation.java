@@ -1,6 +1,6 @@
 /*******************************************************************************
  * Idra - Open Data Federation Platform
- * Copyright (C) 2021 Engineering Ingegneria Informatica S.p.A.
+ * Copyright (C) 2025 Engineering Ingegneria Informatica S.p.A.
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -28,6 +28,7 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.rdf.model.ResourceFactory;
+import org.apache.jena.vocabulary.DCAT;
 import org.apache.jena.vocabulary.DCTerms;
 import org.apache.jena.vocabulary.RDFS;
 import org.apache.jena.vocabulary.SKOS;
@@ -65,6 +66,13 @@ public class DctLocation {
   /** The geometry. */
   private DcatProperty geometry;
 
+  // new
+  /** The bbox. */
+  private DcatProperty bbox;
+
+  /** The centroid. */
+  private DcatProperty centroid;
+
   /**
    * Instantiates a new dct location.
    */
@@ -79,14 +87,16 @@ public class DctLocation {
    * @param geographicalName       the geographical name
    * @param geometry               the geometry
    * @param nodeId                 the node ID
+   * @param bbox                   the bbox
+   * @param centroid               the centroid
    */
   public DctLocation(String uri, String geographicalIdentifier, String geographicalName,
-      String geometry, String nodeId) {
+      String geometry, String nodeId, String bbox, String centroid) {
     super();
     setUri(uri);
-    this.nodeId = nodeId;
+    setNodeId(nodeId);
     setGeographicalIdentifier(new DcatProperty(
-        ResourceFactory.createProperty("http://dati.gov.it/onto/dcatapit#geographicalIdentifier"),
+        ResourceFactory.createProperty("http://www.w3.org/2000/01/rdf-schema#seeAlso"),
         RDFS.Literal, geographicalIdentifier));
     setGeographicalName(new DcatProperty(
         ResourceFactory.createProperty("http://www.w3.org/ns/locn#geographicalName"), SKOS.Concept,
@@ -94,7 +104,9 @@ public class DctLocation {
     setGeometry(
         new DcatProperty(ResourceFactory.createProperty("http://www.w3.org/ns/locn#geometry"),
             ResourceFactory.createResource("https://www.w3.org/ns/locn#Geometry"), geometry));
-
+    // **New Fields Mapping**
+    setBbox(new DcatProperty(DCAT.bbox, RDFS.Literal, bbox));
+    setCentroid(new DcatProperty(DCAT.centroid, RDFS.Literal, centroid));
   }
 
   /**
@@ -204,6 +216,7 @@ public class DctLocation {
    *
    * @return the node id
    */
+  @Column(name = "nodeID")
   public String getNodeId() {
     return nodeId;
   }
@@ -215,6 +228,26 @@ public class DctLocation {
    */
   public void setNodeId(String nodeId) {
     this.nodeId = nodeId;
+  }
+
+  @Embedded
+  @AttributeOverrides({ @AttributeOverride(name = "value", column = @Column(name = "bbox")) })
+  public DcatProperty getBbox() {
+    return bbox;
+  }
+
+  public void setBbox(DcatProperty bbox) {
+    this.bbox = bbox;
+  }
+
+  @Embedded
+  @AttributeOverrides({ @AttributeOverride(name = "value", column = @Column(name = "centroid")) })
+  public DcatProperty getCentroid() {
+    return centroid;
+  }
+
+  public void setCentroid(DcatProperty centroid) {
+    this.centroid = centroid;
   }
 
   /**
@@ -235,14 +268,19 @@ public class DctLocation {
    */
   public SolrInputDocument toDoc(CacheContentType contentType) {
     SolrInputDocument doc = new SolrInputDocument();
-    doc.addField("id", this.id);
-    doc.addField("nodeID", this.nodeId);
-    doc.addField("content_type", contentType.toString());
+    if (this.id != null)
+      doc.addField("id", this.id);
+    if (this.nodeId != null)
+      doc.addField("nodeID", this.nodeId);
+    if (contentType.toString() != null)
+      doc.addField("content_type", contentType.toString());
     doc.addField("geographicalIdentifier",
         this.geographicalIdentifier != null ? this.geographicalIdentifier.getValue() : "");
     doc.addField("geographicalName",
         this.geographicalName != null ? this.geographicalName.getValue() : "");
     doc.addField("geometry", this.geometry != null ? this.geometry.getValue() : "");
+    doc.addField("bbox", this.bbox != null ? this.bbox.getValue() : "");
+    doc.addField("centroid", this.centroid != null ? this.centroid.getValue() : "");
     return doc;
 
   }
@@ -256,10 +294,14 @@ public class DctLocation {
    * @return the dct location
    */
   public static DctLocation docToDctLocation(SolrDocument doc, String uri, String nodeId) {
-    DctLocation l = new DctLocation(uri, doc.getFieldValue("geographicalIdentifier").toString(),
-        doc.getFieldValue("geographicalName").toString(), doc.getFieldValue("geometry").toString(),
-        nodeId);
-    l.setId(doc.getFieldValue("id").toString());
+    DctLocation l = new DctLocation(uri,
+        doc.getFieldValue("geographicalIdentifier") != null ? doc.getFieldValue("geographicalIdentifier").toString()
+            : null,
+        doc.getFieldValue("geographicalName") != null ? doc.getFieldValue("geographicalName").toString() : null,
+        doc.getFieldValue("geometry") != null ? doc.getFieldValue("geometry").toString() : null,
+        nodeId, doc.getFieldValue("bbox") != null ? doc.getFieldValue("bbox").toString() : null,
+        doc.getFieldValue("centroid") != null ? doc.getFieldValue("centroid").toString() : null);
+    l.setId(doc.getFieldValue("id") != null ? doc.getFieldValue("id").toString() : "");
     return l;
 
   }
@@ -272,7 +314,8 @@ public class DctLocation {
   @Override
   public String toString() {
     return "DCTLocation [uri=" + uri + ", " + "geographicalIdentifier=" + geographicalIdentifier
-        + ", geographicalName=" + geographicalName + ", geometry=" + geometry + "]";
+        + ", geographicalName=" + geographicalName + ", geometry=" + geometry + ", bbox=" + bbox
+        + ", centroid=" + centroid + "]";
   }
 
 }

@@ -1,6 +1,6 @@
 /*******************************************************************************
  * Idra - Open Data Federation Platform
- * Copyright (C) 2021 Engineering Ingegneria Informatica S.p.A.
+ * Copyright (C) 2025 Engineering Ingegneria Informatica S.p.A.
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -18,12 +18,18 @@ package it.eng.idra.connectors;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
 import com.google.common.collect.Sets.SetView;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import it.eng.idra.beans.dcat.DcatDataset;
+import it.eng.idra.beans.dcat.DcatDatasetSeries;
+import it.eng.idra.beans.dcat.DcatDetails;
 import it.eng.idra.beans.dcat.DcatDistribution;
 import it.eng.idra.beans.dcat.DctLocation;
 import it.eng.idra.beans.dcat.DctPeriodOfTime;
 import it.eng.idra.beans.dcat.DctStandard;
 import it.eng.idra.beans.dcat.FoafAgent;
+import it.eng.idra.beans.dcat.Relationship;
 import it.eng.idra.beans.dcat.SkosConcept;
 import it.eng.idra.beans.dcat.SkosConceptTheme;
 import it.eng.idra.beans.dcat.SkosPrefLabel;
@@ -35,11 +41,15 @@ import it.eng.idra.beans.webscraper.DatasetSelector;
 import it.eng.idra.beans.webscraper.WebScraperSelector;
 import it.eng.idra.beans.webscraper.WebScraperSelectorType;
 import it.eng.idra.connectors.webscraper.WebScraper;
+import it.eng.idra.management.FederationCore;
 import it.eng.idra.utils.CommonUtil;
+import it.eng.idra.utils.GsonUtil;
+import it.eng.idra.utils.GsonUtilException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -59,6 +69,8 @@ import org.apache.jena.vocabulary.DCAT;
 import org.apache.jena.vocabulary.DCTerms;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
@@ -161,6 +173,7 @@ public class WebConnector implements IodmsConnector {
     List<DatasetSelector> selectors = new ArrayList<DatasetSelector>();
     List<DatasetSelector> distrSelectors = new ArrayList<DatasetSelector>();
 
+    String identifier = null;
     String title = null;
     String description = null;
     String accessRights = null;
@@ -220,8 +233,31 @@ public class WebConnector implements IodmsConnector {
     List<String> subject = new ArrayList<String>();
     List<DcatDistribution> distributionList = new ArrayList<DcatDistribution>();
 
+    // new
+    String bbox = null;
+    String centroid = null;
+    String beginning = null;
+    String end = null;
+    List<String> applicableLegislation = new ArrayList<String>();
+    List<DctLocation> geographicalCoverage = new ArrayList<DctLocation>();
+    List<DcatDetails> descriptions = new ArrayList<DcatDetails>();
+    List<DcatDetails> titles = new ArrayList<DcatDetails>();
+    List<DctPeriodOfTime> temporalCoverageList = new ArrayList<DctPeriodOfTime>();
+    List<DcatDatasetSeries> inSeries = new ArrayList<DcatDatasetSeries>();
+    List<Relationship> qualifiedRelation = new ArrayList<Relationship>();
+    String temporalResolution = null;
+    List<String> wasGeneratedBy = new ArrayList<String>();
+    List<String> HVDCategory = new ArrayList<String>();
+    List<String> names = new ArrayList<String>();
+    DcatDatasetSeries datasetSeries = null;
+
     Document doc = (Document) dataset;
 
+    if (StringUtils.isBlank(landingPage)) {
+      landingPage = doc.baseUri();
+    }
+
+    identifier = landingPage;
     /*
      * Divide Dataset selectors from the ones related to the Distribution. Scrape
      * first Distributions -> If they are > 1 -> Increments by one the N value of
@@ -277,20 +313,20 @@ public class WebConnector implements IodmsConnector {
 
         case "title":
           title = extractedValues.get(0);
-          if (StringUtils.isBlank(title) 
-                || WebScraperSelector.getDefaultStopValues().contains(title)
-                || (selector.getStopValues() != null && selector.getStopValues().contains(title))) {
-            throw new DatasetNotValidException("The value " 
-                  + title + " for the selector: " + selector.getName()
-                  + " is a stopValue or is empty then not "
-                  + "valid and dataset with URL: " + doc.baseUri() + " was skipped");
+          if (StringUtils.isBlank(title)
+              || WebScraperSelector.getDefaultStopValues().contains(title)
+              || (selector.getStopValues() != null && selector.getStopValues().contains(title))) {
+            throw new DatasetNotValidException("The value "
+                + title + " for the selector: " + selector.getName()
+                + " is a stopValue or is empty then not "
+                + "valid and dataset with URL: " + doc.baseUri() + " was skipped");
           }
           if ("Referente :".equals(title)) {
-            throw new DatasetNotValidException("The value " 
-                  + title + " for the selector: " + selector.getName()
-                  + " is not a valid title since it is the next "
-                  + "div label, dataset with URL: " + doc.baseUri()
-                  + " was skipped");
+            throw new DatasetNotValidException("The value "
+                + title + " for the selector: " + selector.getName()
+                + " is not a valid title since it is the next "
+                + "div label, dataset with URL: " + doc.baseUri()
+                + " was skipped");
           }
           break;
         case "description":
@@ -328,7 +364,7 @@ public class WebConnector implements IodmsConnector {
           break;
         case "keywords":
           extractedValues.stream().filter(StringUtils::isNoneBlank)
-                .forEach(x -> Arrays.stream(x.trim().split(",")).forEach(k -> keywords.add(k)));
+              .forEach(x -> Arrays.stream(x.trim().split(",")).forEach(k -> keywords.add(k)));
           break;
         case "accessRights":
           accessRights = extractedValues.get(0);
@@ -387,12 +423,15 @@ public class WebConnector implements IodmsConnector {
           sample.add(extractedValues.get(0));
           break;
         case "spatialCoverage_geographicalIdentifier":
+        case "geographicalCoverage_geographicalIdentifier":
           geographicalIdentifier = extractedValues.get(0);
           break;
         case "spatialCoverage_geographicalName":
+        case "geographicalCoverage_geographicalName":
           geographicalName = extractedValues.get(0);
           break;
         case "spatialCoverage_geometry":
+        case "geographicalCoverage_geometry":
           geometry = extractedValues.get(0);
           break;
         case "temporalCoverage_startDate":
@@ -459,48 +498,161 @@ public class WebConnector implements IodmsConnector {
           break;
         case "theme":
           themeList.addAll(extractConceptList(DCAT.theme.getURI(),
-              extractedValues, SkosConceptTheme.class));
+              extractValueList(extractedValues.get(0)), SkosConceptTheme.class));
+          break;
+        case "bbox":
+          bbox = extractedValues.get(0);
+          break;
+        case "centroid":
+          centroid = extractedValues.get(0);
+          break;
+        case "has_beginning":
+        case "beginning":
+          beginning = extractedValues.get(0);
+          break;
+        case "has_end":
+        case "end":
+          end = extractedValues.get(0);
+          break;
+        case "applicable_legislation":
+        case "applicableLegislation":
+          applicableLegislation.addAll(extractValueList(extractedValues.get(0)));
+          break;
+        /*
+         * case "in_series":
+         * case "inSeries":
+         * if (checkIfJsonArray(extractedValues.get(0))) {
+         * JSONArray array = new JSONArray(extractedValues.get(0));
+         * for (int i = 0; i < array.length(); i++) {
+         * JSONObject seriesObj = array.getJSONObject(i);
+         * 
+         * // DcatDetails dcatDetails = new DcatDetails();
+         * // dcatDetails.setTitle(title);
+         * // dcatDetails.setDescription(description);
+         * // Extracting properties from JSON
+         * applicableLegislation.addAll(extractValueList(seriesObj.optString(
+         * "applicableLegislation")));//
+         * .addAll(extractValueList(extractedValues.get(0)));
+         * // descriptions.add(dcatDetails); //
+         * // extractValueList(seriesObj.optString("description", "[]"));
+         * frequency = seriesObj.optString("frequency", null);
+         * // geographicalCoverage.add(spatialCoverage); //
+         * // extractValueList(seriesObj.optString("geographicalCoverage",
+         * // "[]"));
+         * updateDate = seriesObj.optString("modificationDate", null);
+         * // publisher = new FoafAgent(DCTerms.publisher.getURI(), publisherUri,
+         * // publisherName != null
+         * // ? Collections.singletonList(publisherName)
+         * // : Collections.emptyList(),
+         * // publisherMbox, publisherHomepage, publisherType, publisherIdentifier,
+         * // nodeId);
+         * releaseDate = seriesObj.optString("releaseDate", null);
+         * // temporalCoverage = new DctPeriodOfTime(DCTerms.temporal.getURI(),
+         * startDate,
+         * // endDate,
+         * // nodeId, beginning, end, identifier);
+         * // temporalCoverageList.add(temporalCoverage);
+         * // titles.add(dcatDetails); // extractValueList(seriesObj.optString("title",
+         * // "[]"));
+         * 
+         * // Create part of the DcatDatasetSeries object DcatDatasetSeries series
+         * datasetSeries = new DcatDatasetSeries(
+         * applicableLegislation,
+         * null, // contactPointList,
+         * null, // descriptions,
+         * frequency,
+         * null, // geographicalCoverage,
+         * updateDate,
+         * null, // publisher,
+         * releaseDate,
+         * null, // temporalCoverageList,
+         * null, // titles,
+         * String.valueOf(node.getId()),
+         * identifier);
+         * 
+         * // Add to the list
+         * // inSeries.add(series);
+         * }
+         * }
+         * break;
+         */
+        case "qualified_relation":
+        case "qualifiedRelation":
+        case "relationship":
+          JsonElement jelement = JsonParser.parseString(extractedValues.get(0));
+          JsonObject jobject = jelement.getAsJsonObject();
+          Relationship relationship = new Relationship(jobject.get("had_role").getAsString(),
+              jobject.get("relation").getAsString(), nodeId);
+          qualifiedRelation.add(relationship); // addAll(extractValueList(e.getValue()));
+          break;
+        case "temporal_resolution":
+        case "temporalResolution":
+          temporalResolution = extractedValues.get(0);
+          break;
+        case "was_generated_by":
+        case "wasGeneratedBy":
+          wasGeneratedBy.addAll(extractValueList(extractedValues.get(0)));
+          break;
+        case "hvd_category":
+        case "HVDCategory":
+          HVDCategory.addAll(extractValueList(extractedValues.get(0)));
+          break;
+        case "name":
+          names.add(extractedValues.get(0));
           break;
         default:
           break;
       }
 
     }
+    DcatDetails dcatDetails = new DcatDetails();
+    dcatDetails.setTitle(title);
+    dcatDetails.setDescription(description);
+    descriptions.add(dcatDetails);
+    titles.add(dcatDetails);
 
     if (StringUtils.isNotBlank(geographicalIdentifier) || StringUtils.isNotBlank(geographicalName)
         || StringUtils.isNotBlank(geometry)) {
       spatialCoverage = new DctLocation(DCTerms.spatial.getURI(), geographicalIdentifier,
-          geographicalName, geometry, nodeId);
+          geographicalName, geometry, nodeId, bbox, centroid);// identifier
+      geographicalCoverage.add(spatialCoverage);
     }
 
     if (StringUtils.isNotBlank(startDate) && StringUtils.isNotBlank(endDate)) {
-      temporalCoverage = new DctPeriodOfTime(DCTerms.temporal.getURI(), startDate, endDate, nodeId);
+      temporalCoverage = new DctPeriodOfTime(DCTerms.temporal.getURI(), startDate, endDate, nodeId, beginning, end);// identifier
+      temporalCoverageList.add(temporalCoverage);
     }
 
     // Contact Point
     String vcardUri = null;
     if (vcardUri != null || vcardFn != null || vcardHasEmail != null) {
       contactPointList.add(new VcardOrganization(DCAT.contactPoint.getURI(), vcardUri, vcardFn,
-          vcardHasEmail, vcardHasUrl, vcardHasTelephone, "", nodeId));
+          vcardHasEmail, vcardHasUrl, vcardHasTelephone, "", nodeId));// identifier
     }
 
     // Publisher
     if (publisherUri != null || publisherName != null || publisherMbox != null
         || publisherHomepage != null || publisherType != null || publisherIdentifier != null) {
-      publisher = new FoafAgent(DCTerms.publisher.getURI(), publisherUri, publisherName,
+      publisher = new FoafAgent(DCTerms.publisher.getURI(), publisherUri, publisherName != null
+          ? Collections.singletonList(publisherName)
+          : Collections.emptyList(),
           publisherMbox, publisherHomepage, publisherType, publisherIdentifier, nodeId);
     }
     // Rights Holder
     String holderHomepage = null;
     if (holderUri != null || holderName != null || holderMbox != null || holderHomepage != null
         || holderType != null || holderIdentifier != null) {
-      rightsHolder = new FoafAgent(DCTerms.rightsHolder.getURI(), holderUri, holderName, holderMbox,
+      rightsHolder = new FoafAgent(DCTerms.rightsHolder.getURI(), holderUri, holderName != null
+          ? Collections.singletonList(holderName)
+          : Collections.emptyList(), holderMbox,
           holderHomepage, holderType, holderIdentifier, nodeId);
     }
     // Creator
     if (creatorUri != null || creatorName != null || creatorMbox != null || creatorHomepage != null
         || creatorType != null || creatorIdentifier != null) {
-      creator = new FoafAgent(DCTerms.creator.getURI(), creatorUri, creatorName, creatorMbox,
+      creator = new FoafAgent(DCTerms.creator.getURI(), creatorUri, creatorName != null
+          ? Collections.singletonList(creatorName)
+          : Collections.emptyList(), creatorMbox,
           creatorHomepage, creatorType, creatorIdentifier, nodeId);
     }
 
@@ -510,18 +662,28 @@ public class WebConnector implements IodmsConnector {
     if (StringUtils.isBlank(updateDate)) {
       updateDate = releaseDate;
     }
-    if (StringUtils.isBlank(landingPage)) {
-      landingPage = doc.baseUri();
-    }
-    String identifier = null;
-    identifier = landingPage;
+
+    /*
+     * if (datasetSeries != null) {
+     * datasetSeries.setContactPoint(contactPointList);
+     * datasetSeries.setDescription(descriptions);
+     * datasetSeries.setTitle(titles);
+     * datasetSeries.setGeographicalCoverage(geographicalCoverage);
+     * datasetSeries.setTemporalCoverage(temporalCoverageList);
+     * datasetSeries.setPublisher(publisher);
+     * // Add to the list
+     * inSeries.add(datasetSeries);
+     * }
+     */
+
     DcatDataset mapped;
     mapped = new DcatDataset(nodeId, identifier, title, description, distributionList, themeList,
         publisher, contactPointList, keywords, accessRights, new ArrayList<DctStandard>(),
         documentation, frequency, hasVersion, isVersionOf, landingPage, language, provenance,
-        releaseDate, updateDate, new ArrayList<String>(), sample, source, spatialCoverage,
-        temporalCoverage, type, version, versionNotes, rightsHolder, creator, null,
-        new ArrayList<String>());
+        releaseDate, updateDate, new ArrayList<String>(), sample, source, geographicalCoverage,
+        temporalCoverageList, type, version, versionNotes, rightsHolder, creator, null,
+        new ArrayList<String>(), applicableLegislation, inSeries, qualifiedRelation, temporalResolution,
+        wasGeneratedBy, HVDCategory);
 
     distributionList = null;
     publisher = null;
@@ -806,7 +968,7 @@ public class WebConnector implements IodmsConnector {
   /**
    * Distinct by key.
    *
-   * @param              <T> the generic type
+   * @param <T>          the generic type
    * @param keyExtractor the key extractor
    * @return the predicate
    */
@@ -928,6 +1090,63 @@ public class WebConnector implements IodmsConnector {
     return fetchValue;
   }
 
+  /**
+   * Check if input is a valid JSON array.
+   *
+   * @param input the input string
+   * @return true if valid JSON array, false otherwise
+   */
+  public static boolean checkIfJsonArray(String input) {
+    try {
+      JsonElement element = JsonParser.parseString(input);
+      return element != null && element.isJsonArray();
+    } catch (Exception e) {
+      logger.debug("Input is not a valid JSON Array: {}", e.getMessage());
+      return false;
+    }
+  }
+
+  /**
+   * Extract value list.
+   *
+   * @param value the value
+   * @return the list
+   */
+  private List<String> extractValueList(String value) {
+
+    // TODO: regex & groups
+    List<String> result = new ArrayList<String>();
+
+    if (StringUtils.isBlank(value)) {
+      return result;
+    }
+
+    if (value.startsWith("[")) {
+      try {
+        result.addAll(GsonUtil.json2Obj(value, GsonUtil.stringListType));
+      } catch (GsonUtilException ex) {
+        if (StringUtils.isNotBlank(value)) {
+          for (String s : value.split(",")) {
+            result.add(s);
+          }
+        } else {
+          result = null;
+        }
+      }
+    } else if (value.startsWith("{")) {
+      for (String s : value.substring(1, value.lastIndexOf("}")).split(",")) {
+        result.add(s);
+      }
+    } else {
+      for (String s : value.split(",")) {
+        result.add(s);
+      }
+    }
+
+    return result;
+
+  }
+
   /*
    * Return a List of SKOSConcept, each of them containing a prefLabel from input
    * String list.
@@ -936,7 +1155,7 @@ public class WebConnector implements IodmsConnector {
   /**
    * Extract concept list.
    *
-   * @param             <T> the generic type
+   * @param <T>         the generic type
    * @param propertyUri the property uri
    * @param concepts    the concepts
    * @param type        the type
@@ -949,7 +1168,8 @@ public class WebConnector implements IodmsConnector {
     for (String label : concepts) {
       try {
         result.add(type.getDeclaredConstructor(SkosConcept.class).newInstance(new SkosConcept(
-            propertyUri, "", Arrays.asList(new SkosPrefLabel("", label, nodeId)), nodeId)));
+            propertyUri, "", Arrays.asList(new SkosPrefLabel("", FederationCore.getEnglishDcatTheme(label), nodeId)),
+            nodeId)));
       } catch (InstantiationException | IllegalAccessException | IllegalArgumentException
           | InvocationTargetException | NoSuchMethodException | SecurityException e) {
         e.printStackTrace();

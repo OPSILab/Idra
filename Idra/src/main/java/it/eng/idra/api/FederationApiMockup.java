@@ -127,7 +127,7 @@ public class FederationApiMockup {
       JSONArray distributions = new JSONArray();
       distributions.put(dist1);
       json.put("distribution", distributions);
-      System.out.println(json.toString());
+      // System.out.println(json.toString());
       return Response.status(Response.Status.OK).entity(json.toString()).build();
     } catch (JSONException e) {
       e.printStackTrace();

@@ -1,6 +1,6 @@
 /*******************************************************************************
  * Idra - Open Data Federation Platform
- * Copyright (C) 2021 Engineering Ingegneria Informatica S.p.A.
+ * Copyright (C) 2025 Engineering Ingegneria Informatica S.p.A.
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -15,15 +15,20 @@
 
 package it.eng.idra.dcat.dump;
 
+import it.eng.idra.beans.dcat.DCATAP;
 import it.eng.idra.beans.dcat.DcatApFormat;
 import it.eng.idra.beans.dcat.DcatApProfileNotValidException;
+import it.eng.idra.beans.dcat.DcatDataService;
 import it.eng.idra.beans.dcat.DcatDataset;
+import it.eng.idra.beans.dcat.DcatDatasetSeries;
+import it.eng.idra.beans.dcat.DcatDetails;
 import it.eng.idra.beans.dcat.DcatDistribution;
 import it.eng.idra.beans.dcat.DctLicenseDocument;
 import it.eng.idra.beans.dcat.DctLocation;
 import it.eng.idra.beans.dcat.DctPeriodOfTime;
 import it.eng.idra.beans.dcat.DctStandard;
 import it.eng.idra.beans.dcat.FoafAgent;
+import it.eng.idra.beans.dcat.Relationship;
 import it.eng.idra.beans.dcat.SkosConcept;
 import it.eng.idra.beans.dcat.SkosConceptStatus;
 import it.eng.idra.beans.dcat.SkosConceptSubject;
@@ -32,6 +37,7 @@ import it.eng.idra.beans.dcat.SkosPrefLabel;
 import it.eng.idra.beans.dcat.SpdxChecksum;
 import it.eng.idra.beans.dcat.VcardOrganization;
 import it.eng.idra.beans.odms.OdmsCatalogue;
+import it.eng.idra.management.FederationCore;
 import it.eng.idra.utils.CommonUtil;
 import java.io.ByteArrayInputStream;
 import java.lang.reflect.InvocationTargetException;
@@ -61,12 +67,17 @@ import org.apache.jena.vocabulary.OWL;
 import org.apache.jena.vocabulary.RDF;
 import org.apache.jena.vocabulary.SKOS;
 import org.apache.jena.vocabulary.VCARD4;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 // TODO: Auto-generated Javadoc
 /**
  * The Class DcatApDeserializer.
  */
 public class DcatApDeserializer implements IdcatApDeserialize {
+
+  /** The logger. */
+  protected static Logger logger = LogManager.getLogger(DcatApDeserializer.class);
 
   /** The Constant rdfDatasetPattern. */
   protected static final Pattern rdfDatasetPattern = Pattern
@@ -148,6 +159,18 @@ public class DcatApDeserializer implements IdcatApDeserialize {
     List<String> relatedResource = new ArrayList<String>();
 
     List<DcatDistribution> distributionList = new ArrayList<DcatDistribution>();
+
+    // new
+    List<String> applicableLegislation = new ArrayList<String>();
+    List<DctLocation> geographicalCoverage = new ArrayList<DctLocation>();
+    List<DcatDetails> titles = new ArrayList<DcatDetails>();
+    List<DcatDetails> descriptions = new ArrayList<DcatDetails>();
+    List<DctPeriodOfTime> temporalCoverageList = new ArrayList<DctPeriodOfTime>();
+    List<DcatDatasetSeries> inSeries = new ArrayList<DcatDatasetSeries>();
+    List<Relationship> qualifiedRelation = new ArrayList<Relationship>();
+    String temporalResolution = null;
+    List<String> wasGeneratedBy = new ArrayList<String>();
+    List<String> HVDCategory = new ArrayList<String>();
 
     if (datasetResource.hasProperty(DCTerms.title)) {
       title = datasetResource.getRequiredProperty(DCTerms.title).getString();
@@ -295,12 +318,139 @@ public class DcatApDeserializer implements IdcatApDeserialize {
     while (distrIt.hasNext()) {
       distributionList.add(resourceToDcatDistribution(distrIt.next().getResource(), nodeId));
     }
+
+    // Iterate over applicableLegislation properties
+    StmtIterator legIt = datasetResource.listProperties(DCATAP.applicableLegislation);
+    while (legIt.hasNext()) {
+      Statement stmt = legIt.next();
+      try {
+        applicableLegislation.add(stmt.getString());
+        // logger.info("applicableLegislation: " + stmt.getString());
+      } catch (LiteralRequiredException e) {
+        applicableLegislation.add(stmt.getResource().getURI());
+        // logger.info("applicableLegislation: " + stmt.getResource().getURI());
+      }
+    }
+
+    // geographicalCoverage properties
+    geographicalCoverage.add(spatialCoverage);
+
+    /*
+     * DcatDetails dcatDetails = new DcatDetails();
+     * dcatDetails.setTitle(title);
+     * dcatDetails.setDescription(description);
+     * // Handle titles
+     * titles.add(dcatDetails);
+     * // Handle descriptions
+     * descriptions.add(dcatDetails);
+     */
+
+    // Handle temporalCoverage
+    temporalCoverageList.add(temporalCoverage);
+
+    // Iterate over inSeries properties and map them to DcatDatasetSeries objects
+    /*
+     * StmtIterator seriesIt = datasetResource
+     * .listProperties(ResourceFactory.createProperty(
+     * "http://www.w3.org/ns/dcat#inSeries"));
+     * while (seriesIt.hasNext()) {
+     * Statement stmt = seriesIt.next();
+     * if (stmt.getObject().isResource()) {
+     * // Create the DcatDatasetSeries object
+     * inSeries.add(new DcatDatasetSeries(applicableLegislation, contactPointList,
+     * descriptions,
+     * frequency, geographicalCoverage, updateDate, publisher, releaseDate,
+     * temporalCoverageList, titles, nodeId,
+     * identifier));
+     * }
+     * }
+     * 
+     * // Handle qualifiedRelation
+     * Relationship relationship = new
+     * Relationship(datasetResource.getProperty(DCAT.hadRole).getString(),
+     * datasetResource.getProperty(DCTerms.relation).getString(),nodeId);
+     */
+    // qualifiedRelation.add(relationship);
+
+    // Iterate over qualifiedRelation properties
+    // StmtIterator qrelIt = datasetResource
+    // .listProperties(ResourceFactory.createProperty("http://www.w3.org/ns/dcat#qualifiedRelation"));
+    // while (qrelIt.hasNext()) {
+    // qualifiedRelation.add(relationship);// qrelIt.next().getString()
+    // }
+
+    // Extract temporalResolution property
+    if (datasetResource.hasProperty(DCAT.temporalResolution)) {
+      try {
+        temporalResolution = datasetResource.getProperty(DCAT.temporalResolution).getString();
+      } catch (LiteralRequiredException e) {
+        temporalResolution = datasetResource.getProperty(DCAT.temporalResolution).getResource().getURI();
+
+      }
+    }
+
+    // Iterate over wasGeneratedBy properties
+    StmtIterator wasGeneratedByIt = datasetResource
+        .listProperties(ResourceFactory.createProperty("http://www.w3.org/ns/prov#wasGeneratedBy"));
+    while (wasGeneratedByIt.hasNext()) {
+      Statement stmt = wasGeneratedByIt.next();
+      try {
+        wasGeneratedBy.add(stmt.getString());
+      } catch (LiteralRequiredException e) {
+        wasGeneratedBy.add(stmt.getResource().getURI());
+      }
+    }
+
+    // Iterate over HVDCategory properties
+    StmtIterator HVDCategoryIt = datasetResource.listProperties(DCATAP.hvdCategory);
+    while (HVDCategoryIt.hasNext()) {
+      Statement stmt = HVDCategoryIt.next();
+      try {
+        HVDCategory.add(stmt.getString());
+      } catch (LiteralRequiredException e) {
+        HVDCategory.add(stmt.getResource().getURI());
+      }
+    }
+
+    // Iterate over qualifiedRelation properties
+    if (datasetResource.hasProperty(DCAT.qualifiedRelation)) {
+      StmtIterator qualifiedRelationIt = datasetResource.listProperties(DCAT.qualifiedRelation);
+      while (qualifiedRelationIt.hasNext()) {
+        Statement stmt = qualifiedRelationIt.next();
+        if (stmt.getObject().isResource()) {
+          Resource qualifiedRelationRes = stmt.getResource();
+
+          String hadRole = null;
+          if (qualifiedRelationRes.hasProperty(DCAT.hadRole)) {
+            try {
+              hadRole = qualifiedRelationRes.getProperty(DCAT.hadRole).getString();
+            } catch (LiteralRequiredException e) {
+              hadRole = qualifiedRelationRes.getProperty(DCAT.hadRole).getResource().getURI();
+            }
+          }
+
+          String relation = null;
+          if (qualifiedRelationRes.hasProperty(DCTerms.relation)) {
+            try {
+              relation = qualifiedRelationRes.getProperty(DCTerms.relation).getString();
+            } catch (LiteralRequiredException e) {
+              relation = qualifiedRelationRes.getProperty(DCTerms.relation).getResource().getURI();
+            }
+          }
+
+          Relationship relationship = new Relationship(hadRole, relation, nodeId);
+          qualifiedRelation.add(relationship);
+        }
+      }
+    }
+
     DcatDataset mapped;
     mapped = new DcatDataset(nodeId, identifier, title, description, distributionList, theme,
         publisher, contactPointList, keywords, accessRights, conformsTo, documentation, frequency,
         hasVersion, isVersionOf, landingPage, language, provenance, releaseDate, updateDate,
-        otherIdentifier, sample, source, spatialCoverage, temporalCoverage, type, version,
-        versionNotes, null, null, new ArrayList<SkosConceptSubject>(), relatedResource);
+        otherIdentifier, sample, source, geographicalCoverage, temporalCoverageList, type, version,
+        versionNotes, null, null, new ArrayList<SkosConceptSubject>(), relatedResource, applicableLegislation,
+        inSeries, qualifiedRelation, temporalResolution, wasGeneratedBy, HVDCategory);
 
     distributionList = null;
     contactPointList = null;
@@ -320,6 +470,12 @@ public class DcatApDeserializer implements IdcatApDeserialize {
     sample = null;
     source = null;
     versionNotes = null;
+    applicableLegislation = null;
+    inSeries = null;
+    qualifiedRelation = null;
+    temporalResolution = null;
+    wasGeneratedBy = null;
+    HVDCategory = null;
 
     return mapped;
 
@@ -344,7 +500,7 @@ public class DcatApDeserializer implements IdcatApDeserialize {
   /**
    * Deserialize concept.
    *
-   * @param                <T> the generic type
+   * @param <T>            the generic type
    * @param nodeId         the node ID
    * @param parentResource the parent resource
    * @param toExtractP     the to extract P
@@ -382,7 +538,7 @@ public class DcatApDeserializer implements IdcatApDeserialize {
         } else if (toExtractP.getURI().equals(DCAT.theme.getURI())) {
           String extractedLabel = extractThemeFromUri(conceptUri);
           labelList = new ArrayList<SkosPrefLabel>();
-          labelList.add(new SkosPrefLabel("ENG", extractedLabel, nodeId));
+          labelList.add(new SkosPrefLabel("ENG", FederationCore.getEnglishDcatTheme(extractedLabel), nodeId));
 
           // For subject, the label is the entire URI. e.g. http://eurovoc.europa.eu/106
         } else if (toExtractP.getURI().equals(DCTerms.subject.getURI())) {
@@ -441,22 +597,69 @@ public class DcatApDeserializer implements IdcatApDeserialize {
     String startDate = null;
     String endDate = null;
     Resource temporalResource = datasetResource.getPropertyResourceValue(DCTerms.temporal);
+    String beginning = null;
+    String end = null;
 
     if (temporalResource != null) {
 
+      if (temporalResource.hasProperty(DCAT.startDate)) {
+        try {
+          startDate = temporalResource.getProperty(DCAT.startDate).getString();
+        } catch (LiteralRequiredException e) {
+          startDate = temporalResource.getProperty(DCAT.startDate).getResource().getURI();
+        }
+      }
+
+      if (temporalResource.hasProperty(DCAT.endDate)) {
+        try {
+          endDate = temporalResource.getProperty(DCAT.endDate).getString();
+        } catch (LiteralRequiredException e) {
+          endDate = temporalResource.getProperty(DCAT.endDate).getResource().getURI();
+        }
+      }
+
+      /*
+       * if (temporalResource
+       * .hasProperty(ResourceFactory.createProperty("http://schema.org#startDate")))
+       * {
+       * startDate = temporalResource
+       * .getProperty(ResourceFactory.createProperty("http://schema.org#startDate")).
+       * getString();
+       * }
+       * 
+       * if (temporalResource
+       * .hasProperty(ResourceFactory.createProperty("http://schema.org#endDate"))) {
+       * endDate = temporalResource
+       * .getProperty(ResourceFactory.createProperty("http://schema.org#endDate")).
+       * getString();
+       * }
+       */
+
       if (temporalResource
-          .hasProperty(ResourceFactory.createProperty("http://schema.org#startDate"))) {
-        startDate = temporalResource
-            .getProperty(ResourceFactory.createProperty("http://schema.org#startDate")).getString();
+          .hasProperty(ResourceFactory.createProperty("https://www.w3.org/2006/time#hasBeginning"))) {
+        try {
+          beginning = temporalResource
+              .getProperty(ResourceFactory.createProperty("https://www.w3.org/2006/time#hasBeginning")).getString();
+        } catch (LiteralRequiredException e) {
+          beginning = temporalResource
+              .getProperty(ResourceFactory.createProperty("https://www.w3.org/2006/time#hasBeginning")).getResource()
+              .getURI();
+        }
       }
 
       if (temporalResource
-          .hasProperty(ResourceFactory.createProperty("http://schema.org#endDate"))) {
-        endDate = temporalResource
-            .getProperty(ResourceFactory.createProperty("http://schema.org#endDate")).getString();
+          .hasProperty(ResourceFactory.createProperty("https://www.w3.org/2006/time#hasEnd"))) {
+        try {
+          end = temporalResource
+              .getProperty(ResourceFactory.createProperty("https://www.w3.org/2006/time#hasEnd")).getString();
+        } catch (LiteralRequiredException e) {
+          end = temporalResource
+              .getProperty(ResourceFactory.createProperty("https://www.w3.org/2006/time#hasEnd")).getResource()
+              .getURI();
+        }
       }
 
-      return new DctPeriodOfTime(DCTerms.temporal.getURI(), startDate, endDate, nodeId);
+      return new DctPeriodOfTime(DCTerms.temporal.getURI(), startDate, endDate, nodeId, beginning, end);
 
     }
 
@@ -481,14 +684,16 @@ public class DcatApDeserializer implements IdcatApDeserialize {
     String geometry = null;
     String spatialResourceUri = null;
     Resource spatialResource = datasetResource.getPropertyResourceValue(DCTerms.spatial);
+    String bbox = null;
+    String centroid = null;
 
     if (spatialResource != null) {
 
       if (spatialResource.hasProperty(ResourceFactory
-          .createProperty("http://dati.gov.it/onto/dcatapit#geographicalIdentifier"))) {
+          .createProperty("http://www.w3.org/2000/01/rdf-schema#seeAlso"))) {
         geographicalIdentifier = spatialResource
             .getProperty(ResourceFactory
-                .createProperty("http://dati.gov.it/onto/dcatapit#geographicalIdentifier"))
+                .createProperty("http://www.w3.org/2000/01/rdf-schema#seeAlso"))
             .getString();
       }
       if (spatialResource
@@ -513,8 +718,24 @@ public class DcatApDeserializer implements IdcatApDeserialize {
             || spatialResourceUri.startsWith(GEO_BASE_URI_ALT)) ? spatialResourceUri : "";
       }
 
+      if (spatialResource.hasProperty(DCAT.bbox)) {
+        try {
+          bbox = spatialResource.getProperty(DCAT.bbox).getString();
+        } catch (LiteralRequiredException e) {
+          bbox = spatialResource.getProperty(DCAT.bbox).getResource().getURI();
+        }
+      }
+
+      if (spatialResource.hasProperty(DCAT.centroid)) {
+        try {
+          centroid = spatialResource.getProperty(DCAT.centroid).getString();
+        } catch (LiteralRequiredException e) {
+          centroid = spatialResource.getProperty(DCAT.centroid).getResource().getURI();
+        }
+      }
+
       return new DctLocation(DCTerms.spatial.getURI(), geographicalIdentifier, geographicalName,
-          geometry, nodeId);
+          geometry, nodeId, bbox, centroid);
     }
 
     return null;
@@ -685,13 +906,16 @@ public class DcatApDeserializer implements IdcatApDeserialize {
     String agentHomepage = null;
     String agentType = null;
     Resource agentResource = null;
+    List<String> agentNames = new ArrayList<String>();
 
     if (agentStatement != null && (agentResource = agentStatement.getResource()) != null) {
 
       agentUri = agentResource.getURI();
       if (agentResource.hasProperty(FOAF.name)) {
         agentName = agentResource.getProperty(FOAF.name).getString();
+        agentNames.add(agentName);
       }
+
       if (agentResource.hasProperty(FOAF.mbox)) {
         agentMbox = agentResource.getProperty(FOAF.mbox).getString();
       }
@@ -711,7 +935,7 @@ public class DcatApDeserializer implements IdcatApDeserialize {
         agentIdentifier = agentResource.getProperty(DCTerms.identifier).getString();
       }
 
-      return new FoafAgent(agentStatement.getPredicate().getURI(), agentUri, agentName, agentMbox,
+      return new FoafAgent(agentStatement.getPredicate().getURI(), agentUri, agentNames, agentMbox,
           agentHomepage, agentType, agentIdentifier, nodeId);
 
     }
@@ -763,6 +987,20 @@ public class DcatApDeserializer implements IdcatApDeserialize {
     String licenseType = null;
     SkosConceptStatus status = null;
 
+    // new
+    List<DcatDataService> accessService = new ArrayList<DcatDataService>();
+    List<String> applicableLegislation = new ArrayList<String>();
+    String availability = null;
+    String compressionFormat = null;
+    String hasPolicy = null;
+    String packagingFormat = null;
+    String spatialResolution = null;
+    String temporalResolution = null;
+    List<String> documentationList = new ArrayList<String>();
+    List<String> endpointDescriptionList = new ArrayList<String>();
+    List<String> endpointUrlList = new ArrayList<String>();
+    List<String> rightsList = new ArrayList<String>();
+
     // Manage required accessURL property
     if (r.hasProperty(DCAT.accessURL)) {
       Resource accessR = r.getPropertyResourceValue(DCAT.accessURL);
@@ -810,6 +1048,7 @@ public class DcatApDeserializer implements IdcatApDeserialize {
 
     if (r.hasProperty(FOAF.page)) {
       documentation = r.getProperty(FOAF.page).getString();
+      documentationList.add(documentation);
     }
     // Manage downloadURL property
     if (r.hasProperty(DCAT.downloadURL)) {
@@ -862,9 +1101,184 @@ public class DcatApDeserializer implements IdcatApDeserialize {
       downloadUrl = accessUrl;
     }
 
+    // Handle applicableLegislation
+    if (r.hasProperty(DCATAP.applicableLegislation)) {
+      StmtIterator legIt = r.listProperties(DCATAP.applicableLegislation);
+      while (legIt.hasNext()) {
+        Statement stmt = legIt.next();
+        try {
+          applicableLegislation.add(stmt.getString());
+          // logger.info("applicableLegislation: " + stmt.getString());
+        } catch (LiteralRequiredException e) {
+          applicableLegislation.add(stmt.getResource().getURI());
+          // logger.info("applicableLegislation: " + stmt.getResource().getURI());
+        }
+      }
+    }
+
+    // Iterate over accessService properties
+    if (r.hasProperty(DCAT.accessService)) {
+      StmtIterator accessServiceIt = r.listProperties(DCAT.accessService);
+      while (accessServiceIt.hasNext()) {
+        Statement stmt = accessServiceIt.next();
+        if (stmt.getObject().isResource()) {
+          Resource serviceRes = stmt.getResource();
+
+          // DataService ID (URI)
+          // String dataServiceId = serviceRes.getURI();
+
+          // contactPoint
+          // List<VcardOrganization> contactPoints = deserializeContactPoint(nodeId,
+          // serviceRes);
+
+          // licence (dct:license)
+          /*
+           * String licence = null;
+           * if (serviceRes.hasProperty(DCTerms.license)) {
+           * try {
+           * licence = serviceRes.getProperty(DCTerms.license).getString();
+           * } catch (LiteralRequiredException e) {
+           * licence = serviceRes.getProperty(DCTerms.license).getResource().getURI();
+           * }
+           * }
+           */
+
+          String titleAS = null;
+          if (serviceRes.hasProperty(DCTerms.title)) {
+            try {
+              titleAS = serviceRes.getProperty(DCTerms.title).getString();
+            } catch (LiteralRequiredException e) {
+              titleAS = serviceRes.getProperty(DCTerms.title).getResource().getURI();
+            }
+          }
+
+          // rights (dct:rights)
+          if (serviceRes.hasProperty(DCTerms.accessRights)) {
+            StmtIterator rightsIt = serviceRes.listProperties(DCTerms.accessRights);
+            while (rightsIt.hasNext()) {
+              Statement rightsStmt = rightsIt.next();
+              try {
+                rightsList.add(rightsStmt.getString());
+              } catch (LiteralRequiredException e) {
+                rightsList.add(rightsStmt.getResource().getURI());
+              }
+            }
+          }
+          // servesDataset (dcat:servesDataset)
+          List<String> servesDataset = new ArrayList<>();
+          if (serviceRes.hasProperty(DCAT.servesDataset)) {
+            StmtIterator servesIt = serviceRes.listProperties(DCAT.servesDataset);
+            while (servesIt.hasNext()) {
+              Statement servesStmt = servesIt.next();
+              try {
+                servesDataset.add(servesStmt.getString());
+              } catch (LiteralRequiredException e) {
+                servesDataset.add(servesStmt.getResource().getURI());
+              }
+            }
+          }
+          // Extract endpointDescription property
+          if (serviceRes.hasProperty(DCAT.endpointDescription)) {
+            try {
+              endpointDescriptionList.add(serviceRes.getProperty(DCAT.endpointDescription).getString());
+            } catch (LiteralRequiredException e) {
+              endpointDescriptionList.add(serviceRes.getProperty(DCAT.endpointDescription).getResource().getURI());
+            }
+
+          }
+
+          // Extract endpointURL property
+          if (serviceRes.hasProperty(DCAT.endpointURL)) {
+            StmtIterator endpointUrlIt = serviceRes.listProperties(DCAT.endpointURL);
+            while (endpointUrlIt.hasNext()) {
+              Statement endpointUrlStmt = endpointUrlIt.next();
+              try {
+                endpointUrlList.add(endpointUrlStmt.getString());
+              } catch (LiteralRequiredException e) {
+                endpointUrlList.add(endpointUrlStmt.getResource().getURI());
+              }
+            }
+          }
+
+          DcatDataService dataService = new DcatDataService(
+              null, // applicableLegislation,
+              null,
+              null, // documentationList,
+              endpointDescriptionList,
+              endpointUrlList,
+              null,
+              null,
+              rightsList,
+              servesDataset,
+              titleAS,
+              nodeId);
+
+          accessService.add(dataService);
+        }
+      }
+    }
+
+    // Extract availability property
+    if (r.hasProperty(DCATAP.availability)) {
+      try {
+        availability = r.getProperty(DCATAP.availability).getString();
+      } catch (LiteralRequiredException e) {
+        availability = r.getProperty(DCATAP.availability).getResource().getURI();
+      }
+    }
+
+    // Extract compressionFormat property
+    if (r.hasProperty(DCAT.compressFormat)) {
+      try {
+        compressionFormat = r.getProperty(DCAT.compressFormat).getString();
+      } catch (LiteralRequiredException e) {
+        compressionFormat = r.getProperty(DCAT.compressFormat).getResource().getURI();
+      }
+    }
+
+    // Extract hasPolicy property
+    if (r.hasProperty(ResourceFactory.createProperty("https://www.w3.org/ns/odrl/2/"))) {
+      try {
+        hasPolicy = r.getProperty(ResourceFactory.createProperty("https://www.w3.org/ns/odrl/2/")).getString();
+      } catch (LiteralRequiredException e) {
+        hasPolicy = r.getProperty(ResourceFactory.createProperty("https://www.w3.org/ns/odrl/2/")).getResource()
+            .getURI();
+      }
+    }
+
+    // Extract packagingFormat property
+    if (r.hasProperty(DCAT.packageFormat)) {
+      try {
+        packagingFormat = r.getProperty(DCAT.packageFormat).getString();
+      } catch (LiteralRequiredException e) {
+        packagingFormat = r.getProperty(DCAT.packageFormat).getResource().getURI();
+      }
+    }
+
+    // Extract spatialResolution property
+    if (r.hasProperty(DCAT.spatialResolutionInMeters)) {
+      try {
+        spatialResolution = r.getProperty(DCAT.spatialResolutionInMeters).getString();
+      } catch (LiteralRequiredException e) {
+        spatialResolution = r.getProperty(DCAT.spatialResolutionInMeters).getResource().getURI();
+
+      }
+    }
+
+    // Extract temporalResolution property
+    if (r.hasProperty(DCAT.temporalResolution)) {
+      try {
+        temporalResolution = r.getProperty(DCAT.temporalResolution).getString();
+      } catch (LiteralRequiredException e) {
+        temporalResolution = r.getProperty(DCAT.temporalResolution).getResource().getURI();
+
+      }
+    }
+
     return new DcatDistribution(nodeId, accessUrl, description, format, license, byteSize, checksum,
         Arrays.asList(documentation), downloadUrl, Arrays.asList(language), linkedSchemas,
-        mediaType, releaseDate, updateDate, rights, status, title);
+        mediaType, releaseDate, updateDate, rights, status, title, accessService, applicableLegislation,
+        availability, compressionFormat, hasPolicy, packagingFormat, spatialResolution, temporalResolution);
 
   }
 
@@ -962,7 +1376,7 @@ public class DcatApDeserializer implements IdcatApDeserialize {
    * @return the string
    */
   public String extractMediaTypeFromUri(String uri) {
-// update with https://www.iana.org/assignments/media-types/
+    // update with https://www.iana.org/assignments/media-types/
     Matcher matcher = Pattern
         .compile(
             "https:\\/\\/www\\.iana\\.org\\/assignments\\/media-types(\\/|#)(\\w*)")

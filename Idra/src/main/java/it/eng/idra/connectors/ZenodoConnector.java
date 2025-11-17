@@ -1,6 +1,6 @@
 /*******************************************************************************
  * Idra - Open Data Federation Platform
- * Copyright (C) 2024 Engineering Ingegneria Informatica S.p.A.
+ * Copyright (C) 2025 Engineering Ingegneria Informatica S.p.A.
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -15,13 +15,16 @@
 
 package it.eng.idra.connectors;
 
+import it.eng.idra.beans.dcat.DcatDataService;
 import it.eng.idra.beans.dcat.DcatDataset;
+import it.eng.idra.beans.dcat.DcatDatasetSeries;
 import it.eng.idra.beans.dcat.DcatDistribution;
 import it.eng.idra.beans.dcat.DctLicenseDocument;
 import it.eng.idra.beans.dcat.DctLocation;
 import it.eng.idra.beans.dcat.DctPeriodOfTime;
 import it.eng.idra.beans.dcat.DctStandard;
 import it.eng.idra.beans.dcat.FoafAgent;
+import it.eng.idra.beans.dcat.Relationship;
 import it.eng.idra.beans.dcat.SkosConcept;
 import it.eng.idra.beans.dcat.SkosConceptSubject;
 import it.eng.idra.beans.dcat.SkosConceptTheme;
@@ -36,6 +39,7 @@ import it.eng.idra.beans.odms.OdmsSynchronizationResult;
 import it.eng.idra.beans.zenodo.ZenodoClient;
 import it.eng.idra.beans.zenodo.ZenodoConnection;
 import it.eng.idra.beans.zenodo.ZenodoException;
+import it.eng.idra.management.FederationCore;
 import it.eng.idra.utils.CommonUtil;
 import it.eng.idra.utils.GsonUtil;
 import it.eng.idra.utils.GsonUtilException;
@@ -55,6 +59,7 @@ import java.net.MalformedURLException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
@@ -414,7 +419,10 @@ public class ZenodoConnector implements IodmsConnector {
     String publisherName = "Zenodo";// node.getPublisherName()
 
     FoafAgent publisher = new FoafAgent(DCTerms.publisher.getURI(), null,
-        publisherName, null, null, null, null, nodeId);
+        publisherName != null
+            ? Collections.singletonList(publisherName)
+            : Collections.emptyList(),
+        null, null, null, null, nodeId);
 
     Optional<String> creatorName = Optional
         .ofNullable(zenodoDataset.getMetadata().getCreators().stream().map(c -> String.valueOf(c.getName()))
@@ -425,7 +433,9 @@ public class ZenodoConnector implements IodmsConnector {
             .collect(Collectors.joining("; ")))
         .map(this::validateAndTrim);
 
-    FoafAgent creator = new FoafAgent(DCTerms.creator.getURI(), null, creatorName.orElse(null),
+    FoafAgent creator = new FoafAgent(DCTerms.creator.getURI(), null, creatorName != null
+        ? Collections.singletonList(creatorName.toString())
+        : Collections.emptyList(),
         null, null, null, creatorIdentifier.orElse(null), nodeId);
 
     // Construct the landing page URL for Zenodo
@@ -448,8 +458,8 @@ public class ZenodoConnector implements IodmsConnector {
       }
     }
 
-    DctLocation spatialCoverage = null;
-    DctPeriodOfTime temporalCoverage = null;
+    List<DctLocation> spatialCoverage = new ArrayList<DctLocation>();
+    List<DctPeriodOfTime> temporalCoverage = new ArrayList<DctPeriodOfTime>();
     FoafAgent rightsHolder = null;
     String frequency = null;
     List<VcardOrganization> contactPointList = new ArrayList<VcardOrganization>();
@@ -463,11 +473,20 @@ public class ZenodoConnector implements IodmsConnector {
     List<String> relatedResources = new ArrayList<String>();
     List<String> provenance = new ArrayList<String>();
 
+    // new, for now empty or null
+    List<String> applicableLegislation = new ArrayList<String>();
+    List<DcatDatasetSeries> inSeries = new ArrayList<DcatDatasetSeries>();
+    List<Relationship> qualifiedRelation = new ArrayList<Relationship>();
+    String temporalResolution = null;
+    List<String> wasGeneratedBy = new ArrayList<String>();
+    List<String> HVDCategory = new ArrayList<String>();
+
     DcatDataset mapped = new DcatDataset(nodeId, identifier, title, description, distributionList,
         datasetTheme, publisher, contactPointList, keywords, accessRightsUri, conformsTo,
         documentation, frequency, hasVersion, isVersionOf, landingPage, languages, provenance,
         releaseDate, updateDate, otherIdentifier, sample, source, spatialCoverage, temporalCoverage,
-        type, version, versionNotes, rightsHolder, creator, subjectList, relatedResources);
+        type, version, versionNotes, rightsHolder, creator, subjectList, relatedResources, applicableLegislation,
+        inSeries, qualifiedRelation, temporalResolution, wasGeneratedBy, HVDCategory);
 
     return mapped;
   }
@@ -865,9 +884,22 @@ public class ZenodoConnector implements IodmsConnector {
 
     String mimeType = mimeTypeURI(format);
 
+    // New Properties, for now all are null in contructor at the end of method
+    List<DcatDataService> accessService = new ArrayList<>();
+    List<String> applicableLegislation = new ArrayList<>();
+    String availability = null;
+    String compressionFormat = null;
+    String hasPolicy = null;
+    String packagingFormat = null;
+    String spatialResolution = null;
+    String temporalResolution = null;
+
     return new DcatDistribution(nodeId, accessUrl, null, format, datasetLicense, byteSize,
         checksum, new ArrayList<String>(), downloadUrl, new ArrayList<String>(),
-        new ArrayList<DctStandard>(), mimeType, "1970-01-01T00:00:00Z", "1970-01-01T00:00:00Z", null, null, title);
+        new ArrayList<DctStandard>(), mimeType, "1970-01-01T00:00:00Z", "1970-01-01T00:00:00Z", null, null, title,
+        accessService,
+        applicableLegislation, availability, compressionFormat, hasPolicy, packagingFormat,
+        spatialResolution, temporalResolution);
   }
 
   /**
@@ -1073,7 +1105,7 @@ public class ZenodoConnector implements IodmsConnector {
     for (String label : concepts) {
       try {
         result.add(type.getDeclaredConstructor(SkosConcept.class).newInstance(new SkosConcept(
-            propertyUri, "", Arrays.asList(new SkosPrefLabel("", label, nodeId)),
+            propertyUri, "", Arrays.asList(new SkosPrefLabel("", FederationCore.getEnglishDcatTheme(label), nodeId)),
             nodeId)));
       } catch (InstantiationException | IllegalAccessException | IllegalArgumentException
           | InvocationTargetException | NoSuchMethodException | SecurityException e) {

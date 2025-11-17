@@ -140,7 +140,7 @@ public final class ZenodoClient {
                 // urlStringBuilderFinal));
                 returned_json.append(_connection.sendGetRequest("&" + urlStringBuilderFinal));
 
-                logger.info("ZenodoClient - findRecords - returned_json: " + returned_json.toString());
+                // logger.info("ZenodoClient - findRecords - returned_json: " + returned_json.toString());
 
             } catch (UnknownHostException uhe) {
                 if (!"404NotFound".equals(uhe.getMessage())) {
@@ -211,7 +211,7 @@ public final class ZenodoClient {
 
             returned_json.append(_connection.sendGetRequest("records/" + id));
 
-            logger.info("ZenodoClient - getRecord - returned_json: " + returned_json.toString());
+            // logger.info("ZenodoClient - getRecord - returned_json: " + returned_json.toString());
 
         } catch (UnknownHostException uhe) {
             if (uhe.getMessage() != "404NotFound") {
