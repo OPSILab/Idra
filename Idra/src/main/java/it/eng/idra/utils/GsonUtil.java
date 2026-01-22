@@ -21,6 +21,8 @@ import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParseException;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
@@ -337,6 +339,9 @@ public final class GsonUtil {
           return new JsonPrimitive(property.getValue().toString());
         }
       }).registerTypeAdapter(OdmsCatalogue.class, new AnnotatedDeserializer<OdmsCatalogue>())
+        // Accept both string or object for WebScraperSitemap during deserialization
+        .registerTypeAdapter(it.eng.idra.beans.webscraper.WebScraperSitemap.class,
+          new WebScraperSitemapDeserializer())
       .registerTypeAdapter(ConfigurationParameter.class,
           new AnnotatedDeserializer<ConfigurationParameter>())
       .registerTypeAdapter(RdfPrefix.class, new AnnotatedDeserializer<RdfPrefix>())
@@ -498,6 +503,31 @@ public final class GsonUtil {
      */
     public T deserialize(JsonElement je, Type type, JsonDeserializationContext jdc)
         throws JsonParseException {
+      // Normalize known fields before delegating to Gson to handle strict types.
+      // In particular, allow OdmsCatalogue.sitemap to be either an object or a JSON string.
+      if (je != null && je.isJsonObject()) {
+        JsonObject root = je.getAsJsonObject();
+        if (root.has("sitemap")) {
+          JsonElement sitemapEl = root.get("sitemap");
+          if (sitemapEl != null && sitemapEl.isJsonPrimitive() && sitemapEl.getAsJsonPrimitive().isString()) {
+            String sitemapStr = sitemapEl.getAsString();
+            try {
+              JsonElement parsed = JsonParser.parseString(sitemapStr);
+              if (parsed != null && parsed.isJsonObject()) {
+                root.add("sitemap", parsed.getAsJsonObject());
+              } else {
+                JsonObject obj = new JsonObject();
+                obj.addProperty("startUrl", sitemapStr);
+                root.add("sitemap", obj);
+              }
+            } catch (Exception ex) {
+              JsonObject obj = new JsonObject();
+              obj.addProperty("startUrl", sitemapStr);
+              root.add("sitemap", obj);
+            }
+          }
+        }
+      }
       T pojo = new GsonBuilder()
           .registerTypeAdapter(ZonedDateTime.class, new JsonDeserializer<ZonedDateTime>() {
             public ZonedDateTime deserialize(JsonElement jsonElement, Type type,

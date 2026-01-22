@@ -73,6 +73,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 // TODO: Auto-generated Javadoc
@@ -302,221 +303,251 @@ public class WebConnector implements IodmsConnector {
       List<String> extractedValues = fetchMultipleValuesBySelector(doc, selector);
 
       /*
-       * If there are extracted values, map them to the corresponding dataset field,
-       * otherwise go to the next selector iteration
+       * If there are no extracted values, skip most selectors but still allow
+       * fallbacks for title/description to populate datasets.
        */
-      if (extractedValues.size() == 0) {
+      if (extractedValues.size() == 0
+          && !"title".equalsIgnoreCase(selector.getName())
+          && !"description".equalsIgnoreCase(selector.getName())) {
         continue;
       }
 
       switch (selector.getName()) {
 
         case "title":
-          title = extractedValues.get(0);
+          // Prefer extracted value when present, else robust fallbacks
+          title = !extractedValues.isEmpty() ? extractedValues.get(0) : null;
+          if (StringUtils.isBlank(title)) {
+            String h1 = doc.select("h1").stream().map(Element::text)
+                .filter(StringUtils::isNotBlank).findFirst().orElse(null);
+            if (StringUtils.isNotBlank(h1)) { title = h1; }
+          }
+          if (StringUtils.isBlank(title)) {
+            String h2 = doc.select("h2").stream().map(Element::text)
+                .filter(StringUtils::isNotBlank).findFirst().orElse(null);
+            if (StringUtils.isNotBlank(h2)) { title = h2; }
+          }
+          if (StringUtils.isBlank(title)) {
+            title = StringUtils.defaultIfBlank(doc.title(), null);
+          }
           if (StringUtils.isBlank(title)
               || WebScraperSelector.getDefaultStopValues().contains(title)
-              || (selector.getStopValues() != null && selector.getStopValues().contains(title))) {
+              || (selector.getStopValues() != null && selector.getStopValues().contains(title))
+              || "Referente :".equals(title)) {
             throw new DatasetNotValidException("The value "
                 + title + " for the selector: " + selector.getName()
-                + " is a stopValue or is empty then not "
-                + "valid and dataset with URL: " + doc.baseUri() + " was skipped");
-          }
-          if ("Referente :".equals(title)) {
-            throw new DatasetNotValidException("The value "
-                + title + " for the selector: " + selector.getName()
-                + " is not a valid title since it is the next "
-                + "div label, dataset with URL: " + doc.baseUri()
-                + " was skipped");
+                + " is a stopValue or is empty then not valid; dataset with URL: "
+                + doc.baseUri() + " was skipped");
           }
           break;
         case "description":
-          description = extractedValues.get(0);
+          description = extractedValues.size() > 0 ? extractedValues.get(0) : null;
+          if (StringUtils.isBlank(description)) {
+            String metaDesc = doc.select("meta[name=description]").attr("content");
+            if (StringUtils.isNotBlank(metaDesc)) {
+              description = metaDesc;
+            } else {
+              String pText = doc.select("p").stream().map(Element::text)
+                  .filter(StringUtils::isNotBlank).findFirst().orElse("");
+              description = pText;
+            }
+          }
           break;
         case "publisher_name":
-          publisherName = extractedValues.get(0);
+          publisherName = extractedValues.size() > 0 ? extractedValues.get(0) : null;
           break;
         case "publisher_mbox":
-          publisherMbox = extractedValues.get(0);
+          publisherMbox = extractedValues.size() > 0 ? extractedValues.get(0) : null;
           break;
         case "publisher_homepage":
-          publisherHomepage = extractedValues.get(0);
+          publisherHomepage = extractedValues.size() > 0 ? extractedValues.get(0) : null;
           break;
         case "publisher_type":
-          publisherType = extractedValues.get(0);
+          publisherType = extractedValues.size() > 0 ? extractedValues.get(0) : null;
           break;
         case "publisher_identifier":
-          publisherIdentifier = extractedValues.get(0);
+          publisherIdentifier = extractedValues.size() > 0 ? extractedValues.get(0) : null;
           break;
         case "publisher_uri":
-          publisherUri = extractedValues.get(0);
+          publisherUri = extractedValues.size() > 0 ? extractedValues.get(0) : null;
           break;
         case "contact_fn":
-          vcardFn = extractedValues.get(0);
+          vcardFn = extractedValues.size() > 0 ? extractedValues.get(0) : null;
           break;
         case "contact_email":
-          vcardHasEmail = extractedValues.get(0);
+          vcardHasEmail = extractedValues.size() > 0 ? extractedValues.get(0) : null;
           break;
         case "contact_telephone":
-          vcardHasTelephone = extractedValues.get(0);
+          vcardHasTelephone = extractedValues.size() > 0 ? extractedValues.get(0) : null;
           break;
         case "contact_url":
-          vcardHasUrl = extractedValues.get(0);
+          vcardHasUrl = extractedValues.size() > 0 ? extractedValues.get(0) : null;
           break;
         case "keywords":
           extractedValues.stream().filter(StringUtils::isNoneBlank)
               .forEach(x -> Arrays.stream(x.trim().split(",")).forEach(k -> keywords.add(k)));
           break;
         case "accessRights":
-          accessRights = extractedValues.get(0);
+          accessRights = extractedValues.size() > 0 ? extractedValues.get(0) : null;
           break;
         case "conformsTo_identifier":
-          conformsToIdentifier = extractedValues.get(0);
+          conformsToIdentifier = extractedValues.size() > 0 ? extractedValues.get(0) : null;
           break;
         case "conformsTo_title":
-          conformsToTitle = extractedValues.get(0);
+          conformsToTitle = extractedValues.size() > 0 ? extractedValues.get(0) : null;
           break;
         case "conformsTo_description":
-          conformsToDescription = extractedValues.get(0);
+          conformsToDescription = extractedValues.size() > 0 ? extractedValues.get(0) : null;
           break;
         case "conformsTo_referenceDocumentation":
-          conformsToReferenceDocumentation = extractedValues.get(0);
+          conformsToReferenceDocumentation = extractedValues.size() > 0 ? extractedValues.get(0) : null;
           break;
         case "documentation":
           documentation.addAll(extractedValues);
           break;
         case "frequency":
-          frequency = extractedValues.get(0);
+          frequency = extractedValues.size() > 0 ? extractedValues.get(0) : null;
           break;
         case "hasVersion":
-          hasVersion.add(extractedValues.get(0));
+          if (!extractedValues.isEmpty()) { hasVersion.add(extractedValues.get(0)); }
           break;
         case "isVersionOf":
-          isVersionOf.add(extractedValues.get(0));
+          if (!extractedValues.isEmpty()) { isVersionOf.add(extractedValues.get(0)); }
           break;
         case "landingPage":
-          landingPage = extractedValues.get(0);
+          landingPage = extractedValues.size() > 0 ? extractedValues.get(0) : landingPage;
           break;
         case "language":
-          language.add(extractedValues.get(0));
+          if (!extractedValues.isEmpty()) { language.add(extractedValues.get(0)); }
           break;
         case "provenance":
-          provenance.add(extractedValues.get(0));
+          if (!extractedValues.isEmpty()) { provenance.add(extractedValues.get(0)); }
           break;
         case "releaseDate":
           try {
-            releaseDate = CommonUtil.fromLocalToUtcDate(extractedValues.get(0), null);
+            if (!extractedValues.isEmpty()) {
+              releaseDate = CommonUtil.fromLocalToUtcDate(extractedValues.get(0), null);
+            }
           } catch (IllegalArgumentException ignore) {
             logger.debug(ignore.getLocalizedMessage());
           }
           break;
         case "updateDate":
           try {
-            updateDate = CommonUtil.fromLocalToUtcDate(extractedValues.get(0), null);
+            if (!extractedValues.isEmpty()) {
+              updateDate = CommonUtil.fromLocalToUtcDate(extractedValues.get(0), null);
+            }
           } catch (IllegalArgumentException ignore) {
             logger.debug(ignore.getLocalizedMessage());
           }
           break;
         case "source":
-          source.add(extractedValues.get(0));
+          if (!extractedValues.isEmpty()) { source.add(extractedValues.get(0)); }
           break;
         case "sample":
-          sample.add(extractedValues.get(0));
+          if (!extractedValues.isEmpty()) { sample.add(extractedValues.get(0)); }
           break;
         case "spatialCoverage_geographicalIdentifier":
         case "geographicalCoverage_geographicalIdentifier":
-          geographicalIdentifier = extractedValues.get(0);
+          geographicalIdentifier = extractedValues.size() > 0 ? extractedValues.get(0) : geographicalIdentifier;
           break;
         case "spatialCoverage_geographicalName":
         case "geographicalCoverage_geographicalName":
-          geographicalName = extractedValues.get(0);
+          geographicalName = extractedValues.size() > 0 ? extractedValues.get(0) : geographicalName;
           break;
         case "spatialCoverage_geometry":
         case "geographicalCoverage_geometry":
-          geometry = extractedValues.get(0);
+          geometry = extractedValues.size() > 0 ? extractedValues.get(0) : geometry;
           break;
         case "temporalCoverage_startDate":
           try {
-            startDate = CommonUtil.fromLocalToUtcDate(extractedValues.get(0), null);
+            if (!extractedValues.isEmpty()) {
+              startDate = CommonUtil.fromLocalToUtcDate(extractedValues.get(0), null);
+            }
           } catch (IllegalArgumentException ignore) {
             logger.debug(ignore.getLocalizedMessage());
           }
           break;
         case "temporalCoverage_endDate":
           try {
-            endDate = CommonUtil.fromLocalToUtcDate(extractedValues.get(0), null);
+            if (!extractedValues.isEmpty()) {
+              endDate = CommonUtil.fromLocalToUtcDate(extractedValues.get(0), null);
+            }
           } catch (IllegalArgumentException ignore) {
             logger.debug(ignore.getLocalizedMessage());
           }
           break;
         case "type":
-          type = extractedValues.get(0);
+          type = extractedValues.size() > 0 ? extractedValues.get(0) : type;
           break;
         case "version":
-          version = extractedValues.get(0);
+          version = extractedValues.size() > 0 ? extractedValues.get(0) : version;
           break;
         case "versionNotes":
-          versionNotes.add(extractedValues.get(0));
+          if (!extractedValues.isEmpty()) { versionNotes.add(extractedValues.get(0)); }
           break;
         case "rightsHolder_name":
-          holderName = extractedValues.get(0);
+          holderName = extractedValues.size() > 0 ? extractedValues.get(0) : holderName;
           break;
         case "rightsHolder_mbox":
-          holderMbox = extractedValues.get(0);
+          holderMbox = extractedValues.size() > 0 ? extractedValues.get(0) : holderMbox;
           break;
         case "rightsHolder_homepage":
-          holderName = extractedValues.get(0);
+          holderName = extractedValues.size() > 0 ? extractedValues.get(0) : holderName;
           break;
         case "rightsHolder_type":
-          holderType = extractedValues.get(0);
+          holderType = extractedValues.size() > 0 ? extractedValues.get(0) : holderType;
           break;
         case "rightsHolder_uri":
-          holderUri = extractedValues.get(0);
+          holderUri = extractedValues.size() > 0 ? extractedValues.get(0) : holderUri;
           break;
         case "rightsHolder_identifier":
-          holderIdentifier = extractedValues.get(0);
+          holderIdentifier = extractedValues.size() > 0 ? extractedValues.get(0) : holderIdentifier;
           break;
         case "creator_name":
-          creatorName = extractedValues.get(0);
+          creatorName = extractedValues.size() > 0 ? extractedValues.get(0) : creatorName;
           break;
         case "creator_mbox":
-          creatorMbox = extractedValues.get(0);
+          creatorMbox = extractedValues.size() > 0 ? extractedValues.get(0) : creatorMbox;
           break;
         case "creator_homepage":
-          creatorHomepage = extractedValues.get(0);
+          creatorHomepage = extractedValues.size() > 0 ? extractedValues.get(0) : creatorHomepage;
           break;
         case "creator_type":
-          creatorType = extractedValues.get(0);
+          creatorType = extractedValues.size() > 0 ? extractedValues.get(0) : creatorType;
           break;
         case "creator_uri":
-          creatorUri = extractedValues.get(0);
+          creatorUri = extractedValues.size() > 0 ? extractedValues.get(0) : creatorUri;
           break;
         case "creator_identifier":
-          creatorIdentifier = extractedValues.get(0);
+          creatorIdentifier = extractedValues.size() > 0 ? extractedValues.get(0) : creatorIdentifier;
           break;
         case "subject":
-          subject.add(extractedValues.get(0));
+          if (!extractedValues.isEmpty()) { subject.add(extractedValues.get(0)); }
           break;
         case "theme":
-          themeList.addAll(extractConceptList(DCAT.theme.getURI(),
-              extractValueList(extractedValues.get(0)), SkosConceptTheme.class));
+          if (!extractedValues.isEmpty()) {
+            themeList.addAll(extractConceptList(DCAT.theme.getURI(),
+                extractValueList(extractedValues.get(0)), SkosConceptTheme.class));
+          }
           break;
         case "bbox":
-          bbox = extractedValues.get(0);
+          bbox = extractedValues.size() > 0 ? extractedValues.get(0) : bbox;
           break;
         case "centroid":
-          centroid = extractedValues.get(0);
+          centroid = extractedValues.size() > 0 ? extractedValues.get(0) : centroid;
           break;
         case "has_beginning":
         case "beginning":
-          beginning = extractedValues.get(0);
+          beginning = extractedValues.size() > 0 ? extractedValues.get(0) : beginning;
           break;
         case "has_end":
         case "end":
-          end = extractedValues.get(0);
+          end = extractedValues.size() > 0 ? extractedValues.get(0) : end;
           break;
         case "applicable_legislation":
         case "applicableLegislation":
-          applicableLegislation.addAll(extractValueList(extractedValues.get(0)));
+          if (!extractedValues.isEmpty()) { applicableLegislation.addAll(extractValueList(extractedValues.get(0))); }
           break;
         /*
          * case "in_series":
@@ -579,6 +610,7 @@ public class WebConnector implements IodmsConnector {
         case "qualified_relation":
         case "qualifiedRelation":
         case "relationship":
+          if (extractedValues.isEmpty()) { break; }
           JsonElement jelement = JsonParser.parseString(extractedValues.get(0));
           JsonObject jobject = jelement.getAsJsonObject();
           Relationship relationship = new Relationship(jobject.get("had_role").getAsString(),
@@ -587,18 +619,18 @@ public class WebConnector implements IodmsConnector {
           break;
         case "temporal_resolution":
         case "temporalResolution":
-          temporalResolution = extractedValues.get(0);
+          temporalResolution = extractedValues.size() > 0 ? extractedValues.get(0) : temporalResolution;
           break;
         case "was_generated_by":
         case "wasGeneratedBy":
-          wasGeneratedBy.addAll(extractValueList(extractedValues.get(0)));
+          if (!extractedValues.isEmpty()) { wasGeneratedBy.addAll(extractValueList(extractedValues.get(0))); }
           break;
         case "hvd_category":
         case "HVDCategory":
-          HVDCategory.addAll(extractValueList(extractedValues.get(0)));
+          if (!extractedValues.isEmpty()) { HVDCategory.addAll(extractValueList(extractedValues.get(0))); }
           break;
         case "name":
-          names.add(extractedValues.get(0));
+          if (!extractedValues.isEmpty()) { names.add(extractedValues.get(0)); }
           break;
         default:
           break;
@@ -987,7 +1019,7 @@ public class WebConnector implements IodmsConnector {
   private static List<String> fetchMultipleValuesBySelector(Document document,
       DatasetSelector sel) {
     Elements extractedElements = document.select(sel.getSelector().replaceAll("'", ""));
-    List<String> extractedValues = null;
+    List<String> extractedValues = new ArrayList<>();
 
     switch (sel.getType()) {
 
@@ -1033,10 +1065,15 @@ public class WebConnector implements IodmsConnector {
 
         break;
       case SelectorLink:
-        // TODO Manage specific link selector fields
+        // Return hrefs of anchor elements or text when no href present
+        extractedValues = extractedElements.stream().map(e -> {
+          String href = e.attr("href");
+          return StringUtils.isNotBlank(href) ? href : e.text();
+        }).collect(Collectors.toList());
         break;
 
       default:
+        // leave extractedValues as empty list
         break;
 
     }
