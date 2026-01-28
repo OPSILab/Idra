@@ -1,6 +1,6 @@
 [submodule "IdraPortal-ngx"]
 	path = IdraPortal-ngx
-	url = https://github.com/OPSILab/IdraPortal-ngx/tree/main
+	url = https://github.com/OPSILab/IdraPortal-ngx
 [submodule "mqa-scoring"]
 	path = mqa-scoring
 	url = https://github.com/OPSILab/mqa-scoring
