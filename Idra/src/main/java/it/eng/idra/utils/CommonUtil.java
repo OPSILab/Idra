@@ -385,6 +385,9 @@ public class CommonUtil {
    */
   public static String extractSeoIdentifier(String title, String internalIdentifier,
       String nodeId) {
+    if (StringUtils.isBlank(title)) {
+      return internalIdentifier + "-" + nodeId;
+    }
     // String title1 =
     // unaccent(title).toLowerCase().replaceAll("[^\\p{L}\\p{Z}\\p{N}]","");
     // String title1 = unaccent(title).toLowerCase().replaceAll("[^\\w\\s]","");

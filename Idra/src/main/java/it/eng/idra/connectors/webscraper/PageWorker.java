@@ -16,6 +16,7 @@
 package it.eng.idra.connectors.webscraper;
 
 import it.eng.idra.beans.IdraProperty;
+import it.eng.idra.beans.webscraper.PageSelector;
 import it.eng.idra.beans.webscraper.NavigationParameter;
 import it.eng.idra.beans.webscraper.NavigationType;
 import it.eng.idra.beans.webscraper.NavigationTypeNotValidException;
@@ -172,7 +173,13 @@ public class PageWorker implements Runnable {
       try {
         String pageUrl = buildPageUrl(startUrl, navParam, pageNumber);
         logger.debug("--------------- PAGE URL: " + pageUrl + "---------------------------");
-        return Jsoup.connect(pageUrl).timeout(PAGE_TIMEOUT).get();
+        return Jsoup.connect(pageUrl)
+          .userAgent(WebScraper.DEFAULT_USER_AGENT)
+          .referrer(startUrl)
+          .header("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8")
+          .header("Accept-Language", "en-US,en;q=0.9")
+          .timeout(PAGE_TIMEOUT)
+          .get();
 
       } catch (IOException | NavigationTypeNotValidException e) {
         logger.info("\nThread: " + Thread.currentThread().getId() + " Error: " + e.getMessage()
@@ -198,7 +205,7 @@ public class PageWorker implements Runnable {
    * @throws IOException              Signals that an I/O exception has occurred.
    * @throws UrlNotParseableException the url not parseable exception
    */
-  private Document getDatasetDocument(Element linkElement)
+    private Document getDatasetDocument(Element linkElement, PageSelector selector)
       throws IOException, UrlNotParseableException {
 
     int retryNum = 1;
@@ -207,14 +214,37 @@ public class PageWorker implements Runnable {
     do {
 
       try {
-        link = linkElement.attr("href");
+        // Prefer attribute specified in selector, else fallback to href
+        if (selector != null && selector.getExtractAttribute() != null
+            && !selector.getExtractAttribute().isEmpty()) {
+          link = linkElement.attr(selector.getExtractAttribute());
+        }
+        if (link == null || link.isEmpty()) {
+          link = linkElement.attr("href");
+        }
+        // If still blank, try to find the first descendant anchor
+        if (link == null || link.isEmpty()) {
+          Element anchor = linkElement.selectFirst("a[href]");
+          if (anchor != null) {
+            link = anchor.attr("href");
+          }
+        }
+        if (link == null || link.isEmpty()) {
+          throw new IOException("Dataset link not found for selected element");
+        }
 
         // Handle relative path links
         if (link.startsWith("/")) {
           link = extractBaseUrlFromStartUrl() + link;
         }
 
-        return Jsoup.connect(link).timeout(DATASET_TIMEOUT).get();
+        return Jsoup.connect(link)
+          .userAgent(WebScraper.DEFAULT_USER_AGENT)
+          .referrer(startUrl)
+          .header("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8")
+          .header("Accept-Language", "en-US,en;q=0.9")
+          .timeout(DATASET_TIMEOUT)
+          .get();
       } catch (IOException e) {
         logger.info("\nThread: " + Thread.currentThread().getId() + "Page: " + pageNumber
             + " Error: " + e.getMessage() + " retrieving Dataset Document: " + link
@@ -273,7 +303,10 @@ public class PageWorker implements Runnable {
                 } catch (InterruptedException e2) {
                   e2.printStackTrace();
                 }
-                pageResult.add(getDatasetDocument(e));
+                Document dsDoc = getDatasetDocument(e, selector);
+                if (dsDoc != null) {
+                  pageResult.add(dsDoc);
+                }
               } catch (IOException | UrlNotParseableException e1) {
                 e1.printStackTrace();
                 continue;
