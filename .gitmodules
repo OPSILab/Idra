@@ -6,10 +6,6 @@
 	path = mqa-scoring
 	url = https://github.com/OPSILab/mqa-scoring
 	branch = master
-[submodule "IdraPortal-ngx-Translations"]
-	path = IdraPortal-ngx-Translations
-	url = https://github.com/OPSILab/IdraPortal-ngx-Translations
-	branch = main
 [submodule "deep2-components"]
 	path = deep2-components
 	url = https://github.com/OPSILab/deep2-components
